@@ -737,8 +737,6 @@
 
     <!-- 🔒 PREMIUM GATEWAYS -->
     <label class="flex items-center gap-2 text-gray-400 cursor-not-allowed relative group">
-      <input type="checkbox" value="stripe" class="paymentOption" disabled>
-      Stripe
       <span class="text-xs bg-yellow-100 text-yellow-800 rounded px-2 py-0.5 ml-2">Premium Package</span>
       <div class="absolute top-full mt-1 hidden group-hover:block bg-black text-white text-xs rounded px-2 py-1 z-10">
         Upgrade to unlock Stripe integration
@@ -1501,7 +1499,7 @@ function initializeSubscriptionUI() {
 
 // Function to update premium payment gateway availability
 function updatePremiumGateways() {
-  const premiumGateways = ['stripe', 'square', 'iyzipay', 'wise', 'revolut'];
+  const premiumGateways = ['square', 'iyzipay', 'wise', 'revolut'];
   
   premiumGateways.forEach(gateway => {
     const checkbox = document.querySelector(`.paymentOption[value="${gateway}"]`);
@@ -3037,11 +3035,6 @@ const GATEWAY_FIELDS = {
     { label: "Khalti Secret Key", key: "khaltiSecretKey", placeholder: "e.g. test_secret_key_xyz..." }
   ],
 
-  // 🔐 Premium/Backend Gateways
-  stripe: [
-    { label: "Stripe Public Key", key: "stripePublicKey", placeholder: "e.g. pk_live_..." },
-    { label: "Stripe Secret Key", key: "stripeSecretKey", placeholder: "e.g. sk_live_..." }
-  ],
   square: [
     { label: "Square Application ID", key: "squareAppId", placeholder: "e.g. sq0idp-..." }
   ],
@@ -3263,7 +3256,7 @@ function saveStoreSettings() {
   const storeCurrency = document.getElementById("storeCurrency")?.value || "USD"; // 💱 Get selected currency
 
   // ✅ Only allow gateways that don't require backend
-  const disallowedGateways = ["stripe", "square"];
+  const disallowedGateways = ["square"];
   const paymentSystems = Array.from(document.querySelectorAll(".paymentOption:checked"))
     .map(el => el.value)
     .filter(val => !disallowedGateways.includes(val));
@@ -3347,7 +3340,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const savedSettings = JSON.parse(localStorage.getItem("sellerSettings") || "{}");
 
   renderCountryList();
-  document.querySelector('.paymentOption[value="stripe"]').disabled = true;
 
   // 🌍 Restore Delivery Regions
   if (savedSettings?.deliveryRegions?.length) {
