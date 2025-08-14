@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Theme Preview - ShopRight</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+  <div id="layoutContainer"></div>
+
+<script>
+  const API = "http://10.2.0.2:3000";
+  const actualSeller = new URLSearchParams(location.search).get("seller");
+  const theme = JSON.parse(localStorage.getItem("previewTheme") || "{}");
+
+  async function loadLayout() {
+    if (!theme.layout) {
+      document.body.innerHTML = "<h2 class='text-center mt-10 text-red-500 font-bold text-xl'>❌ No Theme Loaded</h2>";
+      return;
+    }
+
+    try {
+      const layoutRes = await fetch(`${API}/layouts/${theme.layout}`);
+      const layoutHTML = await layoutRes.text();
+
+      // Inject layout
+      const container = document.getElementById("layoutContainer");
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = layoutHTML;
+
+      const scripts = Array.from(tempDiv.querySelectorAll("script"));
+      scripts.forEach(s => s.remove());
+
+      container.innerHTML = tempDiv.innerHTML;
+
+      // 🔧 Replace any `?seller=...` in links with the actual seller for correct redirection
+      const sellerLinks = container.querySelectorAll("a[href*='seller=']");
+      sellerLinks.forEach(link => {
+        const url = new URL(link.href, location.origin);
+        url.searchParams.set("seller", actualSeller);
+        link.href = url.toString();
+      });
+
+      // Inject global preview data
+      window.__SHOP_DATA__ = {
+        sellerParam: "iyonicorp",       // Render like Iyonicorp
+        actualSeller: actualSeller,     // Logged-in user
+        isOwner: false,
+        API,
+        theme
+      };
+
+      // Reattach scripts
+      scripts.forEach(script => {
+        const newScript = document.createElement("script");
+        if (script.src) {
+          newScript.src = script.src;
+        } else {
+          newScript.textContent = script.textContent;
+        }
+        for (const attr of script.attributes) {
+          newScript.setAttribute(attr.name, attr.value);
+        }
+        document.body.appendChild(newScript);
+      });
+
+    } catch (err) {
+      console.error("❌ Preview Error:", err);
+      document.body.innerHTML = "<h2 class='text-center mt-10 text-red-600 font-bold'>❌ Failed to load layout</h2>";
+    }
+  }
+
+  window.addEventListener("DOMContentLoaded", loadLayout);
+</script>
+
+
+</body>
+</html>

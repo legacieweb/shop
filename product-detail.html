@@ -1,0 +1,1968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product Details – ShopRight</title>
+
+  <!-- TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- ✅ Paystack -->
+  <script src="https://js.paystack.co/v1/inline.js"></script>
+
+  <!-- ✅ Stripe -->
+  <script src="https://js.stripe.com/v3/"></script>
+
+  <!-- ✅ Flutterwave -->
+  <script src="https://checkout.flutterwave.com/v3.js"></script>
+
+  <!-- ✅ Razorpay -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  
+  <!-- ✅ Square (Optional, server setup needed too) -->
+  <script type="text/javascript" src="https://sandbox.web.squarecdn.com/v1/square.js"></script>
+
+<style>
+.animate-fade-in-up {
+  animation: fadeInUp 0.3s ease-out;
+}
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>
+  <style>
+    /* Remove @apply, use Tailwind classes directly in HTML */
+    .carousel img {
+      transition: opacity 0.3s ease;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
+<!-- Header -->
+<header class="bg-white shadow sticky top-0 z-40">
+  <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-6">
+
+    <!-- 🏬 Shop Logo & Name -->
+    <div id="shopHeader" class="flex items-center gap-3 flex-shrink-0">
+      <!-- Dynamically Filled by JS -->
+      <!-- Example fallback: -->
+      <!-- <img src="logo.png" class="w-8 h-8 rounded-full" alt="Shop Logo" /> -->
+      <!-- <span class="text-lg font-bold text-indigo-700">ShopName</span> -->
+    </div>
+
+    <div class="flex items-center gap-4">
+
+<!-- 🛒 Cart Dropdown -->
+<div class="relative">
+  <button 
+    onclick="toggleCartDropdown()" 
+    class="relative flex items-center gap-1 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm rounded shadow-sm transition"
+    aria-label="View Cart"
+  >
+    🛒 Cart
+    <span 
+      id="cartCount" 
+      class="absolute -top-2 -right-2 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow"
+    >0</span>
+  </button>
+
+  <div 
+    id="cartDropdown" 
+    class="hidden absolute right-0 mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-xl z-50 p-4 space-y-3 animate-fadeIn"
+  >
+    <div id="cartItems" class="space-y-3 text-sm text-gray-800 max-h-80 overflow-auto">
+      <p class="text-gray-500 italic">🛒 Cart is empty.</p>
+    </div>
+
+    <!-- 💵 Cart Total -->
+    <div class="flex justify-between items-center text-sm font-medium text-gray-700 border-t pt-2">
+      <span>Total:</span>
+      <span id="cartTotal">$0.00</span>
+    </div>
+
+    <!-- ✅ Checkout -->
+    <div class="text-right">
+      <button 
+        onclick="proceedToCheckout(0)" 
+        class="mt-3 w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition"
+      >
+        ✅ Proceed to Checkout
+      </button>
+    </div>
+  </div>
+</div>
+
+
+      <!-- 🔁 Return Menu -->
+      <div class="relative">
+        <button 
+          onclick="toggleReturnMenu()" 
+          class="flex items-center gap-1 text-sm px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded shadow-sm transition"
+          aria-haspopup="true"
+        >
+          🔁 Return To
+        </button>
+
+        <div 
+          id="returnMenu" 
+          class="absolute top-12 right-0 bg-white border border-gray-200 rounded-lg shadow-lg px-4 py-3 space-y-2 opacity-0 pointer-events-none transform scale-95 transition-all duration-200 ease-out z-50"
+        >
+          <a 
+            id="visitStoreBtn" 
+            href="#" 
+            class="block text-sm px-3 py-2 rounded bg-blue-100 text-blue-700 hover:bg-blue-200 transition"
+          >
+            🏬 Visit Store
+          </a>
+          <a 
+            href="products.html" 
+            class="block text-sm px-3 py-2 rounded bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition"
+          >
+            ↩️ Return to Marketplace
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</header>
+
+<!-- Product Section -->
+<main class="flex-grow">
+<!-- 🔗 Breadcrumb -->
+<div class="max-w-7xl mx-auto px-4 py-2 text-sm text-gray-600">
+  <nav class="flex items-center gap-2">
+    <a id="breadcrumbShopLink" href="#" class="text-indigo-600 hover:underline">All Products</a>
+    <span>/</span>
+    <span id="breadcrumbProduct" class="font-medium text-gray-800"></span>
+  </nav>
+</div>
+
+
+  <!-- Main Product Display -->
+  <section class="max-w-5xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-2 gap-10 items-start" id="productSection">
+    <!-- Injected by JS -->
+  </section>
+
+  <!-- Related Products -->
+  <section class="max-w-7xl mx-auto px-4 py-12 hidden" id="relatedSection">
+    <h3 class="text-xl font-semibold mb-4">Related Products</h3>
+    <div id="relatedGrid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+  </section>
+
+  <!-- Store Products -->
+  <section class="max-w-7xl mx-auto px-4 py-12 hidden" id="storeSection">
+    <h3 class="text-xl font-semibold mb-4">More From This Store</h3>
+    <div id="storeGrid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+  </section>
+  <!-- Size Guide Modal -->
+<div id="sizeGuideModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+  <div class="bg-white w-full max-w-2xl max-h-[80vh] overflow-auto rounded-lg shadow-lg p-6 transform scale-95 opacity-0 transition-all duration-300 ease-out">
+    <div class="flex justify-between items-center mb-4">
+      <h3 class="text-lg font-semibold text-indigo-700">Size Guide</h3>
+      <button onclick="hideSizeGuide()" class="text-gray-500 hover:text-red-500 text-lg">✖</button>
+    </div>
+    <div id="sizeGuideContent" class="text-sm text-gray-700 whitespace-pre overflow-auto"></div>
+  </div>
+</div>
+
+<!-- Checkout Modal -->
+<div id="checkoutModal" class="fixed inset-0 bg-black bg-opacity-40 flex justify-end z-50 hidden">
+  <div class="bg-white w-full max-w-md h-full shadow-lg overflow-auto relative transform translate-x-full transition-all duration-300 ease-in-out rounded-l-lg">
+
+    <!-- Close Button -->
+    <button onclick="hideCheckoutModal()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-xl">✖</button>
+
+    <!-- Header -->
+    <div class="flex items-center justify-between gap-3 p-6 border-b">
+      <div class="flex items-center gap-3">
+        <img id="checkoutSellerLogo" src="" class="w-8 h-8 rounded-full object-cover border" alt="Seller Logo" />
+        <h2 class="text-lg font-bold text-gray-800">Order Details</h2>
+      </div>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="p-6 space-y-4 pb-24 relative">
+
+      <!-- Buyer Info -->
+      <div class="space-y-3 text-sm text-gray-700" id="checkoutBuyerInfo"></div>
+
+<!-- Selected Variant & Color Summary -->
+<div class="text-sm text-gray-700 space-y-1 border-t pt-4">
+  <div id="checkoutSelectedVariant" class="hidden">
+    <strong>Selected Variant:</strong> <span></span>
+  </div>
+  <div id="checkoutSelectedColor" class="hidden">
+    <strong>Selected Color:</strong> <span></span>
+  </div>
+</div>
+
+      <!-- Extra Delivery Notes -->
+      <div>
+        <label for="buyerNotes" class="block text-sm font-medium text-gray-600">Extra Delivery Info <span class="text-red-500">*</span></label>
+        <textarea id="buyerNotes" class="w-full mt-1 border rounded p-2 text-sm text-gray-700" rows="3" placeholder="e.g. gate code, delivery instructions..." required></textarea>
+      </div>
+
+      <!-- Delivery Locations -->
+      <div id="checkoutDelivery" class="space-y-3 text-sm text-gray-800 border-t pt-4"></div>
+
+      <!-- Coupon Section in Checkout -->
+      <div class="border-t pt-4">
+        <h4 class="font-semibold text-gray-700 mb-2">🎫 Apply Coupon</h4>
+        <div class="flex gap-2">
+          <input type="text" id="checkoutCouponCode" placeholder="Enter coupon code" class="flex-1 border rounded px-3 py-2 text-sm" />
+          <button onclick="applyCheckoutCoupon()" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 text-sm">Apply</button>
+        </div>
+        <div id="checkoutCouponMessage" class="mt-2 text-sm"></div>
+      </div>
+
+      <!-- Pricing Summary -->
+      <div class="text-sm text-gray-800 space-y-1 border-t pt-4">
+        <p><strong>Subtotal:</strong> <span id="checkoutSubtotal">$0.00</span></p>
+        <p id="couponDiscountRow" class="text-green-600 hidden"><strong>Coupon Discount:</strong> -<span id="couponDiscount">$0.00</span></p>
+        <p><strong>Delivery Fee:</strong> <span id="deliveryFee">$0.00</span></p>
+        <p class="font-semibold text-lg mt-2 border-t pt-2">Total: <span id="totalPrice" class="text-indigo-700 font-bold">$0.00</span></p>
+      </div>
+
+      <!-- Confirm Order Button -->
+      <button id="placeOrderBtn" onclick="placeOrder()" class="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700">
+        🧾 Confirm Order
+      </button>
+
+    </div>
+  </div>
+</div>
+
+<!-- Gateway Selector Modal -->
+<div id="gatewayModal" class="fixed inset-0 bg-black bg-opacity-40 z-50 hidden items-center justify-center">
+  <div class="bg-white rounded-xl p-6 w-full max-w-sm mx-auto space-y-5 shadow-xl border border-indigo-100 animate-fade-in-up">
+
+    <!-- Title -->
+    <h2 class="text-2xl font-semibold text-indigo-700 text-center flex items-center justify-center gap-2">
+      <span>💳</span> Choose Payment Method
+    </h2>
+
+    <!-- Order Summary -->
+    <div class="bg-gray-50 p-4 rounded-lg">
+      <p class="text-sm text-gray-600 mb-1">Order Total:</p>
+      <p class="text-xl font-bold text-indigo-700" id="gatewayOrderTotal">$0.00</p>
+    </div>
+
+    <!-- 💳 Gateway Selection Buttons -->
+    <div id="gatewayOptions" class="space-y-3">
+      <!-- Injected buttons (PayPal, Stripe, etc) go here -->
+    </div>
+
+    <!-- 🔁 Dynamic Payment UI Area (PayPal, Square, etc) -->
+    <div id="gatewayPaymentContainer" class="hidden pt-4 border-t mt-2">
+      <!-- Example Containers -->
+      <div id="paypal-button-container" class="mt-4"></div>
+      <div id="square-container" class="mt-4"></div>
+      <div id="stripe-container" class="mt-4"></div>
+      <!-- You can dynamically target these inside JS -->
+    </div>
+
+    <!-- ❌ Cancel Button -->
+    <button onclick="hideGatewayPopup()" class="block mx-auto text-sm text-gray-400 hover:text-red-500 transition">
+      ✖ Cancel
+    </button>
+
+  </div>
+</div>
+
+<!-- Delivery Method Choice Modal -->
+<div id="deliveryMethodModal" class="fixed inset-0 bg-black bg-opacity-40 z-50 hidden items-center justify-center">
+  <div class="bg-white rounded-xl p-6 w-full max-w-sm mx-auto space-y-5 shadow-xl border border-indigo-100 animate-fade-in-up">
+    <!-- Title -->
+    <h2 class="text-xl font-semibold text-indigo-700 text-center">🚚 Choose Payment Method</h2>
+    
+    <!-- Description -->
+    <p class="text-sm text-gray-600 text-center">Select how you'd like to pay for your order.</p>
+    
+    <!-- Options -->
+    <div class="space-y-3">
+      <button 
+        id="methodDelivery" 
+        class="w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition"
+      >
+        <div class="font-semibold text-gray-800">Pay on Delivery</div>
+        <div class="text-xs text-gray-500">Pay cash when your order arrives</div>
+      </button>
+      
+      <button 
+        id="methodOnline" 
+        class="w-full text-left p-3 border border-gray-200 rounded-lg hover:bg-gray-50 transition"
+      >
+        <div class="font-semibold text-gray-800">Pay Online Now</div>
+        <div class="text-xs text-gray-500">Secure payment on the shop</div>
+      </button>
+    </div>
+    
+    <!-- Cancel Button -->
+    <button 
+      onclick="hideDeliveryMethodModal()" 
+      class="block mx-auto text-sm text-gray-400 hover:text-red-500 transition"
+    >
+      ✖ Cancel
+    </button>
+  </div>
+</div>
+
+</main>
+
+<script>
+const API = "http://10.2.0.2:3000";
+const params = new URLSearchParams(window.location.search);
+const productId = params.get("id");
+
+const productSection = document.getElementById("productSection");
+const relatedSection = document.getElementById("relatedSection");
+const relatedGrid = document.getElementById("relatedGrid");
+
+const storeSection = document.getElementById("storeSection");
+const storeGrid = document.getElementById("storeGrid");
+
+const breadcrumbProduct = document.getElementById("breadcrumbProduct");
+const shopHeader = document.getElementById("shopHeader");
+
+const user = JSON.parse(localStorage.getItem("user"));
+
+// Global variables for coupon tracking
+window.appliedCoupon = null;
+
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function resolveUrl(path) {
+  return path?.startsWith("http") ? path : `${API}${path}`;
+}
+
+function showAuthModal() {
+  alert("🔐 Please log in to continue.");
+}
+async function loadStoreProducts(seller, currentProductId, currencyCode = "USD") {
+  const storeGrid = document.getElementById("storeGrid");
+  const storeSection = document.getElementById("storeSection");
+  
+  if (!storeGrid || !storeSection) {
+    console.warn("Store section or grid elements missing in DOM");
+    return;
+  }
+
+  const currencySymbol = getCurrencySymbol(currencyCode);
+
+  try {
+    const res = await fetch(`${API}/find?collection=products&seller=${encodeURIComponent(seller)}`);
+    const allProducts = await res.json();
+
+    // Filter out current product and take up to 4 others
+    const storeProducts = allProducts
+      .filter(p => p.id !== currentProductId)
+      .slice(0, 4);
+
+    if (storeProducts.length > 0) {
+      let html = "";
+      storeProducts.forEach(p => {
+        const img = resolveUrl(p.image);
+        html += `
+          <a href="product-detail.html?id=${p.id}" class="bg-white shadow-sm hover:shadow-md rounded-lg p-3 transition-all duration-200 hover:scale-[1.02] block">
+            ${img ? `<div class="bg-gray-50 rounded overflow-hidden mb-2">
+              <img src="${img}" class="w-full max-h-56 mx-auto object-contain" />
+            </div>` : ""}
+            <h4 class="text-md font-semibold text-indigo-700 truncate">${p.name}</h4>
+            <p class="text-gray-800 font-bold mt-1">${currencySymbol}${parseFloat(p.price).toFixed(2)}</p>
+          </a>
+        `;
+      });
+      storeGrid.innerHTML = html;
+      storeSection.style.display = "block"; // Show the section
+    } else {
+      storeSection.style.display = "none"; // Hide if no products
+    }
+  } catch (err) {
+    console.error("❌ Failed to load store products:", err);
+    storeSection.style.display = "none";
+  }
+}
+async function loadProduct() {
+  if (!productId) {
+    productSection.innerHTML = "<p class='text-red-500'>❌ No product ID provided.</p>";
+    return;
+  }
+
+  try {
+    const res = await fetch(`${API}/find?collection=products&id=${productId}`);
+    const [product] = await res.json();
+    if (!product) {
+      productSection.innerHTML = "<p class='text-red-500'>❌ Product not found.</p>";
+      return;
+    }
+
+    const shopRes = await fetch(`${API}/find?collection=users&username=${encodeURIComponent(product.seller)}`);
+    const [seller] = await shopRes.json();
+
+    await fetch("http://10.2.0.2:3000/api/track-view", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ productId: product.id, seller: product.seller })
+    });
+
+    product.shopSettings = seller?.shopSettings || {};
+    product.sellerLogo = seller?.customTheme?.logo || "https://placehold.co/40x40";
+    product.sellerSettings = product.shopSettings;
+
+    const currencyCode = product.shopSettings.storeCurrency || "USD";
+    const currencySymbol = getCurrencySymbol(currencyCode);
+
+    window.currentProduct = product;
+
+    document.getElementById("visitStoreBtn").href = `shop.html?seller=${encodeURIComponent(product.seller)}`;
+    document.getElementById("breadcrumbProduct").textContent = product.name;
+    document.getElementById("breadcrumbShopLink").href = `products.html?seller=${encodeURIComponent(product.seller)}`;
+    document.getElementById("breadcrumbShopLink").textContent = "All Products";
+
+    const shopName = seller?.customTheme?.title || seller?.username || "Shop";
+    shopHeader.innerHTML = `
+      <a href="shop.html?seller=${encodeURIComponent(product.seller)}" class="flex items-center gap-2 hover:underline">
+        <img src="${product.sellerLogo}" alt="${shopName}" class="w-8 h-8 rounded-full border object-cover" />
+        <span class="font-semibold text-indigo-700">${shopName}</span>
+      </a>
+    `;
+
+    const images = [product.image, ...(product.gallery || [])].filter(Boolean).map(resolveUrl);
+    window.productImages = images;
+    window.currentImageIndex = 0;
+
+    const variantHTML = (product.variants || []).map((v, i) => `
+      <label class="block mb-1">
+        <input type="radio" name="productVariant" value="${i}" class="mr-2" />
+        ${v.name} (+${currencySymbol}${(v.price || product.price).toFixed(2)})
+      </label>
+    `).join("");
+
+    const colorHTML = (product.colorVariants || []).map((c, i) => `
+      <label class="block mb-1">
+        <input type="radio" name="productColor" value="${i}" class="mr-2" />
+        <span class="inline-flex items-center gap-1">
+          <div class="w-4 h-4 rounded-full border" style="background:${c.name}"></div>
+          ${capitalize(c.name)} (+${currencySymbol}${(c.price || 0).toFixed(2)})
+        </span>
+      </label>
+    `).join("");
+
+    const thumbnails = images.map((src, i) => `
+      <img src="${src}" class="w-16 h-16 object-cover rounded border cursor-pointer ${i === 0 ? 'ring-2 ring-indigo-500' : ''}" onclick="switchImage(${i})" />
+    `).join("");
+
+    const deliveryRegions = product.shopSettings.deliveryRegions || [];
+    const countryFlags = [...new Set(deliveryRegions.map(r => r.country))].map(c => `
+      <span class="inline-flex items-center gap-1 text-sm bg-gray-100 px-2 py-1 rounded">
+        <img src="https://flagcdn.com/16x12/${c.toLowerCase()}.png" class="inline w-4 h-3 border rounded" />
+        <span>${c}</span>
+      </span>
+    `).join(" ") || "<span class='text-sm text-gray-500'>No delivery regions available.</span>";
+
+    const paymentSystems = product.shopSettings.paymentSystems || [];
+    const gatewayIcons = {
+      paypal: "https://www.paypalobjects.com/webstatic/icon/pp258.png",
+      stripe: "https://img.icons8.com/color/48/stripe.png",
+      paystack: "https://upload.wikimedia.org/wikipedia/commons/2/20/Paystack_Logo.png",
+      flutterwave: "https://flutterwave.com/favicon.png",
+      razorpay: "https://razorpay.com/favicon.png",
+      square: "https://squareup.com/favicon.ico",
+      shopright: "https://placehold.co/24x24?text=S",
+      iyonicpay: "https://i.imgur.com/YAPRefp.png",
+      khalti: "https://seeklogo.com/images/K/khalti-logo-962A1A4174-seeklogo.com.png",
+      instamojo: "https://assets.instamojo.com/logo/full-logo-dark.png",
+      wise: "https://wise.com/favicon.ico",
+      revolut: "https://www.revolut.com/favicon.ico",
+      iyzipay: "https://www.iyzico.com/favicon.ico"
+    };
+    const paymentHTML = paymentSystems.map(p => {
+      console.log("Processing payment system:", p); // Debug log
+      return `
+        <img src="${gatewayIcons[p] || 'https://placehold.co/24x24'}" alt="${p}" title="${capitalize(p)}"
+          class="inline w-6 h-6 rounded border bg-white p-1" />
+      `;
+    }).join(" ") || "<span class='text-sm text-gray-500'>No payment gateways available.</span>";
+
+    productSection.innerHTML = `
+      <div class="space-y-4">
+        <div class="relative carousel">
+          <img id="mainImage" src="${images[0]}" class="w-full rounded-lg shadow object-contain max-h-[450px]" />
+          <button onclick="navigateImage(-1)" class="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow hover:bg-indigo-100">&#8592;</button>
+          <button onclick="navigateImage(1)" class="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow hover:bg-indigo-100">&#8594;</button>
+        </div>
+        <div class="flex gap-2 overflow-x-auto">${thumbnails}</div>
+      </div>
+
+      <div class="space-y-4">
+        <h2 class="text-3xl font-bold text-indigo-700">${product.name}</h2>
+        <p class="text-gray-600">${product.description || "No description available."}</p>
+        <p class="text-2xl font-bold text-gray-800">${currencySymbol}${product.price.toFixed(2)}</p>
+
+        <div class="flex flex-wrap gap-2 mt-3">
+          ${product.category ? `<span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs">${capitalize(product.category)}</span>` : ""}
+          ${(product.tags || []).map(t => `<span class="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs">#${capitalize(t)}</span>`).join("")}
+        </div>
+
+        ${variantHTML ? `
+          <div class="mt-4">
+            <div class="flex items-center justify-between mb-2">
+              <h4 class="font-semibold text-gray-700">Available Sizes/Variants</h4>
+              <button onclick="showSizeGuide()" class="text-sm text-blue-600 hover:underline">📏 Size Guide</button>
+            </div>
+            ${variantHTML}
+          </div>` : ""}
+
+        ${colorHTML ? `
+          <div class="mt-4">
+            <h4 class="font-semibold text-gray-700 mb-2">Available Colors</h4>
+            ${colorHTML}
+          </div>` : ""}
+
+        <div class="text-sm text-gray-600 mt-2">
+          <strong>Shipping Info:</strong> ${product.shipping || "Ships within 2-3 days"}
+        </div>
+
+        <!-- Payment Method Information -->
+        <div class="text-sm text-gray-600 mt-2">
+          <strong>Payment Method:</strong>
+          <span class="inline-flex items-center gap-1">
+            ${getPaymentMethodDisplay(product.shopSettings?.paymentMethod || "delivery")}
+          </span>
+        </div>
+
+        <div class="mt-6 space-y-2">
+          <div>
+            <h4 class="font-semibold text-gray-700 mb-1">🌍 Delivery Regions</h4>
+            <div class="flex flex-wrap gap-2">${countryFlags}</div>
+          </div>
+          <div>
+            <h4 class="font-semibold text-gray-700 mb-1">💳 Payment Gateways</h4>
+            <div class="flex flex-wrap gap-3 items-center">${paymentHTML}</div>
+          </div>
+        </div>
+
+        <!-- Coupon Section -->
+        <div class="mt-6">
+          <h4 class="font-semibold text-gray-700 mb-2">🎫 Apply Coupon</h4>
+          <div class="flex gap-2">
+            <input type="text" id="couponCode" placeholder="Enter coupon code" class="flex-1 border rounded px-3 py-2 text-sm" />
+            <button onclick="applyCoupon()" class="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 text-sm">Apply</button>
+          </div>
+          <div id="couponMessage" class="mt-2 text-sm"></div>
+        </div>
+
+        <div class="flex flex-wrap gap-4 mt-6 items-center">
+          <button onclick="handleBuy('${product.id}')" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Buy Now</button>
+          <button onclick="handleCart('${product.id}')" class="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300">Add to Cart</button>
+          <button onclick="handleWishlist('${product.id}')" class="bg-pink-100 text-pink-700 px-4 py-2 rounded hover:bg-pink-200">💖 Wishlist</button>
+          <button onclick="navigator.clipboard.writeText(location.href);this.textContent='✔ Copied!';setTimeout(()=>this.textContent='🔗 Share Product',2000)" class="bg-blue-100 text-blue-700 px-4 py-2 rounded hover:bg-blue-200">🔗 Share Product</button>
+        </div>
+      </div>
+    `;
+
+    // ✅ Pass correct currencyCode here
+    loadRelated(product, currencyCode);
+    loadStoreProducts(product.seller, product.id, currencyCode);
+
+    renderCartDropdown();
+
+  } catch (err) {
+    console.error(err);
+    productSection.innerHTML = "<p class='text-red-500'>⚠️ Error loading product.</p>";
+  }
+}
+
+function getCurrencySymbol(code) {
+  const map = {
+    USD: "$", EUR: "€", GBP: "£", NGN: "₦", INR: "₹", KES: "KSh", ZAR: "R"
+  };
+  return map[code] || code;
+}
+
+function switchImage(index) {
+  const main = document.getElementById("mainImage");
+  if (!window.productImages || index < 0 || index >= window.productImages.length) return;
+  main.src = window.productImages[index];
+  window.currentImageIndex = index;
+  document.querySelectorAll("#productSection .carousel + div img").forEach((thumb, i) => {
+    thumb.classList.toggle("ring-2", i === index);
+    thumb.classList.toggle("ring-indigo-500", i === index);
+  });
+}
+
+function navigateImage(step) {
+  const nextIndex = (window.currentImageIndex + step + window.productImages.length) % window.productImages.length;
+  switchImage(nextIndex);
+}
+
+loadProduct();
+
+function getPaymentMethodDisplay(paymentMethod) {
+  switch(paymentMethod) {
+    case "delivery":
+      return "🚚 Pay on Delivery";
+    case "online":
+      return "💳 Pay on Shop";
+    case "both":
+      return "🔄 Pay on Delivery or Online";
+    default:
+      return "🚚 Pay on Delivery";
+  }
+}
+
+async function loadRelated(product, currencyCode = "USD") {
+  if (!product?.category || !product?.seller) return;
+
+  const relatedGrid = document.getElementById("relatedGrid");
+  const relatedSection = document.getElementById("relatedSection");
+  if (!relatedGrid || !relatedSection) {
+    console.warn("Related section or grid elements missing in DOM");
+    return;
+  }
+
+  const currencySymbol = getCurrencySymbol(currencyCode);
+
+  try {
+    const res = await fetch(`${API}/find?collection=products&seller=${encodeURIComponent(product.seller)}`);
+    const all = await res.json();
+
+    const filtered = all
+      .filter(p => p.id !== product.id && p.category?.toLowerCase() === product.category.toLowerCase())
+      .slice(0, 4);
+
+    if (filtered.length > 0) {
+      let html = "";
+
+      filtered.forEach(p => {
+        const img = resolveUrl(p.image);
+        html += `
+          <a href="product-detail.html?id=${p.id}" class="bg-white shadow-sm hover:shadow-md rounded-lg p-3 transition-all duration-200 hover:scale-[1.02] block">
+            ${img ? `<div class="bg-gray-50 rounded overflow-hidden mb-2">
+              <img src="${img}" class="w-full max-h-56 mx-auto object-contain" />
+            </div>` : ""}
+            <h4 class="text-md font-semibold text-indigo-700 truncate">${p.name}</h4>
+            <p class="text-gray-800 font-bold mt-1">${currencySymbol}${parseFloat(p.price).toFixed(2)}</p>
+          </a>
+        `;
+      });
+
+      storeSection.style.display = "block";
+    }
+  } catch (err) {
+    console.error("❌ Store products failed", err);
+  }
+}
+
+
+
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+function resolveImage(src) {
+  if (!src) return "https://placehold.co/64x64";
+  if (src.startsWith("http://") || src.startsWith("https://")) return src;
+  return resolveUrl(src); // keep this if you're using relative paths
+}
+
+function saveCart() {
+  localStorage.setItem("cart", JSON.stringify(cart));
+  renderCartDropdown();
+}
+
+function updateCartCount() {
+  const count = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
+  document.getElementById("cartCount").textContent = count;
+}
+
+function toggleCartDropdown() {
+  document.getElementById("cartDropdown").classList.toggle("hidden");
+}
+
+function renderCartDropdown() {
+  const container = document.getElementById("cartItems");
+  container.innerHTML = "";
+
+  if (!cart.length) {
+    container.innerHTML = `<p class="text-gray-500 italic">🛒 Cart is empty.</p>`;
+    updateCartCount();
+    document.getElementById("cartTotal").innerText = "$0.00";
+    return;
+  }
+
+  let total = 0;
+
+  cart.forEach((item, index) => {
+    let basePrice = item.price || 0;
+    let variantLabel = "";
+    let colorLabel = "";
+    let itemTotal = 0;
+
+    if (item.variant?.price) {
+      basePrice = item.variant.price;
+      variantLabel = `<div class="text-xs text-gray-500">Variant: ${item.variant.name}</div>`;
+    }
+
+    if (item.color?.price) {
+      basePrice += item.color.price;
+      colorLabel = `<div class="text-xs text-gray-500">Color: ${item.color.name}</div>`;
+    }
+
+    itemTotal = basePrice * item.qty;
+    total += itemTotal;
+
+    const currencyCode = item.shopSettings?.storeCurrency || "USD";
+    const currencySymbol = getCurrencySymbol(currencyCode);
+
+    container.innerHTML += `
+      <div class="flex items-start gap-3 mb-4">
+        <img src="${resolveImage(item.image)}" class="w-16 h-16 object-cover rounded border" />
+        <div class="flex-1">
+          <h4 class="font-semibold">${item.name}</h4>
+          ${variantLabel}
+          ${colorLabel}
+          <p class="text-sm text-gray-500">${currencySymbol}${basePrice.toFixed(2)} × ${item.qty}</p>
+          <div class="flex gap-2 mt-2 items-center">
+            <button onclick="changeQty(${index}, -1)" class="px-2 py-1 border rounded text-sm">−</button>
+            <button onclick="changeQty(${index}, 1)" class="px-2 py-1 border rounded text-sm">+</button>
+            <button onclick="removeFromCart(${index})" class="px-2 py-1 text-red-500 hover:underline text-sm ml-auto">🗑 Remove</button>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  // Use first item's currency for total display
+  const firstCurrencyCode = cart[0]?.shopSettings?.storeCurrency || "USD";
+  const symbol = getCurrencySymbol(firstCurrencyCode);
+
+  updateCartCount();
+  document.getElementById("cartTotal").innerText = `${symbol}${total.toFixed(2)}`;
+}
+
+function changeQty(index, delta) {
+  if (!cart[index]) return;
+  cart[index].qty += delta;
+  if (cart[index].qty <= 0) cart.splice(index, 1);
+  saveCart();
+}
+
+function removeFromCart(index) {
+  if (!cart[index]) return;
+  cart.splice(index, 1);
+  saveCart();
+}
+
+function proceedToCheckout(index = 0) {
+  if (!cart.length) return alert("🛒 Your cart is empty.");
+
+  const item = cart[index];
+  if (!item) return alert("❌ Invalid cart item selected.");
+
+  const product = {
+    id: item.id,
+    name: item.name,
+    image: item.image,
+    price: item.price,
+    qty: item.qty,
+    variant: item.variant || null,
+    color: item.color || null,
+    variants: item.variants || [],
+    colorVariants: item.colorVariants || [],
+    sellerLogo: item.sellerLogo || "",
+    shopSettings: item.shopSettings || {}
+  };
+
+  toggleCartDropdown();
+  showCheckoutModal(product, item.qty);
+}
+
+function handleCart(productId) {
+  const product = window.currentProduct;
+  if (!product) return alert("❌ Product not loaded.");
+
+  const selectedVariant = document.querySelector('input[name="productVariant"]:checked');
+  const selectedColor = document.querySelector('input[name="productColor"]:checked');
+
+  if (product.variants?.length && !selectedVariant)
+    return alert("⚠️ Please select a size or variant first.");
+  if (product.colorVariants?.length && !selectedColor)
+    return alert("⚠️ Please select a color first.");
+
+  const variant = selectedVariant ? product.variants[selectedVariant.value] : null;
+  const color = selectedColor ? product.colorVariants[selectedColor.value] : null;
+
+  const cartItem = {
+    id: product.id,
+    name: product.name,
+    image: product.image,
+    price: product.price,
+    variant,
+    color,
+    qty: 1,
+    seller: product.seller,
+    sellerLogo: product.sellerLogo || "",
+    shopSettings: product.shopSettings || {},      // ✅ Include shop settings with currency
+    buyer: window.currentUser?.email || "anonymous",
+    createdAt: Date.now()
+  };
+
+  cart.push(cartItem);
+  saveCart();
+
+  fetch("http://10.2.0.2:3000/add-cart", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(cartItem)
+  })
+    .then(res => res.json())
+    .then(data => {
+      alert("✅ Added to cart!");
+    })
+    .catch(err => {
+      console.error("❌ Cart saving failed", err);
+      alert("❌ Failed to add to cart.");
+    });
+}
+
+async function handleWishlist(productId) {
+  if (!user?.email) return showLoginModal();
+
+  try {
+    const res = await fetch(`${API}/add-wishlist`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        buyer: user.email,
+        productId
+      })
+    });
+
+    if (!res.ok) {
+      const err = await res.json();
+      alert("❌ Failed to add to wishlist: " + (err.message || "Unknown error"));
+      return;
+    }
+
+    alert("💖 Added to wishlist!");
+  } catch (e) {
+    console.error("Wishlist Error:", e);
+    alert("❌ Network error while adding to wishlist.");
+  }
+}
+
+
+function showLoginModal() {
+  const modal = document.createElement("div");
+  modal.className = "fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50";
+  modal.innerHTML = `
+    <div class="bg-white rounded-lg shadow-lg p-6 w-96 relative">
+      <button onclick="this.parentElement.parentElement.remove()" class="absolute top-2 right-2 text-gray-500 hover:text-red-500">✖</button>
+      <h2 class="text-lg font-semibold mb-4 text-indigo-700">🔐 You need to log in</h2>
+      <p class="mb-4 text-sm text-gray-600">To use the wishlist, please log in or create an account.</p>
+      <div class="flex justify-between gap-4">
+        <a href="login.html" class="w-full bg-indigo-600 text-white py-2 rounded text-center hover:bg-indigo-700">Log In</a>
+        <a href="signup.html" class="w-full bg-gray-200 text-gray-800 py-2 rounded text-center hover:bg-gray-300">Sign Up</a>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+function toggleReturnMenu() {
+  const menu = document.getElementById("returnMenu");
+  const isVisible = menu.classList.contains("opacity-100");
+
+  if (isVisible) {
+    menu.classList.remove("opacity-100", "translate-x-0", "pointer-events-auto");
+    menu.classList.add("opacity-0", "-translate-x-8", "pointer-events-none");
+  } else {
+    menu.classList.remove("opacity-0", "-translate-x-8", "pointer-events-none");
+    menu.classList.add("opacity-100", "translate-x-0", "pointer-events-auto");
+  }
+}
+function showSizeGuide() {
+  const modal = document.getElementById("sizeGuideModal");
+  const content = document.getElementById("sizeGuideContent");
+
+  const tags = (window.currentProduct?.tags || []).map(t => t.toLowerCase());
+  const category = (window.currentProduct?.category || "").toLowerCase();
+
+  const topsTags = ['dress', 'tops', 'sweaters'];
+  const bottomsTags = ['skirts', 'bottoms', 'leggings', 'pants'];
+
+  let chart = "Size guide not available for this product.";
+
+  if (topsTags.some(t => tags.includes(t))) {
+    chart = `Tops & Dresses Size Guide
+
+in.      cm
+Size    Bust     Waist    Hips     US/CAN
+XS      32-33    24-25    35-36    0/1
+S       34-35    26-27    37-38    3/5
+M       36-37    28-29    39-40    7/9
+L       38.5-40  30.5-32  41.5-43  11/13
+XL      41 1/2   33 1/2   44 1/2   15
+1X      44-45.5  37-38.5  47-48.5  14/16
+2X      47-49    40-42    50-52    18/20
+3X      51-53    44-46    54-56    22/24`;
+  } else if (bottomsTags.some(t => tags.includes(t))) {
+    chart = `Jeans & Bottoms Size Guide
+
+in.      cm
+Size    Waist    Hips     US/CAN
+XS      24-25    35-36    0/1
+S       26-27    37-38    3/5
+M       28-29    39-40    7/9
+L       30.5-32  41.5-43  11/13
+XL      33 1/2   44 1/2   15
+1X      37-38.5  47-48.5  14/16
+2X      40-42    50-52    18/20
+3X      44-46    54-56    22/24`;
+  } else if (category.includes("shoes")) {
+    chart = `Shoes Size Guide
+
+Size    US/CAN   UK   EU       AUS
+5       5        3    35-36    5
+5.5     5.5      3.5  36       5.5
+6       6        4    36-37    6
+6.5     6.5      4.5  37       6.5
+7       7        5    37-38    7
+7.5     7.5      5.5  38       7.5
+8       8        6    38-39    8
+8.5     8.5      6.5  39       8.5
+9       9        7    39-40    9
+10      10       7.5  40-41    10
+11      11       8    41-42    11`;
+  }
+
+  content.textContent = chart;
+  modal.classList.remove("hidden");
+  setTimeout(() => {
+    modal.firstElementChild.classList.remove("scale-95", "opacity-0");
+    modal.firstElementChild.classList.add("scale-100", "opacity-100");
+  }, 10);
+}
+
+function hideSizeGuide() {
+  const modal = document.getElementById("sizeGuideModal");
+  modal.firstElementChild.classList.remove("scale-100", "opacity-100");
+  modal.firstElementChild.classList.add("scale-95", "opacity-0");
+  setTimeout(() => modal.classList.add("hidden"), 300);
+}
+
+
+function handleBuy(productId) {
+  if (!user) return showLoginModal();
+
+  const product = window.currentProduct;
+  if (!product) return alert("❌ Product not loaded.");
+
+  const selectedVariant = document.querySelector('input[name="productVariant"]:checked');
+  const selectedColor = document.querySelector('input[name="productColor"]:checked');
+
+  if (product.variants?.length && !selectedVariant)
+    return alert("⚠️ Please select a size or variant first.");
+  if (product.colorVariants?.length && !selectedColor)
+    return alert("⚠️ Please select a color first.");
+
+  const shopLogo = shopHeader.querySelector("img")?.src || "";
+  const shopName = shopHeader.querySelector("span")?.textContent || "Shop";
+
+  showCheckoutModal({
+    ...product,
+    selectedVariantIndex: selectedVariant?.value,
+    selectedColorIndex: selectedColor?.value,
+    sellerLogo: shopLogo,
+    sellerName: shopName,
+    shopSettings: product.shopSettings || product.sellerSettings || {}
+  });
+}
+
+function showCheckoutModal(product, qty = 1) {
+  if (!user) return showLoginModal();
+
+  const variantInput = document.querySelector('input[name="productVariant"]:checked');
+  const colorInput = document.querySelector('input[name="productColor"]:checked');
+
+  if (product.variants?.length && !variantInput)
+    return alert("Please select a product variant before proceeding.");
+  if (product.colorVariants?.length && !colorInput)
+    return alert("Please select a color before proceeding.");
+
+  const selectedVariant = product.variants?.[variantInput?.value] || null;
+  const selectedColor = product.colorVariants?.[colorInput?.value] || null;
+
+  window.currentProduct = product;
+  window.currentCartQty = qty;
+  window.selectedVariant = selectedVariant;
+  window.selectedColor = selectedColor;
+  
+  // Clear any applied coupon when opening checkout
+  window.appliedCoupon = null;
+
+  const modal = document.getElementById("checkoutModal");
+  modal.classList.remove("hidden");
+  setTimeout(() => modal.querySelector("div").classList.remove("translate-x-full"), 10);
+
+  document.getElementById("checkoutSellerLogo").src = product.sellerLogo || "";
+
+  const buyerName = user.username || user.name || "";
+  const buyerFields = ['Name', 'Email', 'Phone', 'Address'].map(field => {
+    const id = `input${field}`;
+    const type = field === 'Email' ? 'email' : field === 'Phone' ? 'tel' : 'text';
+    const value = field === 'Name' ? buyerName : user[field.toLowerCase()] || '';
+    return `
+      <label class="block">
+        <span class="text-sm font-medium text-gray-700">${field} <span class="text-red-500">*</span></span>
+        <input type="${type}" id="${id}" class="w-full mt-1 border rounded px-3 py-2 text-sm" value="${value}" required />
+      </label>
+    `;
+  }).join("");
+
+  document.getElementById("checkoutBuyerInfo").innerHTML = `
+    <p class="text-sm text-gray-700 font-medium mb-2">🛒 Quantity: <strong>${qty}</strong></p>
+    ${buyerFields}
+  `;
+
+  const vBox = document.getElementById("checkoutSelectedVariant");
+  const cBox = document.getElementById("checkoutSelectedColor");
+
+  if (selectedVariant) {
+    vBox.querySelector("span").textContent = selectedVariant.name;
+    vBox.classList.remove("hidden");
+  } else {
+    vBox.classList.add("hidden");
+  }
+
+  if (selectedColor) {
+    cBox.querySelector("span").textContent = capitalize(selectedColor.name);
+    cBox.classList.remove("hidden");
+  } else {
+    cBox.classList.add("hidden");
+  }
+
+  const dBox = document.getElementById("checkoutDelivery");
+  dBox.innerHTML = "";
+
+  const deliveryRegions = product.shopSettings?.deliveryRegions || [];
+  const currencySymbol = getCurrencySymbol(product.shopSettings?.storeCurrency || "USD");
+
+  if (!deliveryRegions.length) {
+    dBox.innerHTML = `<p class="text-sm text-gray-500 italic">This shop has no delivery regions defined.</p>`;
+  } else {
+    const grouped = deliveryRegions.reduce((acc, r) => {
+      acc[r.country] = acc[r.country] || [];
+      acc[r.country].push(r);
+      return acc;
+    }, {});
+
+    let deliveryHTML = `<label class="block font-semibold text-gray-700 mb-1">📍 Select Delivery Location</label><div class="space-y-2">`;
+    for (const [country, regions] of Object.entries(grouped)) {
+      deliveryHTML += `<div class="border border-gray-200 rounded p-2"><div class="text-sm font-semibold text-indigo-700 mb-1">${country}</div>`;
+      regions.forEach(r => {
+        deliveryHTML += `
+          <label class="block ml-2">
+            <input type="radio" name="deliveryLocation" data-country="${country}" data-state="${r.state}" value="${r.fee}" class="mr-2" onchange="updateCheckoutTotal()" />
+            ${r.state} - ${currencySymbol}${parseFloat(r.fee).toFixed(2)}
+          </label>
+        `;
+        r.subcounties?.forEach(s => {
+          deliveryHTML += `
+            <label class="block ml-6">
+              <input type="radio" name="deliveryLocation" data-country="${country}" data-state="${r.state}" data-subcounty="${s.subcounty}" value="${s.fee}" class="mr-2" onchange="updateCheckoutTotal()" />
+              ${s.subcounty} - ${currencySymbol}${parseFloat(s.fee).toFixed(2)}
+            </label>
+          `;
+        });
+      });
+      deliveryHTML += `</div>`;
+    }
+    deliveryHTML += `</div>`;
+    dBox.innerHTML = deliveryHTML;
+  }
+
+  // Clear coupon fields
+  document.getElementById("checkoutCouponCode").value = "";
+  document.getElementById("checkoutCouponMessage").innerHTML = "";
+  document.getElementById("couponDiscountRow").classList.add("hidden");
+
+  // Reset price displays with correct symbol
+  document.getElementById("checkoutSubtotal").textContent = `${currencySymbol}0.00`;
+  document.getElementById("couponDiscount").textContent = `${currencySymbol}0.00`;
+  document.getElementById("deliveryFee").textContent = `${currencySymbol}0.00`;
+  document.getElementById("totalPrice").textContent = `${currencySymbol}0.00`;
+
+  updateCheckoutTotal();
+}
+
+function updateCheckoutTotal() {
+  const product = window.currentProduct;
+  if (!product) return;
+  
+  const qty = parseInt(window.currentCartQty || 1);
+  const currencySymbol = getCurrencySymbol(product.shopSettings?.storeCurrency || "USD");
+
+  let unitPrice = product.price;
+  const selectedVariant = window.selectedVariant;
+  const selectedColor = window.selectedColor;
+
+  if (selectedVariant?.price) unitPrice = selectedVariant.price;
+  if (selectedColor?.price) unitPrice += selectedColor.price;
+
+  const deliveryInput = document.querySelector('input[name="deliveryLocation"]:checked');
+  const deliveryFee = deliveryInput ? parseFloat(deliveryInput.value || "0") : 0;
+
+  let subtotal = unitPrice * qty;
+  let discount = 0;
+  
+  // Apply coupon discount if available
+  if (window.appliedCoupon) {
+    discount = window.appliedCoupon.discountAmount;
+    subtotal = Math.max(0, subtotal - discount); // Don't let subtotal go negative
+  }
+  
+  const total = subtotal + deliveryFee;
+
+  // Update display
+  const originalSubtotal = unitPrice * qty;
+  document.getElementById("checkoutSubtotal").textContent = `${currencySymbol}${originalSubtotal.toFixed(2)}`;
+  document.getElementById("deliveryFee").textContent = `${currencySymbol}${deliveryFee.toFixed(2)}`;
+  document.getElementById("totalPrice").textContent = `${currencySymbol}${total.toFixed(2)}`;
+  
+  // Show/hide coupon discount row
+  if (discount > 0) {
+    document.getElementById("couponDiscount").textContent = `${currencySymbol}${discount.toFixed(2)}`;
+    document.getElementById("couponDiscountRow").classList.remove("hidden");
+  } else {
+    document.getElementById("couponDiscountRow").classList.add("hidden");
+  }
+}
+
+function hideCheckoutModal() {
+  const modal = document.getElementById("checkoutModal");
+  modal.querySelector("div").classList.add("translate-x-full");
+  setTimeout(() => modal.classList.add("hidden"), 300);
+  
+  // Clear applied coupon when closing
+  window.appliedCoupon = null;
+}
+
+// Coupon functionality for checkout modal
+async function applyCheckoutCoupon() {
+  const couponCode = document.getElementById("checkoutCouponCode").value.trim().toUpperCase();
+  const messageEl = document.getElementById("checkoutCouponMessage");
+  
+  if (!couponCode) {
+    messageEl.innerHTML = '<span class="text-red-500">Please enter a coupon code.</span>';
+    return;
+  }
+  
+  try {
+    const product = window.currentProduct;
+    if (!product) {
+      messageEl.innerHTML = '<span class="text-red-500">Product not loaded.</span>';
+      return;
+    }
+    
+    // Get current price calculation
+    let unitPrice = product.price;
+    const selectedVariant = window.selectedVariant;
+    const selectedColor = window.selectedColor;
+    
+    if (selectedVariant?.price) unitPrice = selectedVariant.price;
+    if (selectedColor?.price) unitPrice += selectedColor.price;
+    
+    const qty = parseInt(window.currentCartQty || 1);
+    const subtotal = unitPrice * qty;
+    
+    // Validate coupon with server
+    const res = await fetch(`${API}/api/validate-coupon`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        code: couponCode,
+        seller: product.seller,
+        orderTotal: subtotal,
+        productIds: [product.id]
+      })
+    });
+    
+    const data = await res.json();
+    
+    if (!data.valid) {
+      messageEl.innerHTML = `<span class="text-red-500">${data.error || "Invalid coupon code."}</span>`;
+      window.appliedCoupon = null;
+      updateCheckoutTotal();
+      return;
+    }
+    
+    // Apply coupon
+    const discountAmount = data.discountAmount;
+    
+    messageEl.innerHTML = `
+      <span class="text-green-600">
+        ✅ Coupon applied! You save ${getCurrencySymbol(product.shopSettings?.storeCurrency || "USD")}${discountAmount.toFixed(2)}
+      </span>
+    `;
+    
+    // Store coupon data
+    window.appliedCoupon = {
+      id: data.coupon.id,
+      code: data.coupon.code,
+      discountAmount: discountAmount
+    };
+    
+    updateCheckoutTotal();
+    
+  } catch (err) {
+    console.error("Coupon error:", err);
+    messageEl.innerHTML = '<span class="text-red-500">Error applying coupon. Please try again.</span>';
+    window.appliedCoupon = null;
+    updateCheckoutTotal();
+  }
+}
+
+async function placeOrder() {
+  const product = window.currentProduct;
+  const shopSettings = product.shopSettings || {};
+  const paymentMethodConfig = shopSettings.paymentMethod || "delivery"; // "delivery", "online", or "both"
+  const gateways = shopSettings.paymentSystems || [];
+  const gatewayConfigs = shopSettings.gatewayConfigs || {};
+  const storeCurrency = shopSettings.storeCurrency || "USD";
+  const currencySymbol = getCurrencySymbol(storeCurrency);
+
+  // 🧍 Buyer Info
+  const name = document.getElementById("inputName")?.value.trim();
+  const email = document.getElementById("inputEmail")?.value.trim();
+  const phone = document.getElementById("inputPhone")?.value.trim();
+  const address = document.getElementById("inputAddress")?.value.trim();
+  const notes = document.getElementById("buyerNotes")?.value.trim();
+  const delivery = document.querySelector('input[name="deliveryLocation"]:checked');
+
+  if (!name || !email || !phone || !address || !notes) {
+    alert("⚠️ Please fill in all required fields.");
+    return;
+  }
+  if (!delivery) {
+    alert("Please select a delivery location.");
+    return;
+  }
+
+  const qty = parseInt(window.currentCartQty || 1);
+  if (isNaN(qty) || qty <= 0) {
+    alert("Invalid quantity.");
+    return;
+  }
+
+  const variant = window.selectedVariant || null;
+  const color = window.selectedColor || null;
+  let unitPrice = product.price;
+  if (variant?.price) unitPrice = variant.price;
+  if (color?.price) unitPrice += color.price;
+  let subtotal = unitPrice * qty;
+  const deliveryFee = parseFloat(delivery.value || "0");
+
+  // Apply coupon discount
+  let discount = 0;
+  if (window.appliedCoupon) {
+    discount = window.appliedCoupon.discountAmount;
+    subtotal = Math.max(0, subtotal - discount);
+  }
+  const total = subtotal + deliveryFee;
+
+  const orderData = {
+    orderId: "ORD-" + Date.now(),
+    productId: product.id,
+    productName: product.name,
+    productImage: product.image || product.images?.[0] || "",
+    quantity: qty,
+    buyer: { name, email, phone, address, notes },
+    seller: product.seller,
+    delivery: {
+      country: delivery.dataset.country,
+      state: delivery.dataset.state,
+      subcounty: delivery.dataset.subcounty || null,
+      fee: deliveryFee
+    },
+    variant,
+    color,
+    coupon: window.appliedCoupon || null,
+    discount: discount,
+    subtotal: (unitPrice * qty).toFixed(2),
+    total: total.toFixed(2),
+    currency: storeCurrency,
+    currencySymbol,
+    status: "pending",
+    createdAt: new Date().toISOString()
+  };
+
+  const btn = document.getElementById("placeOrderBtn");
+  btn.disabled = true;
+  btn.textContent = "Processing...";
+
+  try {
+    // Handle payment method selection
+    const proceedWithMethod = async (selectedMethod) => {
+      orderData.paymentMethod = selectedMethod;
+
+      if (selectedMethod === "delivery") {
+        const res = await fetch(`${API}/place-order`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(orderData)
+        });
+        if (!res.ok) throw new Error("Failed to save order.");
+        await res.json();
+        alert("✅ Order placed successfully! You will pay on delivery.");
+        cart = cart.filter(item => item.id !== product.id);
+        saveCart();
+        hideCheckoutModal();
+      } else if (selectedMethod === "online") {
+        if (!gateways.length) {
+          alert("❌ No online payment gateways configured.");
+          return;
+        }
+        hideCheckoutModal();
+        console.log("Gateways being passed to showGatewayPopup:", gateways); // Debug log
+        showGatewayPopup(gateways, total, orderData, gatewayConfigs, email, product, storeCurrency);
+      }
+    };
+
+    // Decision logic
+    if (paymentMethodConfig === "both") {
+      // Show choice modal
+      showDeliveryMethodChoice(proceedWithMethod);
+    } else {
+      // Proceed directly
+      await proceedWithMethod(paymentMethodConfig);
+    }
+  } catch (err) {
+    console.error("❌ Order error:", err);
+    alert("❌ Order failed: " + err.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = "🧾 Confirm Order";
+  }
+}
+function showGatewayPopup(gateways, total, orderData, gatewayConfigs, email, product, storeCurrency) {
+  const modal = document.getElementById("gatewayModal");
+  const container = document.getElementById("gatewayOptions");
+
+  modal.classList.remove("hidden");
+  modal.classList.add("flex");
+  container.innerHTML = "";
+  
+  // Update order total display
+  const currencySymbol = getCurrencySymbol(storeCurrency);
+  document.getElementById("gatewayOrderTotal").textContent = `${currencySymbol}${total.toFixed(2)}`;
+
+  const gatewayLabels = {
+    paypal: "PayPal",
+    paystack: "Paystack",
+    flutterwave: "Flutterwave",
+    razorpay: "Razorpay",
+    square: "Square",
+    iyonicpay: "IyonicPay",
+    khalti: "Khalti",
+    instamojo: "Instamojo",
+    shopright: "ShopRight Pay",
+    stripe: "Stripe",
+    wise: "Wise Business",
+    revolut: "Revolut Business",
+    iyzipay: "Iyzipay"
+  };
+
+  const icons = {
+    paypal: "https://www.paypalobjects.com/webstatic/icon/pp258.png",
+    paystack: "https://upload.wikimedia.org/wikipedia/commons/2/20/Paystack_Logo.png",
+    flutterwave: "https://checkout.flutterwave.com/assets/images/favicon.png",
+    razorpay: "https://razorpay.com/favicon.png",
+    square: "https://img.icons8.com/color/48/square.png",
+    iyonicpay: "https://i.imgur.com/YAPRefp.png",
+    khalti: "https://seeklogo.com/images/K/khalti-logo-962A1A4174-seeklogo.com.png",
+    instamojo: "https://assets.instamojo.com/logo/full-logo-dark.png",
+    shopright: "https://placehold.co/32x32?text=SR",
+    stripe: "https://img.icons8.com/color/48/stripe.png",
+    wise: "https://wise.com/favicon.ico",
+    revolut: "https://www.revolut.com/favicon.ico",
+    iyzipay: "https://www.iyzico.com/favicon.ico"
+  };
+
+  gateways.forEach(g => {
+    console.log("Processing gateway:", g); // Debug log
+    const label = gatewayLabels[g] || capitalize(g);
+    container.innerHTML += `
+      <button onclick="selectGateway('${g}', ${total}, '${email}')" class="flex items-center gap-3 w-full border p-3 rounded-lg hover:bg-indigo-50 transition-all hover:border-indigo-300">
+        <img src="${icons[g] || 'https://placehold.co/32x32'}" class="w-8 h-8 rounded" />
+        <span class="text-sm font-medium text-gray-700">${label}</span>
+      </button>
+    `;
+  });
+
+  window.selectGateway = function (gateway, total, email) {
+    processPayment(gateway, total, orderData, gatewayConfigs, email, product, storeCurrency);
+  };
+}
+
+function hideGatewayPopup() {
+  const modal = document.getElementById("gatewayModal");
+  modal.classList.add("hidden");
+  modal.classList.remove("flex");
+
+  // Clear dynamic payment containers
+  const dynamicContainer = document.getElementById("gatewayPaymentContainer");
+  if (dynamicContainer) {
+    dynamicContainer.classList.add("hidden");
+    dynamicContainer.querySelectorAll("div").forEach(div => div.innerHTML = "");
+  }
+}
+
+async function processPayment(gateway, total, orderData, configs, email, product, storeCurrency) {
+  const productName = product.name;
+  const sellerLogo = product.sellerLogo;
+  const currencySymbol = getCurrencySymbol(storeCurrency);
+
+  const saveOrderAfterPayment = async (paymentDetails = {}) => {
+    try {
+      orderData.paymentDetails = paymentDetails;
+      orderData.status = "paid";
+      
+      const res = await fetch(`${API}/place-order`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderData)
+      });
+
+      if (!res.ok) throw new Error("Failed to save order.");
+      
+      alert("✅ Payment successful! Order placed.");
+      cart = cart.filter(item => item.id !== product.id);
+      saveCart();
+      hideGatewayPopup();
+      
+    } catch (err) {
+      console.error("❌ Order saving failed:", err);
+      alert("⚠️ Payment processed but order saving failed. Please contact support.");
+    }
+  };
+
+  if (gateway === "iyonicpay") {
+    let url = configs.iyonicpayUrl;
+    if (!url) return alert("❌ IyonicPay URL is not configured by seller.");
+    
+    const name = encodeURIComponent(orderData.buyer.name);
+    const buyerEmail = encodeURIComponent(email);
+    const amount = encodeURIComponent(total.toFixed(2));
+    const delimiter = url.includes("?") ? "&" : "?";
+    url += `${delimiter}amount=${amount}&name=${name}&email=${buyerEmail}&currency=${storeCurrency}`;
+    
+    const paymentContainer = document.getElementById("gatewayPaymentContainer");
+    paymentContainer.innerHTML = `
+      <iframe 
+        src="${url}" 
+        style="width:100%; height:600px; border:0; border-radius:12px; box-shadow:0 0 10px rgba(0,0,0,0.1);" 
+        loading="lazy"
+        allow="payment *"
+      ></iframe>
+      <button onclick="confirmIyonicPayment()" class="mt-4 w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">
+        ✅ I've Completed Payment
+      </button>
+    `;
+    paymentContainer.classList.remove("hidden");
+    
+    window.confirmIyonicPayment = () => saveOrderAfterPayment({ gateway: "iyonicpay", reference: "IYONIC-" + Date.now() });
+  }
+
+  else if (gateway === "paystack") {
+    const key = configs.paystackPublicKey;
+    if (!window.PaystackPop || !key) return alert("❌ Paystack not configured.");
+    
+    PaystackPop.setup({
+      key,
+      email,
+      amount: total * 100,
+      currency: storeCurrency,
+      ref: "ORD" + Date.now(),
+      callback: (res) => {
+        saveOrderAfterPayment({ gateway: "paystack", reference: res.reference });
+      },
+      onClose: () => {
+        alert("❌ Payment cancelled.");
+      }
+    }).openIframe();
+  }
+
+  else if (gateway === "shopright") {
+    const key = "pk_test_232531a5c927ef2cc67ed1b85af3f26e3b8ed2f2";
+    if (!window.PaystackPop) return alert("❌ ShopRight payment not configured.");
+    
+    PaystackPop.setup({
+      key,
+      email,
+      amount: total * 100,
+      currency: storeCurrency,
+      ref: "SHOPRIGHT-" + Date.now(),
+      label: "ShopRight Payment",
+      metadata: {
+        custom_fields: [
+          { display_name: "Buyer Email", variable_name: "buyer_email", value: email },
+          { display_name: "Product", variable_name: "product_name", value: productName }
+        ]
+      },
+      callback: (res) => {
+        saveOrderAfterPayment({ gateway: "shopright", reference: res.reference });
+      },
+      onClose: () => {
+        alert("❌ ShopRight payment was cancelled.");
+      }
+    }).openIframe();
+  }
+
+  else if (gateway === "instamojo") {
+    const url = configs.instamojoUrl;
+    if (!url) return alert("❌ Instamojo URL not configured by seller.");
+    
+    const name = encodeURIComponent(orderData.buyer.name);
+    const amount = encodeURIComponent(total.toFixed(2));
+    const emailEncoded = encodeURIComponent(email);
+    const paymentUrl = `${url}?name=${name}&email=${emailEncoded}&amount=${amount}&currency=${storeCurrency}`;
+    
+    window.open(paymentUrl, "_blank");
+    
+    // Show confirmation button
+    const paymentContainer = document.getElementById("gatewayPaymentContainer");
+    paymentContainer.innerHTML = `
+      <div class="text-center">
+        <p class="text-sm text-gray-600 mb-4">Complete your payment in the new window, then click confirm below.</p>
+        <button onclick="confirmInstamojoPayment()" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">
+          ✅ I've Completed Payment
+        </button>
+      </div>
+    `;
+    paymentContainer.classList.remove("hidden");
+    
+    window.confirmInstamojoPayment = () => saveOrderAfterPayment({ gateway: "instamojo", reference: "INSTAMOJO-" + Date.now() });
+  }
+
+  else if (gateway === "khalti") {
+    const key = configs.khaltiPublicKey;
+    if (!key) return alert("❌ Khalti not configured by seller.");
+    
+    const config = {
+      publicKey: key,
+      productIdentity: product.id,
+      productName: productName,
+      productUrl: window.location.href,
+      eventHandler: {
+        onSuccess(payload) {
+          saveOrderAfterPayment({ gateway: "khalti", token: payload.token });
+        },
+        onError(error) {
+          console.error(error);
+          alert("❌ Khalti payment failed.");
+        },
+        onClose() {
+          alert("❌ Khalti popup closed.");
+        }
+      }
+    };
+    
+    const launch = () => new KhaltiCheckout(config).show({ amount: total * 100 });
+    
+    if (!window.KhaltiCheckout) {
+      const script = document.createElement("script");
+      script.src = "https://khalti.com/static/khalti-checkout.js";
+      script.onload = launch;
+      document.head.appendChild(script);
+    } else {
+      launch();
+    }
+  }
+
+  else if (gateway === "paypal") {
+    const clientId = configs.paypalClientId;
+    if (!clientId) return alert("❌ PayPal client ID missing.");
+    
+    const paymentContainer = document.getElementById("gatewayPaymentContainer");
+    const paypalContainer = document.getElementById("paypal-button-container");
+    paymentContainer.classList.remove("hidden");
+    paypalContainer.innerHTML = "";
+    
+    const render = () => {
+      paypal.Buttons({
+        style: { layout: 'vertical', color: 'blue', shape: 'pill', label: 'paypal' },
+        createOrder: (data, actions) => actions.order.create({
+          purchase_units: [{
+            description: productName,
+            amount: {
+              value: total.toFixed(2),
+              currency_code: storeCurrency
+            }
+          }]
+        }),
+        onApprove: (data, actions) => actions.order.capture().then(details => {
+          saveOrderAfterPayment({ 
+            gateway: "paypal", 
+            orderId: data.orderID, 
+            payerId: details.payer.payer_id 
+          });
+        }),
+        onCancel: () => {
+          alert("❌ Payment cancelled.");
+        },
+        onError: err => {
+          console.error(err);
+          alert("❌ Payment error.");
+        }
+      }).render("#paypal-button-container");
+    };
+    
+    if (!window.paypal) {
+      const script = document.createElement("script");
+      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=${storeCurrency}`;
+      script.onload = render;
+      document.head.appendChild(script);
+    } else {
+      render();
+    }
+  }
+
+  else if (gateway === "flutterwave") {
+    const key = configs.flutterwavePublicKey;
+    if (!key || !window.FlutterwaveCheckout) return alert("❌ Flutterwave not configured.");
+    
+    FlutterwaveCheckout({
+      public_key: key,
+      tx_ref: "ORD" + Date.now(),
+      amount: total,
+      currency: storeCurrency,
+      customer: { email },
+      callback: (data) => {
+        saveOrderAfterPayment({ gateway: "flutterwave", txRef: data.tx_ref });
+      },
+      onclose: () => {
+        alert("❌ Payment cancelled.");
+      },
+      customizations: {
+        title: "Payment for " + productName,
+        logo: sellerLogo || "https://placehold.co/48x48?text=Logo"
+      }
+    });
+  }
+
+  else if (gateway === "razorpay") {
+    const key = configs.razorpayKey;
+    if (!key || !window.Razorpay) return alert("❌ Razorpay not configured.");
+    
+    const options = {
+      key,
+      amount: total * 100,
+      currency: storeCurrency,
+      name: "Order Payment",
+      description: productName,
+      handler: (res) => {
+        saveOrderAfterPayment({ gateway: "razorpay", paymentId: res.razorpay_payment_id });
+      },
+      prefill: { email, contact: orderData.buyer.phone }
+    };
+    
+    const rzp = new Razorpay(options);
+    rzp.open();
+  }
+
+  else if (gateway === "square") {
+    const appId = configs.squareAppId;
+    const locationId = configs.squareLocationId;
+    if (!appId || !locationId) return alert("❌ Square not configured properly.");
+    
+    const formContainer = document.getElementById("gatewayPaymentContainer");
+    formContainer.innerHTML = `
+      <div id="card-container" class="mb-3 p-4 border rounded"></div>
+      <button id="card-button" class="w-full bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Pay ${currencySymbol}${total.toFixed(2)}</button>
+    `;
+    formContainer.classList.remove("hidden");
+    
+    const initSquare = (appId, locationId) => {
+      const payments = Square.payments(appId, locationId);
+      payments.card().then(card => {
+        card.attach("#card-container");
+        document.getElementById("card-button").onclick = async () => {
+          const result = await card.tokenize();
+          if (result.status === "OK") {
+            saveOrderAfterPayment({ gateway: "square", token: result.token });
+          } else {
+            alert("❌ Card error: " + (result.errors?.[0]?.message || "Unknown"));
+          }
+        };
+      });
+    };
+    
+    if (!window.Square) {
+      const script = document.createElement("script");
+      script.src = "https://sandbox.web.squarecdn.com/v1/square.js";
+      script.onload = () => initSquare(appId, locationId);
+      document.head.appendChild(script);
+    } else {
+      initSquare(appId, locationId);
+    }
+  }
+
+  else if (gateway === "stripe") {
+    const key = configs.stripePublicKey;
+    if (!key) return alert("❌ Stripe not configured.");
+    
+    // Validate Stripe.js is loaded
+    if (typeof Stripe === 'undefined') {
+      console.error("Stripe.js not loaded");
+      return alert("❌ Stripe payment system not available. Please try again later.");
+    }
+    
+    const stripe = Stripe(key);
+    
+    // Normalize currency code for Stripe (must be lowercase)
+    const stripeCurrency = storeCurrency.toLowerCase();
+    
+    // Validate currency is supported by Stripe
+    const supportedCurrencies = ['usd', 'eur', 'gbp', 'jpy', 'cad', 'aud', 'nzd', 'chf', 'dkk', 'nok', 'sek', 'zar', 'kes', 'ngn', 'inr'];
+    if (!supportedCurrencies.includes(stripeCurrency)) {
+      console.warn(`Currency ${storeCurrency} may not be supported by Stripe`);
+    }
+    
+    try {
+      // Create a Stripe checkout session using the correct method
+      const sessionData = {
+        lineItems: [{
+          price_data: {
+            currency: stripeCurrency,
+            product_data: {
+              name: productName,
+            },
+            unit_amount: Math.round(total * 100), // Convert to cents
+          },
+          quantity: 1,
+        }],
+        mode: 'payment',
+        successUrl: window.location.href + '?payment=success',
+        cancelUrl: window.location.href + '?payment=cancelled',
+        clientReferenceId: "ORD" + Date.now()
+      };
+      
+      // Use the correct Stripe.js method for client-only integration
+      const { error } = await stripe.redirectToCheckout(sessionData);
+      
+      if (error) {
+        console.error("Stripe error:", error);
+        alert("❌ Payment failed: " + error.message);
+      }
+    } catch (err) {
+      console.error("Stripe error:", err);
+      alert("❌ Payment failed: " + err.message);
+    }
+  }
+  else if (gateway === "wise") {
+    // For Wise Business, we'll redirect to their payment page
+    const wiseUrl = configs.wiseUrl;
+    if (!wiseUrl) return alert("❌ Wise Business URL is not configured by seller.");
+    
+    const name = encodeURIComponent(orderData.buyer.name);
+    const buyerEmail = encodeURIComponent(email);
+    const amount = encodeURIComponent(total.toFixed(2));
+    const delimiter = wiseUrl.includes("?") ? "&" : "?";
+    const url = `${wiseUrl}${delimiter}amount=${amount}&name=${name}&email=${buyerEmail}&currency=${storeCurrency}`;
+    
+    window.open(url, "_blank");
+    alert("Please complete your payment in the new window, then click the button below.");
+    
+    // Show confirmation button
+    const paymentContainer = document.getElementById("gatewayPaymentContainer");
+    paymentContainer.innerHTML = `
+      <div class="text-center">
+        <p class="text-sm text-gray-600 mb-4">Complete your payment in the new window, then click confirm below.</p>
+        <button onclick="confirmWisePayment()" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">
+          ✅ I've Completed Payment
+        </button>
+      </div>
+    `;
+    paymentContainer.classList.remove("hidden");
+    
+    window.confirmWisePayment = () => saveOrderAfterPayment({ gateway: "wise", reference: "WISE-" + Date.now() });
+  }
+  else if (gateway === "revolut") {
+    // For Revolut Business, we'll redirect to their payment page
+    const revolutUrl = configs.revolutUrl;
+    if (!revolutUrl) return alert("❌ Revolut Business URL is not configured by seller.");
+    
+    const name = encodeURIComponent(orderData.buyer.name);
+    const buyerEmail = encodeURIComponent(email);
+    const amount = encodeURIComponent(total.toFixed(2));
+    const delimiter = revolutUrl.includes("?") ? "&" : "?";
+    const url = `${revolutUrl}${delimiter}amount=${amount}&name=${name}&email=${buyerEmail}&currency=${storeCurrency}`;
+    
+    window.open(url, "_blank");
+    alert("Please complete your payment in the new window, then click the button below.");
+    
+    // Show confirmation button
+    const paymentContainer = document.getElementById("gatewayPaymentContainer");
+    paymentContainer.innerHTML = `
+      <div class="text-center">
+        <p class="text-sm text-gray-600 mb-4">Complete your payment in the new window, then click confirm below.</p>
+        <button onclick="confirmRevolutPayment()" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">
+          ✅ I've Completed Payment
+        </button>
+      </div>
+    `;
+    paymentContainer.classList.remove("hidden");
+    
+    window.confirmRevolutPayment = () => saveOrderAfterPayment({ gateway: "revolut", reference: "REVOLUT-" + Date.now() });
+  }
+  else if (gateway === "iyzipay") {
+    // For Iyzipay, we'll redirect to their payment page
+    const iyzipayUrl = configs.iyzipayUrl;
+    if (!iyzipayUrl) return alert("❌ Iyzipay URL is not configured by seller.");
+    
+    const name = encodeURIComponent(orderData.buyer.name);
+    const buyerEmail = encodeURIComponent(email);
+    const amount = encodeURIComponent(total.toFixed(2));
+    const delimiter = iyzipayUrl.includes("?") ? "&" : "?";
+    const url = `${iyzipayUrl}${delimiter}amount=${amount}&name=${name}&email=${buyerEmail}&currency=${storeCurrency}`;
+    
+    window.open(url, "_blank");
+    alert("Please complete your payment in the new window, then click the button below.");
+    
+    // Show confirmation button
+    const paymentContainer = document.getElementById("gatewayPaymentContainer");
+    paymentContainer.innerHTML = `
+      <div class="text-center">
+        <p class="text-sm text-gray-600 mb-4">Complete your payment in the new window, then click confirm below.</p>
+        <button onclick="confirmIyzipayPayment()" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">
+          ✅ I've Completed Payment
+        </button>
+      </div>
+    `;
+    paymentContainer.classList.remove("hidden");
+    
+    window.confirmIyzipayPayment = () => saveOrderAfterPayment({ gateway: "iyzipay", reference: "IYZIPAY-" + Date.now() });
+  }
+  else {
+    alert("❌ Gateway not supported: " + gateway);
+  }
+}
+
+// Coupon functionality for product page
+async function applyCoupon() {
+  const couponCode = document.getElementById("couponCode").value.trim().toUpperCase();
+  const messageEl = document.getElementById("couponMessage");
+  
+  if (!couponCode) {
+    messageEl.innerHTML = '<span class="text-red-500">Please enter a coupon code.</span>';
+    return;
+  }
+  
+  try {
+    // Get current product for price calculation
+    const product = window.currentProduct;
+    if (!product) {
+      messageEl.innerHTML = '<span class="text-red-500">Product not loaded.</span>';
+      return;
+    }
+    
+    // Get selected variant and color prices
+    let unitPrice = product.price;
+    const selectedVariantInput = document.querySelector('input[name="productVariant"]:checked');
+    const selectedColorInput = document.querySelector('input[name="productColor"]:checked');
+    
+    if (selectedVariantInput) {
+      const variant = product.variants[selectedVariantInput.value];
+      if (variant?.price) unitPrice = variant.price;
+    }
+    
+    if (selectedColorInput) {
+      const color = product.colorVariants[selectedColorInput.value];
+      if (color?.price) unitPrice += color.price;
+    }
+    
+    // Default quantity is 1 for product page
+    const qty = 1;
+    const subtotal = unitPrice * qty;
+    
+    // Validate coupon with server
+    const res = await fetch(`${API}/api/validate-coupon`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        code: couponCode,
+        seller: product.seller,
+        orderTotal: subtotal,
+        productIds: [product.id]
+      })
+    });
+    
+    const data = await res.json();
+    
+    if (!data.valid) {
+      messageEl.innerHTML = `<span class="text-red-500">${data.error || "Invalid coupon code."}</span>`;
+      return;
+    }
+    
+    // Apply coupon discount
+    const discountAmount = data.discountAmount;
+    const finalTotal = Math.max(0, subtotal - discountAmount);
+    
+    messageEl.innerHTML = `
+      <span class="text-green-600">
+        ✅ Coupon "${couponCode}" applied! You save ${getCurrencySymbol(product.shopSettings?.storeCurrency || "USD")}${discountAmount.toFixed(2)}
+        <br><small>New price: ${getCurrencySymbol(product.shopSettings?.storeCurrency || "USD")}${finalTotal.toFixed(2)}</small>
+      </span>
+    `;
+    
+    // Store coupon data for when user proceeds to checkout
+    window.appliedCoupon = {
+      id: data.coupon.id,
+      code: data.coupon.code,
+      discountAmount: discountAmount
+    };
+  } catch (err) {
+    console.error("Coupon error:", err);
+    messageEl.innerHTML = '<span class="text-red-500">Error applying coupon. Please try again.</span>';
+  }
+}
+
+function showDeliveryMethodChoice(onSelect) {
+  const modal = document.getElementById("deliveryMethodModal");
+  modal.classList.remove("hidden");
+  modal.classList.add("flex");
+
+  // Clear previous listeners
+  document.getElementById("methodDelivery").onclick = () => {
+    hideDeliveryMethodModal();
+    onSelect("delivery");
+  };
+  document.getElementById("methodOnline").onclick = () => {
+    hideDeliveryMethodModal();
+    onSelect("online");
+  };
+}
+
+function hideDeliveryMethodModal() {
+  const modal = document.getElementById("deliveryMethodModal");
+  modal.classList.add("hidden");
+  modal.classList.remove("flex");
+}
+</script>
+
+</body>
+</html>

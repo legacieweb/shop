@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sign Up - ShopRight</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes fadeSlide {
+      0% { opacity: 0; transform: translateY(30px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in { animation: fadeSlide 0.5s ease-out forwards; }
+
+    .popup-show {
+      animation: fadeSlide 0.4s ease-out, bounce 0.6s ease-in-out;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-indigo-200 via-purple-100 to-indigo-300 font-sans">
+
+  <!-- 🎉 Success Popup -->
+  <div id="successPopup" class="hidden fixed top-6 z-50 px-6 py-4 bg-green-500 text-white text-lg rounded-xl shadow-xl font-semibold popup-show">
+    🎉 Account created! Redirecting...
+  </div>
+
+  <div class="w-full min-h-screen flex flex-col justify-center items-center">
+    <div class="w-full max-w-lg fade-in" id="mainCard">
+      <div class="text-center mb-6">
+        <img id="shopLogo" src="https://iyonicorp.com/signup/20250423_1135_Black%20Lines%20Emblem_remix_01jsgwj1ggetfbngcfv36v4dt5.png" alt="Shop Logo" class="mx-auto w-24 h-24 rounded-full object-cover mb-2" />
+        <h1 id="shopName" class="text-3xl font-bold text-gray-800 fade-in" style="animation-delay:0.2s">Loading store...</h1>
+        <p class="text-gray-500 text-base fade-in" style="animation-delay:0.3s">Create a new account to get started</p>
+      </div>
+
+      <form id="signupForm" class="space-y-5 fade-in" style="animation-delay:0.4s">
+        <input name="username" type="text" placeholder="Username" required class="w-full px-5 py-3 border border-indigo-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 transition bg-white/80 text-lg" />
+        <input name="email" type="email" placeholder="Email address" required class="w-full px-5 py-3 border border-indigo-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 transition bg-white/80 text-lg" />
+        <input name="password" type="password" placeholder="Password" required class="w-full px-5 py-3 border border-indigo-200 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 transition bg-white/80 text-lg" />
+
+        <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold shadow-md hover:bg-indigo-700 transition duration-200 text-lg tracking-wide hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+          Sign Up
+        </button>
+      </form>
+
+      <p class="text-sm text-center mt-6 text-gray-600 fade-in" style="animation-delay:0.5s">
+        Already have an account?
+        <a id="loginLink" href="login.html" class="text-indigo-600 hover:underline font-medium transition-all duration-200 hover:text-indigo-800">Log in</a>
+      </p>
+    </div>
+  </div>
+
+  <script>
+    const API = "http://10.2.0.2:3000";
+
+    function getSellerParam() {
+      const params = new URLSearchParams(window.location.search);
+      return params.get("seller");
+    }
+
+    function resolveImage(img) {
+      if (!img) return "https://placehold.co/100x100?text=Logo";
+      if (img.startsWith("http") || img.startsWith("data:")) return img;
+      return `${API}/uploads/${img.replace(/^\/?uploads\//, '')}`;
+    }
+
+async function loadShopTheme() {
+  const seller = getSellerParam();
+  const nameEl = document.getElementById("shopName");
+  const logoEl = document.getElementById("shopLogo");
+
+  if (!seller) {
+    nameEl.textContent = "Signup";
+    return;
+  }
+
+  try {
+    // First try with role=seller (strict match)
+    let res = await fetch(`${API}/find?collection=users&username=${encodeURIComponent(seller)}&role=seller`);
+    let sellers = await res.json();
+
+    // 🔄 Fallback: try without role restriction (for dynamic roles like seller_premium)
+    if (!sellers.length) {
+      res = await fetch(`${API}/find?collection=users&username=${encodeURIComponent(seller)}`);
+      sellers = await res.json();
+    }
+
+    if (!sellers.length) {
+      nameEl.textContent = "❌ Seller not found";
+      return;
+    }
+
+    const shop = sellers[0];
+    const theme = shop.customTheme || {};
+
+    nameEl.textContent = theme.name || shop.username || "ShopRight";
+    logoEl.src = resolveImage(theme.logo);
+
+    // Update login link to retain seller param
+    const loginLink = document.getElementById("loginLink");
+    loginLink.href = `login.html?seller=${encodeURIComponent(shop.username)}`;
+  } catch (err) {
+    nameEl.textContent = "⚠️ Error loading shop";
+    console.error("Theme load failed:", err);
+  }
+}
+
+    document.getElementById("signupForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const form = e.target;
+      const button = form.querySelector("button[type='submit']");
+      const email = form.email.value.trim();
+      const username = form.username.value.trim();
+      const password = form.password.value;
+      const seller = getSellerParam();
+
+      if (!email || !username || !password) {
+        alert("⚠️ All fields are required.");
+        return;
+      }
+
+      // Disable button and show loading
+      button.disabled = true;
+      button.innerHTML = `<svg class="animate-spin mr-2 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                          </svg> Creating...`;
+
+      try {
+        const res = await fetch(`${API}/signup${seller ? `?seller=${encodeURIComponent(seller)}` : ""}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, username, password })
+        });
+
+        if (res.ok) {
+          const popup = document.getElementById("successPopup");
+          popup.classList.remove("hidden");
+
+          setTimeout(() => {
+            const params = new URLSearchParams({ seller, email, password });
+            window.location.href = `login.html?${params.toString()}`;
+          }, 1800);
+        } else {
+          const errorData = await res.json();
+          alert("❌ Signup failed: " + (errorData.error || "Unknown error."));
+          button.disabled = false;
+          button.innerHTML = "Sign Up";
+        }
+      } catch (err) {
+        console.error("Signup error:", err);
+        alert("❌ Network error. Please try again later.");
+        button.disabled = false;
+        button.innerHTML = "Sign Up";
+      }
+    });
+
+    loadShopTheme();
+  </script>
+</body>
+</html>
