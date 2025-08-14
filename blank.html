@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blank Website Builder</title>
+    <style>
+        /* Basic Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Header for Builder Controls */
+        #builderHeader {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            z-index: 1000; /* Ensure it stays on top */
+        }
+
+        #builderTitle {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        #builderControls button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            margin-left: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        #builderControls button:hover {
+            background-color: #2980b9;
+        }
+
+        #builderControls button:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        /* Main Builder Area */
+        #builderMain {
+            display: flex;
+            flex: 1; /* Takes up remaining space */
+            overflow: hidden; /* Prevents scrolling on the main container */
+        }
+
+        /* Sidebar for Draggable Components */
+        #componentsSidebar {
+            width: 250px;
+            background-color: #ecf0f1;
+            padding: 20px;
+            overflow-y: auto; /* Allows scrolling if many components */
+            border-right: 1px solid #ccc;
+            flex-shrink: 0; /* Prevents sidebar from shrinking */
+        }
+
+        .component-section {
+            margin-bottom: 25px;
+        }
+
+        .component-section h3 {
+            margin-bottom: 10px;
+            color: #2c3e50;
+            border-bottom: 1px solid #bdc3c7;
+            padding-bottom: 5px;
+        }
+
+        .draggable-component {
+            background-color: white;
+            border: 1px solid #bdc3c7;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            cursor: grab;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: background-color 0.2s, transform 0.1s;
+            user-select: none; /* Prevents text selection during drag */
+        }
+
+        .draggable-component:hover {
+            background-color: #d6eaf8;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+
+        .draggable-component:active {
+            cursor: grabbing;
+            transform: scale(0.98);
+        }
+
+        /* Canvas Area where components are dropped */
+        #canvasArea {
+            flex: 1; /* Takes up remaining space */
+            padding: 20px;
+            overflow-y: auto; /* Allows scrolling for long content */
+            background-color: #ffffff;
+            min-height: 0; /* Crucial for flexbox scrolling */
+            position: relative; /* For absolute positioning of drop indicator */
+        }
+
+        #dropIndicator {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px dashed #3498db;
+            background-color: rgba(52, 152, 219, 0.1);
+            display: none; /* Hidden by default */
+            pointer-events: none; /* Doesn't interfere with drag events */
+            z-index: 999;
+        }
+
+        #dropIndicator.active {
+             display: block;
+        }
+
+        /* Placeholder for the dropped layout */
+        #layoutCanvas {
+            min-height: 100%; /* Ensure it takes space */
+            border: 1px solid #eee;
+             /* Style the canvas itself if needed */
+        }
+
+        /* Styles for elements dropped onto the canvas */
+        .canvas-element {
+            border: 1px solid transparent; /* For visual selection feedback */
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            background-color: #f8f9fa;
+            transition: border-color 0.2s, background-color 0.2s;
+            position: relative; /* For positioning the remove button */
+        }
+
+        .canvas-element:hover {
+            border-color: #3498db;
+            background-color: #ebf5fb;
+        }
+
+        .canvas-element.selected {
+            border-color: #e74c3c !important;
+            background-color: #fadbd8 !important;
+            box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
+        }
+
+         /* Remove button on selected elements */
+        .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 14px;
+            cursor: pointer;
+            display: none; /* Hidden by default */
+            align-items: center;
+            justify-content: center;
+        }
+
+        .canvas-element:hover .remove-btn,
+        .canvas-element.selected .remove-btn {
+            display: flex;
+        }
+
+        .remove-btn:hover {
+            background-color: #c0392b;
+        }
+
+
+        /* Properties Panel */
+        #propertiesPanel {
+            width: 250px;
+            background-color: #ecf0f1;
+            padding: 20px;
+            overflow-y: auto;
+            border-left: 1px solid #ccc;
+            flex-shrink: 0;
+        }
+
+        #propertiesPanel h3 {
+             margin-bottom: 15px;
+             color: #2c3e50;
+             border-bottom: 1px solid #bdc3c7;
+             padding-bottom: 5px;
+        }
+
+        .property-group {
+            margin-bottom: 15px;
+        }
+
+        .property-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .property-group input,
+        .property-group select,
+        .property-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .property-group textarea {
+             resize: vertical; /* Allow vertical resizing only */
+             min-height: 60px;
+        }
+
+        /* Status Bar */
+        #statusBar {
+            background-color: #34495e;
+            color: #ecf0f1;
+            padding: 8px 15px;
+            font-size: 0.85rem;
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+
+    </style>
+</head>
+<body>
+
+    <!-- Builder Header -->
+    <header id="builderHeader">
+        <div id="builderTitle">Website Builder</div>
+        <div id="builderControls">
+            <button id="saveBtn">💾 Save Layout</button>
+            <button id="exportBtn">📤 Export HTML</button>
+            <button id="clearBtn">🗑️ Clear Canvas</button>
+        </div>
+    </header>
+
+    <!-- Main Builder Area -->
+    <main id="builderMain">
+        <!-- Components Sidebar -->
+        <aside id="componentsSidebar">
+            <div class="component-section">
+                <h3>Layout</h3>
+                <div class="draggable-component" draggable="true" data-type="header">Header</div>
+                <div class="draggable-component" draggable="true" data-type="footer">Footer</div>
+                <div class="draggable-component" draggable="true" data-type="section">Section</div>
+            </div>
+            <div class="component-section">
+                <h3>Content</h3>
+                <div class="draggable-component" draggable="true" data-type="text">Text Block</div>
+                <div class="draggable-component" draggable="true" data-type="image">Image</div>
+                <div class="draggable-component" draggable="true" data-type="button">Button</div>
+            </div>
+            <div class="component-section">
+                <h3>Advanced</h3>
+                <div class="draggable-component" draggable="true" data-type="product-grid">Product Grid</div>
+                <div class="draggable-component" draggable="true" data-type="carousel">Image Carousel</div>
+            </div>
+        </aside>
+
+        <!-- Canvas Area -->
+        <section id="canvasArea">
+            <div id="dropIndicator"></div>
+            <div id="layoutCanvas">
+                <!-- Dropped components will appear here -->
+                 <p style="text-align: center; color: #95a5a6; padding: 20px;">Drag components here to start building.</p>
+            </div>
+        </section>
+
+        <!-- Properties Panel -->
+        <aside id="propertiesPanel">
+            <h3>Properties</h3>
+            <div id="propertiesContent">
+                <p>Select an element on the canvas to edit its properties.</p>
+                <!-- Properties will be dynamically inserted here -->
+            </div>
+        </aside>
+    </main>
+
+    <!-- Status Bar -->
+    <footer id="statusBar">
+        Ready
+    </footer>
+
+    <script>
+        (function () {
+            console.log("Website Builder Script Loaded");
+
+            // --- DOM Elements ---
+            const canvasArea = document.getElementById('canvasArea');
+            const layoutCanvas = document.getElementById('layoutCanvas');
+            const dropIndicator = document.getElementById('dropIndicator');
+            const componentsSidebar = document.getElementById('componentsSidebar');
+            const propertiesPanel = document.getElementById('propertiesPanel');
+            const propertiesContent = document.getElementById('propertiesContent');
+            const statusBar = document.getElementById('statusBar');
+            const saveBtn = document.getElementById('saveBtn');
+            const exportBtn = document.getElementById('exportBtn');
+            const clearBtn = document.getElementById('clearBtn');
+
+            // --- State ---
+            let selectedElement = null; // Currently selected element on canvas
+            let draggedComponent = null; // Data from the dragged component
+
+            // --- Initialization ---
+            function init() {
+                setupEventListeners();
+                updateStatusBar("Builder initialized. Drag components to the canvas.");
+            }
+
+            function setupEventListeners() {
+                // --- Drag Events on Components ---
+                componentsSidebar.addEventListener('dragstart', handleDragStart);
+                componentsSidebar.addEventListener('dragend', handleDragEnd);
+
+                // --- Drop Events on Canvas ---
+                canvasArea.addEventListener('dragover', handleDragOver);
+                canvasArea.addEventListener('dragenter', handleDragEnter);
+                canvasArea.addEventListener('dragleave', handleDragLeave);
+                canvasArea.addEventListener('drop', handleDrop);
+
+                // --- Click Events for Selection & Removal ---
+                layoutCanvas.addEventListener('click', handleCanvasClick);
+
+                // --- Property Panel Changes ---
+                propertiesPanel.addEventListener('input', handlePropertyChange);
+
+                // --- Button Controls ---
+                saveBtn.addEventListener('click', saveLayout);
+                exportBtn.addEventListener('click', exportLayout);
+                clearBtn.addEventListener('click', clearCanvas);
+            }
+
+            // --- Drag Functions ---
+            function handleDragStart(e) {
+                if (e.target.classList.contains('draggable-component')) {
+                    draggedComponent = {
+                        type: e.target.dataset.type,
+                        label: e.target.textContent.trim()
+                    };
+                    e.dataTransfer.setData('text/plain', ''); // Required for Firefox
+                    e.target.style.opacity = '0.5';
+                    updateStatusBar(`Dragging: ${draggedComponent.label}`);
+                }
+            }
+
+            function handleDragEnd(e) {
+                if (e.target.classList.contains('draggable-component')) {
+                     e.target.style.opacity = '1';
+                     draggedComponent = null;
+                     dropIndicator.classList.remove('active');
+                     updateStatusBar("Drag ended.");
+                }
+            }
+
+            function handleDragOver(e) {
+                e.preventDefault(); // Necessary to allow drop
+            }
+
+            function handleDragEnter(e) {
+                e.preventDefault();
+                // Only show indicator if we are dragging a component
+                if (draggedComponent) {
+                   dropIndicator.classList.add('active');
+                   updateStatusBar("Release to drop component.");
+                }
+            }
+
+            function handleDragLeave(e) {
+                 // Check if we are leaving the canvas area itself, not a child
+                 if (e.target === canvasArea) {
+                     dropIndicator.classList.remove('active');
+                     updateStatusBar("Drag a component over the canvas.");
+                 }
+            }
+
+            function handleDrop(e) {
+                e.preventDefault();
+                dropIndicator.classList.remove('active');
+
+                if (!draggedComponent) {
+                    updateStatusBar("Drop ignored: No component data.");
+                    return;
+                }
+
+                // Get drop position relative to layoutCanvas
+                const rect = layoutCanvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+
+                // Create the new element
+                const newElement = createCanvasElement(draggedComponent.type, draggedComponent.label);
+
+                // Position it (basic implementation, could be smarter)
+                // For simplicity, we'll just append it. Positioning can be complex.
+                layoutCanvas.appendChild(newElement);
+
+                // Remove placeholder text if it's the first element
+                const placeholder = layoutCanvas.querySelector('p');
+                if (placeholder && placeholder.textContent.includes("Drag components here")) {
+                    layoutCanvas.removeChild(placeholder);
+                }
+
+                updateStatusBar(`Dropped: ${draggedComponent.label}`);
+                draggedComponent = null; // Reset
+            }
+
+            // --- Canvas Interaction ---
+            function handleCanvasClick(e) {
+                 // Deselect previous element
+                 if (selectedElement) {
+                     selectedElement.classList.remove('selected');
+                     const removeBtn = selectedElement.querySelector('.remove-btn');
+                     if (removeBtn) removeBtn.remove();
+                 }
+
+                 // Find the actual canvas element (could be nested)
+                 let targetElement = e.target;
+                 while (targetElement && targetElement !== layoutCanvas && !targetElement.classList.contains('canvas-element')) {
+                     targetElement = targetElement.parentElement;
+                 }
+
+                 if (targetElement && targetElement.classList.contains('canvas-element')) {
+                     selectedElement = targetElement;
+                     selectedElement.classList.add('selected');
+
+                     // Add remove button
+                     const removeBtn = document.createElement('button');
+                     removeBtn.className = 'remove-btn';
+                     removeBtn.innerHTML = '&times;'; // Multiplication sign (X)
+                     removeBtn.title = 'Remove Element';
+                     removeBtn.addEventListener('click', (event) => {
+                         event.stopPropagation(); // Prevent triggering canvas click
+                         removeElement(selectedElement);
+                     });
+                     selectedElement.appendChild(removeBtn);
+
+                     // Show properties
+                     showProperties(selectedElement);
+
+                     updateStatusBar(`Selected: ${selectedElement.dataset.type || 'Element'}`);
+                 } else {
+                     selectedElement = null;
+                     propertiesContent.innerHTML = '<p>Select an element on the canvas to edit its properties.</p>';
+                     updateStatusBar("Canvas clicked, no element selected.");
+                 }
+            }
+
+            function removeElement(element) {
+                 if (element && element.parentElement) {
+                     element.parentElement.removeChild(element);
+                     if (selectedElement === element) {
+                         selectedElement = null;
+                         propertiesContent.innerHTML = '<p>Select an element on the canvas to edit its properties.</p>';
+                     }
+                     updateStatusBar("Element removed.");
+                     // Re-add placeholder if canvas is empty
+                     if (layoutCanvas.children.length === 0 || (layoutCanvas.children.length === 1 && layoutCanvas.querySelector('p'))) {
+                         layoutCanvas.innerHTML = '<p style="text-align: center; color: #95a5a6; padding: 20px;">Drag components here to start building.</p>';
+                     }
+                 }
+            }
+
+
+            // --- Property Panel ---
+            function showProperties(element) {
+                 const type = element.dataset.type;
+                 let html = `<h4>${type.charAt(0).toUpperCase() + type.slice(1)} Properties</h4>`;
+
+                 // Common properties
+                 html += `
+                     <div class="property-group">
+                         <label for="prop-id">ID:</label>
+                         <input type="text" id="prop-id" value="${element.id || ''}">
+                     </div>
+                     <div class="property-group">
+                         <label for="prop-class">CSS Classes:</label>
+                         <input type="text" id="prop-class" value="${element.className.replace('canvas-element selected', '').replace('canvas-element', '').trim()}">
+                     </div>
+                 `;
+
+                 // Type-specific properties
+                 if (type === 'text') {
+                     html += `
+                         <div class="property-group">
+                             <label for="prop-content">Content:</label>
+                             <textarea id="prop-content">${element.textContent.replace('×', '').trim()}</textarea> <!-- Remove remove button text -->
+                         </div>
+                     `;
+                 } else if (type === 'header' || type === 'footer' || type === 'section') {
+                     html += `
+                         <div class="property-group">
+                             <label for="prop-content">Content:</label>
+                             <input type="text" id="prop-content" value="${element.textContent.replace('×', '').trim()}">
+                         </div>
+                         <div class="property-group">
+                             <label for="prop-bg-color">Background Color:</label>
+                             <input type="color" id="prop-bg-color" value="${rgbToHex(getComputedStyle(element).backgroundColor) || '#ffffff'}">
+                         </div>
+                     `;
+                 } else if (type === 'image') {
+                      // Placeholder for image URL
+                      const currentSrc = element.querySelector('img') ? element.querySelector('img').src : '';
+                      html += `
+                          <div class="property-group">
+                              <label for="prop-src">Image URL:</label>
+                              <input type="text" id="prop-src" value="${currentSrc}">
+                          </div>
+                          <div class="property-group">
+                              <label for="prop-alt">Alt Text:</label>
+                              <input type="text" id="prop-alt" value="${element.querySelector('img') ? element.querySelector('img').alt : ''}">
+                          </div>
+                      `;
+                 } else if (type === 'button') {
+                      const btnEl = element.querySelector('button');
+                      html += `
+                          <div class="property-group">
+                              <label for="prop-btn-text">Button Text:</label>
+                              <input type="text" id="prop-btn-text" value="${btnEl ? btnEl.textContent : 'Button'}">
+                          </div>
+                          <div class="property-group">
+                              <label for="prop-btn-bg">Background Color:</label>
+                              <input type="color" id="prop-btn-bg" value="${btnEl ? rgbToHex(getComputedStyle(btnEl).backgroundColor) : '#3498db'}">
+                          </div>
+                      `;
+                 }
+
+                 propertiesContent.innerHTML = html;
+            }
+
+            function handlePropertyChange(e) {
+                if (!selectedElement) return;
+
+                const propId = e.target.id;
+                const value = e.target.value;
+                const type = selectedElement.dataset.type;
+
+                try {
+                    if (propId === 'prop-id') {
+                        selectedElement.id = value;
+                    } else if (propId === 'prop-class') {
+                        // Rebuild class list, preserving 'canvas-element'
+                        const baseClasses = 'canvas-element';
+                        selectedElement.className = value ? `${baseClasses} ${value}` : baseClasses;
+                    } else if (propId === 'prop-content') {
+                        if (type === 'text') {
+                            selectedElement.textContent = value;
+                        } else {
+                             // For header/footer/section, preserve the remove button
+                             const removeBtn = selectedElement.querySelector('.remove-btn');
+                             selectedElement.innerHTML = value;
+                             if (removeBtn) selectedElement.appendChild(removeBtn);
+                            }
+                    } else if (propId === 'prop-bg-color') {
+                         selectedElement.style.backgroundColor = value;
+                    } else if (propId === 'prop-src' && type === 'image') {
+                         let img = selectedElement.querySelector('img');
+                         if (!img) {
+                             img = document.createElement('img');
+                             img.style.maxWidth = '100%';
+                             selectedElement.appendChild(img);
+                         }
+                         img.src = value;
+                         img.alt = selectedElement.querySelector('#prop-alt')?.value || 'Image';
+                    } else if (propId === 'prop-alt' && type === 'image') {
+                         const img = selectedElement.querySelector('img');
+                         if (img) img.alt = value;
+                    } else if (propId === 'prop-btn-text' && type === 'button') {
+                         const btn = selectedElement.querySelector('button');
+                         if (btn) btn.textContent = value;
+                    } else if (propId === 'prop-btn-bg' && type === 'button') {
+                         const btn = selectedElement.querySelector('button');
+                         if (btn) btn.style.backgroundColor = value;
+                    }
+                    updateStatusBar(`Property '${propId}' updated.`);
+                } catch (error) {
+                    console.error("Error updating property:", error);
+                    updateStatusBar(`Error updating property: ${error.message}`, true);
+                }
+            }
+
+            // --- Helper Functions ---
+            function createCanvasElement(type, label) {
+                const element = document.createElement('div');
+                element.className = 'canvas-element';
+                element.dataset.type = type;
+                element.contentEditable = false; // Make content non-editable directly
+
+                switch (type) {
+                    case 'header':
+                        element.textContent = label;
+                        element.style.backgroundColor = '#3498db';
+                        element.style.color = 'white';
+                        element.style.padding = '15px';
+                        element.style.textAlign = 'center';
+                        element.style.fontSize = '1.5rem';
+                        element.style.fontWeight = 'bold';
+                        break;
+                    case 'footer':
+                        element.textContent = label;
+                        element.style.backgroundColor = '#2c3e50';
+                        element.style.color = 'white';
+                        element.style.padding = '15px';
+                        element.style.textAlign = 'center';
+                        element.style.fontSize = '0.9rem';
+                        break;
+                    case 'section':
+                         element.textContent = label;
+                         element.style.padding = '20px';
+                         element.style.border = '1px dashed #ccc';
+                         break;
+                    case 'text':
+                        element.textContent = 'This is a text block. Edit me in the properties panel.';
+                        break;
+                    case 'image':
+                         element.innerHTML = '<p>🖼️ Image Component</p><small>Edit source in properties.</small>';
+                         // Actual img tag is added via properties
+                         break;
+                    case 'button':
+                         element.innerHTML = '<button style="padding: 10px 20px; background-color: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">Click Me</button>';
+                         break;
+                    case 'product-grid':
+                         element.innerHTML = '🛒 Product Grid Component';
+                         element.style.padding = '15px';
+                         element.style.border = '1px solid #bdc3c7';
+                         element.style.borderRadius = '4px';
+                         element.style.backgroundColor = '#f1f2f6';
+                         break;
+                    case 'carousel':
+                         element.innerHTML = '🎠 Image Carousel Component';
+                         element.style.padding = '15px';
+                         element.style.border = '1px solid #bdc3c7';
+                         element.style.borderRadius = '4px';
+                         element.style.backgroundColor = '#f1f2f6';
+                         break;
+                    default:
+                        element.textContent = `Unknown Component: ${label}`;
+                }
+                return element;
+            }
+
+            function updateStatusBar(message, isError = false) {
+                statusBar.textContent = message;
+                statusBar.style.color = isError ? '#e74c3c' : '#ecf0f1';
+                console.log(`[Status] ${message}`);
+            }
+
+             // Helper to convert RGB to Hex (for color picker)
+             function rgbToHex(rgb) {
+                 // Check if it's already a hex value or 'rgba(0, 0, 0, 0)' (transparent)
+                 if (!rgb || rgb.indexOf('#') === 0) return rgb;
+                 if (rgb.indexOf('rgba') === 0 && rgb.indexOf('0, 0, 0, 0') > -1) return '#ffffff'; 
+
+                 const match = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+                 if (!match) return '#000000'; // Default fallback
+
+                 const r = parseInt(match[1], 10).toString(16).padStart(2, '0');
+                 const g = parseInt(match[2], 10).toString(16).padStart(2, '0');
+                 const b = parseInt(match[3], 10).toString(16).padStart(2, '0');
+                 return `#${r}${g}${b}`;
+             }
+
+
+            // --- Control Functions ---
+            function saveLayout() {
+                updateStatusBar("Save functionality not implemented yet.", true);
+                alert("Save feature would be implemented here.");
+            }
+
+            function exportLayout() {
+                updateStatusBar("Export functionality not implemented yet.", true);
+                alert("Export feature would be implemented here.");
+            }
+
+            function clearCanvas() {
+                if (confirm("Are you sure you want to clear the entire canvas?")) {
+                    layoutCanvas.innerHTML = '<p style="text-align: center; color: #95a5a6; padding: 20px;">Drag components here to start building.</p>';
+                    if (selectedElement) {
+                        selectedElement = null;
+                        propertiesContent.innerHTML = '<p>Select an element on the canvas to edit its properties.</p>';
+                    }
+                    updateStatusBar("Canvas cleared.");
+                }
+            }
+
+            // --- Start the App ---
+            window.addEventListener('DOMContentLoaded', init);
+
+        })();
+    </script>
+
+</body>
+</html>

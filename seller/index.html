@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Become a Seller – iyonicorp</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Crimson+Text:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            vintage: {
+              cream: '#F5F1E8',
+              gold: '#D4AF37',
+              bronze: '#CD7F32',
+              burgundy: '#800020',
+              forest: '#355E3B',
+              sepia: '#704214',
+              ivory: '#F5F1E8',
+              rust: '#B7410E'
+            }
+          },
+          fontFamily: {
+            'vintage': ['Playfair Display', 'serif'],
+            'body': ['Crimson Text', 'serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Crimson Text', serif;
+      background-color: #F5F1E8;
+    }
+    
+    .vintage-gradient {
+      background: linear-gradient(135deg, #800020 0%, #CD7F32 50%, #D4AF37 100%);
+    }
+    
+    .vintage-card {
+      background: #F5F1E8;
+      border: 2px solid #D4AF37;
+      box-shadow: 0 8px 32px rgba(212, 175, 55, 0.2);
+    }
+    
+    .vintage-text-shadow {
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .vintage-border {
+      border: 3px solid #D4AF37;
+      border-radius: 15px;
+    }
+    
+    .vintage-hover {
+      transition: all 0.3s ease;
+    }
+    
+    .vintage-hover:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(212, 175, 55, 0.3);
+    }
+    
+    .ornate-border {
+      border: 4px solid;
+      border-image: linear-gradient(45deg, #D4AF37, #CD7F32, #800020) 1;
+      position: relative;
+    }
+    
+    .ornate-border::before {
+      content: '❦';
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #F5F1E8;
+      padding: 0 10px;
+      color: #D4AF37;
+      font-size: 24px;
+    }
+
+    .active-plan {
+      border-color: #D4AF37;
+      background-color: rgba(212, 175, 55, 0.1);
+    }
+    .modal {
+      display: none;
+    }
+    .modal.show {
+      display: flex;
+    }
+    .otp-modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0; top: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(255, 255, 255, 0.9);
+      justify-content: center;
+      align-items: center;
+      font-family: 'Crimson Text', serif;
+      padding: 1rem;
+    }
+
+    .otp-modal-content {
+      background-color: #F5F1E8;
+      padding: 2rem;
+      border-radius: 15px;
+      width: 100%;
+      max-width: 350px;
+      text-align: center;
+      border: 3px solid #D4AF37;
+      box-shadow: 0 8px 32px rgba(212, 175, 55, 0.3);
+    }
+
+    .otp-modal input {
+      width: 80%;
+      padding: 12px;
+      margin-top: 1rem;
+      font-size: 1rem;
+      border: 2px solid #D4AF37;
+      border-radius: 8px;
+      background: #F5F1E8;
+      color: #704214;
+      font-family: 'Crimson Text', serif;
+    }
+
+    .otp-error {
+      color: #B7410E;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      font-family: 'Crimson Text', serif;
+    }
+
+    #otpSubmitBtn {
+      margin-top: 1rem;
+      padding: 12px 20px;
+      font-size: 1rem;
+      background: linear-gradient(135deg, #800020 0%, #CD7F32 50%, #D4AF37 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-family: 'Crimson Text', serif;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+
+    #otpSubmitBtn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.4);
+    }
+
+    /* Disabled button styles */
+    .disabled-button {
+      position: relative;
+      overflow: hidden;
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+
+    .disabled-button::before {
+      content: '🚧 Feature Currently Unavailable';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(183, 65, 14, 0.95);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 10;
+    }
+
+    .disabled-button:hover::before {
+      opacity: 1;
+    }
+
+    /* Modal improvements - removed red background */
+    .modal {
+      background-color: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(5px);
+    }
+
+    /* Responsive improvements */
+    @media (max-width: 768px) {
+      .carousel-slide h2 {
+        font-size: 2.5rem;
+      }
+      
+      .carousel-slide p {
+        font-size: 1rem;
+        padding: 0 1rem;
+      }
+
+      .vintage-card {
+        margin: 0.5rem;
+      }
+
+      .digital-product-card {
+        width: 85% !important;
+        margin: 0 auto;
+      }
+
+      .otp-modal-content {
+        margin: 1rem;
+        padding: 1.5rem;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .carousel-slide h2 {
+        font-size: 2rem;
+      }
+      
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .transform.scale-105 {
+        transform: none;
+      }
+
+      .border-4 {
+        border-width: 2px;
+      }
+    }
+  </style>
+  <style>
+    .toast-container {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    @media (max-width: 640px) {
+      .toast-container {
+        top: 0.5rem;
+        right: 0.5rem;
+        left: 0.5rem;
+      }
+    }
+
+    .toast {
+      min-width: 220px;
+      max-width: 320px;
+      padding: 0.75rem 1rem;
+      border-radius: 15px;
+      color: white;
+      font-size: 0.9rem;
+      font-family: 'Crimson Text', serif;
+      font-weight: 600;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+      opacity: 0;
+      transform: translateY(-10px);
+      animation: toast-in 0.3s forwards, toast-out 0.3s forwards 3.5s;
+      border: 2px solid rgba(255,255,255,0.2);
+    }
+
+    .toast.success { background: linear-gradient(135deg, #355E3B, #704214); }
+    .toast.error { background: linear-gradient(135deg, #B7410E, #800020); }
+    .toast.warning { background: linear-gradient(135deg, #CD7F32, #D4AF37); }
+    .toast.info { background: linear-gradient(135deg, #704214, #800020); }
+
+    @keyframes toast-in {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes toast-out {
+      to { opacity: 0; transform: translateY(-10px); }
+    }
+  </style>
+
+</head>
+<body class="text-vintage-sepia" style="background-color: #F5F1E8;">
+
+<!-- Hero Section Carousel -->
+<section class="relative overflow-hidden vintage-gradient">
+  <!-- Carousel Container -->
+  <div id="heroCarousel" class="relative w-full h-[400px] md:h-[500px]">
+    <!-- Carousel Slides -->
+    <div class="carousel-slides flex transition-transform duration-1000">
+      <!-- Slide 1 -->
+      <div class="carousel-slide w-full h-[400px] md:h-[500px] flex-shrink-0 relative bg-cover bg-center bg-no-repeat"
+        style="background-image: url('https://images.unsplash.com/photo-1556742031-c6961e8560b0?auto=format&fit=crop&w=1470&q=80');">
+        <div class="absolute inset-0 vintage-gradient opacity-90"></div>
+        <div class="relative z-10 max-w-4xl mx-auto px-4 md:px-6 h-full flex flex-col items-center justify-center text-center text-white">
+          <h2 class="text-3xl md:text-4xl lg:text-6xl font-vintage font-black mb-4 vintage-text-shadow">Sell on iyonicorp</h2>
+          <p class="text-base md:text-lg lg:text-xl mb-6 font-body leading-relaxed opacity-90 max-w-2xl">Join thousands of distinguished businesses. Pick a plan, build your store, and reach new customers with timeless elegance.</p>
+          <a href="#pricing-section"
+            class="inline-block bg-vintage-ivory text-vintage-burgundy px-6 md:px-8 py-3 md:py-4 rounded-xl text-base md:text-lg font-vintage font-bold hover:bg-white hover:shadow-lg transition">
+            View Distinguished Plans
+          </a>
+        </div>
+      </div>
+      
+      <!-- Slide 2 -->
+      <div class="carousel-slide w-full h-[400px] md:h-[500px] flex-shrink-0 relative bg-cover bg-center bg-no-repeat"
+        style="background-image: url('https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?auto=format&fit=crop&w=1470&q=80');">
+        <div class="absolute inset-0 bg-vintage-burgundy opacity-85"></div>
+        <div class="relative z-10 max-w-4xl mx-auto px-4 md:px-6 h-full flex flex-col items-center justify-center text-center text-white">
+          <h2 class="text-3xl md:text-4xl lg:text-6xl font-vintage font-black mb-4 vintage-text-shadow">Sell Physical Products</h2>
+          <p class="text-base md:text-lg lg:text-xl mb-6 font-body leading-relaxed opacity-90 max-w-2xl">Create your distinguished online store and sell physical products to customers worldwide</p>
+          <a href="#physical-products"
+            class="inline-block bg-vintage-ivory text-vintage-burgundy px-6 md:px-8 py-3 md:py-4 rounded-xl text-base md:text-lg font-vintage font-bold hover:bg-white hover:shadow-lg transition">
+            Physical Product Plans
+          </a>
+        </div>
+      </div>
+      
+      <!-- Slide 3 - Digital Products (disabled) -->
+      <div class="carousel-slide w-full h-[400px] md:h-[500px] flex-shrink-0 relative bg-cover bg-center bg-no-repeat"
+        style="background-image: url('https://images.unsplash.com/photo-1593642632823-8f785ba67e45?auto=format&fit=crop&w=1470&q=80');">
+        <div class="absolute inset-0 bg-vintage-forest opacity-85"></div>
+        <div class="relative z-10 max-w-4xl mx-auto px-4 md:px-6 h-full flex flex-col items-center justify-center text-center text-white">
+          <h2 class="text-3xl md:text-4xl lg:text-6xl font-vintage font-black mb-4 vintage-text-shadow">Sell Digital Products</h2>
+          <p class="text-base md:text-lg lg:text-xl mb-6 font-body leading-relaxed opacity-90 max-w-2xl">Offer distinguished digital downloads, e-books, courses, and software with our specialized plans</p>
+          <div class="relative inline-block">
+            <button class="disabled-button bg-vintage-ivory text-vintage-burgundy px-6 md:px-8 py-3 md:py-4 rounded-xl text-base md:text-lg font-vintage font-bold transition">
+              Digital Product Plans
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Slide 4 - Services (disabled) -->
+      <div class="carousel-slide w-full h-[400px] md:h-[500px] flex-shrink-0 relative bg-cover bg-center bg-no-repeat"
+        style="background-image: url('https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=1470&q=80');">
+        <div class="absolute inset-0 bg-vintage-bronze opacity-85"></div>
+        <div class="relative z-10 max-w-4xl mx-auto px-4 md:px-6 h-full flex flex-col items-center justify-center text-center text-white">
+          <h2 class="text-3xl md:text-4xl lg:text-6xl font-vintage font-black mb-4 vintage-text-shadow">Offer Professional Services</h2>
+          <p class="text-base md:text-lg lg:text-xl mb-6 font-body leading-relaxed opacity-90 max-w-2xl">Showcase your expertise and connect with clients looking for your distinguished professional services</p>
+          <div class="relative inline-block">
+            <button class="disabled-button bg-vintage-ivory text-vintage-burgundy px-6 md:px-8 py-3 md:py-4 rounded-xl text-base md:text-lg font-vintage font-bold transition">
+              Service Provider Plans
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Carousel Navigation Dots -->
+    <div class="absolute bottom-5 left-0 right-0 flex justify-center gap-2">
+      <button class="carousel-dot w-3 h-3 md:w-4 md:h-4 rounded-full bg-vintage-gold border-2 border-vintage-ivory opacity-70 hover:opacity-100 transition" data-index="0"></button>
+      <button class="carousel-dot w-3 h-3 md:w-4 md:h-4 rounded-full bg-vintage-gold border-2 border-vintage-ivory opacity-70 hover:opacity-100 transition" data-index="1"></button>
+      <button class="carousel-dot w-3 h-3 md:w-4 md:h-4 rounded-full bg-vintage-gold border-2 border-vintage-ivory opacity-70 hover:opacity-100 transition" data-index="2"></button>
+      <button class="carousel-dot w-3 h-3 md:w-4 md:h-4 rounded-full bg-vintage-gold border-2 border-vintage-ivory opacity-70 hover:opacity-100 transition" data-index="3"></button>
+    </div>
+    
+    <!-- Carousel Navigation Arrows -->
+    <button class="absolute top-1/2 left-2 md:left-4 transform -translate-y-1/2 bg-vintage-gold bg-opacity-80 text-vintage-burgundy w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center hover:bg-opacity-100 transition font-bold text-lg md:text-xl" id="prevSlide">
+      &#10094;
+    </button>
+    <button class="absolute top-1/2 right-2 md:right-4 transform -translate-y-1/2 bg-vintage-gold bg-opacity-80 text-vintage-burgundy w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center hover:bg-opacity-100 transition font-bold text-lg md:text-xl" id="nextSlide">
+      &#10095;
+    </button>
+  </div>
+</section>
+
+<!-- Physical Products Pricing Section -->
+<section id="physical-products" class="max-w-6xl mx-auto px-4 py-8 md:py-16" style="background-color: #F5F1E8;">
+  <h2 class="text-2xl md:text-3xl lg:text-4xl font-vintage font-black text-center mb-4 text-vintage-burgundy">Distinguished Physical Products</h2>
+  <p class="text-center text-vintage-sepia max-w-3xl mx-auto mb-8 md:mb-12 font-body text-base md:text-lg px-4">Choose a distinguished plan to sell physical products on our exclusive marketplace</p>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
+
+    <!-- Free Plan -->
+    <div class="plan vintage-card rounded-2xl p-6 md:p-8 flex flex-col justify-between vintage-hover">
+      <div>
+        <h3 class="text-xl md:text-2xl font-vintage font-bold text-vintage-burgundy mb-3">Free</h3>
+        <p class="text-sm text-vintage-sepia mb-6 font-body">Ideal for testing the distinguished waters</p>
+        <ul class="text-sm text-vintage-sepia space-y-2 mb-8 font-body">
+          <li class="flex items-center"><i class="fas fa-check text-vintage-gold mr-2"></i> 3 product listings</li>
+          <li class="flex items-center text-vintage-rust"><i class="fas fa-times text-vintage-rust mr-2"></i> No analytics</li>
+          <li class="flex items-center text-vintage-rust"><i class="fas fa-times text-vintage-rust mr-2"></i> No priority listing</li>
+          <li class="flex items-center"><i class="fas fa-check text-vintage-gold mr-2"></i> Community support</li>
+        </ul>
+      </div>
+      <div class="text-center">
+        <div class="text-2xl md:text-3xl font-vintage font-black mb-4 text-vintage-burgundy">$0 <span class="text-base md:text-lg font-body font-normal text-vintage-sepia">/mo</span></div>
+        <button data-plan="free" class="open-modal w-full vintage-gradient text-white py-3 rounded-xl font-vintage font-bold hover:shadow-lg transition">Get Started</button>
+      </div>
+    </div>
+
+    <!-- Basic Plan -->
+    <div class="plan vintage-card rounded-2xl p-6 md:p-8 flex flex-col justify-between vintage-hover">
+      <div>
+        <h3 class="text-xl md:text-2xl font-vintage font-bold text-vintage-burgundy mb-3">Basic</h3>
+        <p class="text-sm text-vintage-sepia mb-6 font-body">Great for distinguished small businesses</p>
+        <ul class="text-sm text-vintage-sepia space-y-2 mb-8 font-body">
+          <li class="flex items-center"><i class="fas fa-check text-vintage-gold mr-2"></i> Up to 20 products</li>
+          <li class="flex items-center"><i class="fas fa-check text-vintage-gold mr-2"></i> Email support</li>
+          <li class="flex items-center"><i class="fas fa-check text-vintage-gold mr-2"></i> Basic dashboard</li>
+          <li class="flex items-center"><i class="fas fa-gift text-vintage-bronze mr-2"></i> 4-day free trial</li>
+        </ul>
+      </div>
+      <div class="text-center">
+        <div class="text-2xl md:text-3xl font-vintage font-black mb-4 text-vintage-burgundy">$5 <span class="text-base md:text-lg font-body font-normal text-vintage-sepia">/mo</span></div>
+        <button data-plan="basic" class="open-modal w-full vintage-gradient text-white py-3 rounded-xl font-vintage font-bold hover:shadow-lg transition">Start Trial</button>
+      </div>
+    </div>
+
+    <!-- Pro Plan -->
+    <div class="plan vintage-card rounded-2xl p-6 md:p-8 flex flex-col justify-between vintage-hover border-2 md:border-4 border-vintage-gold bg-gradient-to-br from-vintage-ivory to-vintage-cream md:transform md:scale-105">
+      <div>
+        <div class="text-center mb-4">
+          <span class="bg-vintage-gold text-vintage-burgundy px-3 md:px-4 py-1 md:py-2 rounded-full font-vintage font-bold text-xs md:text-sm">Most Popular</span>
+        </div>
+        <h3 class="text-xl md:text-2xl font-vintage font-bold text-vintage-burgundy mb-3">Pro</h3>
+        <p class="text-sm text-vintage-sepia mb-6 font-body">Scale with distinguished confidence</p>
+        <ul class="text-sm text-vintage-sepia space-y-2 mb-8 font-body">
+          <li class="flex items-center"><i class="fas fa-check text-vintage-gold mr-2"></i> Unlimited listings</li>
+          <li class="flex items-center"><i class="fas fa-check text-vintage-gold mr-2"></i> Priority listing</li>
+          <li class="flex items-center"><i class="fas fa-check text-vintage-gold mr-2"></i> 5% commission</li>
+          <li class="flex items-center"><i class="fas fa-gift text-vintage-bronze mr-2"></i> 4-day free trial</li>
+        </ul>
+      </div>
+      <div class="text-center">
+        <div class="text-2xl md:text-3xl font-vintage font-black mb-4 text-vintage-burgundy">$17 <span class="text-base md:text-lg font-body font-normal text-vintage-sepia">/mo</span></div>
+        <button data-plan="pro" class="open-modal w-full vintage-gradient text-white py-3 rounded-xl font-vintage font-bold hover:shadow-lg transition">Start Trial</button>
+      </div>
+    </div>
+
+    <!-- Premium Plan -->
+    <div class="plan vintage-card rounded-2xl p-6 md:p-8 flex flex-col justify-between vintage-hover">
+      <div>
+        <h3 class="text-xl md:text-2xl font-vintage font-bold text-vintage-burgundy mb-3">Premium</h3>
+        <p class="text-sm text-vintage-sepia mb-6 font-body">Everything you need to dominate with distinction</p>
+        <ul class="text-sm text-vintage-sepia space-y-2 mb-8 font-body">
+          <li class="flex items-center"><i class="fas fa-check text-vintage-gold mr-2"></i> Unlimited everything</li>
+          <li class="flex items-center"><i class="fas fa-check text-vintage-gold mr-2"></i> Ads & promotions</li>
+          <li class="flex items-center"><i class="fas fa-check text-vintage-gold mr-2"></i> 24/7 VIP support</li>
+          <li class="flex items-center"><i class="fas fa-gift text-vintage-bronze mr-2"></i> 4-day free trial</li>
+        </ul>
+      </div>
+      <div class="text-center">
+        <div class="text-2xl md:text-3xl font-vintage font-black mb-4 text-vintage-burgundy">$33 <span class="text-base md:text-lg font-body font-normal text-vintage-sepia">/mo</span></div>
+        <button data-plan="premium" class="open-modal w-full vintage-gradient text-white py-3 rounded-xl font-vintage font-bold hover:shadow-lg transition">Start Trial</button>
+      </div>
+    </div>
+
+  </div>
+  
+  <!-- Navigation Buttons -->
+  <div class="flex flex-col md:flex-row justify-center mt-8 md:mt-12 gap-4 md:gap-6 px-4">
+    <div class="relative inline-block">
+      <button class="disabled-button vintage-gradient text-white px-6 md:px-8 py-3 md:py-4 rounded-xl text-base md:text-lg font-vintage font-bold transition flex items-center justify-center w-full md:w-auto">
+        <span>Explore Digital Products</span>
+        <i class="fas fa-arrow-down ml-3"></i>
+      </button>
+    </div>
+    <div class="relative inline-block">
+      <button class="disabled-button bg-vintage-ivory text-vintage-burgundy border-2 border-vintage-gold px-6 md:px-8 py-3 md:py-4 rounded-xl text-base md:text-lg font-vintage font-bold transition flex items-center justify-center w-full md:w-auto">
+        <span>View Services</span>
+        <i class="fas fa-arrow-down ml-3"></i>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- Digital Products Section (Disabled) -->
+<section id="digital-products" class="max-w-7xl mx-auto px-4 py-8 md:py-16 opacity-50" style="background-color: #F5F1E8;">
+  <div class="text-center mb-8 md:mb-12">
+    <h2 class="text-2xl md:text-3xl lg:text-4xl font-vintage font-black text-vintage-burgundy mb-4">Distinguished Digital Products</h2>
+    <p class="text-vintage-sepia max-w-3xl mx-auto font-body text-base md:text-lg px-4">Feature currently under development - Coming Soon!</p>
+    <div class="mt-4 inline-flex items-center bg-vintage-rust text-white px-4 py-2 rounded-full font-vintage font-bold text-sm">
+      <i class="fas fa-tools mr-2"></i>
+      Under Construction
+    </div>
+  </div>
+</section>
+
+<!-- Services Section (Disabled) -->
+<section id="services" class="max-w-7xl mx-auto px-4 py-8 md:py-16 opacity-50" style="background-color: #F5F1E8;">
+  <div class="text-center mb-8 md:mb-12">
+    <h2 class="text-2xl md:text-3xl lg:text-4xl font-vintage font-black text-vintage-burgundy mb-4">Distinguished Professional Services</h2>
+    <p class="text-vintage-sepia max-w-3xl mx-auto font-body text-base md:text-lg px-4">Feature currently under development - Coming Soon!</p>
+    <div class="mt-4 inline-flex items-center bg-vintage-rust text-white px-4 py-2 rounded-full font-vintage font-bold text-sm">
+      <i class="fas fa-tools mr-2"></i>
+      Under Construction
+    </div>
+  </div>
+</section>
+
+<!-- Physical Products Modal Signup Form -->
+<div id="signupModal" class="modal fixed inset-0 backdrop-blur-sm items-center justify-center z-50 p-4">
+  <div class="vintage-card rounded-2xl p-6 md:p-8 w-full max-w-md relative shadow-2xl">
+    <button class="absolute top-4 right-4 text-vintage-sepia hover:text-vintage-rust text-xl md:text-2xl font-bold" onclick="closeModal('signupModal')">✖</button>
+    <h2 class="text-xl md:text-2xl font-vintage font-black text-center text-vintage-burgundy mb-6">Create Your Distinguished Physical Products Store</h2>
+    <form id="signupForm" class="space-y-4 md:space-y-5" data-redirect="dashboard.html">
+      <input name="username" type="text" placeholder="Store Name" required class="w-full border-2 border-vintage-gold rounded-xl px-4 py-3 bg-vintage-cream text-vintage-sepia font-body focus:border-vintage-burgundy focus:outline-none" />
+      <input name="email" type="email" placeholder="Business Email" required class="w-full border-2 border-vintage-gold rounded-xl px-4 py-3 bg-vintage-cream text-vintage-sepia font-body focus:border-vintage-burgundy focus:outline-none" />
+      <p class="email-feedback text-sm mt-1 font-body"></p>
+      <input name="password" type="password" placeholder="Password" required class="w-full border-2 border-vintage-gold rounded-xl px-4 py-3 bg-vintage-cream text-vintage-sepia font-body focus:border-vintage-burgundy focus:outline-none" />
+      <input type="hidden" name="plan" class="selected-plan" />
+      <input type="hidden" name="product_type" value="physical" />
+      <button type="submit" class="w-full vintage-gradient text-white py-3 rounded-xl font-vintage font-bold hover:shadow-lg transition">
+        Register Now
+      </button>
+    </form>
+    <p class="text-sm text-center mt-4 md:mt-6 text-vintage-sepia font-body">
+      Already a distinguished seller? <a href="../login" class="text-vintage-burgundy hover:text-vintage-gold font-bold">Log in</a>
+    </p>
+  </div>
+</div>
+
+<div id="otpModal" class="otp-modal">
+  <div class="otp-modal-content">
+    <h3 class="font-vintage font-bold text-vintage-burgundy text-lg md:text-xl mb-4">🔐 Email Verification</h3>
+    <p class="font-body text-vintage-sepia mb-4 text-sm md:text-base">An OTP has been sent to your email. Please enter it below to continue:</p>
+    <input type="text" id="otpInput" placeholder="Enter OTP" maxlength="6" />
+    <div id="otpError" class="otp-error"></div>
+    <button id="otpSubmitBtn">Verify OTP</button>
+  </div>
+</div>
+
+<script>
+  const API = "http://api.iyonicorp.com";
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // Init features on page load
+    initHeroCarousel();
+
+    // Setup modals
+    setupModalHandlers();
+
+    // Setup email validation
+    setupEmailValidation("signupForm");
+
+    // Setup form handlers with redirect URLs
+    setupFormSubmission("signupForm", "../login");              // Physical
+
+    // Block disabled features
+    blockDisabledFeatures();
+  });
+
+  // =========================
+  // ✨ Block Disabled Features
+  // =========================
+  function blockDisabledFeatures() {
+    // Block digital and service buttons
+    const disabledButtons = document.querySelectorAll('.disabled-button');
+    disabledButtons.forEach(button => {
+      button.addEventListener('click', (e) => {
+        e.preventDefault();
+        toast("🚧 This feature is currently under development. Stay tuned!", "warning");
+      });
+    });
+
+    // Block navigation to disabled sections
+    const disabledLinks = document.querySelectorAll('a[href="#digital-products"], a[href="#services"]');
+    disabledLinks.forEach(link => {
+      if (!link.classList.contains('disabled-button')) {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          toast("🚧 This section is currently under development!", "warning");
+        });
+      }
+    });
+  }
+
+  // =========================
+  // ✨ Hero Carousel
+  // =========================
+  function initHeroCarousel() {
+    const carousel = document.getElementById("heroCarousel");
+    const slides = document.querySelectorAll(".carousel-slide");
+    const dots = document.querySelectorAll(".carousel-dot");
+    const prevBtn = document.getElementById("prevSlide");
+    const nextBtn = document.getElementById("nextSlide");
+    const container = document.querySelector(".carousel-slides");
+
+    let current = 0;
+    let interval;
+
+    const goTo = i => {
+      current = i;
+      container.style.transform = `translateX(-${i * 100}%)`;
+      updateDots();
+    };
+
+    const updateDots = () => {
+      dots.forEach((dot, idx) => {
+        dot.classList.toggle("opacity-100", idx === current);
+        dot.classList.toggle("opacity-50", idx !== current);
+      });
+    };
+
+    const start = () => {
+      interval = setInterval(() => goTo((current + 1) % slides.length), 5000);
+    };
+
+    prevBtn?.addEventListener("click", () => goTo((current - 1 + slides.length) % slides.length));
+    nextBtn?.addEventListener("click", () => goTo((current + 1) % slides.length));
+    dots?.forEach((dot, i) => dot.addEventListener("click", () => goTo(i)));
+
+    carousel?.addEventListener("mouseenter", () => clearInterval(interval));
+    carousel?.addEventListener("mouseleave", start);
+
+    goTo(0);
+    start();
+  }
+
+  // =========================
+  // ✨ Modal Logic
+  // =========================
+  function setupModalHandlers() {
+    const modalTriggers = [
+      { selector: ".open-modal", modalId: "signupModal" }
+    ];
+
+    modalTriggers.forEach(({ selector, modalId }) => {
+      document.querySelectorAll(selector).forEach(button => {
+        button.addEventListener("click", () => {
+          const plan = button.dataset.plan;
+          const modal = document.getElementById(modalId);
+          modal.querySelector(".selected-plan").value = plan;
+          modal.classList.add("show");
+        });
+      });
+    });
+
+    // Close modal when clicking outside
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('modal')) {
+        e.target.classList.remove('show');
+      }
+    });
+  }
+
+  function closeModal(modalId) {
+    document.getElementById(modalId)?.classList.remove("show");
+  }
+
+  // =========================
+  // ✨ Email Live Validation
+  // =========================
+  function setupEmailValidation(formId) {
+    const form = document.getElementById(formId);
+    const emailInput = form.querySelector('input[name="email"]');
+    const emailFeedback = form.querySelector('.email-feedback');
+
+    emailInput.addEventListener("input", async () => {
+      const email = emailInput.value.trim();
+      emailFeedback.className = "email-feedback text-sm mt-1";
+
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        emailFeedback.textContent = "❌ Invalid email format.";
+        emailFeedback.classList.add("text-red-600");
+        return;
+      }
+
+      emailFeedback.textContent = "Checking availability...";
+      emailFeedback.classList.add("text-gray-500");
+
+      try {
+        const res = await fetch(`${API}/find?collection=users&email=${encodeURIComponent(email)}`);
+        const data = await res.json();
+
+        if (data.length > 0) {
+          emailFeedback.textContent = "⚠️ Email already in use.";
+          emailFeedback.classList.remove("text-gray-500");
+          emailFeedback.classList.add("text-red-600");
+        } else {
+          emailFeedback.textContent = "✅ Email is available.";
+          emailFeedback.classList.remove("text-red-600");
+          emailFeedback.classList.add("text-green-600");
+        }
+      } catch (error) {
+        emailFeedback.textContent = "Error checking email availability";
+        emailFeedback.classList.add("text-red-600");
+      }
+    });
+  }
+
+  // =========================
+  // ✨ Form Submission
+  // =========================
+
+function toast(message, type = "info") {
+  let container = document.querySelector(".toast-container");
+  if (!container) {
+    container = document.createElement("div");
+    container.className = "toast-container";
+    document.body.appendChild(container);
+  }
+
+  const toast = document.createElement("div");
+  toast.className = `toast ${type}`;
+  toast.textContent = message;
+
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.remove();
+  }, 4000);
+}
+
+async function setupFormSubmission(formId, redirectUrl) {
+  const form = document.getElementById(formId);
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.textContent;
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Processing...";
+
+    const email = form.querySelector('input[name="email"]').value.trim();
+    const username = form.querySelector('input[name="username"]').value.trim();
+    const plan = form.querySelector('input[name="plan"]').value;
+    const password = form.querySelector('input[name="password"]').value;
+    const productType = form.querySelector('input[name="product_type"]').value;
+
+    try {
+      const [resEmail, resUsername] = await Promise.all([
+        fetch(`${API}/find?collection=users&email=${encodeURIComponent(email)}`),
+        fetch(`${API}/find?collection=users&username=${encodeURIComponent(username)}`)
+      ]);
+
+      const existsEmail = await resEmail.json();
+      const existsUsername = await resUsername.json();
+
+      if (existsEmail.length > 0) {
+        toast("⚠️ Email already in use.", "warning");
+        throw new Error("Email exists");
+      }
+
+      if (existsUsername.length > 0) {
+        toast("⚠️ Store/Business name already taken.", "warning");
+        throw new Error("Username exists");
+      }
+
+      const otpVerified = await requestAndVerifyOtp(email);
+      if (!otpVerified) throw new Error("OTP verification failed");
+
+      const sellerData = {
+        username,
+        email,
+        password,
+        plan,
+        product_type: productType
+      };
+
+      const res = await fetch(`${API}/signup-seller`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(sellerData)
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Signup failed");
+      }
+
+      toast("✅ Seller account created successfully!", "success");
+      setTimeout(() => {
+        window.location.href = `${redirectUrl}?seller=${encodeURIComponent(username)}`;
+      }, 1500);
+    } catch (err) {
+      console.error("Signup error:", err);
+      toast("❌ Registration failed. " + err.message, "error");
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+    }
+  });
+}
+
+async function requestAndVerifyOtp(email) {
+  try {
+    const otpRes = await fetch(`${API}/send-otp`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email })
+    });
+
+    if (!otpRes.ok) {
+      toast("❌ Could not send OTP. Try again.", "error");
+      return false;
+    }
+
+    toast("📧 OTP sent to your email!", "info");
+    return await showOtpModal(email);
+  } catch (error) {
+    toast("❌ Error sending OTP. Please try again.", "error");
+    return false;
+  }
+}
+
+function showOtpModal(email) {
+  return new Promise((resolve) => {
+    const modal = document.getElementById("otpModal");
+    const input = document.getElementById("otpInput");
+    const error = document.getElementById("otpError");
+    const oldBtn = document.getElementById("otpSubmitBtn");
+
+    modal.style.display = "flex";
+    input.value = "";
+    error.textContent = "";
+    input.focus();
+
+    const newBtn = oldBtn.cloneNode(true);
+    oldBtn.parentNode.replaceChild(newBtn, oldBtn);
+    newBtn.disabled = false;
+    newBtn.textContent = "Verify OTP";
+
+    // Handle Enter key press
+    input.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") {
+        newBtn.click();
+      }
+    });
+
+    newBtn.addEventListener("click", async () => {
+      const userOtp = input.value.trim();
+      if (!userOtp) {
+        error.textContent = "⚠️ OTP is required.";
+        input.focus();
+        return;
+      }
+
+      if (userOtp.length !== 6) {
+        error.textContent = "⚠️ OTP must be 6 digits.";
+        input.focus();
+        return;
+      }
+
+      newBtn.disabled = true;
+      newBtn.textContent = "Verifying...";
+
+      try {
+        const verifyRes = await fetch(`${API}/verify-otp`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, otp: userOtp })
+        });
+
+        if (!verifyRes.ok) {
+          error.textContent = "❌ Incorrect or expired OTP.";
+          newBtn.disabled = false;
+          newBtn.textContent = "Verify OTP";
+          input.focus();
+          return;
+        }
+
+        modal.style.display = "none";
+        toast("✅ OTP Verified!", "success");
+        resolve(true);
+      } catch (err) {
+        console.error(err);
+        error.textContent = "❌ Verification failed.";
+        toast("❌ Verification failed.", "error");
+        newBtn.disabled = false;
+        newBtn.textContent = "Verify OTP";
+        input.focus();
+      }
+    });
+
+    // Auto-focus and select all on modal show
+    setTimeout(() => {
+      input.focus();
+      input.select();
+    }, 100);
+  });
+}
+
+// Handle smooth scrolling for anchor links
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function (e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute('href'));
+    if (target) {
+      target.scrollIntoView({
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  });
+});
+
+// Handle window resize for responsive adjustments
+window.addEventListener('resize', () => {
+  // Recalculate any dynamic elements if needed
+  const modals = document.querySelectorAll('.modal');
+  modals.forEach(modal => {
+    if (modal.classList.contains('show')) {
+      // Ensure modal is properly centered on resize
+      modal.style.display = 'flex';
+    }
+  });
+});
+
+</script>
+
+</body>
+</html>
