@@ -1,0 +1,4420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Seller Dashboard – ShopRight</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style type="text/tailwindcss">
+    .toggle-btn {
+      @apply px-3 py-1.5 text-sm font-medium text-gray-600 bg-white rounded-full transition duration-150 ease-in-out hover:bg-indigo-100 hover:text-indigo-700 focus:outline-none;
+    }
+
+    .toggle-btn.active {
+      @apply bg-indigo-600 text-white shadow-md;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+  <!-- Mobile Navbar -->
+  <div class="md:hidden flex justify-between items-center px-4 py-3 bg-white border-b shadow sticky top-0 z-50 h-[64px]">
+    <h1 class="text-lg font-bold text-indigo-600">ShopRight Seller</h1>
+    <button id="hamburgerBtn" class="text-indigo-600 text-2xl font-bold">&#9776;</button>
+  </div>
+
+  <!-- Full Page Layout -->
+  <div class="flex min-h-screen">
+
+    <!-- Sidebar -->
+    <aside id="sidebar"
+      class="w-64 bg-white shadow-md fixed top-[64px] left-0 h-[calc(100%-64px)] z-40 transform -translate-x-full transition-transform duration-300 md:relative md:top-0 md:h-auto md:translate-x-0 md:block hidden">
+      
+      <div class="p-6 border-b hidden md:block">
+        <h1 class="text-xl font-bold text-indigo-600">ShopRight Seller</h1>
+      </div>
+
+      <nav class="mt-6 space-y-1">
+        <a href="#" data-section="analytics" id="analyticsLink"
+          class="sidebar-link block px-6 py-3 text-gray-700 bg-indigo-50 font-semibold relative">
+          Analytics
+          <span id="analyticsLockIcon" class="absolute right-6 text-yellow-500 hidden">🔒</span>
+        </a>
+        <a href="#" data-section="products"
+          class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50">Products</a>
+        <a href="#" data-section="inventory" id="inventoryLink"
+          class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50 relative">
+          📦 Inventory
+          <span id="inventoryLockIcon" class="absolute right-6 text-yellow-500 hidden">🔒</span>
+        </a>
+        <a href="#" data-section="sales"
+          class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50">Sales</a>
+        <a href="#" data-section="coupons" id="couponsLink"
+          class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50 relative">
+          🎫 Coupons
+          <span id="couponsLockIcon" class="absolute right-6 text-yellow-500 hidden">🔒</span>
+        </a>
+        <a href="#" data-section="settings"
+          class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50">General Settings</a>
+        <a id="themesLink" class="block px-6 py-3 text-gray-700 hover:bg-indigo-50">Themes</a>
+        <a id="shopLink" target="_blank"
+          class="block px-6 py-3 text-indigo-600 hover:bg-indigo-50 font-semibold">View My Shop</a>
+            <!-- ADD THIS LOGOUT BUTTON -->
+  <button id="logoutBtn" class="w-full text-left block px-6 py-3 text-red-600 hover:bg-red-50 font-semibold border-t border-gray-200 mt-4">
+    🚪 Logout
+  </button>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-x-hidden px-4 sm:px-6 lg:px-8 pt-6">
+<!-- Manage Product Modal -->
+<div id="manageProductModal" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
+  <div class="bg-white w-full max-w-2xl rounded-lg shadow-lg p-6 space-y-4 overflow-y-auto max-h-[90vh]">
+    <h2 class="text-lg font-semibold text-indigo-700">Manage Product</h2>
+    <div id="manageProductContent" class="space-y-4"></div>
+    <div class="flex justify-end gap-2 pt-2">
+      <button id="closeManageModalBtn" class="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300">Close</button>
+      <button id="saveChangesBtn" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Save</button>
+    </div>
+  </div>
+</div>
+<!-- ANALYTICS -->
+<section id="section-analytics" class="section space-y-8 px-4 sm:px-6 lg:px-8">
+  <!-- Upgrade Prompt for Analytics (Hidden by default) -->
+  <div id="analyticsUpgradePrompt" class="hidden bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-xl p-8 text-center">
+    <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-yellow-100 mb-4">
+      <svg class="h-8 w-8 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+      </svg>
+    </div>
+    <h3 class="text-2xl font-bold text-gray-900 mb-2">Analytics Not Available</h3>
+    <p class="text-gray-600 mb-6 max-w-md mx-auto">
+      Analytics and detailed insights are available for Basic plan and above. Upgrade your subscription to track your growth, customers, and success metrics.
+    </p>
+    <button onclick="document.getElementById('upgradeBtn').click()" class="bg-indigo-600 text-white px-8 py-3 rounded-lg hover:bg-indigo-700 font-semibold transition-all transform hover:scale-105">
+      🚀 Upgrade to Basic Plan
+    </button>
+  </div>
+
+  <!-- Analytics Content (Hidden for free users) -->
+  <div id="analyticsContent">
+    <!-- Top Bar -->
+    <div class="mb-6">
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-indigo-700">Welcome back, <span id="storeName">StoreName</span> 👋</h2>
+      <p class="text-sm text-gray-600 mt-1">Track your growth, customers, and success metrics.</p>
+      <p class="text-sm mt-2">
+        <span class="text-gray-500">Share Your Shop:</span>
+        <span id="publicUrl" class="text-indigo-700 underline cursor-pointer">yourstore.shop/xyz</span>
+      </p>
+    </div>
+
+  <!-- Key Metrics -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+    <div class="bg-gradient-to-r from-indigo-600 to-indigo-400 text-white rounded-xl p-5 shadow">
+      <h3 class="text-sm font-medium">Total Earnings</h3>
+      <p id="earnings" class="text-3xl font-bold mt-2">$0</p>
+    </div>
+    <div class="bg-white rounded-xl p-5 shadow">
+      <h3 class="text-sm text-gray-500">Monthly Orders</h3>
+      <p id="monthlyOrders" class="text-2xl font-semibold text-indigo-600 mt-2">--</p>
+    </div>
+    <div class="bg-white rounded-xl p-5 shadow">
+      <h3 class="text-sm text-gray-500">Avg Order Value</h3>
+      <p id="avgOrderValue" class="text-2xl font-semibold text-indigo-600 mt-2">--</p>
+    </div>
+    <div class="bg-white rounded-xl p-5 shadow">
+      <h3 class="text-sm text-gray-500">Total Products Sold</h3>
+      <p id="totalSold" class="text-2xl font-semibold text-indigo-600 mt-2">--</p>
+    </div>
+  </div>
+
+  <!-- Sales Over Time -->
+  <div class="bg-white rounded-xl shadow p-6 space-y-4">
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <h3 class="text-xl font-semibold text-indigo-700">Sales Over Time</h3>
+
+      <!-- Controls -->
+      <div class="flex flex-col sm:flex-row sm:items-center gap-3 flex-wrap">
+
+        <!-- Date Picker -->
+        <div class="flex flex-wrap items-center gap-3 bg-gray-50 p-2 rounded-lg shadow-sm">
+          <div class="flex flex-col text-xs text-gray-500 font-medium">
+            <span class="text-[11px] uppercase tracking-wider">From</span>
+            <input type="date" id="startDate" class="rounded-md border border-gray-300 px-2 py-1 text-sm shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+          </div>
+
+          <span class="text-gray-400 font-semibold text-sm">→</span>
+
+          <div class="flex flex-col text-xs text-gray-500 font-medium">
+            <span class="text-[11px] uppercase tracking-wider">To</span>
+            <input type="date" id="endDate" class="rounded-md border border-gray-300 px-2 py-1 text-sm shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+          </div>
+        </div>
+
+        <!-- Time Selector & Button -->
+        <div class="flex flex-wrap items-center gap-2">
+          <select id="timeRange" class="border border-gray-300 rounded-md px-3 py-2 text-sm shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-700">
+            <option value="hour">Hourly</option>
+            <option value="day">Daily</option>
+            <option value="week">Weekly</option>
+            <option value="month" selected>Monthly</option>
+            <option value="year">Yearly</option>
+          </select>
+
+          <button id="applyRange" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow transition">
+            Apply
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <canvas id="salesChart" height="120"></canvas>
+  </div>
+
+  <!-- Cart & Wishlist Charts -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="bg-white rounded-xl shadow p-6">
+      <h3 class="text-lg font-semibold text-indigo-700 mb-2">Cart Item Distribution</h3>
+      <canvas id="cartChart" height="120"></canvas>
+    </div>
+    <div class="bg-white rounded-xl shadow p-6">
+      <h3 class="text-lg font-semibold text-indigo-700 mb-2">Wishlist Popularity</h3>
+      <canvas id="wishlistChart" height="120"></canvas>
+    </div>
+  </div>
+
+<!-- Top Products Table -->
+<div class="bg-white rounded-xl shadow p-6 overflow-x-auto">
+  <h3 class="text-lg font-semibold text-indigo-700 mb-4">Top Performing Products</h3>
+  <table class="min-w-full text-sm text-gray-700">
+    <thead class="bg-gray-50 border-b">
+      <tr>
+        <th class="py-2 px-4 text-left">Product</th>
+        <th class="py-2 px-4 text-left">Units Sold</th>
+        <th class="py-2 px-4 text-left">Revenue (incl. Delivery)</th>
+      </tr>
+    </thead>
+    <tbody id="topProductsTable" class="divide-y divide-gray-100">
+      <!-- Dynamically inserted rows -->
+    </tbody>
+  </table>
+</div>
+
+<div class="bg-white rounded-xl shadow p-6 space-y-4">
+  <h3 class="text-lg font-semibold text-indigo-700">Conversion Funnel</h3>
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+    <div class="bg-gray-50 rounded-lg p-4">
+      <p class="text-xs text-gray-500">Product Views</p>
+      <p id="views" class="text-xl font-bold text-indigo-600 mt-1">--</p>
+    </div>
+    <div class="bg-gray-50 rounded-lg p-4">
+      <p class="text-xs text-gray-500">Add to Cart</p>
+      <p id="addedToCart" class="text-xl font-bold text-indigo-600 mt-1">--</p>
+    </div>
+    <div class="bg-gray-50 rounded-lg p-4">
+      <p class="text-xs text-gray-500">Reached Checkout</p>
+      <p id="checkoutReached" class="text-xl font-bold text-indigo-600 mt-1">--</p>
+    </div>
+    <div class="bg-gray-50 rounded-lg p-4">
+      <p class="text-xs text-gray-500">Completed Orders</p>
+      <p id="completedOrders" class="text-xl font-bold text-indigo-600 mt-1">--</p>
+    </div>
+  </div>
+</div>
+<div class="bg-white rounded-xl shadow p-6">
+  <h3 class="text-lg font-semibold text-indigo-700 mb-4">Best Time to Sell</h3>
+  <canvas id="bestTimeChart" height="120"></canvas>
+</div>
+
+
+<div class="bg-white rounded-xl shadow p-6 overflow-x-auto">
+  <h3 class="text-lg font-semibold text-indigo-700 mb-4">Profit Margins by Product</h3>
+  <table class="min-w-full text-sm text-gray-700">
+    <thead class="bg-gray-50 border-b text-left">
+      <tr>
+        <th class="py-2 px-4">Product</th>
+        <th class="py-2 px-4">Price</th>
+        <th class="py-2 px-4">Delivery Fee (Cost)</th>
+        <th class="py-2 px-4">Units Sold</th>
+        <th class="py-2 px-4">Total Revenue</th>
+        <th class="py-2 px-4">Profit/Unit</th>
+        <th class="py-2 px-4">Total Profit</th>
+      </tr>
+    </thead>
+    <tbody id="profitMarginsTable" class="divide-y divide-gray-100">
+      <!-- Dynamically filled -->
+    </tbody>
+  </table>
+  <!-- Explanation Section -->
+<div class="bg-indigo-50 border border-indigo-100 rounded-lg p-4 mt-6 text-sm text-gray-800">
+  <h4 class="text-indigo-700 font-semibold mb-2">📊 How These Numbers Work</h4>
+  <p class="mb-2">
+    This section helps you understand how each number in the <strong>Top Performing Products</strong> table is calculated.
+  </p>
+  <ul class="list-disc pl-5 space-y-1">
+    <li><strong>Price:</strong> The price of one unit of the product.</li>
+    <li><strong>Delivery Fee (Cost):</strong> The cost incurred to ship one unit (this is treated as a cost of goods).</li>
+    <li><strong>Units Sold:</strong> The total quantity of this product sold by you.</li>
+    <li><strong>Total Revenue:</strong> <code>(Price + Delivery Fee) × Units Sold</code></li>
+    <li><strong>Profit/Unit:</strong> <code>Price - Delivery Fee</code> (how much you earn from each unit sold)</li>
+    <li><strong>Total Profit:</strong> <code>Profit/Unit × Units Sold</code></li>
+  </ul>
+  <p class="mt-3 text-indigo-700">
+    ✔️ Use this to identify your most profitable products and uncover where you may be losing money (e.g. high delivery fees).
+  </p>
+</div>
+
+</div>
+
+
+  <!-- Customer Insights -->
+  <div class="bg-white rounded-xl shadow p-6 space-y-5">
+    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4">
+      <h3 class="text-xl font-bold text-indigo-700 flex items-center gap-2">
+        Customer Insights
+      </h3>
+      <span class="text-sm text-gray-500">Updated <span class="font-medium">Today</span></span>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+      <div class="bg-indigo-50 border border-indigo-100 rounded-lg p-4 text-center">
+        <p class="text-xs uppercase text-gray-500 font-medium tracking-wide">Total Customers</p>
+        <p id="totalCustomers" class="text-2xl font-bold text-indigo-700 mt-1">--</p>
+      </div>
+      <div class="bg-pink-50 border border-pink-100 rounded-lg p-4 text-center">
+        <p class="text-xs uppercase text-gray-500 font-medium tracking-wide">Repeat Customers</p>
+        <p id="repeatCustomers" class="text-2xl font-bold text-pink-600 mt-1">--</p>
+      </div>
+      <div class="bg-yellow-50 border border-yellow-100 rounded-lg p-4 text-center">
+        <p class="text-xs uppercase text-gray-500 font-medium tracking-wide">Avg Purchase Frequency</p>
+        <p id="purchaseFrequency" class="text-2xl font-bold text-yellow-600 mt-1">--</p>
+      </div>
+    </div>
+
+    <div class="pt-4 border-t border-gray-200 mt-4 text-sm text-gray-600">
+      Curious about trends? Your <span class="font-medium text-indigo-600">repeat customers</span> represent loyalty,
+      while average frequency hints at product stickiness. Focus on nurturing these relationships!
+    </div>
+  </div>
+
+
+  <!-- Sales by Region -->
+<div class="bg-white rounded-xl shadow p-6 space-y-4">
+  <h3 class="text-lg font-semibold text-indigo-700 mb-4">🌍 Sales by Region</h3>
+  <canvas id="regionChart" height="120"></canvas>
+
+  <!-- Breakdown Table -->
+  <table class="min-w-full text-sm text-gray-700 mt-6">
+    <thead class="bg-gray-50 border-b">
+      <tr>
+        <th class="py-2 px-4 text-left">Country</th>
+        <th class="py-2 px-4 text-left">Sales ($)</th>
+      </tr>
+    </thead>
+    <tbody id="regionTable" class="divide-y divide-gray-100">
+      <!-- Rows will be filled via JS -->
+    </tbody>
+  </table>
+
+  <!-- Info Box -->
+  <div class="bg-indigo-50 border border-indigo-100 rounded-lg p-4 mt-6 text-sm text-gray-800">
+    <h4 class="text-indigo-700 font-semibold mb-2">🌍 What This Means</h4>
+    <p class="mb-2">
+      This section shows you the total sales from each buyer's country or delivery region. It's a great way to spot where your customers are most active.
+    </p>
+    <ul class="list-disc pl-5 space-y-1">
+      <li><strong>Higher sales</strong> in a country suggest stronger brand presence or demand.</li>
+      <li><strong>Use this data</strong> to focus ads or offer regional discounts.</li>
+    </ul>
+    <p class="mt-3 text-indigo-700">
+      📌 Tip: Tailor promotions or language to top-performing regions to maximize conversions.
+    </p>
+  </div>
+</div>
+
+
+  </div>
+</section>
+
+
+<!-- Sales Section -->
+<section id="section-sales" class="section p-6">
+  <h2 class="text-2xl font-bold mb-4 text-indigo-700">Sales Overview</h2>
+
+  <!-- Highlights -->
+  <div class="grid md:grid-cols-2 gap-4 mb-6">
+    <div class="bg-indigo-50 p-4 rounded-md shadow">
+      <h3 class="text-lg font-semibold text-indigo-800">Most Bought Product</h3>
+      <p id="mostBoughtProduct" class="text-sm text-gray-700 mt-1">Loading...</p>
+    </div>
+    <div class="bg-green-50 p-4 rounded-md shadow">
+      <h3 class="text-lg font-semibold text-green-800">Total Earnings</h3>
+      <p id="totalEarnings" class="text-sm text-gray-700 mt-1">$0</p>
+    </div>
+  </div>
+
+
+
+  <!-- Orders -->
+  <div id="tab-orders" class="tab-content">
+    <h3 class="text-lg font-semibold mb-2">Customer Orders</h3>
+    <div id="orderList" class="space-y-4"></div>
+  </div>
+
+
+
+  
+</section>
+
+<!-- COUPONS SECTION -->
+<section id="section-coupons" class="section hidden p-6">
+  <!-- Upgrade Prompt for Coupons (Hidden by default) -->
+  <div id="couponsUpgradePrompt" class="hidden bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200 rounded-xl p-8 text-center">
+    <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-purple-100 mb-4">
+      <svg class="h-8 w-8 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+      </svg>
+    </div>
+    <h3 class="text-2xl font-bold text-gray-900 mb-2">🎫 Coupons Not Available</h3>
+    <p class="text-gray-600 mb-6 max-w-md mx-auto">
+      Coupon management and discount codes are available for Pro plan and above. Upgrade your subscription to create and manage discount coupons for your customers.
+    </p>
+    <button onclick="document.getElementById('upgradeBtn').click()" class="bg-purple-600 text-white px-8 py-3 rounded-lg hover:bg-purple-700 font-semibold transition-all transform hover:scale-105">
+      🚀 Upgrade to Pro Plan
+    </button>
+  </div>
+
+  <!-- Coupons Content (Hidden for free/basic users) -->
+  <div id="couponsContent">
+    <h2 class="text-2xl font-bold mb-6 text-indigo-700">🎫 Coupon Management</h2>
+    
+    <!-- Coupon Stats -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+      <div class="bg-white rounded-lg shadow p-4">
+        <h3 class="text-sm text-gray-500">Total Coupons</h3>
+        <p id="totalCoupons" class="text-2xl font-bold text-indigo-600 mt-2">0</p>
+      </div>
+      <div class="bg-white rounded-lg shadow p-4">
+        <h3 class="text-sm text-gray-500">Active Coupons</h3>
+        <p id="activeCoupons" class="text-2xl font-bold text-green-600 mt-2">0</p>
+      </div>
+      <div class="bg-white rounded-lg shadow p-4">
+        <h3 class="text-sm text-gray-500">Times Used</h3>
+        <p id="couponsUsed" class="text-2xl font-bold text-blue-600 mt-2">0</p>
+      </div>
+      <div class="bg-white rounded-lg shadow p-4">
+        <h3 class="text-sm text-gray-500">Total Savings</h3>
+        <p id="totalSavings" class="text-2xl font-bold text-purple-600 mt-2">$0</p>
+      </div>
+    </div>
+
+    <!-- Add New Coupon Button -->
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="text-lg font-semibold text-gray-700">Your Coupons</h3>
+      <button id="addCouponBtn" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 text-sm font-medium">
+        + Create Coupon
+      </button>
+    </div>
+
+    <!-- Coupons List -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Code</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Value</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Products</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Usage</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="couponsTableBody" class="bg-white divide-y divide-gray-200">
+            <!-- Coupons will be loaded here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Coupon Modal -->
+<div id="couponModal" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
+  <div class="bg-white w-full max-w-lg rounded-lg shadow-lg p-6 space-y-4 overflow-y-auto max-h-[90vh]">
+    <h2 class="text-lg font-semibold text-indigo-700">Create New Coupon</h2>
+    
+    <div>
+      <label class="text-sm text-gray-600">Coupon Code</label>
+      <input type="text" id="couponCode" placeholder="e.g. SAVE20" class="w-full border px-3 py-2 rounded mt-1" />
+    </div>
+
+    <div>
+      <label class="text-sm text-gray-600">Discount Type</label>
+      <select id="discountType" class="w-full border px-3 py-2 rounded mt-1">
+        <option value="percentage">Percentage (%)</option>
+        <option value="fixed">Fixed Amount</option>
+      </select>
+    </div>
+
+    <div>
+      <label class="text-sm text-gray-600">Discount Value</label>
+      <input type="number" id="discountValue" placeholder="e.g. 20" class="w-full border px-3 py-2 rounded mt-1" />
+    </div>
+
+    <div>
+      <label class="text-sm text-gray-600">Minimum Order Amount</label>
+      <input type="number" id="minOrderAmount" placeholder="0" class="w-full border px-3 py-2 rounded mt-1" />
+    </div>
+
+    <div>
+      <label class="text-sm text-gray-600">Usage Limit</label>
+      <input type="number" id="usageLimit" placeholder="Unlimited (leave empty)" class="w-full border px-3 py-2 rounded mt-1" />
+    </div>
+
+    <div>
+      <label class="text-sm text-gray-600">Expiry Date</label>
+      <input type="date" id="expiryDate" class="w-full border px-3 py-2 rounded mt-1" />
+    </div>
+
+    <div>
+      <label class="text-sm text-gray-600">Apply to Products</label>
+      <select id="productSelection" class="w-full border px-3 py-2 rounded mt-1">
+        <option value="all">All Products</option>
+        <option value="specific">Specific Products</option>
+      </select>
+    </div>
+
+    <div id="specificProductsDiv" class="hidden">
+      <label class="text-sm text-gray-600">Select Products</label>
+      <div id="productCheckboxes" class="mt-2 max-h-40 overflow-y-auto border rounded p-2">
+        <!-- Product checkboxes will be loaded here -->
+      </div>
+    </div>
+
+    <div class="flex justify-end gap-2 pt-4">
+      <button id="closeCouponModalBtn" class="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300">Cancel</button>
+      <button id="saveCouponBtn" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Create Coupon</button>
+    </div>
+  </div>
+</div>
+
+<!-- Inventory Modals -->
+<!-- Restock Modal -->
+<div id="restockModal" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
+  <div class="bg-white w-full max-w-md rounded-lg shadow-lg p-6 space-y-4">
+    <h2 class="text-lg font-semibold text-indigo-700">Restock Product</h2>
+    
+    <div>
+      <label class="text-sm text-gray-600">Product Name</label>
+      <input type="text" id="restockProductName" class="w-full border px-3 py-2 rounded mt-1" readonly />
+    </div>
+
+    <div>
+      <label class="text-sm text-gray-600">Current Stock</label>
+      <input type="number" id="restockCurrentStock" class="w-full border px-3 py-2 rounded mt-1" readonly />
+    </div>
+
+    <div>
+      <label class="text-sm text-gray-600">Add Stock Quantity</label>
+      <input type="number" id="restockQuantity" class="w-full border px-3 py-2 rounded mt-1" min="1" placeholder="Enter quantity to add" />
+    </div>
+
+    <div>
+      <label class="text-sm text-gray-600">Restock Notes (Optional)</label>
+      <textarea id="restockNotes" class="w-full border px-3 py-2 rounded mt-1" rows="3" placeholder="Add notes about this restock..."></textarea>
+    </div>
+
+    <div class="flex justify-end gap-2 pt-4">
+      <button id="closeRestockModalBtn" class="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300">Cancel</button>
+      <button id="saveRestockBtn" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Restock</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bulk Restock Modal -->
+<div id="bulkRestockModal" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
+  <div class="bg-white w-full max-w-2xl rounded-lg shadow-lg p-6 space-y-4 overflow-y-auto max-h-[90vh]">
+    <h2 class="text-lg font-semibold text-indigo-700">Bulk Restock Products</h2>
+    
+    <div class="space-y-4" id="bulkRestockList">
+      <!-- Bulk restock items will be loaded here -->
+    </div>
+
+    <div class="flex justify-end gap-2 pt-4">
+      <button id="closeBulkRestockModalBtn" class="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300">Cancel</button>
+      <button id="saveBulkRestockBtn" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Apply All Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS: Manage Account -->
+<section id="section-settings" class="section hidden">
+  <h3 class="text-xl text-gray-700 font-semibold mb-6">⚙️ Manage Account</h3>
+
+  <!-- Account Info -->
+  <div class="bg-white rounded shadow p-6 mb-6">
+    <h4 class="text-lg font-semibold text-indigo-700 mb-2">👤 Account Information</h4>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="text-sm text-gray-600">Username</label>
+        <input type="text" id="accountUsername" class="w-full border px-3 py-2 rounded mt-1 bg-gray-100" readonly />
+      </div>
+      <div>
+        <label class="text-sm text-gray-600">Email</label>
+        <input type="email" id="accountEmail" class="w-full border px-3 py-2 rounded mt-1" />
+      </div>
+    </div>
+    <div class="mt-4 text-right">
+      <button id="updateAccountBtn" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm">Save Changes</button>
+    </div>
+  </div>
+
+<!-- Replace the existing billing section HTML with this updated version -->
+<div class="bg-white rounded shadow p-6 mb-6" id="billingSection">
+  <h4 class="text-lg font-semibold text-indigo-700 mb-2">💳 Billing & Subscription</h4>
+  <p class="text-sm text-gray-600 mb-2">Your current plan: 
+    <span class="font-bold text-indigo-700" id="currentPlan">Loading...</span>
+  </p>
+  <p class="text-sm text-gray-600 mb-2">
+    Price: <span id="planPrice" class="font-semibold text-gray-800">--</span> /
+    <span id="planCycle" class="font-semibold text-gray-800">--</span>
+  </p>
+  <p class="text-sm text-gray-600">Subscription Valid Until: 
+    <span id="renewalDate">Loading...</span>
+  </p>
+  <p class="text-sm text-gray-600">Time Remaining: 
+    <span id="countdownTimer" class="font-semibold text-indigo-600">Calculating...</span>
+  </p>
+
+  <ul id="planFeatures" class="text-sm text-gray-700 mt-4 space-y-1 list-disc ml-6"></ul>
+
+  <div class="mt-6 flex gap-3">
+    <button id="upgradeBtn" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm">
+      🔄 Manage Subscription
+    </button>
+  </div>
+</div>
+<!-- Subscription Modal -->
+<div id="subscriptionModal" class="fixed inset-0 z-50 bg-black/40 hidden justify-center items-center">
+  <div class="bg-white max-w-5xl w-full rounded-lg shadow-lg p-6 overflow-y-auto max-h-[90vh]">
+    <h2 class="text-2xl font-bold text-indigo-700 mb-2 flex items-center">
+      Choose a Plan
+      <span id="currentPlanTag" class="ml-3 text-sm font-medium text-gray-500">(Current: ...)</span>
+    </h2>
+
+    <div id="planOptions" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4"></div>
+
+    <div class="mt-6 text-right">
+      <button id="closeSubscriptionModal" class="text-gray-600 hover:underline text-sm">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Upgrade Required Modal (With close button) -->
+<div id="upgradeRequiredModal" class="fixed inset-0 z-50 bg-black/60 hidden justify-center items-center">
+  <div class="bg-white max-w-md w-full rounded-lg shadow-2xl p-8 mx-4">
+    <div class="text-center">
+      <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-yellow-100 mb-4">
+        <svg class="h-8 w-8 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 mb-2">Upgrade Required</h3>
+      <p id="upgradeRequiredMessage" class="text-gray-600 mb-6">
+        This feature requires a higher subscription plan.
+      </p>
+      <div class="flex gap-3">
+        <button id="closeUpgradeModalBtn" class="flex-1 bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 font-semibold">
+          Close
+        </button>
+        <button id="upgradeNowBtn" class="flex-1 bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 font-semibold">
+          Upgrade Now
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+  <!-- Password Change -->
+  <div class="bg-white rounded shadow p-6">
+    <h4 class="text-lg font-semibold text-indigo-700 mb-2">🔐 Change Password</h4>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div>
+        <label class="text-sm text-gray-600">Current Password</label>
+        <input type="password" id="currentPassword" class="w-full border px-3 py-2 rounded mt-1" />
+      </div>
+      <div>
+        <label class="text-sm text-gray-600">New Password</label>
+        <input type="password" id="newPassword" class="w-full border px-3 py-2 rounded mt-1" />
+      </div>
+      <div>
+        <label class="text-sm text-gray-600">Confirm New Password</label>
+        <input type="password" id="confirmPassword" class="w-full border px-3 py-2 rounded mt-1" />
+      </div>
+    </div>
+    <div class="mt-4 text-right">
+      <button id="changePasswordBtn" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm">Update Password</button>
+    </div>
+  </div>
+<!-- Seller Store Settings -->
+<div class="bg-white rounded shadow p-6 mb-6">
+  <h4 class="text-lg font-semibold text-indigo-700 mb-4">🏪 Store Delivery & Payment Settings</h4>
+
+  <!-- Payment Method -->
+  <div class="mb-4">
+    <label class="text-sm text-gray-600 block mb-1">Payment Method</label>
+    <select id="paymentMethod" class="w-full border rounded px-3 py-2">
+      <option value="delivery">Pay on Delivery Only</option>
+      <option value="shop">Pay on Shop Only</option>
+      <option value="both">Allow Both</option>
+    </select>
+  </div>
+
+
+
+  <!-- 💱 Currency Selection -->
+<div class="mb-4">
+  <label for="storeCurrency" class="text-sm text-gray-600 block mb-1">💱 Store Currency</label>
+  <select id="storeCurrency" class="w-full border rounded px-3 py-2">
+    <option value="USD">USD - US Dollar</option>
+    <option value="EUR">EUR - Euro</option>
+    <option value="GBP">GBP - British Pound</option>
+    <option value="NGN">NGN - Nigerian Naira</option>
+    <option value="KES">KES - Kenyan Shilling</option>
+    <option value="INR">INR - Indian Rupee</option>
+    <option value="ZAR">ZAR - South African Rand</option>
+  </select>
+</div>
+
+
+
+<!-- 🌍 Delivery Regions -->
+<div class="mb-6">
+  <label class="text-sm font-semibold text-gray-700 mb-2 block">🌍 Delivery Regions</label>
+
+  <!-- 🔍 Country Search -->
+  <input id="countrySearch" type="text" placeholder="Search country..." 
+         class="w-full border px-3 py-2 rounded mb-3 text-sm" oninput="filterCountries()" />
+
+  <!-- Country Options -->
+  <div id="countryList" class="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4"></div>
+
+  <!-- Country & State Fee Settings -->
+  <div id="regionSettings" class="space-y-6"></div>
+</div>
+
+<!-- Payment Gateway Options -->
+<div class="mb-6">
+  <h5 class="text-sm font-semibold text-gray-700 mb-2">💳 Preferred Payment Gateway(s)</h5>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-gray-700">
+
+    <!-- ✅ FREE GATEWAYS -->
+    <label class="flex items-center gap-2">
+      <input type="checkbox" value="paypal" class="paymentOption"> PayPal
+    </label>
+    <label class="flex items-center gap-2">
+      <input type="checkbox" value="paystack" class="paymentOption"> Paystack
+    </label>
+    <label class="flex items-center gap-2">
+      <input type="checkbox" value="flutterwave" class="paymentOption"> Flutterwave
+    </label>
+    <label class="flex items-center gap-2">
+      <input type="checkbox" value="razorpay" class="paymentOption"> Razorpay
+    </label>
+    <label class="flex items-center gap-2">
+      <input type="checkbox" value="instamojo" class="paymentOption"> Instamojo
+    </label>
+    <label class="flex items-center gap-2">
+      <input type="checkbox" value="khalti" class="paymentOption"> Khalti
+    </label>
+
+    <!-- 🔒 PREMIUM GATEWAYS -->
+    <label class="flex items-center gap-2 text-gray-400 cursor-not-allowed relative group">
+      <input type="checkbox" value="stripe" class="paymentOption" disabled>
+      Stripe
+      <span class="text-xs bg-yellow-100 text-yellow-800 rounded px-2 py-0.5 ml-2">Premium Package</span>
+      <div class="absolute top-full mt-1 hidden group-hover:block bg-black text-white text-xs rounded px-2 py-1 z-10">
+        Upgrade to unlock Stripe integration
+      </div>
+    </label>
+    <label class="flex items-center gap-2 text-gray-400 cursor-not-allowed relative group">
+      <input type="checkbox" value="square" class="paymentOption" disabled>
+      Square
+      <span class="text-xs bg-yellow-100 text-yellow-800 rounded px-2 py-0.5 ml-2">Premium Package</span>
+      <div class="absolute top-full mt-1 hidden group-hover:block bg-black text-white text-xs rounded px-2 py-1 z-10">
+        Upgrade to unlock Square integration
+      </div>
+    </label>
+    <label class="flex items-center gap-2 text-gray-400 cursor-not-allowed relative group">
+      <input type="checkbox" value="iyzipay" class="paymentOption" disabled>
+      Iyzipay
+      <span class="text-xs bg-yellow-100 text-yellow-800 rounded px-2 py-0.5 ml-2">Premium Package</span>
+      <div class="absolute top-full mt-1 hidden group-hover:block bg-black text-white text-xs rounded px-2 py-1 z-10">
+        Upgrade to unlock Iyzipay integration
+      </div>
+    </label>
+    <label class="flex items-center gap-2 text-gray-400 cursor-not-allowed relative group">
+      <input type="checkbox" value="wise" class="paymentOption" disabled>
+      Wise Business
+      <span class="text-xs bg-yellow-100 text-yellow-800 rounded px-2 py-0.5 ml-2">Premium Package</span>
+      <div class="absolute top-full mt-1 hidden group-hover:block bg-black text-white text-xs rounded px-2 py-1 z-10">
+        Backend API access required
+      </div>
+    </label>
+    <label class="flex items-center gap-2 text-gray-400 cursor-not-allowed relative group">
+      <input type="checkbox" value="revolut" class="paymentOption" disabled>
+      Revolut Business
+      <span class="text-xs bg-yellow-100 text-yellow-800 rounded px-2 py-0.5 ml-2">Premium Package</span>
+      <div class="absolute top-full mt-1 hidden group-hover:block bg-black text-white text-xs rounded px-2 py-1 z-10">
+        API-only integration (Backend Required)
+      </div>
+    </label>
+
+    <!-- 🌐 EXTERNAL GATEWAY: IyonicPay -->
+    <div class="col-span-1 sm:col-span-2 bg-purple-50 border border-purple-300 rounded-lg p-4 relative flex items-start gap-3 shadow-md">
+      <input type="checkbox" value="iyonicpay" class="paymentOption mt-1">
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <h6 class="font-semibold text-purple-800">IyonicPay (External Gateway)</h6>
+          <span class="text-xs text-white bg-purple-500 px-2 py-0.5 rounded-full">🔗 Connect</span>
+        </div>
+        <p class="text-sm text-gray-700">
+          Accept payments via <strong>IyonicPay</strong> by embedding your personalized request link.
+        </p>
+        <ul class="list-disc ml-5 mt-2 text-sm text-gray-600">
+          <li>Credit/Debit Cards</li>
+          <li>PayPal</li>
+          <li>Mobile Money & more</li>
+        </ul>
+        <p class="text-sm text-green-700 mt-2">
+          🔗 Sellers must provide their <strong>IyonicPay request link</strong><br>
+          (e.g. <code>https://pay.iyonicorp.com/request/?user=Andrea</code>)
+        </p>
+      </div>
+    </div>
+
+    <!-- ⭐ RECOMMENDED: ShopRight -->
+    <div class="col-span-1 sm:col-span-2 bg-indigo-50 border border-indigo-300 rounded-lg p-4 relative flex items-start gap-3 shadow-md">
+      <input type="checkbox" value="shopright" class="paymentOption mt-1" checked>
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <h6 class="font-semibold text-indigo-800">ShopRight Payment (Recommended)</h6>
+          <span class="text-xs text-white bg-indigo-500 px-2 py-0.5 rounded-full">✔️ Recommended</span>
+        </div>
+        <p class="text-sm text-gray-700">
+          The easiest way to receive payments with no setup required. Powered by <strong>Paystack</strong> through ShopRight.
+        </p>
+        <ul class="list-disc ml-5 mt-2 text-sm text-gray-600">
+          <li>Debit/Credit Cards (Visa, MasterCard, Verve)</li>
+          <li>Mobile Money (M-Pesa, Airtel Money)</li>
+          <li>Bank Transfers and more</li>
+        </ul>
+        <p class="text-sm text-green-700 mt-2">
+          💡 Ideal if you don't have your own payment gateway. Start selling immediately!
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Gateway Config Fields -->
+  <div id="gatewayConfigs" class="mt-4 space-y-4"></div>
+</div>
+
+
+  <!-- Save Button -->
+  <div class="mt-6 text-right">
+    <button onclick="saveStoreSettings()" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm">💾 Save Store Settings</button>
+  </div>
+</div>
+
+
+</section>
+
+    <!-- PRODUCTS -->
+    <section id="section-products" class="section hidden">
+      <!-- Product Metrics -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+  <div class="bg-white rounded shadow p-6">
+    <h3 class="text-sm text-gray-500">Total Products</h3>
+    <p id="productCount" class="text-2xl font-bold text-indigo-600 mt-2">--</p>
+  </div>
+  <div class="bg-white rounded shadow p-6">
+    <h3 class="text-sm text-gray-500">Categories Used</h3>
+    <p id="categoryCount" class="text-2xl font-bold text-indigo-600 mt-2">--</p>
+  </div>
+</div>
+
+      <div class="flex items-center justify-between mb-4 mt-6">
+        <h3 class="text-lg font-semibold text-gray-700">📋 Your Products</h3>
+        <button id="addProductBtn" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm">+ Add Product</button>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="productList"></div>
+    </section>
+
+    <!-- INVENTORY TRACKING SECTION -->
+    <section id="section-inventory" class="section hidden">
+      <!-- Upgrade Prompt for Inventory (Hidden by default) -->
+      <div id="inventoryUpgradePrompt" class="hidden bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-xl p-8 text-center">
+        <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
+          <svg class="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+          </svg>
+        </div>
+        <h3 class="text-2xl font-bold text-gray-900 mb-2">📦 Inventory Tracking Not Available</h3>
+        <p class="text-gray-600 mb-6 max-w-md mx-auto">
+          Advanced inventory tracking and management is available for paid plans. Upgrade your subscription to track stock levels, manage restocking, and monitor inventory changes.
+        </p>
+        <button onclick="document.getElementById('upgradeBtn').click()" class="bg-green-600 text-white px-8 py-3 rounded-lg hover:bg-green-700 font-semibold transition-all transform hover:scale-105">
+          🚀 Upgrade to Basic Plan
+        </button>
+      </div>
+
+      <!-- Inventory Content (Hidden for free users) -->
+      <div id="inventoryContent">
+        <h2 class="text-2xl font-bold mb-6 text-indigo-700">📦 Inventory Management</h2>
+        
+        <!-- Inventory Stats -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+          <div class="bg-white rounded-lg shadow p-4">
+            <h3 class="text-sm text-gray-500">Total Products</h3>
+            <p id="inventoryTotalProducts" class="text-2xl font-bold text-indigo-600 mt-2">0</p>
+          </div>
+          <div class="bg-white rounded-lg shadow p-4">
+            <h3 class="text-sm text-gray-500">Low Stock Items</h3>
+            <p id="inventoryLowStock" class="text-2xl font-bold text-orange-600 mt-2">0</p>
+          </div>
+          <div class="bg-white rounded-lg shadow p-4">
+            <h3 class="text-sm text-gray-500">Out of Stock</h3>
+            <p id="inventoryOutOfStock" class="text-2xl font-bold text-red-600 mt-2">0</p>
+          </div>
+          <div class="bg-white rounded-lg shadow p-4">
+            <h3 class="text-sm text-gray-500">Total Inventory Value</h3>
+            <p id="inventoryTotalValue" class="text-2xl font-bold text-green-600 mt-2">$0</p>
+          </div>
+        </div>
+
+        <!-- Inventory Table -->
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+          <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
+            <h3 class="text-lg font-semibold text-gray-700">Product Inventory</h3>
+            <button id="bulkRestockBtn" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 text-sm font-medium">
+              📦 Bulk Restock
+            </button>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+              <thead class="bg-gray-50">
+                <tr>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Product</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Current Stock</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sold</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Value</th>
+                  <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="inventoryTableBody" class="bg-white divide-y divide-gray-200">
+                <!-- Inventory items will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+  </main>
+</div>
+<!-- Product Modal -->
+<div id="productModal" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
+  <div class="bg-white w-full max-w-md rounded-lg shadow-lg p-6 space-y-4 overflow-y-auto max-h-[90vh] relative">
+    <h2 class="text-lg font-semibold text-indigo-700">➕ Add New Product</h2>
+
+    <input type="text" id="productName" placeholder="Product name" class="w-full border px-3 py-2 rounded" />
+    <input type="text" id="productDesc" placeholder="Short description" class="w-full border px-3 py-2 rounded" />
+    <input type="number" id="productPrice" placeholder="Base Price" class="w-full border px-3 py-2 rounded" />
+
+    <!-- Main Image Upload -->
+    <div>
+      <label class="text-sm text-gray-600">Main Image</label>
+      <input type="file" id="productMainImage" class="w-full border px-3 py-2 rounded mt-1 mb-1" />
+      <input type="text" id="productMainImageURL" placeholder="Or paste image URL..." class="w-full border px-3 py-2 rounded" />
+    </div>
+
+<!-- Gallery Media -->
+<div>
+  <label class="text-sm text-gray-600">Gallery Images</label>
+  <div id="mediaContainer" class="space-y-2 mt-1"></div>
+  <button type="button" id="addMediaFieldBtn" class="mt-2 text-sm text-indigo-600 underline">+ Add Media</button>
+</div>
+
+
+    <!-- Category -->
+    <div>
+      <label class="text-sm text-gray-600">Category</label>
+      <select id="productCategory" class="w-full border px-3 py-2 rounded text-sm">
+        <option value="">-- Select Category --</option>
+
+      </select>
+    </div>
+
+<!-- Main Tag -->
+<div>
+  <label class="text-sm text-gray-600">Main Tag</label>
+  <select id="mainTagSelector" class="w-full border px-3 py-2 rounded text-sm">
+    <option value="">-- Select Main Tag --</option>
+  </select>
+</div>
+
+<!-- Sub Tags -->
+<div>
+  <label class="text-sm text-gray-600">Other Tags</label>
+  <div id="tagSuggestions" class="mt-2 flex flex-wrap gap-2 text-sm"></div>
+</div>
+
+
+    <!-- Controls -->
+    <div class="flex justify-end gap-2 pt-2">
+      <button id="closeProductModalBtn" class="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300">Cancel</button>
+      <button id="saveProductBtn" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  
+const tagData = {
+  apparel: {
+    primary: ["men clothing", "women clothing", "kids clothing", "unisex", "seasonal", "others"],
+    sub: {
+      "men clothing": ["shirts", "pants", "jackets", "suits", "t-shirts", "hoodies", "shorts", "coats"],
+      "women clothing": ["dresses", "tops", "skirts", "jeans", "leggings", "blouses", "coats", "tunics"],
+      "kids clothing": ["baby wear", "uniforms", "casuals", "onesies", "shorts", "socks"],
+      "unisex": ["tracksuits", "t-shirts", "jackets", "overalls"],
+      "seasonal": ["winter wear", "raincoats", "swimwear"],
+      "others": []
+    }
+  },
+  shoes: {
+    primary: ["men shoes", "women shoes", "sports shoes", "formal", "casual", "others"],
+    sub: {
+      "men shoes": ["formal", "casual", "boots", "loafers", "sneakers"],
+      "women shoes": ["heels", "sandals", "flats", "sneakers", "wedges"],
+      "sports shoes": ["running", "basketball", "cleats", "trainers", "tennis"],
+      "formal": ["oxfords", "derbies", "monk straps"],
+      "casual": ["flip flops", "canvas", "slip-ons", "espadrilles"],
+      "others": []
+    }
+  },
+  electronics: {
+    primary: ["phones", "laptops", "home appliances", "gaming", "wearables", "audio", "others"],
+    sub: {
+      "phones": ["smartphones", "feature phones", "cases", "chargers", "screen protectors"],
+      "laptops": ["gaming laptops", "ultrabooks", "macbooks", "2-in-1", "accessories"],
+      "home appliances": ["TVs", "refrigerators", "microwaves", "washers", "air conditioners"],
+      "gaming": ["consoles", "controllers", "VR headsets", "gaming accessories"],
+      "wearables": ["smartwatches", "fitness trackers", "AR glasses"],
+      "audio": ["headphones", "earbuds", "speakers", "soundbars"],
+      "others": []
+    }
+  },
+  beauty: {
+    primary: ["skincare", "makeup", "haircare", "fragrances", "tools", "others"],
+    sub: {
+      "skincare": ["moisturizers", "cleansers", "serums", "face masks", "sunscreens"],
+      "makeup": ["lipsticks", "eyeshadow", "foundation", "mascara", "blush", "powder"],
+      "haircare": ["shampoo", "conditioner", "hair oil", "styling gel", "dry shampoo"],
+      "fragrances": ["perfumes", "body sprays", "colognes", "essential oils"],
+      "tools": ["makeup brushes", "curlers", "mirrors", "blenders"],
+      "others": []
+    }
+  },
+  sports: {
+    primary: ["equipment", "clothing", "footwear", "fitness gear", "accessories", "others"],
+    sub: {
+      "equipment": ["balls", "bats", "rackets", "nets", "helmets"],
+      "clothing": ["jerseys", "shorts", "tights", "track pants"],
+      "footwear": ["running shoes", "cleats", "hiking boots", "training shoes"],
+      "fitness gear": ["dumbbells", "resistance bands", "yoga mats", "jump ropes"],
+      "accessories": ["water bottles", "wristbands", "sports bags"],
+      "others": []
+    }
+  },
+  home: {
+    primary: ["furniture", "decor", "kitchenware", "bedding", "bath", "cleaning", "others"],
+    sub: {
+      "furniture": ["sofas", "tables", "chairs", "beds", "cabinets"],
+      "decor": ["paintings", "plants", "vases", "mirrors", "wall art"],
+      "kitchenware": ["cookware", "utensils", "cutlery", "kitchen appliances"],
+      "bedding": ["bedsheets", "pillows", "duvets", "mattresses"],
+      "bath": ["towels", "bathrobes", "mats", "shower curtains"],
+      "cleaning": ["mops", "brooms", "detergents", "cleaners"],
+      "others": []
+    }
+  },
+  books: {
+    primary: ["fiction", "non-fiction", "children", "academic", "religious", "others"],
+    sub: {
+      "fiction": ["novels", "short stories", "fantasy", "thrillers", "romance", "historical"],
+      "non-fiction": ["biographies", "self-help", "memoirs", "business", "wellness"],
+      "children": ["picture books", "activity books", "storybooks", "educational"],
+      "academic": ["textbooks", "guides", "journals", "test prep"],
+      "religious": ["bibles", "qurans", "spiritual books"],
+      "others": []
+    }
+  },
+  toys: {
+    primary: ["action figures", "educational", "soft toys", "outdoor", "remote control", "others"],
+    sub: {
+      "action figures": ["superheroes", "robots", "anime", "movie characters"],
+      "educational": ["puzzles", "STEM kits", "games", "flash cards"],
+      "soft toys": ["teddy bears", "plush animals", "cartoon plush"],
+      "outdoor": ["bikes", "balls", "playhouses", "slides"],
+      "remote control": ["cars", "drones", "boats", "helicopters"],
+      "others": []
+    }
+  },
+  accessories: {
+    primary: ["bags", "jewelry", "watches", "belts", "hats", "scarves", "others"],
+    sub: {
+      "bags": ["backpacks", "handbags", "laptop bags", "wallets", "travel bags"],
+      "jewelry": ["earrings", "necklaces", "bracelets", "rings", "anklets"],
+      "watches": ["smartwatches", "analog", "digital", "luxury watches"],
+      "belts": ["leather", "canvas", "formal", "casual"],
+      "hats": ["baseball caps", "beanies", "sun hats"],
+      "scarves": ["woolen", "cotton", "silk"],
+      "others": []
+    }
+  },
+  drugs: {
+    primary: ["prescription", "otc", "supplements", "first aid", "wellness", "equipment", "others"],
+    sub: {
+      "prescription": ["antibiotics", "antivirals", "pain relievers", "antidepressants", "antihypertensives"],
+      "otc": ["cough syrup", "painkillers", "antacids", "allergy meds"],
+      "supplements": ["vitamins", "minerals", "protein", "herbal", "omega-3"],
+      "first aid": ["bandages", "antiseptics", "gauze", "ointments"],
+      "wellness": ["digestive health", "sleep aids", "immune boosters", "eye drops"],
+      "equipment": ["thermometers", "BP monitors", "nebulizers", "glucose meters"],
+      "others": []
+    }
+  },
+  others: {
+    primary: ["custom", "handmade", "unique", "miscellaneous"],
+    sub: {
+      "custom": ["custom t-shirts", "engraved gifts", "photo mugs"],
+      "handmade": ["crafts", "artisan jewelry", "knitted items", "natural soap"],
+      "unique": ["antiques", "collectibles", "rare finds"],
+      "miscellaneous": []
+    }
+  }
+};
+
+document.getElementById("productCategory").addEventListener("change", () => {
+  const cat = document.getElementById("productCategory").value;
+  const mainTagSelector = document.getElementById("mainTagSelector");
+  const tagBox = document.getElementById("tagSuggestions");
+
+  mainTagSelector.innerHTML = `<option value="">-- Select Main Tag --</option>`;
+  tagBox.innerHTML = "";
+
+  const { primary = [] } = tagData[cat] || {};
+  primary.forEach(tag => {
+    const option = document.createElement("option");
+    option.value = tag;
+    option.textContent = tag;
+    mainTagSelector.appendChild(option);
+  });
+});
+
+document.getElementById("mainTagSelector").addEventListener("change", () => {
+  const cat = document.getElementById("productCategory").value;
+  const mainTag = document.getElementById("mainTagSelector").value;
+  const tagBox = document.getElementById("tagSuggestions");
+  tagBox.innerHTML = "";
+
+  if (!mainTag) return;
+
+  const subTags = (tagData[cat]?.sub?.[mainTag]) || [];
+  subTags.forEach(tag => {
+    const btn = createTagButton(tag);
+    tagBox.appendChild(btn);
+  });
+});
+
+function createTagButton(tag) {
+  const btn = document.createElement("button");
+  btn.className = "px-2 py-1 rounded border bg-gray-100 text-gray-600 hover:bg-indigo-200 hover:text-indigo-800";
+  btn.textContent = tag;
+  btn.onclick = () => toggleTag(btn, tag);
+  return btn;
+}
+
+function toggleTag(button, tag) {
+  const active = button.classList.contains("bg-indigo-100");
+  button.classList.toggle("bg-indigo-100", !active);
+  button.classList.toggle("text-indigo-700", !active);
+  button.classList.toggle("font-semibold", !active);
+}
+
+function onCategoryChange() {
+  const cat = document.getElementById("productCategory").value;
+  const tagBox = document.getElementById("tagSuggestions");
+  tagBox.innerHTML = "";
+
+  const { primary = [], sub = {} } = tagData[cat] || {};
+  primary.forEach(tag => {
+    const btn = createTagButton(tag, true);
+    tagBox.appendChild(btn);
+
+    btn.addEventListener("click", () => {
+      const subTags = sub[tag] || [];
+      subTags.forEach(st => {
+        const subBtn = createTagButton(st);
+        tagBox.appendChild(subBtn);
+      });
+    });
+  });
+}
+
+
+document.addEventListener("DOMContentLoaded", async () => {
+const API = "http://10.2.0.2:3000";
+const user = JSON.parse(localStorage.getItem("user") || "{}");
+const seller = user.username;
+const categories = ["electronics", "apparel", "shoes", "beauty", "sports","drugs", "home", "books", "toys", "accessories", "others"];
+let currentProduct = null;
+
+if (!user || !seller || !user.role || !user.role.startsWith("seller")) {
+  alert("Unauthorized access");
+  location.href = "login.html";
+}
+
+// Real-time session validation for suspended sellers
+let sessionValidationInterval = null;
+
+function startSessionValidation() {
+  // Prevent multiple intervals from running
+  if (sessionValidationInterval) {
+    console.warn("Session validation is already running. Skipping duplicate start.");
+    return;
+  }
+
+  // Start checking every 30 seconds
+  sessionValidationInterval = setInterval(async () => {
+    try {
+      const response = await fetch(`${API}/api/check-user-status`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: seller })
+      });
+
+      // Handle non-OK HTTP responses
+      if (!response.ok) {
+        console.warn(`HTTP ${response.status} from /api/check-user-status`);
+        return; // Just skip — don't log out on server error
+      }
+
+      const data = await response.json();
+
+      // Ensure response has expected structure
+      if (!data || typeof data !== 'object') {
+        console.warn("Invalid response format from /api/check-user-status");
+        return;
+      }
+
+      // Check if user is suspended
+      if (!data.success || data.status === 'suspended') {
+        console.log("User is suspended. Logging out...");
+        return handleLogout("Your account has been suspended by an administrator. You will be logged out.");
+      }
+
+      // Check if admin forced logout
+      if (data.success && data.forceLogout === true) {
+        console.log("Force logout triggered by admin.");
+        return handleLogout("You have been logged out by an administrator. Unauthorized access detected.");
+      }
+
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        console.debug("Session validation fetch aborted");
+      } else {
+        console.error('Session validation network error:', error);
+        // ✅ Do NOT log out on network issues (e.g. temporary offline)
+      }
+    }
+  }, 30000); // Every 30 seconds
+}
+
+// Reusable logout handler
+function handleLogout(message) {
+  // Prevent multiple logout triggers
+  if (sessionValidationInterval) {
+    clearInterval(sessionValidationInterval);
+    sessionValidationInterval = null;
+  }
+
+  alert(message);
+
+  // Get current seller username before clearing data
+  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const sellerUsername = currentUser.username || seller;
+
+  // Clear all session data
+  localStorage.removeItem("user");
+  localStorage.removeItem("seller");
+  localStorage.removeItem("sellerSettings");
+  localStorage.removeItem("autoLogin");
+
+  // Clear everything to be safe
+  localStorage.clear();
+
+  // Redirect to login with seller parameter
+  if (sellerUsername) {
+    window.location.href = `login.html?seller=${encodeURIComponent(sellerUsername)}`;
+  } else {
+    window.location.href = "login.html";
+  }
+}
+
+// Start session validation (safe to call multiple times now)
+startSessionValidation();
+// Load subscription plans and create dynamic limits
+let subscriptionLimits = {};
+let subscriptionPlans = [];
+
+// Load subscription plans from server
+async function loadSubscriptionPlans() {
+  try {
+    const res = await fetch(`${API}/subscription-plans?type=${user.product_type || 'physical'}`);
+    const data = await res.json();
+    subscriptionPlans = data.plans || [];
+    
+    // Create dynamic subscription limits from plans
+    subscriptionPlans.forEach(plan => {
+      const planKey = plan.name.toLowerCase();
+      subscriptionLimits[planKey] = {
+        maxProducts: plan.limitations.maxProducts,
+        analytics: plan.limitations.analytics,
+        coupons: plan.limitations.discounts, // discounts = coupons
+        premiumGateways: ['pro', 'premium'].includes(planKey),
+        inventoryTracking: plan.limitations.discounts // inventory tracking like coupons
+      };
+    });
+    
+    console.log('Loaded subscription limits:', subscriptionLimits);
+  } catch (err) {
+    console.error('Failed to load subscription plans:', err);
+    // Fallback to static limits
+    subscriptionLimits = {
+      free: {
+        maxProducts: 20,
+        analytics: false,
+        coupons: false,
+        premiumGateways: false,
+        inventoryTracking: false
+      },
+      basic: {
+        maxProducts: 50,
+        analytics: true,
+        coupons: false,
+        premiumGateways: false,
+        inventoryTracking: false
+      },
+      pro: {
+        maxProducts: -1,
+        analytics: true,
+        coupons: true,
+        premiumGateways: true,
+        inventoryTracking: true
+      },
+      premium: {
+        maxProducts: -1,
+        analytics: true,
+        coupons: true,
+        premiumGateways: true,
+        inventoryTracking: true
+      }
+    };
+  }
+}
+
+// Load subscription plans first
+await loadSubscriptionPlans();
+
+// Get current user's subscription limits
+let currentPlan = user.plan ? user.plan.toLowerCase() : 'free';
+let userLimits = subscriptionLimits[currentPlan] || subscriptionLimits.free;
+
+// Function to refresh user limits from server (moved outside DOMContentLoaded)
+window.refreshUserLimits = async function() {
+  try {
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    const API = "http://10.2.0.2:3000";
+    const response = await fetch(`${API}/api/subscription-info?username=${encodeURIComponent(user.username)}`);
+    const data = await response.json();
+    if (data.success) {
+      // Update user object in localStorage
+      const updatedUser = { ...user, ...data.user };
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      
+      return true;
+    }
+  } catch (error) {
+    console.error('Failed to refresh user limits:', error);
+  }
+  return false;
+}
+
+// Function to show non-closable upgrade prompt
+function showUpgradeRequiredModal(feature, requiredPlan) {
+  const modal = document.getElementById('upgradeRequiredModal');
+  const message = document.getElementById('upgradeRequiredMessage');
+  const upgradeBtn = document.getElementById('upgradeNowBtn');
+  
+  message.textContent = `${feature} is only available for ${requiredPlan} plan and above. Upgrade your subscription to unlock this feature.`;
+  
+  upgradeBtn.onclick = () => {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    document.getElementById('upgradeBtn').click();
+  };
+  
+  // Add close button functionality
+  document.getElementById('closeUpgradeModalBtn').onclick = () => {
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+  };
+  
+  modal.classList.remove('hidden');
+  modal.classList.add('flex');
+}
+
+// Function to show upgrade prompt (legacy - for backward compatibility)
+function showUpgradePrompt(feature, requiredPlan) {
+  showUpgradeRequiredModal(feature, requiredPlan);
+}
+
+// Function to check if feature is available
+function checkFeatureAccess(feature) {
+  return userLimits[feature];
+}
+
+// Function to enforce restrictions immediately
+function enforceRestrictions() {
+  // Hide restricted content immediately
+  if (!userLimits.analytics) {
+    const analyticsContent = document.getElementById("analyticsContent");
+    const analyticsUpgradePrompt = document.getElementById("analyticsUpgradePrompt");
+    if (analyticsContent) analyticsContent.classList.add("hidden");
+    if (analyticsUpgradePrompt) analyticsUpgradePrompt.classList.remove("hidden");
+  }
+  
+  if (!userLimits.coupons) {
+    const couponsContent = document.getElementById("couponsContent");
+    const couponsUpgradePrompt = document.getElementById("couponsUpgradePrompt");
+    if (couponsContent) couponsContent.classList.add("hidden");
+    if (couponsUpgradePrompt) couponsUpgradePrompt.classList.remove("hidden");
+  }
+  
+  if (!userLimits.inventoryTracking) {
+    const inventoryContent = document.getElementById("inventoryContent");
+    const inventoryUpgradePrompt = document.getElementById("inventoryUpgradePrompt");
+    if (inventoryContent) inventoryContent.classList.add("hidden");
+    if (inventoryUpgradePrompt) inventoryUpgradePrompt.classList.remove("hidden");
+  }
+  
+  // Update sidebar lock icons
+  const analyticsLockIcon = document.getElementById("analyticsLockIcon");
+  const couponsLockIcon = document.getElementById("couponsLockIcon");
+  const inventoryLockIcon = document.getElementById("inventoryLockIcon");
+  
+  if (analyticsLockIcon) {
+    analyticsLockIcon.classList.toggle("hidden", userLimits.analytics);
+  }
+  if (couponsLockIcon) {
+    couponsLockIcon.classList.toggle("hidden", userLimits.coupons);
+  }
+  if (inventoryLockIcon) {
+    inventoryLockIcon.classList.toggle("hidden", userLimits.inventoryTracking);
+  }
+  
+  // Update product limits
+  checkProductLimits();
+}
+
+document.getElementById("storeName").textContent = seller;
+
+const shopURL = `shop.html?seller=${encodeURIComponent(seller)}`;
+document.getElementById("themesLink").href = `themes.html?seller=${encodeURIComponent(seller)}`;
+document.getElementById("shopLink").href = shopURL;
+document.getElementById("publicUrl").textContent = window.location.origin + "/" + shopURL;
+document.getElementById("publicUrl").addEventListener("click", () => window.open(shopURL, "_blank"));
+
+// Initialize UI based on subscription plan
+function initializeSubscriptionUI() {
+  // Hide/show sidebar links based on subscription
+  const analyticsLink = document.getElementById("analyticsLink");
+  const couponsLink = document.getElementById("couponsLink");
+  const inventoryLink = document.getElementById("inventoryLink");
+  
+  // For free users, hide restricted sections completely
+  if (currentPlan === 'free') {
+    if (!userLimits.analytics && analyticsLink) {
+      analyticsLink.style.display = 'none';
+    }
+    if (!userLimits.coupons && couponsLink) {
+      couponsLink.style.display = 'none';
+    }
+    if (!userLimits.inventoryTracking && inventoryLink) {
+      inventoryLink.style.display = 'none';
+    }
+  } else {
+    // For paid users, show all sections but with lock icons if needed
+    const analyticsLockIcon = document.getElementById("analyticsLockIcon");
+    const couponsLockIcon = document.getElementById("couponsLockIcon");
+    const inventoryLockIcon = document.getElementById("inventoryLockIcon");
+    
+    if (!userLimits.analytics && analyticsLockIcon) {
+      analyticsLockIcon.classList.remove("hidden");
+    }
+    
+    if (!userLimits.coupons && couponsLockIcon) {
+      couponsLockIcon.classList.remove("hidden");
+    }
+    
+    if (!userLimits.inventoryTracking && inventoryLockIcon) {
+      inventoryLockIcon.classList.remove("hidden");
+    }
+  }
+  
+  // Update premium payment gateways
+  updatePremiumGateways();
+}
+
+// Function to update premium payment gateway availability
+function updatePremiumGateways() {
+  const premiumGateways = ['stripe', 'square', 'iyzipay', 'wise', 'revolut'];
+  
+  premiumGateways.forEach(gateway => {
+    const checkbox = document.querySelector(`.paymentOption[value="${gateway}"]`);
+    const label = checkbox ? checkbox.closest('label') : null;
+    
+    if (checkbox && label) {
+      if (userLimits.premiumGateways) {
+        // Enable premium gateways
+        checkbox.disabled = false;
+        label.classList.remove('text-gray-400', 'cursor-not-allowed');
+        label.classList.add('text-gray-700');
+        
+        // Update the premium badge to show "Available"
+        const premiumBadge = label.querySelector('.bg-yellow-100');
+        if (premiumBadge) {
+          premiumBadge.textContent = 'Pro Feature';
+          premiumBadge.classList.remove('bg-yellow-100', 'text-yellow-800');
+          premiumBadge.classList.add('bg-green-100', 'text-green-800');
+        }
+        
+        // Remove the tooltip that says "upgrade to unlock"
+        const tooltip = label.querySelector('.group-hover\\:block');
+        if (tooltip) {
+          tooltip.textContent = 'Available with your current plan';
+        }
+      } else {
+        // Disable premium gateways
+        checkbox.disabled = true;
+        checkbox.checked = false;
+        label.classList.add('text-gray-400', 'cursor-not-allowed');
+        label.classList.remove('text-gray-700');
+        
+        // Ensure premium badge shows "Premium Package"
+        const premiumBadge = label.querySelector('.bg-green-100, .bg-yellow-100');
+        if (premiumBadge) {
+          premiumBadge.textContent = 'Premium Package';
+          premiumBadge.classList.remove('bg-green-100', 'text-green-800');
+          premiumBadge.classList.add('bg-yellow-100', 'text-yellow-800');
+        }
+      }
+    }
+  });
+}
+
+// Add sidebar click handlers for restricted features
+function setupSidebarHandlers() {
+  // Analytics link handler
+  document.getElementById("analyticsLink").addEventListener("click", (e) => {
+    e.preventDefault();
+    if (!userLimits.analytics) {
+      // Redirect to general settings and show upgrade modal
+      showGeneralSettingsWithUpgrade("Analytics", "Basic");
+      return;
+    }
+    
+    // Show analytics section normally
+    document.querySelectorAll(".section").forEach(sec => sec.classList.add("hidden"));
+    document.querySelector("#section-analytics").classList.remove("hidden");
+    
+    // Update sidebar styles
+    document.querySelectorAll(".sidebar-link").forEach(l => l.classList.remove("bg-indigo-50", "font-semibold"));
+    document.getElementById("analyticsLink").classList.add("bg-indigo-50", "font-semibold");
+    
+    // Always show content for authorized users
+    const analyticsContent = document.getElementById("analyticsContent");
+    const analyticsUpgradePrompt = document.getElementById("analyticsUpgradePrompt");
+    
+    analyticsContent.classList.remove("hidden");
+    analyticsUpgradePrompt.classList.add("hidden");
+    loadAnalytics(); // Load analytics data
+  });
+  
+  // Coupons link handler
+  document.getElementById("couponsLink").addEventListener("click", (e) => {
+    e.preventDefault();
+    if (!userLimits.coupons) {
+      // Redirect to general settings and show upgrade modal
+      showGeneralSettingsWithUpgrade("Coupons", "Pro");
+      return;
+    }
+    
+    // Show coupons section normally
+    document.querySelectorAll(".section").forEach(sec => sec.classList.add("hidden"));
+    document.querySelector("#section-coupons").classList.remove("hidden");
+    
+    // Update sidebar styles
+    document.querySelectorAll(".sidebar-link").forEach(l => l.classList.remove("bg-indigo-50", "font-semibold"));
+    document.getElementById("couponsLink").classList.add("bg-indigo-50", "font-semibold");
+    
+    // Always show content for authorized users
+    const couponsContent = document.getElementById("couponsContent");
+    const couponsUpgradePrompt = document.getElementById("couponsUpgradePrompt");
+    
+    couponsContent.classList.remove("hidden");
+    couponsUpgradePrompt.classList.add("hidden");
+    loadCoupons(); // Load coupons data
+  });
+  
+  // Inventory link handler
+  document.getElementById("inventoryLink").addEventListener("click", (e) => {
+    e.preventDefault();
+    if (!userLimits.inventoryTracking) {
+      // Redirect to general settings and show upgrade modal
+      showGeneralSettingsWithUpgrade("Inventory Tracking", "Basic");
+      return;
+    }
+    
+    // Show inventory section normally
+    document.querySelectorAll(".section").forEach(sec => sec.classList.add("hidden"));
+    document.querySelector("#section-inventory").classList.remove("hidden");
+    
+    // Update sidebar styles
+    document.querySelectorAll(".sidebar-link").forEach(l => l.classList.remove("bg-indigo-50", "font-semibold"));
+    document.getElementById("inventoryLink").classList.add("bg-indigo-50", "font-semibold");
+    
+    // Always show content for authorized users
+    const inventoryContent = document.getElementById("inventoryContent");
+    const inventoryUpgradePrompt = document.getElementById("inventoryUpgradePrompt");
+    
+    inventoryContent.classList.remove("hidden");
+    inventoryUpgradePrompt.classList.add("hidden");
+    loadInventory(); // Load inventory data
+  });
+}
+
+// Function to redirect to general settings and show upgrade modal
+function showGeneralSettingsWithUpgrade(feature, requiredPlan) {
+  // Show general settings section
+  document.querySelectorAll(".section").forEach(sec => sec.classList.add("hidden"));
+  document.querySelector("#section-settings").classList.remove("hidden");
+  
+  // Update sidebar styles
+  document.querySelectorAll(".sidebar-link").forEach(l => l.classList.remove("bg-indigo-50", "font-semibold"));
+  document.querySelector('[data-section="settings"]').classList.add("bg-indigo-50", "font-semibold");
+  
+  // Show upgrade modal
+  showUpgradeRequiredModal(feature, requiredPlan);
+}
+
+// Original add product button handler (will be overridden by checkProductLimits)
+document.getElementById("addProductBtn").addEventListener("click", () => {
+  document.getElementById("productModal").classList.remove("hidden");
+});
+
+function closeModal() {
+  document.getElementById("productModal").classList.add("hidden");
+  document.querySelectorAll("#productModal input, #productModal select").forEach(i => i.value = "");
+}
+
+// Fill category options
+const catSelect = document.getElementById("productCategory");
+catSelect.innerHTML += categories.map(c => `<option value="${c}">${c.charAt(0).toUpperCase() + c.slice(1)}</option>`).join("");
+
+
+function addMediaField() {
+  const container = document.getElementById("mediaContainer");
+  const wrapper = document.createElement("div");
+  wrapper.className = "space-y-1";
+
+  const fileInput = document.createElement("input");
+  fileInput.type = "file";
+  fileInput.accept = "image/*,video/*";
+  fileInput.className = "w-full border px-3 py-2 rounded";
+
+  const urlInput = document.createElement("input");
+  urlInput.type = "text";
+  urlInput.placeholder = "Or paste image/video URL...";
+  urlInput.className = "w-full border px-3 py-2 rounded";
+
+  wrapper.appendChild(fileInput);
+  wrapper.appendChild(urlInput);
+  container.appendChild(wrapper);
+}
+
+async function saveProduct() {
+  const name = productName.value.trim();
+  const description = productDesc.value.trim();
+  const price = parseFloat(productPrice.value);
+  const category = productCategory.value || "others";
+  const mainTag = document.getElementById("mainTagSelector").value;
+  const tagButtons = document.querySelectorAll("#tagSuggestions button.bg-indigo-100");
+  const seller = user.username;
+
+  // Validate base fields
+  if (!name || !description || isNaN(price)) {
+    return alert("❗ Fill all required fields: name, description, and price.");
+  }
+
+  // Validate main tag
+  if (!mainTag) {
+    return alert("❗ Please select a main tag.");
+  }
+
+  // Collect selected sub-tags
+  const subTags = Array.from(tagButtons).map(btn => btn.textContent.trim().toLowerCase());
+
+  // Build complete tag array (main + subs)
+  let tags = [mainTag.toLowerCase(), ...subTags];
+  tags = [...new Set(tags)]; // Deduplicate
+
+  // Example category-specific tag validation
+  if (category === "apparel") {
+    const validMain = ["men clothing", "women clothing", "kids clothing", "others"];
+    if (!validMain.includes(mainTag.toLowerCase())) {
+      return alert("❗ For 'apparel', choose a valid main tag: 'men clothing', 'women clothing', 'kids clothing', or 'others'.");
+    }
+  }
+
+  // Image & media uploads
+  const mainFile = document.getElementById("productMainImage").files[0];
+  const mainImageURL = document.getElementById("productMainImageURL").value.trim();
+  const mediaInputs = document.querySelectorAll("#mediaContainer input");
+  const mediaFiles = [], mediaURLs = [];
+
+  mediaInputs.forEach(input => {
+    if (input.type === "file" && input.files[0]) mediaFiles.push(input.files[0]);
+    if (input.type === "text" && input.value.trim()) mediaURLs.push(input.value.trim());
+  });
+
+  let uploadedMainImage = mainImageURL;
+  let uploadedGallery = [...mediaURLs];
+
+  if (mainFile || mediaFiles.length > 0) {
+    const formData = new FormData();
+    if (mainFile) formData.append("main", mainFile);
+    mediaFiles.forEach((file, i) => formData.append(`media_${i}`, file));
+
+    try {
+      const uploadRes = await fetch(`${API}/upload-files`, { method: "POST", body: formData });
+      const { mainImageURL: mURL, mediaURLs: gURLs } = await uploadRes.json();
+      if (mURL) uploadedMainImage = mURL;
+      if (Array.isArray(gURLs)) uploadedGallery.push(...gURLs);
+    } catch (err) {
+      console.error("Image upload failed:", err);
+      return alert("❌ Failed to upload images.");
+    }
+  }
+
+  // Final payload
+  const payload = {
+    collection: "products",
+    payload: {
+      name,
+      description,
+      price,
+      seller,
+      category,
+      tags,
+      image: uploadedMainImage,
+      gallery: uploadedGallery,
+      createdAt: Date.now()
+    }
+  };
+
+  try {
+    const res = await fetch(`${API}/insert`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) throw new Error("Insert failed");
+
+    closeModal();
+    loadProducts();
+    alert("✅ Product added successfully.");
+  } catch (err) {
+    console.error(err);
+    alert("❌ Failed to save product.");
+  }
+}
+// Function to check product limits and update add product button
+function checkProductLimits() {
+  const productCountElement = document.getElementById("productCount");
+  const addProductBtn = document.getElementById("addProductBtn");
+  
+  if (!productCountElement || !addProductBtn) return;
+  
+  const currentProductCount = parseInt(productCountElement.textContent) || 0;
+  const maxProducts = userLimits.maxProducts;
+  
+  if (maxProducts !== -1 && currentProductCount >= maxProducts) {
+    // Limit reached - show upgrade prompt
+    addProductBtn.textContent = "🔒 Upgrade Plan";
+    addProductBtn.className = "bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700 text-sm";
+    addProductBtn.onclick = () => showUpgradePrompt("Product Upload", getRequiredPlanForFeature("maxProducts", maxProducts + 1));
+  } else {
+    // Normal state
+    addProductBtn.textContent = "+ Add Product";
+    addProductBtn.className = "bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm";
+    addProductBtn.onclick = () => {
+      document.getElementById("productModal").classList.remove("hidden");
+    };
+  }
+}
+
+// Function to get required plan for a feature
+function getRequiredPlanForFeature(feature, requiredValue) {
+  for (const [planName, limits] of Object.entries(subscriptionLimits)) {
+    if (feature === "maxProducts") {
+      if (limits.maxProducts === -1 || limits.maxProducts >= requiredValue) {
+        return planName.charAt(0).toUpperCase() + planName.slice(1);
+      }
+    } else if (limits[feature]) {
+      return planName.charAt(0).toUpperCase() + planName.slice(1);
+    }
+  }
+  return "Premium";
+}
+
+// Load products
+async function loadProducts() {
+  try {
+    const res = await fetch(`${API}/find?collection=products&seller=${encodeURIComponent(seller)}`);
+    const products = await res.json();
+    let earnings = 0;
+    const list = document.getElementById("productList");
+    list.innerHTML = "";
+
+    const categoriesSet = new Set();
+
+    products.forEach(p => {
+      earnings += parseFloat(p.price || 0);
+      categoriesSet.add(p.category);
+
+      // ✅ Fix image URL
+      const imgSrc = p.image
+        ? (p.image.startsWith("http") ? p.image : `${API}${p.image}`)
+        : "";
+
+      const card = document.createElement("div");
+      card.className = "bg-white rounded-lg shadow p-4";
+      card.innerHTML = `
+        ${imgSrc ? `<img src="${imgSrc}" class="w-full object-contain rounded mb-3" />` : ""}
+        <h4 class="text-lg font-semibold text-indigo-700">${p.name}</h4>
+        <p class="mt-2">
+          ${p.strikeThroughPrice ? `<span class="text-gray-500 line-through">${currentCurrencySymbol}${p.strikeThroughPrice}</span> ` : ""}
+          <span class="text-indigo-900 font-bold">${currentCurrencySymbol}${p.price}</span>
+        </p>
+        <p class="text-xs text-gray-400 mt-1">Category: ${p.category || "N/A"}</p>
+        <p class="text-xs text-gray-400">Tags: ${(p.tags || []).join(", ")}</p>
+        <button data-product='${escapeHTML(JSON.stringify(p))}' class="manage-product-btn mt-3 text-sm text-indigo-600 underline">🛠 Manage Product</button>
+      `;
+      list.appendChild(card);
+    });
+
+    // Update analytics and product dashboard values
+    document.getElementById("earnings").textContent = `$${earnings.toFixed(2)}`;
+    document.getElementById("productCount").textContent = products.length;
+    document.getElementById("categoryCount").textContent = categoriesSet.size;
+    
+    // Check product limits after loading
+    checkProductLimits();
+  } catch (err) {
+    console.error("Failed to load products", err);
+  }
+}
+loadProducts();
+
+// Initialize subscription-based UI
+initializeSubscriptionUI();
+setupSidebarHandlers();
+
+
+// Always show sales section for free users on page load
+if (currentPlan === 'free') {
+  // Show sales section for free users
+  document.querySelectorAll(".section").forEach(sec => sec.classList.add("hidden"));
+  document.querySelector("#section-sales").classList.remove("hidden");
+  
+  // Update sidebar styles
+  document.querySelectorAll(".sidebar-link").forEach(l => l.classList.remove("bg-indigo-50", "font-semibold"));
+  document.querySelector('[data-section="sales"]').classList.add("bg-indigo-50", "font-semibold");
+  
+  loadSales(); // Load sales data
+} else {
+  // Show Analytics by default for paid users
+  const analyticsLink = document.getElementById("analyticsLink");
+  if (analyticsLink) {
+    // Trigger the analytics link click which will handle subscription restrictions
+    analyticsLink.click();
+  }
+}
+
+document.getElementById("accountUsername").value = user.username;
+document.getElementById("accountEmail").value = user.email;
+// Check if element exists before setting textContent
+const currentPlanElement = document.getElementById("currentPlan");
+if (currentPlanElement) {
+  currentPlanElement.textContent = user.plan || "Free";
+}
+document.getElementById("renewalDate").textContent = user.renewal || "N/A";
+
+async function updateAccount() {
+  const email = document.getElementById("accountEmail").value.trim();
+  if (!email) return alert("Email cannot be empty.");
+  try {
+    const res = await fetch(`${API}/update-account`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: user.username, email })
+    });
+    if (!res.ok) throw new Error("Failed to update.");
+    alert("Account info updated.");
+  } catch (err) {
+    console.error(err);
+    alert("Update failed.");
+  }
+}
+
+async function changePassword() {
+  const current = document.getElementById("currentPassword").value;
+  const newPass = document.getElementById("newPassword").value;
+  const confirm = document.getElementById("confirmPassword").value;
+
+  if (!current || !newPass || !confirm) return alert("All password fields are required.");
+  if (newPass !== confirm) return alert("New passwords do not match.");
+
+  try {
+    const res = await fetch(`${API}/change-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: user.username, current, newPass })
+    });
+    if (!res.ok) throw new Error("Password change failed");
+    alert("Password updated successfully.");
+  } catch (err) {
+    console.error(err);
+    alert("Could not change password.");
+  }
+}
+function escapeHTML(str) {
+  return String(str || "")
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+}
+
+function escapeJS(str) {
+  return String(str || "")
+    .replace(/\\/g, "\\\\")
+    .replace(/'/g, "\\'")
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, "")
+    .replace(/\r/g, "");
+}
+
+window.openManageProduct = function(product) {
+  currentProduct = product;
+  const content = document.getElementById("manageProductContent");
+  const category = (product.category || "others").toLowerCase();
+
+  const sizePresets = {
+    shoes: ["38", "39", "40", "41", "42", "43", "44"],
+    apparel: ["XS", "S", "M", "L", "XL", "XXL"],
+    others: []
+  };
+
+  const defaultSizes = sizePresets[category] || [];
+  const variants = product.variants || defaultSizes.map(s => ({ name: s, price: product.price }));
+  const colors = product.colorVariants || [];
+  const resolveURL = url => (url?.startsWith("http") ? url : `${API}${url}`);
+
+  let galleryHTML = "";
+  (product.gallery || []).forEach(img => {
+    const safeImg = escapeHTML(img);
+    galleryHTML += `
+      <div class="flex items-center gap-2">
+        <img src="${resolveURL(safeImg)}" class="w-20 h-20 rounded border object-cover" />
+        <button class="remove-gallery-btn text-xs text-red-500" data-url="${safeImg}">Remove</button>
+      </div>`;
+  });
+
+  let variantHTML = "";
+  variants.forEach(v => {
+    variantHTML += `
+      <div class="flex items-center gap-2 mt-1 variant-row">
+        <input type="text" class="variant-name border px-2 py-1 rounded w-1/2" value="${escapeHTML(v.name)}" />
+        <input type="number" class="variant-price border px-2 py-1 rounded w-1/2" value="${v.price || ""}" placeholder="Price (optional)" />
+        <button type="button" class="text-red-500 text-xs" onclick="window.deleteVariantRow(this)">❌</button>
+      </div>`;
+  });
+
+  let colorHTML = "";
+  colors.forEach(c => {
+    colorHTML += `
+      <div class="flex items-center gap-2 mt-1 color-row">
+        <input type="text" class="color-name border px-2 py-1 rounded w-1/2" value="${escapeHTML(c.name)}" />
+        <input type="number" class="color-price border px-2 py-1 rounded w-1/2" value="${c.price || ""}" placeholder="Price (optional)" />
+        <div class="w-6 h-6 rounded-full border" style="background-color:${escapeHTML(c.name)};"></div>
+        <button type="button" class="text-red-500 text-xs" onclick="window.deleteColorRow(this)">❌</button>
+      </div>`;
+  });
+
+  content.innerHTML = `
+    <div>
+      <label class="text-sm text-gray-600">Product Name</label>
+      <input type="text" id="editName" class="w-full border px-3 py-2 rounded mt-1" value="${escapeHTML(product.name)}" />
+    </div>
+
+    <div>
+      <label class="text-sm text-gray-600">Description</label>
+      <input type="text" id="editDesc" class="w-full border px-3 py-2 rounded mt-1" value="${escapeHTML(product.description)}" />
+    </div>
+
+    <div>
+      <label class="text-sm text-gray-600">Base Price</label>
+      <div class="flex items-center gap-2">
+        <input type="number" id="editPrice" class="w-full border px-3 py-2 rounded mt-1" value="${product.price}" />
+        <button type="button" id="addStrikeThroughBtn" class="bg-gray-200 text-gray-700 px-3 py-2 rounded mt-1 text-sm">Add Strike-through</button>
+      </div>
+      <div id="strikeThroughContainer" class="mt-2 hidden">
+        <label class="text-sm text-gray-600">Strike-through Price</label>
+        <input type="number" id="strikeThroughPrice" class="w-full border px-3 py-2 rounded mt-1" placeholder="Original price" />
+      </div>
+    </div>
+
+    <!-- Main Image -->
+    <div>
+      <label class="text-sm text-gray-600">Main Image</label>
+      <div class="mt-2 space-y-2">
+        ${product.image ? `<img src="${resolveURL(escapeHTML(product.image))}" class="w-24 h-24 rounded border object-cover" />` : ""}
+        <input type="file" id="newMainFile" accept="image/*" class="w-full border px-3 py-2 rounded" />
+        <input type="text" id="newMainURL" placeholder="Or paste image URL" class="w-full border px-3 py-2 rounded mt-1" />
+      </div>
+    </div>
+
+    <!-- Gallery -->
+    <div>
+      <label class="text-sm text-gray-600">Gallery Images</label>
+      <div class="space-y-2 mt-2">${galleryHTML}</div>
+      <input type="file" id="newGalleryFiles" multiple accept="image/*" class="w-full border px-3 py-2 rounded mt-2" />
+      <input type="text" id="newGalleryUrls" placeholder="Add image URL(s), comma separated" class="w-full border px-3 py-2 rounded mt-1" />
+    </div>
+
+    <!-- Variants -->
+    <div>
+      <label class="text-sm text-gray-600">Size/Variant (${category})</label>
+      <div id="variantList" class="mt-2 space-y-2">${variantHTML}</div>
+      <input type="text" id="variantInput" placeholder="Add size/variant (comma separated)" class="w-full border px-3 py-2 rounded mt-2" />
+    </div>
+
+    <!-- Colors -->
+    <div>
+      <label class="text-sm text-gray-600">Color Variants</label>
+      <div id="colorList" class="mt-2 space-y-2">${colorHTML}</div>
+      <input type="text" id="colorInput" placeholder="Add colors (comma separated)" class="w-full border px-3 py-2 rounded mt-2" />
+    </div>
+
+    <!-- Size Chart -->
+    <div>
+      <label class="text-sm text-gray-600">Size Chart</label>
+      <select id="sizeChart" class="w-full border px-3 py-2 rounded mt-1">
+        <option value="">-- Select Size Chart --</option>
+        <option value="tops">Tops (Shirts, Sweaters, Dresses)</option>
+        <option value="bottoms">Bottoms (Skirts, Shorts, Pants)</option>
+        <option value="shoes">Shoe Sizes</option>
+      </select>
+    </div>
+
+
+    
+        <!-- Category Management -->
+        <div>
+          <label class="text-sm text-gray-600">Category</label>
+          <select id="editCategory" class="w-full border px-3 py-2 rounded mt-1">
+            ${categories.map(c => `<option value="${c}" ${c === product.category ? 'selected' : ''}>${c.charAt(0).toUpperCase() + c.slice(1)}</option>`).join("")}
+          </select>
+        </div>
+    
+        <!-- Tag Management -->
+        <div>
+          <label class="text-sm text-gray-600">Tags</label>
+          <input type="text" id="editTags" class="w-full border px-3 py-2 rounded mt-1" value="${(product.tags || []).join(", ")}" placeholder="Enter tags separated by commas" />
+        </div>
+    
+        <div>
+          <label class="text-sm text-gray-600">Shipping Info</label>
+          <input type="text" id="shippingInput" class="w-full border px-3 py-2 rounded mt-1" value="${escapeHTML(product.shipping || '')}" />
+        </div>
+    
+        <button data-id="${escapeHTML(product.id)}" class="delete-product-btn bg-red-600 text-white px-4 py-2 mt-6 rounded hover:bg-red-700">🗑 Delete Product</button>
+      `;
+  document.getElementById("variantInput").addEventListener("keyup", e => {
+    if (e.key === "," || e.keyCode === 188) {
+      const value = e.target.value.replace(",", "").trim();
+      if (value) addVariantRow(value, "variantList");
+      e.target.value = "";
+    }
+  });
+
+  document.getElementById("colorInput").addEventListener("keyup", e => {
+    if (e.key === "," || e.keyCode === 188) {
+      const value = e.target.value.replace(",", "").trim();
+      if (value) addColorRow(value);
+      e.target.value = "";
+    }
+  });
+
+  // Add strike-through price functionality
+  document.getElementById("addStrikeThroughBtn").addEventListener("click", function() {
+    const container = document.getElementById("strikeThroughContainer");
+    container.classList.toggle("hidden");
+  });
+
+  // Pre-fill strike-through price if it exists
+  if (product.strikeThroughPrice) {
+    document.getElementById("strikeThroughContainer").classList.remove("hidden");
+    document.getElementById("strikeThroughPrice").value = product.strikeThroughPrice;
+  }
+
+  document.getElementById("manageProductModal").classList.remove("hidden");
+};
+
+window.deleteVariantRow = function(button) {
+  const row = button.closest(".variant-row");
+  if (row) row.remove();
+};
+
+window.deleteColorRow = function(button) {
+  const row = button.closest(".color-row");
+  if (row) row.remove();
+};
+
+function addVariantRow(name, targetId) {
+  const container = document.getElementById(targetId);
+  const div = document.createElement("div");
+  div.className = "flex items-center gap-2 mt-1 variant-row";
+  div.innerHTML = `
+    <input type="text" class="variant-name border px-2 py-1 rounded w-1/2" value="${name}" />
+    <input type="number" class="variant-price border px-2 py-1 rounded w-1/2" placeholder="Price (optional)" />
+    <button type="button" class="text-red-500 text-xs" onclick="window.deleteVariantRow(this)">❌</button>
+  `;
+  container.appendChild(div);
+}
+
+function addColorRow(name) {
+  const container = document.getElementById("colorList");
+  const div = document.createElement("div");
+  div.className = "flex items-center gap-2 mt-1 color-row";
+  div.innerHTML = `
+    <input type="text" class="color-name border px-2 py-1 rounded w-1/2" value="${name}" />
+    <input type="number" class="color-price border px-2 py-1 rounded w-1/2" placeholder="Price (optional)" />
+    <div class="w-6 h-6 rounded-full border" style="background-color:${name};"></div>
+    <button type="button" class="text-red-500 text-xs" onclick="window.deleteColorRow(this)">❌</button>
+  `;
+  container.appendChild(div);
+}
+
+async function saveProductChanges() {
+  if (!currentProduct) return;
+
+  const updated = {
+    name: document.getElementById("editName")?.value.trim(),
+    description: document.getElementById("editDesc")?.value.trim(),
+    price: parseFloat(document.getElementById("editPrice")?.value),
+    category: document.getElementById("editCategory")?.value,
+    tags: document.getElementById("editTags")?.value.split(",").map(tag => tag.trim()).filter(tag => tag),
+    shipping: document.getElementById("shippingInput")?.value.trim(),
+    variants: [],
+    colorVariants: [],
+    gallery: currentProduct.gallery || [],
+  };
+
+  // Handle strike-through price
+  const strikeThroughPrice = document.getElementById("strikeThroughPrice")?.value;
+  if (strikeThroughPrice && !isNaN(parseFloat(strikeThroughPrice))) {
+    updated.strikeThroughPrice = parseFloat(strikeThroughPrice);
+  } else if (strikeThroughPrice === "") {
+    // Remove strike-through price if empty
+    updated.strikeThroughPrice = null;
+  }
+
+  // Collect variant info
+  document.querySelectorAll(".variant-name").forEach((input, i) => {
+    const name = input.value.trim();
+    const price = parseFloat(document.querySelectorAll(".variant-price")[i].value);
+    if (name) updated.variants.push({ name, price: isNaN(price) ? null : price });
+  });
+
+  // Collect color info
+  document.querySelectorAll(".color-name").forEach((input, i) => {
+    const name = input.value.trim();
+    const price = parseFloat(document.querySelectorAll(".color-price")[i].value);
+    if (name) updated.colorVariants.push({ name, price: isNaN(price) ? null : price });
+  });
+
+  // Main image
+  const newMainFile = document.getElementById("newMainFile")?.files[0];
+  const newMainURL = document.getElementById("newMainURL")?.value.trim();
+
+  // Gallery files and URLs
+  const newGalleryFiles = Array.from(document.getElementById("newGalleryFiles")?.files || []);
+  const newGalleryURLs = (document.getElementById("newGalleryUrls")?.value || "")
+    .split(",")
+    .map(u => u.trim())
+    .filter(Boolean);
+
+  if (newMainFile || newGalleryFiles.length > 0) {
+    const formData = new FormData();
+    if (newMainFile) formData.append("main", newMainFile);
+    newGalleryFiles.forEach((file, i) => formData.append(`media_${i}`, file));
+
+    const uploadRes = await fetch(`${API}/upload-files`, {
+      method: "POST",
+      body: formData,
+    });
+
+    const result = await uploadRes.json();
+    updated.image = result?.mainImageURL || newMainURL || currentProduct.image;
+
+    if (Array.isArray(result.mediaURLs)) {
+      updated.gallery.push(...result.mediaURLs);
+    }
+  } else {
+    updated.image = newMainURL || currentProduct.image;
+  }
+
+  updated.gallery.push(...newGalleryURLs);
+
+  const payload = {
+    collection: "products",
+    query: { id: currentProduct.id },
+    updates: updated,
+  };
+
+  try {
+    const res = await fetch(`${API}/update`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error("Update failed");
+    closeManageModal();
+    loadProducts();
+  } catch (err) {
+    console.error(err);
+    alert("Failed to update product.");
+  }
+}
+
+function closeManageModal() {
+  document.getElementById("manageProductModal").classList.add("hidden");
+  currentProduct = null;
+}
+
+// TODO: This is inefficient. A dedicated endpoint to remove a single image would be better.
+window.removeGalleryImage = function(url) {
+  if (!currentProduct) return;
+  currentProduct.gallery = (currentProduct.gallery || []).filter(img => img !== url);
+  saveProductChanges();
+}
+
+window.deleteProduct = async function(id) {
+  if (!confirm("Are you sure you want to delete this product?")) return;
+
+  const res = await fetch(`${API}/delete`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      collection: "products",
+      query: { id } // ✅ FIXED
+    })
+  });
+
+  if (!res.ok) return alert("❌ Failed to delete product.");
+  alert("✅ Product deleted.");
+  closeManageModal();
+  loadProducts();
+}
+
+async function loadSales() {
+  try {
+    const [orderRes, productRes] = await Promise.all([
+      fetch(`${API}/find?collection=orders&seller=${encodeURIComponent(seller)}`),
+      fetch(`${API}/find?collection=products&seller=${encodeURIComponent(seller)}`)
+    ]);
+
+    const [orders, products] = await Promise.all([
+      orderRes.json(),
+      productRes.json()
+    ]);
+
+    // 🧠 Map product data by ID
+    const productMap = {};
+    products.forEach(p => {
+      productMap[p.id] = {
+        image: p.image?.startsWith("http") ? p.image : `${API}${p.image}`,
+        name: p.name || "Unnamed Product"
+      };
+    });
+
+    // 🛍 Orders
+    const orderList = document.getElementById("orderList");
+    orderList.innerHTML = "";
+    const productCount = {};
+    let totalEarnings = 0;
+
+    orders.forEach(o => {
+      const orderId = o._id || o.id || o.orderId;
+      if (!orderId) return;
+
+      productCount[o.productName] = (productCount[o.productName] || 0) + 1;
+      totalEarnings += parseFloat(o.total || 0);
+
+      const statusColors = {
+        pending: "text-yellow-700",
+        confirmed: "text-blue-600",
+        ready: "text-indigo-600",
+        delivered: "text-green-600",
+        cancelled: "text-red-600",
+        declined: "text-gray-600"
+      };
+      const statusClass = statusColors[o.status?.toLowerCase()] || "text-gray-700";
+      const productImage = productMap[o.productId]?.image || 'https://placehold.co/80';
+
+      orderList.innerHTML += `
+        <div class="border rounded p-4 bg-white shadow-sm space-y-2">
+          <div class="flex items-start gap-4">
+            <img src="${productImage}" class="w-20 h-20 object-cover rounded" />
+            <div>
+              <p class="font-semibold text-indigo-700 text-sm">${o.productName}</p>
+              <p class="text-xs text-gray-500">#${o.orderId || orderId}</p>
+              <p class="text-xs text-gray-400">${new Date(o.createdAt).toLocaleString()}</p>
+            </div>
+          </div>
+          <div class="text-sm text-gray-700 leading-5">
+            <p><strong>Variant:</strong> ${o.variant?.name || "N/A"} | <strong>Color:</strong> ${o.color?.name || "N/A"}</p>
+            <p><strong>Total:</strong> ${currentCurrencySymbol}${o.total}</p>
+            <p><strong>Payment:</strong> ${o.paymentMethod || "N/A"}</p>
+            <p><strong>Status:</strong> <span class="${statusClass} font-medium">${o.status}</span></p>
+            ${o.buyer?.notes ? `<p><strong>📝 Notes:</strong> ${o.buyer.notes}</p>` : ""}
+          </div>
+          <div class="text-sm mt-2">
+            <p><strong>👤 Buyer Name:</strong> ${o.buyer?.name || "-"}</p>
+            <p><strong>📧 Email:</strong> ${o.buyer?.email || "-"}</p>
+            <p><strong>📞 Phone:</strong> ${o.buyer?.phone || "-"}</p>
+            <p><strong>🏠 Address:</strong> ${o.buyer?.address || "-"}</p>
+            <p><strong>📍 Delivery:</strong> ${o.delivery?.state || ""}, ${o.delivery?.country || ""} (${currentCurrencySymbol}${o.delivery?.fee || 0})</p>
+          </div>
+          <div class="mt-3 flex flex-wrap gap-2">
+            ${["confirmed", "ready", "delivered", "cancelled", "declined"].map(status => `
+              <button 
+                data-id="${orderId}" 
+                data-status="${status}" 
+                class="update-status-btn text-xs border px-3 py-1 rounded hover:bg-gray-100"
+              >${status.charAt(0).toUpperCase() + status.slice(1)}</button>
+            `).join("")}
+          </div>
+        </div>
+      `;
+    });
+
+    // 🏆 Top Product
+    const topProduct = Object.entries(productCount).sort((a, b) => b[1] - a[1])[0];
+    document.getElementById("mostBoughtProduct").textContent = topProduct
+      ? `${topProduct[0]} (${topProduct[1]} orders)`
+      : "No sales yet.";
+
+    // 💰 Total Earnings
+    document.getElementById("totalEarnings").textContent = `${currentCurrencySymbol}${totalEarnings.toFixed(2)}`;
+
+    // ✅ Attach click events for status update buttons
+    document.querySelectorAll(".update-status-btn").forEach(button => {
+      button.addEventListener("click", async (e) => {
+        const btn = e.currentTarget;
+        if (btn.disabled) return;
+
+        const orderId = btn.dataset.id;
+        const newStatus = btn.dataset.status;
+
+        if (!orderId) {
+          console.error("❌ Missing order ID for status update.");
+          return;
+        }
+
+        btn.disabled = true;
+        const originalText = btn.textContent;
+        btn.textContent = "Updating...";
+
+        try {
+          // ✅ Use the dedicated updateOrderStatus function instead of raw fetch
+          await updateOrderStatus(orderId, newStatus);
+          
+          btn.textContent = `${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)} ✅`;
+          btn.classList.add("bg-green-100", "text-green-700", "font-semibold");
+
+        } catch (err) {
+          console.error("Status update error:", err.message);
+          btn.textContent = originalText + " ❌";
+          btn.disabled = false;
+          // ✨ Error notification is already shown by updateOrderStatus function
+        }
+      });
+    });
+
+  } catch (err) {
+    console.error("Sales loading failed:", err);
+    document.getElementById("orderList").innerHTML = `<div class="text-red-500">Failed to load data.</div>`;
+  }
+}
+
+// ✨ Cool notification popup function
+function showCoolNotification(message, type = 'success') {
+  // Remove any existing notifications
+  const existing = document.querySelector('.cool-notification');
+  if (existing) existing.remove();
+
+  const notification = document.createElement('div');
+  notification.className = 'cool-notification';
+  
+  const bgColor = type === 'success' ? 'from-emerald-500 to-teal-600' : 'from-red-500 to-pink-600';
+  const icon = type === 'success' ? '🎉' : '❌';
+  
+  notification.innerHTML = `
+    <div class="fixed top-4 right-4 z-50 transform translate-x-full transition-all duration-500 ease-out">
+      <div class="bg-gradient-to-r ${bgColor} text-white px-6 py-4 rounded-xl shadow-2xl border border-white/20 backdrop-blur-sm max-w-sm">
+        <div class="flex items-center gap-3">
+          <div class="text-2xl animate-bounce">${icon}</div>
+          <div class="flex-1">
+            <div class="font-semibold text-sm">Status Updated!</div>
+            <div class="text-xs opacity-90 mt-1">${message}</div>
+          </div>
+          <div class="w-2 h-2 bg-white/30 rounded-full animate-pulse"></div>
+        </div>
+        <div class="absolute inset-0 bg-gradient-to-r from-white/10 to-transparent rounded-xl"></div>
+      </div>
+    </div>
+  `;
+  
+  document.body.appendChild(notification);
+  
+  // Animate in
+  setTimeout(() => {
+    notification.firstElementChild.style.transform = 'translateX(0)';
+  }, 100);
+  
+  // Animate out and remove
+  setTimeout(() => {
+    notification.firstElementChild.style.transform = 'translateX(full)';
+    setTimeout(() => notification.remove(), 500);
+  }, 4000);
+}
+
+window.updateOrderStatus = async function(orderId, status) {
+  // Capitalize first letter of status to match server validation
+  const capitalizedStatus = status.charAt(0).toUpperCase() + status.slice(1);
+  
+  try {
+    const res = await fetch(`${API}/order-status`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: orderId, status: capitalizedStatus })
+    });
+
+    const result = await res.json();
+    if (!res.ok) throw new Error(result?.error || "Status update failed");
+    
+    // ✨ Show cool notification instead of console log
+    showCoolNotification(`Order marked as ${capitalizedStatus}. Email notification sent to buyer!`);
+    
+  } catch (err) {
+    console.error("Order status update failed:", err);
+    showCoolNotification("Failed to update order status. Please try again.", 'error');
+    throw err; // Re-throw so the calling function can handle the error
+  }
+}
+// Auto-load sales when "Sales" section is opened
+document.querySelector('[data-section="sales"]').addEventListener("click", async function() {
+  await loadSellerCurrency();
+  loadSales();
+});
+
+// Auto-load coupons when "Coupons" section is opened
+document.querySelector('[data-section="coupons"]').addEventListener("click", loadCoupons);
+
+// Coupon Management Functions
+async function loadCoupons() {
+  try {
+    const res = await fetch(`${API}/find?collection=coupons&seller=${encodeURIComponent(seller)}`);
+    const coupons = await res.json();
+    
+    // Update stats
+    const activeCoupons = coupons.filter(c => c.status === 'active' && (!c.expiryDate || new Date(c.expiryDate) > new Date()));
+    const totalUsed = coupons.reduce((sum, c) => sum + (c.usedCount || 0), 0);
+    const totalSavings = coupons.reduce((sum, c) => sum + (c.totalSavings || 0), 0);
+    
+    document.getElementById('totalCoupons').textContent = coupons.length;
+    document.getElementById('activeCoupons').textContent = activeCoupons.length;
+    document.getElementById('couponsUsed').textContent = totalUsed;
+    document.getElementById('totalSavings').textContent = `${currentCurrencySymbol}${totalSavings.toFixed(2)}`;
+    
+    // Load coupons table
+    const tbody = document.getElementById('couponsTableBody');
+    tbody.innerHTML = '';
+    
+    coupons.forEach(coupon => {
+      const isExpired = coupon.expiryDate && new Date(coupon.expiryDate) < new Date();
+      const isLimitReached = coupon.usageLimit && (coupon.usedCount || 0) >= coupon.usageLimit;
+      const status = isExpired ? 'expired' : isLimitReached ? 'limit_reached' : coupon.status;
+      
+      const statusColors = {
+        active: 'bg-green-100 text-green-800',
+        inactive: 'bg-gray-100 text-gray-800',
+        expired: 'bg-red-100 text-red-800',
+        limit_reached: 'bg-yellow-100 text-yellow-800'
+      };
+      
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${coupon.code}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${coupon.type === 'percentage' ? 'Percentage' : 'Fixed Amount'}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          ${coupon.type === 'percentage' ? coupon.value + '%' : currentCurrencySymbol + coupon.value}
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          ${coupon.applicableProducts === 'all' ? 'All Products' : `${coupon.productIds?.length || 0} Products`}
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+          ${coupon.usedCount || 0}${coupon.usageLimit ? `/${coupon.usageLimit}` : ''}
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap">
+          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusColors[status]}">
+            ${status.replace('_', ' ')}
+          </span>
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+          <button onclick="toggleCouponStatus('${coupon.id}', '${status === 'active' ? 'inactive' : 'active'}')"
+                  class="text-indigo-600 hover:text-indigo-900 mr-3">
+            ${status === 'active' ? 'Deactivate' : 'Activate'}
+          </button>
+          <button onclick="deleteCoupon('${coupon.id}')" class="text-red-600 hover:text-red-900">Delete</button>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+    
+  } catch (err) {
+    console.error('Failed to load coupons:', err);
+  }
+}
+
+async function loadProductsForCoupon() {
+  try {
+    const res = await fetch(`${API}/find?collection=products&seller=${encodeURIComponent(seller)}`);
+    const products = await res.json();
+    
+    const container = document.getElementById('productCheckboxes');
+    container.innerHTML = '';
+    
+    products.forEach(product => {
+      const div = document.createElement('div');
+      div.className = 'flex items-center gap-2 mb-2';
+      div.innerHTML = `
+        <input type="checkbox" id="product_${product.id}" value="${product.id}" class="product-checkbox">
+        <label for="product_${product.id}" class="text-sm text-gray-700">${product.name}</label>
+      `;
+      container.appendChild(div);
+    });
+  } catch (err) {
+    console.error('Failed to load products for coupon:', err);
+  }
+}
+
+async function saveCoupon() {
+  const code = document.getElementById('couponCode').value.trim().toUpperCase();
+  const type = document.getElementById('discountType').value;
+  const value = parseFloat(document.getElementById('discountValue').value);
+  const minOrderAmount = parseFloat(document.getElementById('minOrderAmount').value) || 0;
+  const usageLimit = parseInt(document.getElementById('usageLimit').value) || null;
+  const expiryDate = document.getElementById('expiryDate').value || null;
+  const applicableProducts = document.getElementById('productSelection').value;
+  
+  if (!code || !value || value <= 0) {
+    return alert('Please fill in all required fields with valid values.');
+  }
+  
+  let productIds = [];
+  if (applicableProducts === 'specific') {
+    productIds = Array.from(document.querySelectorAll('.product-checkbox:checked')).map(cb => cb.value);
+    if (productIds.length === 0) {
+      return alert('Please select at least one product for this coupon.');
+    }
+  }
+  
+  const couponData = {
+    collection: 'coupons',
+    payload: {
+      code,
+      type,
+      value,
+      minOrderAmount,
+      usageLimit,
+      expiryDate,
+      applicableProducts,
+      productIds: applicableProducts === 'specific' ? productIds : [],
+      seller,
+      status: 'active',
+      usedCount: 0,
+      totalSavings: 0,
+      createdAt: Date.now()
+    }
+  };
+  
+  try {
+    const res = await fetch(`${API}/insert`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(couponData)
+    });
+    
+    if (!res.ok) throw new Error('Failed to create coupon');
+    
+    closeCouponModal();
+    loadCoupons();
+    alert('✅ Coupon created successfully!');
+  } catch (err) {
+    console.error('Failed to save coupon:', err);
+    alert('❌ Failed to create coupon.');
+  }
+}
+
+function closeCouponModal() {
+  document.getElementById('couponModal').classList.add('hidden');
+  document.querySelectorAll('#couponModal input, #couponModal select').forEach(input => {
+    input.value = '';
+  });
+  document.querySelectorAll('.product-checkbox').forEach(cb => cb.checked = false);
+}
+
+window.toggleCouponStatus = async function(couponId, newStatus) {
+  try {
+    const res = await fetch(`${API}/update`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        collection: 'coupons',
+        query: { id: couponId },
+        updates: { status: newStatus }
+      })
+    });
+    
+    if (!res.ok) throw new Error('Failed to update coupon status');
+    
+    loadCoupons();
+    alert(`✅ Coupon ${newStatus === 'active' ? 'activated' : 'deactivated'} successfully!`);
+  } catch (err) {
+    console.error('Failed to toggle coupon status:', err);
+    alert('❌ Failed to update coupon status.');
+  }
+};
+
+window.deleteCoupon = async function(couponId) {
+  if (!confirm('Are you sure you want to delete this coupon?')) return;
+  
+  try {
+    const res = await fetch(`${API}/delete`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        collection: 'coupons',
+        query: { id: couponId }
+      })
+    });
+    
+    if (!res.ok) throw new Error('Failed to delete coupon');
+    
+    loadCoupons();
+    alert('✅ Coupon deleted successfully!');
+  } catch (err) {
+    console.error('Failed to delete coupon:', err);
+    alert('❌ Failed to delete coupon.');
+  }
+};
+
+// Inventory Management Functions
+async function loadInventory() {
+  try {
+    // Fetch products and orders simultaneously
+    const [productsRes, ordersRes] = await Promise.all([
+      fetch(`${API}/find?collection=products&seller=${encodeURIComponent(seller)}`),
+      fetch(`${API}/find?collection=orders&seller=${encodeURIComponent(seller)}`)
+    ]);
+    
+    const products = await productsRes.json();
+    const orders = await ordersRes.json();
+    
+    // Create a map to count sold quantities by product ID
+    const soldCount = {};
+    orders.forEach(order => {
+      const productId = order.productId;
+      if (productId) {
+        soldCount[productId] = (soldCount[productId] || 0) + (order.quantity || 1);
+      }
+    });
+    
+    let totalProducts = products.length;
+    let lowStockItems = 0;
+    let outOfStockItems = 0;
+    let totalValue = 0;
+    
+    const tbody = document.getElementById('inventoryTableBody');
+    tbody.innerHTML = '';
+    
+    products.forEach(product => {
+      const stock = product.inventory || 0;
+      const sold = soldCount[product.id] || 0; // Calculate sold from orders
+      const price = parseFloat(product.price) || 0;
+      const value = stock * price;
+      
+      totalValue += value;
+      
+      // Determine stock status
+      let status = 'In Stock';
+      let statusClass = 'text-green-600';
+      
+      if (stock === 0) {
+        outOfStockItems++;
+        status = 'Out of Stock';
+        statusClass = 'text-red-600';
+      } else if (stock <= 5) {
+        lowStockItems++;
+        status = 'Low Stock';
+        statusClass = 'text-orange-600';
+      }
+      
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td class="px-6 py-4 whitespace-nowrap">
+          <div class="flex items-center">
+            <img class="h-10 w-10 rounded-full object-cover" src="${product.image ? (product.image.startsWith('http') ? product.image : `${API}${product.image}`) : 'https://via.placeholder.com/40'}" alt="">
+            <div class="ml-4">
+              <div class="text-sm font-medium text-gray-900">${product.name}</div>
+              <div class="text-sm text-gray-500">${product.category || 'N/A'}</div>
+            </div>
+          </div>
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${stock}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${sold}</td>
+        <td class="px-6 py-4 whitespace-nowrap">
+          <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass.replace('text-', 'bg-').replace('-600', '-100')} ${statusClass}">
+            ${status}
+          </span>
+        </td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${currentCurrencySymbol}${value.toFixed(2)}</td>
+        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+          <button onclick="openRestockModal('${product.id}', '${product.name}', ${stock})"
+                  class="text-indigo-600 hover:text-indigo-900 mr-3">Restock</button>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+    
+    // Update stats
+    document.getElementById('inventoryTotalProducts').textContent = totalProducts;
+    document.getElementById('inventoryLowStock').textContent = lowStockItems;
+    document.getElementById('inventoryOutOfStock').textContent = outOfStockItems;
+    document.getElementById('inventoryTotalValue').textContent = `${currentCurrencySymbol}${totalValue.toFixed(2)}`;
+    
+  } catch (err) {
+    console.error('Failed to load inventory:', err);
+  }
+}
+
+// Restock Modal Functions
+window.openRestockModal = function(productId, productName, currentStock) {
+  document.getElementById('restockProductName').value = productName;
+  document.getElementById('restockCurrentStock').value = currentStock;
+  document.getElementById('restockQuantity').value = '';
+  document.getElementById('restockNotes').value = '';
+  
+  // Store product ID for saving
+  document.getElementById('saveRestockBtn').dataset.productId = productId;
+  
+  document.getElementById('restockModal').classList.remove('hidden');
+};
+
+async function saveRestock() {
+  const productId = document.getElementById('saveRestockBtn').dataset.productId;
+  const addQuantity = parseInt(document.getElementById('restockQuantity').value) || 0;
+  const currentStock = parseInt(document.getElementById('restockCurrentStock').value) || 0;
+  const notes = document.getElementById('restockNotes').value.trim();
+  
+  if (addQuantity <= 0) {
+    return alert('Please enter a valid quantity to add.');
+  }
+  
+  const newStock = currentStock + addQuantity;
+  
+  try {
+    const res = await fetch(`${API}/update`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        collection: 'products',
+        query: { id: productId },
+        updates: { inventory: newStock }
+      })
+    });
+    
+    if (!res.ok) throw new Error('Failed to update inventory');
+    
+    // Log restock activity (optional - could be stored in a separate collection)
+    if (notes) {
+      console.log(`Restocked ${addQuantity} units. Notes: ${notes}`);
+    }
+    
+    closeRestockModal();
+    loadInventory();
+    alert(`✅ Successfully restocked! New inventory: ${newStock} units`);
+  } catch (err) {
+    console.error('Failed to restock:', err);
+    alert('❌ Failed to update inventory.');
+  }
+}
+
+function closeRestockModal() {
+  document.getElementById('restockModal').classList.add('hidden');
+  document.querySelectorAll('#restockModal input, #restockModal textarea').forEach(input => {
+    input.value = '';
+  });
+}
+
+// Bulk Restock Functions
+async function openBulkRestockModal() {
+  try {
+    const res = await fetch(`${API}/find?collection=products&seller=${encodeURIComponent(seller)}`);
+    const products = await res.json();
+    
+    const container = document.getElementById('bulkRestockList');
+    container.innerHTML = '';
+    
+    products.forEach(product => {
+      const div = document.createElement('div');
+      div.className = 'flex items-center gap-4 p-4 border rounded-lg';
+      div.innerHTML = `
+        <img src="${product.image ? (product.image.startsWith('http') ? product.image : `${API}${product.image}`) : 'https://via.placeholder.com/40'}"
+             class="w-12 h-12 rounded object-cover">
+        <div class="flex-1">
+          <h4 class="font-medium text-gray-900">${product.name}</h4>
+          <p class="text-sm text-gray-500">Current: ${product.inventory || 0} units</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <label class="text-sm text-gray-600">Add:</label>
+          <input type="number"
+                 class="bulk-restock-input border rounded px-3 py-2 w-20"
+                 data-product-id="${product.id}"
+                 data-current-stock="${product.inventory || 0}"
+                 min="0"
+                 placeholder="0">
+        </div>
+      `;
+      container.appendChild(div);
+    });
+    
+    document.getElementById('bulkRestockModal').classList.remove('hidden');
+  } catch (err) {
+    console.error('Failed to load products for bulk restock:', err);
+    alert('❌ Failed to load products.');
+  }
+}
+
+async function saveBulkRestock() {
+  const inputs = document.querySelectorAll('.bulk-restock-input');
+  const updates = [];
+  
+  inputs.forEach(input => {
+    const addQuantity = parseInt(input.value) || 0;
+    if (addQuantity > 0) {
+      const productId = input.dataset.productId;
+      const currentStock = parseInt(input.dataset.currentStock) || 0;
+      const newStock = currentStock + addQuantity;
+      
+      updates.push({
+        productId,
+        newStock,
+        addedQuantity: addQuantity
+      });
+    }
+  });
+  
+  if (updates.length === 0) {
+    return alert('Please enter quantities for at least one product.');
+  }
+  
+  try {
+    // Update each product
+    for (const update of updates) {
+      await fetch(`${API}/update`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          collection: 'products',
+          query: { id: update.productId },
+          updates: { inventory: update.newStock }
+        })
+      });
+    }
+    
+    closeBulkRestockModal();
+    loadInventory();
+    alert(`✅ Successfully updated inventory for ${updates.length} products!`);
+  } catch (err) {
+    console.error('Failed to bulk restock:', err);
+    alert('❌ Failed to update some products.');
+  }
+}
+
+function closeBulkRestockModal() {
+  document.getElementById('bulkRestockModal').classList.add('hidden');
+}
+
+// Event Listeners
+document.getElementById('closeManageModalBtn').addEventListener('click', closeManageModal);
+document.getElementById('saveChangesBtn').addEventListener('click', saveProductChanges);
+document.getElementById('updateAccountBtn').addEventListener('click', updateAccount);
+document.getElementById('changePasswordBtn').addEventListener('click', changePassword);
+document.getElementById('addMediaFieldBtn').addEventListener('click', addMediaField);
+document.getElementById('productCategory').addEventListener('change', onCategoryChange);
+document.getElementById('closeProductModalBtn').addEventListener('click', closeModal);
+document.getElementById('saveProductBtn').addEventListener('click', saveProduct);
+
+// Coupon Event Listeners
+document.getElementById('addCouponBtn').addEventListener('click', () => {
+  document.getElementById('couponModal').classList.remove('hidden');
+  loadProductsForCoupon();
+});
+document.getElementById('closeCouponModalBtn').addEventListener('click', closeCouponModal);
+document.getElementById('saveCouponBtn').addEventListener('click', saveCoupon);
+document.getElementById('productSelection').addEventListener('change', (e) => {
+  const specificDiv = document.getElementById('specificProductsDiv');
+  if (e.target.value === 'specific') {
+    specificDiv.classList.remove('hidden');
+  } else {
+    specificDiv.classList.add('hidden');
+  }
+});
+
+// Inventory Event Listeners
+document.getElementById('closeRestockModalBtn').addEventListener('click', closeRestockModal);
+document.getElementById('saveRestockBtn').addEventListener('click', saveRestock);
+document.getElementById('bulkRestockBtn').addEventListener('click', openBulkRestockModal);
+document.getElementById('closeBulkRestockModalBtn').addEventListener('click', closeBulkRestockModal);
+document.getElementById('saveBulkRestockBtn').addEventListener('click', saveBulkRestock);
+
+document.body.addEventListener('click', function(event) {
+    if (event.target.classList.contains('manage-product-btn')) {
+        const productData = JSON.parse(event.target.dataset.product);
+        openManageProduct(productData);
+    }
+    if (event.target.classList.contains('remove-gallery-btn')) {
+        removeGalleryImage(event.target.dataset.url);
+    }
+    if (event.target.classList.contains('delete-product-btn')) {
+        deleteProduct(event.target.dataset.id);
+    }
+    if (event.target.classList.contains('update-status-btn')) {
+        updateOrderStatus(event.target.dataset.id, event.target.dataset.status);
+    }
+});
+});
+function updateGatewayConfigs() {
+  const selectedGateways = Array.from(document.querySelectorAll(".paymentOption:checked")).map(el => el.value);
+  const configWrap = document.getElementById("gatewayConfigs");
+  configWrap.innerHTML = "";
+
+  selectedGateways.forEach(gateway => {
+    const fields = GATEWAY_FIELDS[gateway];
+    if (!fields || !fields.length) {
+      console.warn(`⛔ Missing or empty config fields for: ${gateway}`);
+      return;
+    }
+
+    const section = document.createElement("div");
+    section.className = "bg-white border-l-4 border-indigo-500 shadow-sm rounded-md p-4 animate__animated animate__fadeInUp";
+
+    section.innerHTML = `
+      <h5 class="text-sm font-bold text-indigo-700 mb-3">🔧 ${gateway.toUpperCase()} Configuration</h5>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        ${fields.map(f => {
+          const value = f.value !== undefined
+            ? f.value
+            : (savedSettings?.gatewayConfigs?.[f.key] || '');
+          return `
+            <label class="text-sm text-gray-700 font-medium">
+              ${f.label}
+              <input 
+                type="text" 
+                id="${f.key}" 
+                ${f.readonly ? 'readonly' : ''} 
+                class="mt-1 w-full border rounded px-3 py-2 text-sm ${f.readonly ? 'bg-gray-100 cursor-not-allowed' : 'bg-white'}"
+                placeholder="${f.placeholder ?? 'Enter value...'}"
+                value="${value}"
+              />
+            </label>
+          `;
+        }).join("")}
+      </div>
+    `;
+    configWrap.appendChild(section);
+  });
+}
+
+const GATEWAY_FIELDS = {
+  // ✅ Free/Public Gateways
+  paypal: [
+    { label: "PayPal Client ID", key: "paypalClientId", placeholder: "e.g. A5k83..." }
+  ],
+  paystack: [
+    { label: "Paystack Public Key", key: "paystackPublicKey", placeholder: "Your public key..." },
+    { label: "Paystack Secret Key", key: "paystackSecretKey", placeholder: "Your secret key..." }
+  ],
+  flutterwave: [
+    { label: "Flutterwave Public Key", key: "flutterwavePublicKey", placeholder: "e.g. FLWPUBK..." },
+    { label: "Flutterwave Secret Key", key: "flutterwaveSecretKey", placeholder: "Your FLW secret..." }
+  ],
+  razorpay: [
+    { label: "Razorpay Key ID", key: "razorpayKeyId", placeholder: "e.g. rzp_test_..." },
+    { label: "Razorpay Secret", key: "razorpaySecret", placeholder: "e.g. 123abc..." }
+  ],
+
+  // ✅ Newly added: Instamojo
+  instamojo: [
+    { label: "Instamojo API Key", key: "instamojoApiKey", placeholder: "e.g. test_abc123..." },
+    { label: "Instamojo Auth Token", key: "instamojoAuthToken", placeholder: "e.g. 1a2b3c4d..." }
+  ],
+
+  // ✅ Newly added: Khalti
+  khalti: [
+    { label: "Khalti Public Key", key: "khaltiPublicKey", placeholder: "e.g. test_public_key_xyz..." },
+    { label: "Khalti Secret Key", key: "khaltiSecretKey", placeholder: "e.g. test_secret_key_xyz..." }
+  ],
+
+  // 🔐 Premium/Backend Gateways
+  stripe: [
+    { label: "Stripe Public Key", key: "stripePublicKey", placeholder: "e.g. pk_live_..." },
+    { label: "Stripe Secret Key", key: "stripeSecretKey", placeholder: "e.g. sk_live_..." }
+  ],
+  square: [
+    { label: "Square Application ID", key: "squareAppId", placeholder: "e.g. sq0idp-..." }
+  ],
+
+  // ✅ ShopRight – hardcoded (readonly)
+  shopright: [
+    {
+      label: "ShopRight - Platform managed",
+      key: "note",
+      readonly: true,
+      placeholder: "This gateway is managed by ShopRight."
+    },
+    {
+      label: "Paystack Public Key (ShopRight)",
+      key: "paystackPublicKey",
+      readonly: true,
+      value: "pk_test_232531a5c927ef2cc67ed1b85af3f26e3b8ed2f2"
+    },
+    {
+      label: "Paystack Secret Key (ShopRight)",
+      key: "paystackSecretKey",
+      readonly: true,
+      value: "sk_test_a832c30ce0a082daae0ba4d91032098f0b7fc9c6"
+    }
+  ],
+
+  // ✅ External URL-based (no keys needed)
+  iyonicpay: [
+    {
+      label: "IyonicPay Request URL",
+      key: "iyonicpayUrl",
+      placeholder: "e.g. https://pay.iyonicorp.com/request/?user=Andrea"
+    }
+  ]
+};
+const savedSettings = JSON.parse(localStorage.getItem("sellerSettings") || "{}");
+
+// ⛳ Tab Toggling
+document.querySelectorAll(".tab-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const tab = btn.dataset.tab;
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("text-indigo-700", "font-medium", "text-gray-600"));
+    btn.classList.add("text-indigo-700", "font-medium");
+    document.querySelectorAll(".tab-content").forEach(c => c.classList.add("hidden"));
+    document.getElementById("tab-" + tab).classList.remove("hidden");
+  });
+});
+
+const deliveryCountries = {
+  "Nigeria": [
+    "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa",
+    "Benue", "Borno", "Cross River", "Delta", "Ebonyi", "Edo",
+    "Ekiti", "Enugu", "Gombe", "Imo", "Jigawa", "Kaduna",
+    "Kano", "Katsina", "Kebbi", "Kogi", "Kwara", "Lagos",
+    "Nasarawa", "Niger", "Ogun", "Ondo", "Osun", "Oyo",
+    "Plateau", "Rivers", "Sokoto", "Taraba", "Yobe", "Zamfara",
+    "Federal Capital Territory (Abuja)"
+  ],
+  "Kenya": [
+    "Baringo", "Bomet", "Bungoma", "Busia", "Elgeyo-Marakwet",
+    "Embu", "Garissa", "Homa Bay", "Isiolo", "Kajiado", "Kakamega",
+    "Kericho", "Kiambu", "Kilifi", "Kirinyaga", "Kisii", "Kisumu",
+    "Kitui", "Kwale", "Laikipia", "Lamu", "Machakos", "Makueni",
+    "Mandera", "Marsabit", "Meru", "Migori", "Mombasa", "Murang'a",
+    "Nairobi", "Nakuru", "Nandi", "Narok", "Nyamira", "Nyandarua",
+    "Nyeri", "Samburu", "Siaya", "Taita-Taveta", "Tana River",
+    "Tharaka-Nithi", "Trans Nzoia", "Turkana", "Uasin Gishu",
+    "Vihiga", "Wajir", "West Pokot"
+  ],
+  "South Africa": [
+    "Eastern Cape", "Free State", "Gauteng", "KwaZulu-Natal",
+    "Limpopo", "Mpumalanga", "Northern Cape", "North West", "Western Cape"
+  ],
+  "United States": [
+    "Alabama", "Alaska", "Arizona", "Arkansas", "California",
+    "Colorado", "Connecticut", "Delaware", "Florida", "Georgia",
+    "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa",
+    "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland",
+    "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri",
+    "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey",
+    "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio",
+    "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina",
+    "South Dakota", "Tennessee", "Texas", "Utah", "Vermont",
+    "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"
+  ],
+  "Canada": [
+    "Alberta", "British Columbia", "Manitoba", "New Brunswick",
+    "Newfoundland and Labrador", "Nova Scotia", "Ontario",
+    "Prince Edward Island", "Quebec", "Saskatchewan", "Northwest Territories",
+    "Nunavut", "Yukon"
+  ],
+  "Germany": [
+    "Baden-Württemberg", "Bavaria", "Berlin", "Brandenburg",
+    "Bremen", "Hamburg", "Hesse", "Lower Saxony", "Mecklenburg-Vorpommern",
+    "North Rhine-Westphalia", "Rhineland-Palatinate", "Saarland",
+    "Saxony", "Saxony-Anhalt", "Schleswig-Holstein", "Thuringia"
+  ],
+  "India": [
+    "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar",
+    "Chhattisgarh", "Goa", "Gujarat", "Haryana", "Himachal Pradesh",
+    "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra",
+    "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha",
+    "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana",
+    "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
+    "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu",
+    "Delhi", "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry"
+  ],
+  "Brazil": [
+    "Acre", "Alagoas", "Amapá", "Amazonas", "Bahia", "Ceará",
+    "Distrito Federal", "Espírito Santo", "Goiás", "Maranhão",
+    "Mato Grosso", "Mato Grosso do Sul", "Minas Gerais", "Pará",
+    "Paraíba", "Paraná", "Pernambuco", "Piauí", "Rio de Janeiro",
+    "Rio Grande do Norte", "Rio Grande do Sul", "Rondônia", "Roraima",
+    "Santa Catarina", "São Paulo", "Sergipe", "Tocantins"
+  ]
+};
+
+// 🧩 Optional Subcounty Map
+const subcountiesData = {
+  "Baringo": [
+    "Baringo Central", "Baringo North", "Baringo South", "Eldama Ravine", "Mogotio", "Tiaty"
+  ],
+  "Bomet": [
+    "Bomet Central", "Bomet East", "Chepalungu", "Konoin", "Sotik"
+  ],
+  "Bungoma": [
+    "Bumula", "Kabuchai", "Kanduyi", "Kimilili", "Mt Elgon", "Sirisia", "Tongaren", "Webuye East", "Webuye West"
+  ],
+  "Busia": [
+    "Budalangi", "Butula", "Funyula", "Matayos", "Nambale", "Teso North", "Teso South"
+  ],
+  "Elgeyo-Marakwet": [
+    "Keiyo North", "Keiyo South", "Marakwet East", "Marakwet West"
+  ],
+  "Embu": [
+    "Manyatta", "Mbeere North", "Mbeere South", "Runyenjes"
+  ],
+  "Garissa": [
+    "Balambala", "Dadaab", "Fafi", "Garissa Township", "Hulugho", "Ijara", "Lagdera"
+  ],
+  "Homa Bay": [
+    "Homa Bay Town", "Kabondo Kasipul", "Karachuonyo", "Kasipul", "Mbita", "Ndhiwa", "Rangwe", "Suba"
+  ],
+  "Isiolo": [
+    "Isiolo", "Garbatulla", "Merti"
+  ],
+  "Kajiado": [
+    "Kajiado Central", "Kajiado East", "Kajiado North", "Kajiado South", "Kajiado West"
+  ],
+  "Kakamega": [
+    "Butere", "Ikolomani", "Khwisero", "Lugari", "Lurambi", "Malava", "Matungu", "Mumias East", "Mumias West", "Navakholo", "Shinyalu"
+  ],
+  "Kericho": [
+    "Ainamoi", "Belgut", "Bureti", "Kipkelion East", "Kipkelion West", "Sigowet/Soin"
+  ],
+  "Kiambu": [
+    "Gatundu North", "Gatundu South", "Githunguri", "Juja", "Kabete", "Kiambaa", "Kiambu", "Kikuyu", "Limuru", "Lari", "Ruiru", "Thika Town"
+  ],
+  "Kilifi": [
+    "Ganze", "Kaloleni", "Kilifi North", "Kilifi South", "Magarini", "Malindi", "Rabai"
+  ],
+  "Kirinyaga": [
+    "Gichugu", "Kirinyaga Central", "Mwea East", "Mwea West"
+  ],
+  "Kisii": [
+    "Bobasi", "Bomachoge Borabu", "Bomachoge Chache", "Bonchari", "Kitutu Chache North", "Kitutu Chache South", "Nyaribari Chache", "Nyaribari Masaba", "South Mugirango"
+  ],
+  "Kisumu": [
+    "Kisumu Central", "Kisumu East", "Kisumu West", "Muhoroni", "Nyakach", "Nyando", "Seme"
+  ],
+  "Kitui": [
+    "Kitui Central", "Kitui East", "Kitui Rural", "Kitui South", "Kitui West", "Mwingi Central", "Mwingi North", "Mwingi West"
+  ],
+  "Kwale": [
+    "Kinango", "Lunga Lunga", "Matuga", "Msambweni"
+  ],
+  "Laikipia": [
+    "Laikipia East", "Laikipia North", "Laikipia West"
+  ],
+  "Lamu": [
+    "Lamu East", "Lamu West"
+  ],
+  "Machakos": [
+    "Kangundo", "Kathiani", "Machakos Town", "Masinga", "Matungulu", "Mavoko", "Mwala", "Yatta"
+  ],
+  "Makueni": [
+    "Kaiti", "Kibwezi East", "Kibwezi West", "Kilome", "Makueni", "Mbooni"
+  ],
+  "Mandera": [
+    "Banissa", "Lafey", "Mandera East", "Mandera North", "Mandera South", "Mandera West"
+  ],
+  "Marsabit": [
+    "Laisamis", "Moyale", "North Horr", "Saku"
+  ],
+  "Meru": [
+    "Buuri", "Central Imenti", "Igembe Central", "Igembe North", "Igembe South", "North Imenti", "South Imenti", "Tigania East", "Tigania West"
+  ],
+  "Migori": [
+    "Awendo", "Kuria East", "Kuria West", "Nyatike", "Rongo", "Suna East", "Suna West", "Uriri"
+  ],
+  "Mombasa": [
+    "Changamwe", "Jomvu", "Kisauni", "Likoni", "Mvita", "Nyali"
+  ],
+  "Murang'a": [
+    "Gatanga", "Kahuro", "Kandara", "Kangema", "Kigumo", "Kiharu", "Mathioya", "Maragua"
+  ],
+  "Nairobi": [
+    "Dagoretti North", "Dagoretti South", "Embakasi Central", "Embakasi East", "Embakasi North", "Embakasi South", "Embakasi West", "Kamukunji", "Kasarani", "Kibra", "Lang'ata", "Makadara", "Mathare", "Roysambu", "Ruaraka", "Starehe", "Westlands"
+  ],
+  "Nakuru": [
+    "Bahati", "Gilgil", "Kuresoi North", "Kuresoi South", "Molo", "Naivasha", "Nakuru Town East", "Nakuru Town West", "Njoro", "Rongai", "Subukia"
+  ],
+  "Nandi": [
+    "Aldai", "Chesumei", "Emgwen", "Mosop", "Nandi Hills", "Tinderet"
+  ],
+  "Narok": [
+    "Emurua Dikirr", "Kilgoris", "Narok East", "Narok North", "Narok South", "Narok West"
+  ],
+  "Nyamira": [
+    "Borabu", "Kitutu Masaba", "North Mugirango", "West Mugirango"
+  ],
+  "Nyandarua": [
+    "Kinangop", "Kipipiri", "Ndaragwa", "Ol Jorok", "Ol Kalou"
+  ],
+  "Nyeri": [
+    "Kieni East", "Kieni West", "Mathira East", "Mathira West", "Mukurweini", "Nyeri Town", "Othaya", "Tetu"
+  ],
+  "Samburu": [
+    "Samburu East", "Samburu North", "Samburu West"
+  ],
+  "Siaya": [
+    "Alego Usonga", "Bondo", "Gem", "Rarieda", "Ugenya", "Ugunja"
+  ],
+  "Taita-Taveta": [
+    "Mwatate", "Taveta", "Voi", "Wundanyi"
+  ],
+  "Tana River": [
+    "Bura", "Galole", "Garsen"
+  ],
+  "Tharaka-Nithi": [
+    "Chuka/Igambang'ombe", "Maara", "Tharaka"
+  ],
+  "Trans Nzoia": [
+    "Cherangany", "Endebess", "Kiminini", "Kwanza", "Saboti"
+  ],
+  "Turkana": [
+    "Loima", "Turkana Central", "Turkana East", "Turkana North", "Turkana South", "Turkana West"
+  ],
+  "Uasin Gishu": [
+    "Ainabkoi", "Kapseret", "Kesses", "Moiben", "Soy", "Turbo"
+  ],
+  "Vihiga": [
+    "Emuhaya", "Hamisi", "Luanda", "Sabatia", "Vihiga"
+  ],
+  "Wajir": [
+    "Eldas", "Tarbaj", "Wajir East", "Wajir North", "Wajir South", "Wajir West"
+  ],
+  "West Pokot": [
+    "Kacheliba", "Kapenguria", "Pokot South", "Sigor"
+  ],
+    "Abia": [
+    "Aba North", "Aba South", "Arochukwu", "Bende", "Ikwuano", "Isiala Ngwa North", "Isiala Ngwa South", "Isuikwuato", "Obi Ngwa", "Ohafia", "Osisioma", "Ugwunagbo", "Ukwa East", "Ukwa West", "Umuahia North", "Umuahia South", "Umu Nneochi"
+  ],
+  "Adamawa": [
+    "Demsa", "Fufore", "Ganye", "Girei", "Gombi", "Guyuk", "Hong", "Jada", "Lamurde", "Madagali", "Maiha", "Mayo-Belwa", "Michika", "Mubi North", "Mubi South", "Numan", "Shelleng", "Song", "Toungo", "Yola North", "Yola South"
+  ],
+  "Akwa Ibom": [
+    "Abak", "Eastern Obolo", "Eket", "Esit Eket", "Essien Udim", "Etim Ekpo", "Etinan", "Ibeno", "Ibesikpo Asutan", "Ibiono-Ibom", "Ika", "Ikono", "Ikot Abasi", "Ikot Ekpene", "Ini", "Itu", "Mbo", "Mkpat-Enin", "Nsit-Atai", "Nsit-Ibom", "Nsit-Ubium", "Obot Akara", "Okobo", "Onna", "Oron", "Oruk Anam", "Udung-Uko", "Ukanafun", "Uruan", "Urue-Offong/Oruko", "Uyo"
+  ],
+  "Anambra": [
+    "Aguata", "Anambra East", "Anambra West", "Anaocha", "Awka North", "Awka South", "Ayamelum", "Dunukofia", "Ekwusigo", "Idemili North", "Idemili South", "Ihiala", "Njikoka", "Nnewi North", "Nnewi South", "Ogbaru", "Onitsha North", "Onitsha South", "Orumba North", "Orumba South", "Oyi"
+  ],
+  "Bauchi": [
+    "Alkaleri", "Bauchi", "Bogoro", "Damban", "Darazo", "Dass", "Gamawa", "Ganjuwa", "Giade", "Itas/Gadau", "Jama'are", "Katagum", "Kirfi", "Misau", "Ningi", "Shira", "Tafawa Balewa", "Toro", "Warji", "Zaki"
+  ],
+  "Bayelsa": [
+    "Brass", "Ekeremor", "Kolokuma/Opokuma", "Nembe", "Ogbia", "Sagbama", "Southern Ijaw", "Yenagoa"
+  ],
+  "Benue": [
+    "Ado", "Agatu", "Apa", "Buruku", "Gboko", "Guma", "Gwer East", "Gwer West", "Katsina-Ala", "Konshisha", "Kwande", "Logo", "Makurdi", "Obi", "Ogbadibo", "Ohimini", "Oju", "Okpokwu", "Oturkpo", "Tarka", "Ukum", "Ushongo", "Vandeikya"
+  ],
+  "Borno": [
+    "Abadam", "Askira/Uba", "Bama", "Bayo", "Biu", "Chibok", "Damboa", "Dikwa", "Gubio", "Guzamala", "Gwoza", "Hawul", "Jere", "Kaga", "Kala/Balge", "Konduga", "Kukawa", "Kwaya Kusar", "Mafa", "Magumeri", "Maiduguri", "Marte", "Mobbar", "Monguno", "Ngala", "Nganzai", "Shani"
+  ],
+  "Cross River": [
+    "Abi", "Akamkpa", "Akpabuyo", "Bakassi", "Bekwarra", "Biase", "Boki", "Calabar Municipal", "Calabar South", "Etung", "Ikom", "Obanliku", "Obubra", "Obudu", "Odukpani", "Ogoja", "Yakurr", "Yala"
+  ],
+  "Delta": [
+    "Aniocha North", "Aniocha South", "Bomadi", "Burutu", "Ethiope East", "Ethiope West", "Ika North East", "Ika South", "Isoko North", "Isoko South", "Ndokwa East", "Ndokwa West", "Okpe", "Oshimili North", "Oshimili South", "Patani", "Sapele", "Udu", "Ughelli North", "Ughelli South", "Ukwuani", "Uvwie", "Warri North", "Warri South", "Warri South West"
+  ],
+  "Ebonyi": [
+    "Abakaliki", "Afikpo North", "Afikpo South", "Ebonyi", "Ezza North", "Ezza South", "Ikwo", "Ishielu", "Ivo", "Izzi", "Ohaozara", "Ohaukwu", "Onicha"
+  ],
+  "Edo": [
+    "Akoko-Edo", "Egor", "Esan Central", "Esan North-East", "Esan South-East", "Esan West", "Etsako Central", "Etsako East", "Etsako West", "Igueben", "Ikpoba-Okha", "Orhionmwon", "Oredo", "Ovia North-East", "Ovia South-West", "Uhunmwonde"
+  ],
+  "Ekiti": [
+    "Ado Ekiti", "Efon", "Ekiti East", "Ekiti South-West", "Ekiti West", "Emure", "Gbonyin", "Ido Osi", "Ijero", "Ikere", "Ikole", "Ilejemeje", "Irepodun/Ifelodun", "Ise/Orun", "Moba", "Oye"
+  ],
+  "Enugu": [
+    "Aninri", "Awgu", "Enugu East", "Enugu North", "Enugu South", "Ezeagu", "Igbo Etiti", "Igbo Eze North", "Igbo Eze South", "Isi Uzo", "Nkanu East", "Nkanu West", "Nsukka", "Oji River", "Udenu", "Udi", "Uzo Uwani"
+  ],
+  "Gombe": [
+    "Akko", "Balanga", "Billiri", "Dukku", "Funakaye", "Gombe", "Kaltungo", "Kwami", "Nafada", "Shongom", "Yamaltu/Deba"
+  ],
+  "Imo": [
+    "Aboh Mbaise", "Ahiazu Mbaise", "Ehime Mbano", "Ezinihitte Mbaise", "Ideato North", "Ideato South", "Ihitte/Uboma", "Ikeduru", "Isiala Mbano", "Isu", "Mbaitoli", "Ngor Okpala", "Njaba", "Nkwerre", "Nwangele", "Obowo", "Oguta", "Ohaji/Egbema", "Okigwe", "Orlu", "Orsu", "Oru East", "Oru West", "Owerri Municipal", "Owerri North", "Owerri West", "Unuimo"
+  ],
+  "Jigawa": [
+    "Auyo", "Babura", "Biriniwa", "Birnin Kudu", "Buji", "Dutse", "Gagarawa", "Garki", "Gumel", "Guri", "Gwaram", "Gwiwa", "Hadejia", "Jahun", "Kafin Hausa", "Kaugama", "Kazaure", "Kiri Kasama", "Kiyawa", "Maigatari", "Malam Madori", "Mallam Madori", "Miga", "Ringim", "Roni", "Sule Tankarkar", "Taura", "Yankwashi"
+  ],
+  "Kaduna": [
+    "Birnin Gwari", "Chikun", "Giwa", "Igabi", "Ikara", "Jaba", "Jema'a", "Kachia", "Kaduna North", "Kaduna South", "Kagarko", "Kajuru", "Kaura", "Kauru", "Kubau", "Kudan", "Lere", "Makarfi", "Sabon Gari", "Sanga", "Soba", "Zangon Kataf", "Zaria"
+  ],
+  "Kano": [
+    "Ajingi", "Albasu", "Bagwai", "Bebeji", "Bichi", "Bunkure", "Dala", "Dambatta", "Dawakin Kudu", "Dawakin Tofa", "Doguwa", "Fagge", "Gabasawa", "Garko", "Garun Mallam", "Gaya", "Gezawa", "Gwale", "Gwarzo", "Kabo", "Kano Municipal", "Karaye", "Kibiya", "Kiru", "Kumbotso", "Kunchi", "Kura", "Madobi", "Makoda", "Minjibir", "Nasarawa", "Rano", "Rimin Gado", "Rogo", "Shanono", "Sumaila", "Takai", "Tarauni", "Tofa", "Tsanyawa", "Tudun Wada", "Ungogo", "Warawa", "Wudil"
+  ],
+  "Katsina": [
+    "Bakori", "Batagarawa", "Batsari", "Baure", "Bindawa", "Charanchi", "Dandume", "Danja", "Dan Musa", "Daura", "Dutsi", "Dutsin-Ma", "Faskari", "Funtua", "Ingawa", "Jibia", "Kafur", "Kaita", "Kankara", "Kankia", "Katsina", "Kurfi", "Kusada", "Mai'Adua", "Malumfashi", "Mani", "Mashi", "Matazu", "Musawa", "Rimi", "Sabuwa", "Safana", "Sandamu", "Zango"
+  ],
+  "Kebbi": [
+    "Aleiro", "Arewa Dandi", "Argungu", "Augie", "Bagudo", "Birnin Kebbi", "Bunza", "Dandi", "Fakai", "Gwandu", "Jega", "Kalgo", "Koko/Besse", "Maiyama", "Ngaski", "Sakaba", "Shanga", "Suru", "Wasagu/Danko", "Yauri", "Zuru"
+  ],
+  "Kogi": [
+    "Adavi", "Ajaokuta", "Ankpa", "Bassa", "Dekina", "Ibaji", "Idah", "Igalamela-Odolu", "Ijumu", "Kabba/Bunu", "Kogi", "Lokoja", "Mopa-Muro", "Ofu", "Ogori/Magongo", "Okehi", "Okene", "Olamaboro", "Omala", "Yagba East", "Yagba West"
+  ],
+  "Kwara": [
+    "Asa", "Baruten", "Edu", "Ekiti", "Ifelodun", "Ilorin East", "Ilorin South", "Ilorin West", "Irepodun", "Isin", "Kaiama", "Moro", "Offa", "Oke Ero", "Oyun", "Pategi"
+  ],
+  "Lagos": [
+    "Agege", "Ajeromi-Ifelodun", "Alimosho", "Amuwo-Odofin", "Apapa", "Badagry", "Epe", "Eti-Osa", "Ibeju-Lekki", "Ifako-Ijaiye", "Ikeja", "Ikorodu", "Kosofe", "Lagos Island", "Lagos Mainland", "Mushin", "Ojo", "Oshodi-Isolo", "Shomolu", "Surulere"
+  ],
+  "Nasarawa": [
+    "Akwanga", "Awe", "Doma", "Karu", "Keana", "Keffi", "Kokona", "Lafia", "Nasarawa", "Nasarawa Egon", "Obi", "Toto", "Wamba"
+  ],
+  "Niger": [
+    "Agaie", "Agwara", "Bida", "Borgu", "Bosso", "Chanchaga", "Edati", "Gbako", "Gurara", "Katcha", "Kontagora", "Lapai", "Lavun", "Magama", "Mariga", "Mashegu", "Mokwa", "Muya", "Paikoro", "Rafi", "Rijau", "Shiroro", "Suleja", "Tafa", "Wushishi"
+  ],
+  "Ogun": [
+    "Abeokuta North", "Abeokuta South", "Ado-Odo/Ota", "Egbado North", "Egbado South", "Ewekoro", "Ifo", "Ijebu East", "Ijebu North", "Ijebu North East", "Ijebu Ode", "Ikenne", "Imeko-Afon", "Ipokia", "Obafemi-Owode", "Odeda", "Odogbolu", "Ogun Waterside", "Remo North", "Shagamu"
+  ],
+  "Ondo": [
+    "Akoko North-East", "Akoko North-West", "Akoko South-East", "Akoko South-West", "Akure North", "Akure South", "Ese Odo", "Idanre", "Ifedore", "Ilaje", "Ile Oluji/Okeigbo", "Irele", "Odigbo", "Okitipupa", "Ondo East", "Ondo West", "Ose", "Owo"
+  ],
+  "Osun": [
+    "Atakunmosa East", "Atakunmosa West", "Aiyedaade", "Aiyedire", "Boluwaduro", "Boripe", "Ede North", "Ede South", "Egbedore", "Ejigbo", "Ife Central", "Ife East", "Ife North", "Ife South", "Ifedayo", "Ifelodun", "Ila", "Ilesa East", "Ilesa West", "Irepodun", "Irewole", "Isokan", "Iwo", "Obokun", "Odo Otin", "Ola Oluwa", "Olorunda", "Oriade", "Orolu", "Osogbo"
+  ],
+  "Oyo": [
+    "Afijio", "Akinyele", "Atiba", "Atisbo", "Egbeda", "Ibadan North", "Ibadan North-East", "Ibadan North-West", "Ibadan South-East", "Ibadan South-West", "Ibarapa Central", "Ibarapa East", "Ibarapa North", "Ido", "Irepo", "Iseyin", "Itesiwaju", "Iwajowa", "Kajola", "Lagelu", "Ogbomosho North", "Ogbomosho South", "Ogo Oluwa", "Olorunsogo", "Oluyole", "Ona Ara", "Orelope", "Ori Ire", "Oyo East", "Oyo West", "Saki East", "Saki West", "Surulere"
+  ],
+  "Plateau": [
+    "Barkin Ladi", "Bassa", "Bokkos", "Jos East", "Jos North", "Jos South", "Kanam", "Kanke", "Langtang North", "Langtang South", "Mangu", "Mikang", "Pankshin", "Qua'an Pan", "Riyom", "Shendam", "Wase"
+  ],
+  "Rivers": [
+    "Abua/Odual", "Ahoada East", "Ahoada West", "Akuku-Toru", "Andoni", "Asari-Toru", "Bonny", "Degema", "Eleme", "Emuoha", "Etche", "Gokana", "Ikwerre", "Khana", "Obio/Akpor", "Ogba/Egbema/Ndoni", "Ogu/Bolo", "Okrika", "Omuma", "Opobo/Nkoro", "Oyigbo", "Port Harcourt", "Tai"
+  ],
+  "Sokoto": [
+    "Binji", "Bodinga", "Dange Shuni", "Gada", "Goronyo", "Gudu", "Gwadabawa", "Illela", "Isa", "Kebbe", "Kware", "Rabah", "Sabon Birni", "Shagari", "Silame", "Sokoto North", "Sokoto South", "Tambuwal", "Tangaza", "Tureta", "Wamakko", "Wurno", "Yabo"
+  ],
+  "Taraba": [
+    "Ardo Kola", "Bali", "Donga", "Gashaka", "Gassol", "Ibi", "Jalingo", "Karim Lamido", "Kumi", "Lau", "Sardauna", "Takum", "Ussa", "Wukari", "Yorro", "Zing"
+  ],
+  "Yobe": [
+    "Bade", "Bursari", "Damaturu", "Fika", "Fune", "Geidam", "Gujba", "Gulani", "Jakusko", "Karasuwa", "Machina", "Nangere", "Nguru", "Potiskum", "Tarmuwa", "Yunusari", "Yusufari"
+  ],
+  "Zamfara": [
+    "Anka", "Bakura", "Birnin Magaji/Kiyaw", "Bukkuyum", "Bungudu", "Chafe", "Gummi", "Gusau", "Kaura Namoda", "Maradun", "Maru", "Shinkafi", "Talata Mafara", "Tsafe", "Zurmi"
+  ],
+  "Federal Capital Territory (Abuja)": [
+    "Abaji", "Bwari", "Gwagwalada", "Kuje", "Kwali", "Municipal Area Council"
+  ]
+};
+
+
+function filterCountries() {
+  const input = document.getElementById("countrySearch").value.toLowerCase();
+  document.querySelectorAll(".country-btn").forEach(btn => {
+    btn.style.display = btn.dataset.name.includes(input) ? "block" : "none";
+  });
+}
+
+function renderCountryList() {
+  const container = document.getElementById("countryList");
+  container.innerHTML = "";
+  Object.keys(deliveryCountries).forEach(country => {
+    const btn = document.createElement("button");
+    btn.className = "country-btn text-sm px-3 py-2 rounded border hover:bg-indigo-100 text-left";
+    btn.dataset.name = country.toLowerCase();
+    btn.textContent = country;
+    btn.onclick = () => addCountryRegion(country);
+    container.appendChild(btn);
+  });
+}
+
+function addCountryRegion(country) {
+  const panel = document.createElement("div");
+  panel.className = "bg-white border p-4 rounded shadow-sm";
+  panel.dataset.country = country;
+
+  const states = deliveryCountries[country];
+  const stateCheckboxes = states.map(state => `
+    <label class="flex items-center gap-2 text-sm">
+      <input type="checkbox" data-country="${country}" data-state="${state}" onchange="renderStateFeeInputs('${country}')" />
+      <span>${state}</span>
+    </label>
+  `).join("");
+
+  panel.innerHTML = `
+    <div class="flex justify-between items-center mb-2">
+      <h5 class="font-semibold text-indigo-700">${country}</h5>
+      <button onclick="this.closest('[data-country]').remove()" class="text-red-500 hover:underline text-sm">🗑 Remove</button>
+    </div>
+
+    <div class="mb-3">
+      <button onclick="selectAllStates('${country}', true)" class="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded mr-2">Select All</button>
+      <button onclick="selectAllStates('${country}', false)" class="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded">Clear All</button>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2 mb-4">${stateCheckboxes}</div>
+
+    <div class="mb-2">
+      <label class="text-xs font-medium text-gray-600">Set Default Fee for All Selected States</label>
+      <input type="number" placeholder="Fee (USD)" class="w-32 border rounded px-2 py-1 text-sm" onchange="applyDefaultFee('${country}', this.value)" />
+    </div>
+
+    <div class="space-y-4" id="feeInputs-${country}"></div>
+  `;
+
+  document.getElementById("regionSettings").appendChild(panel);
+}
+
+function selectAllStates(country, checked = true) {
+  document.querySelectorAll(`input[data-country='${country}'][type='checkbox']`).forEach(cb => {
+    cb.checked = checked;
+  });
+  renderStateFeeInputs(country);
+}
+
+function renderStateFeeInputs(country) {
+  const wrapper = document.getElementById(`feeInputs-${country}`);
+  if (!wrapper) return;
+
+  const selectedStates = Array.from(
+    document.querySelectorAll(`input[data-country='${country}']:checked`)
+  ).map(cb => cb.dataset.state);
+
+  wrapper.innerHTML = ""; // Clear previous inputs
+
+  selectedStates.forEach(state => {
+    // Container for state + subcounty
+    const section = document.createElement("div");
+    section.className = "space-y-2";
+
+    // State Fee Row
+    const stateRow = document.createElement("div");
+    stateRow.className = "flex items-center gap-3";
+
+    const label = document.createElement("label");
+    label.className = "text-sm text-gray-700 w-32";
+    label.textContent = state;
+
+    const feeInput = document.createElement("input");
+    feeInput.type = "number";
+    feeInput.placeholder = "Fee (USD)";
+    feeInput.className = "border rounded px-2 py-1 text-sm w-32";
+    feeInput.dataset.feeCountry = country;
+    feeInput.dataset.feeState = state;
+
+    stateRow.append(label, feeInput);
+    section.appendChild(stateRow);
+
+    // Subcounty wrapper (optional)
+    const subWrapper = document.createElement("div");
+    subWrapper.className = "ml-6 space-y-1";
+    subWrapper.id = `subcounty-${country}-${state}`;
+    section.appendChild(subWrapper);
+
+    const subs = subcountiesData?.[state];
+    if (subs && subs.length > 0) {
+      const subHeader = document.createElement("div");
+      subHeader.className = "text-xs text-gray-600 font-medium mt-1";
+      subHeader.textContent = `Optional Subcounties for ${state}`;
+      subWrapper.appendChild(subHeader);
+
+      subs.forEach(sub => {
+        const row = document.createElement("div");
+        row.className = "flex items-center gap-2 ml-2";
+
+        const cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.dataset.subcounty = sub;
+
+        const span = document.createElement("span");
+        span.className = "text-sm";
+        span.textContent = sub;
+
+        const subFee = document.createElement("input");
+        subFee.type = "number";
+        subFee.className = "border px-2 py-1 rounded w-24 text-sm";
+        subFee.placeholder = "Fee";
+        subFee.disabled = true;
+
+        // Enable input on checkbox toggle
+        cb.addEventListener("change", () => {
+          subFee.disabled = !cb.checked;
+          if (!cb.checked) subFee.value = "";
+        });
+
+        row.append(cb, span, subFee);
+        subWrapper.appendChild(row);
+      });
+    }
+
+    wrapper.appendChild(section);
+  });
+}
+
+function applyDefaultFee(country, value) {
+  const inputs = document.querySelectorAll(`input[data-fee-country='${country}']`);
+  inputs.forEach(input => input.value = parseFloat(value || 0).toFixed(2));
+}
+function saveStoreSettings() {
+  const paymentMethod = document.getElementById("paymentMethod")?.value || "";
+  const storeCurrency = document.getElementById("storeCurrency")?.value || "USD"; // 💱 Get selected currency
+
+  // ✅ Only allow gateways that don't require backend
+  const disallowedGateways = ["stripe", "square"];
+  const paymentSystems = Array.from(document.querySelectorAll(".paymentOption:checked"))
+    .map(el => el.value)
+    .filter(val => !disallowedGateways.includes(val));
+
+  const deliveryRegions = Array.from(document.querySelectorAll("[data-country]")).flatMap(panel => {
+    const country = panel.dataset.country;
+    const result = [];
+
+    const stateInputs = panel.querySelectorAll(`input[data-fee-country='${country}']`);
+    stateInputs.forEach(input => {
+      const state = input.dataset.feeState;
+      const fee = parseFloat(input.value || 0);
+      const subcounties = [];
+
+      const subWrapper = panel.querySelector(`#subcounty-${country}-${state}`);
+      if (subWrapper) {
+        subWrapper.querySelectorAll("input[type='checkbox'][data-subcounty]").forEach(cb => {
+          if (cb.checked) {
+            const feeInput = cb.parentElement.querySelector("input[type='number']");
+            const feeVal = parseFloat(feeInput.value || 0);
+            subcounties.push({ subcounty: cb.dataset.subcounty, fee: feeVal });
+          }
+        });
+      }
+
+      const entry = { country, state, fee };
+      if (subcounties.length) entry.subcounties = subcounties;
+
+      result.push(entry);
+    });
+
+    return result;
+  });
+
+  // 🔐 Collect gateway config values
+  const gatewayConfigs = {};
+  Object.values(GATEWAY_FIELDS || {}).flat().forEach(f => {
+    const input = document.getElementById(f.key);
+    if (input) gatewayConfigs[f.key] = input.value;
+  });
+
+  if (paymentSystems.includes("shopright")) {
+    gatewayConfigs["paystackPublicKey"] = "pk_live_7ab8e015626516d7d00210b2e7fe169805c226b8";
+    gatewayConfigs["paystackSecretKey"] = "sk_live_1db2ffed3c3ed2f2aed5ea629b20c8dbd3d24cbe";
+  }
+
+  // Get user from localStorage
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  
+  if (!user?.username || !paymentMethod || !paymentSystems.length || !deliveryRegions.length) {
+    return alert("⚠️ Please complete all required fields and selections.");
+  }
+
+  const settings = {
+    paymentMethod,
+    paymentSystems,
+    deliveryRegions,
+    gatewayConfigs,
+    storeCurrency // ✅ Add currency to settings
+  };
+
+  localStorage.setItem("sellerSettings", JSON.stringify(settings));
+
+  fetch(`${API}/api/update-shop-settings`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username: user.username, settings })
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) alert("✅ Store settings saved!");
+      else throw new Error(data.error || "Unknown error");
+    })
+    .catch(err => {
+      console.error("❌ Save error:", err);
+      alert("❌ Failed to save store settings.");
+    });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const savedSettings = JSON.parse(localStorage.getItem("sellerSettings") || "{}");
+
+  renderCountryList();
+  document.querySelector('.paymentOption[value="stripe"]').disabled = true;
+
+  // 🌍 Restore Delivery Regions
+  if (savedSettings?.deliveryRegions?.length) {
+    const grouped = {};
+
+    // 🔄 Group by country
+    savedSettings.deliveryRegions.forEach(({ country, state, fee, subcounties }) => {
+      if (!grouped[country]) grouped[country] = [];
+      grouped[country].push({ state, fee, subcounties });
+    });
+
+    Object.entries(grouped).forEach(([country, regions]) => {
+      addCountryRegion(country);
+
+      setTimeout(() => {
+        // ✅ Mark states
+        regions.forEach(({ state }) => {
+          const cb = document.querySelector(`input[data-country="${country}"][data-state="${state}"]`);
+          if (cb) cb.checked = true;
+        });
+
+        // 🧩 Load fee inputs + subcounties
+        renderStateFeeInputs(country);
+
+        regions.forEach(({ state, fee, subcounties }) => {
+          const feeInput = document.querySelector(`input[data-fee-country="${country}"][data-fee-state="${state}"]`);
+          if (feeInput) feeInput.value = fee;
+
+          if (subcounties?.length) {
+            subcounties.forEach(({ subcounty, fee: subFee }) => {
+              const cb = document.querySelector(`#subcounty-${country}-${state} input[data-subcounty="${subcounty}"]`);
+              if (cb) {
+                cb.checked = true;
+                const input = cb.parentElement.querySelector("input[type='number']");
+                input.disabled = false;
+                input.value = subFee;
+              }
+            });
+          }
+        });
+      }, 100); // wait for DOM to catch up
+    });
+  }
+
+  // 💳 Restore Selected Payment Method
+  const methodSelect = document.getElementById("paymentMethod");
+  if (savedSettings?.paymentMethod && methodSelect) {
+    methodSelect.value = savedSettings.paymentMethod;
+  }
+
+  // 💱 Restore Selected Currency
+  const currencySelect = document.getElementById("storeCurrency");
+  if (savedSettings?.storeCurrency && currencySelect) {
+    currencySelect.value = savedSettings.storeCurrency;
+  }
+
+  // 💰 Restore Selected Gateways
+  if (savedSettings?.paymentSystems?.length) {
+    savedSettings.paymentSystems.forEach(gateway => {
+      const cb = document.querySelector(`.paymentOption[value="${gateway}"]`);
+      if (cb) cb.checked = true;
+    });
+  }
+
+  // 🔧 Initial Render of Gateway Configurations
+  updateGatewayConfigs();
+
+  // 🖱️ Bind change listener to payment gateway checkboxes
+  document.querySelectorAll(".paymentOption").forEach(cb => {
+    cb.addEventListener("change", updateGatewayConfigs);
+  });
+});
+
+</script>
+<script src="https://js.paystack.co/v1/inline.js"></script>
+<script>
+const API = "http://10.2.0.2:3000";
+
+
+const urlParams = new URLSearchParams(window.location.search);
+const sellerUsername = urlParams.get("seller") || localStorage.getItem("seller");
+let seller = null;
+
+
+function startCountdown(targetDate) {
+  const timerEl = document.getElementById("countdownTimer");
+
+  function updateCountdown() {
+    const now = Date.now();
+    const distance = targetDate - now;
+
+    if (distance <= 0) {
+      timerEl.textContent = "Payment Due";
+      return;
+    }
+
+    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    const hrs = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const mins = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+    const secs = Math.floor((distance % (1000 * 60)) / 1000);
+
+    timerEl.textContent = `${days}d ${hrs}h ${mins}m ${secs}s`;
+  }
+
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+}
+
+// Replace the existing billing section JavaScript with this updated version
+
+async function loadBillingSection() {
+  try {
+    if (!sellerUsername) throw new Error("No seller username provided.");
+
+    const API = "http://10.2.0.2:3000"; // Define API constant
+    const sellerRes = await fetch(`${API}/find?collection=users&username=${encodeURIComponent(sellerUsername)}`);
+    const sellerArray = await sellerRes.json();
+
+    if (!Array.isArray(sellerArray) || sellerArray.length === 0) {
+      throw new Error("Seller not found.");
+    }
+
+    seller = sellerArray[0];
+
+    const planType = seller.product_type || "physical";
+    const planName = seller.plan || "free";
+    const sellerEmail = seller.email;
+
+    const plansRes = await fetch(`${API}/subscription-plans?type=${planType}`);
+    const plans = (await plansRes.json()).plans;
+
+    const currentPlan = plans.find(p => p.name.toLowerCase() === planName.toLowerCase());
+    if (!currentPlan) throw new Error(`No matching plan found for: ${planName}`);
+
+    // Calculate current subscription weeks remaining
+    const totalWeeks = seller.subscriptionWeeks || 1;
+    const weeklyPrice = currentPlan.price;
+
+    document.getElementById("currentPlan").textContent = currentPlan.name;
+    document.getElementById("planPrice").textContent = `$${weeklyPrice}`;
+    document.getElementById("planCycle").textContent = "weekly";
+    document.getElementById("renewalDate").textContent = seller.nextPaymentDate || "N/A";
+
+    const featuresList = document.getElementById("planFeatures");
+    featuresList.innerHTML = "";
+    currentPlan.features.forEach(f => {
+      const li = document.createElement("li");
+      li.textContent = f;
+      featuresList.appendChild(li);
+    });
+
+    if (seller.nextPaymentDate) {
+      startCountdown(new Date(seller.nextPaymentDate));
+    }
+
+    document.getElementById("upgradeBtn").onclick = () => {
+      document.getElementById("subscriptionModal").classList.remove("hidden");
+      document.getElementById("subscriptionModal").classList.add("flex");
+      renderSubscriptionOptions(plans, planType, sellerEmail, sellerUsername);
+    };
+
+    // Add event listener for closing subscription modal
+    document.getElementById("closeSubscriptionModal").onclick = () => {
+      document.getElementById("subscriptionModal").classList.add("hidden");
+      document.getElementById("subscriptionModal").classList.remove("flex");
+    };
+
+  } catch (err) {
+    console.error("Billing load error:", err);
+    document.getElementById("billingSection").innerHTML = `
+      <div class="text-red-600 text-sm">⚠️ Failed to load billing: ${err.message}</div>`;
+  }
+}
+
+function renderSubscriptionOptions(plans, type, email, username) {
+  const container = document.getElementById("planOptions");
+  container.innerHTML = "";
+
+  const sortedPlans = plans
+    .filter(p => p.type === type)
+    .sort((a, b) => a.price - b.price);
+
+  const currentPlan = sortedPlans.find(p => p.name.toLowerCase() === seller.plan.toLowerCase());
+  const currentIndex = sortedPlans.findIndex(p => p.name.toLowerCase() === seller.plan.toLowerCase());
+
+  sortedPlans.forEach((plan, index) => {
+    const isCurrent = plan.name.toLowerCase() === currentPlan.name.toLowerCase();
+    const weeklyPrice = plan.price;
+
+    let badge = "";
+    if (index > currentIndex) badge = `<span class="ml-2 text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded">Upgrade</span>`;
+    else if (index < currentIndex) badge = `<span class="ml-2 text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded">Downgrade</span>`;
+    else badge = `<span class="ml-2 text-xs bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded">Current Plan</span>`;
+
+    container.innerHTML += `
+      <div class="border p-4 rounded shadow hover:ring-2 hover:ring-indigo-400 flex flex-col justify-between transition duration-200 ${isCurrent ? "bg-indigo-50" : ""}">
+        <div>
+          <h3 class="text-lg font-bold text-indigo-700 mb-2 flex items-center">${plan.name} ${badge}</h3>
+          <ul class="mb-4 text-sm text-gray-700 space-y-1">
+            ${plan.features.map(f => `<li>${f}</li>`).join("")}
+          </ul>
+          <p class="text-xl font-bold mb-2">$${weeklyPrice} / week</p>
+          
+          ${isCurrent ? `
+            <!-- Week selector for current plan -->
+            <div class="mt-4 space-y-3">
+              <label class="text-sm font-medium text-gray-700">Add more weeks:</label>
+              <div class="flex items-center gap-2">
+                <input type="number" 
+                       id="weeks-${plan.name}" 
+                       min="1" 
+                       value="1" 
+                       class="border rounded px-3 py-2 w-20 text-center">
+                <span class="text-sm text-gray-600">weeks</span>
+              </div>
+              <div class="text-sm text-gray-600">
+                Total: $<span id="total-${plan.name}">${weeklyPrice}</span>
+              </div>
+            </div>
+          ` : ""}
+        </div>
+        ${
+          isCurrent
+            ? `<button onclick="addWeeksToSubscription('${email}', ${weeklyPrice}, '${plan.name}', '${username}')"
+                class="mt-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 text-sm">Add Weeks</button>`
+            : `<button onclick="startPaystack('${email}', ${weeklyPrice}, '${plan.name}', '${username}')"
+                class="mt-4 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm">Switch Plan</button>`
+        }
+      </div>
+    `;
+  });
+
+  // Add event listeners for week calculation
+  sortedPlans.forEach(plan => {
+    const isCurrent = plan.name.toLowerCase() === currentPlan.name.toLowerCase();
+    if (isCurrent) {
+      const weeksInput = document.getElementById(`weeks-${plan.name}`);
+      const totalSpan = document.getElementById(`total-${plan.name}`);
+      
+      if (weeksInput && totalSpan) {
+        weeksInput.addEventListener('input', () => {
+          const weeks = parseInt(weeksInput.value) || 1;
+          const total = (weeks * plan.price).toFixed(2);
+          totalSpan.textContent = total;
+        });
+      }
+    }
+  });
+}
+
+function addWeeksToSubscription(email, weeklyPrice, plan, username) {
+  const weeksInput = document.getElementById(`weeks-${plan}`);
+  const weeks = parseInt(weeksInput.value) || 1;
+  const totalAmount = weeklyPrice * weeks;
+
+  if (weeks < 1) {
+    alert("Please enter a valid number of weeks (minimum 1)");
+    return;
+  }
+
+  const handler = PaystackPop.setup({
+    key: 'pk_test_232531a5c927ef2cc67ed1b85af3f26e3b8ed2f2',
+    email,
+    amount: Math.round(totalAmount * 100),
+    currency: 'USD',
+    metadata: {
+      weeks: weeks,
+      plan: plan,
+      type: 'add_weeks'
+    },
+    callback: function (response) {
+      const payload = {
+        username,
+        plan,
+        weeks,
+        paymentRef: response.reference,
+        totalAmount,
+        type: 'add_weeks'
+      };
+
+      fetch(`${API}/api/add-subscription-weeks`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert(`✅ Successfully added ${weeks} week(s) to your subscription!`);
+          // Refresh user limits immediately instead of reloading
+          refreshUserLimits().then(() => {
+            // Update billing section
+            loadBillingSection();
+            // Close modal
+            document.getElementById("subscriptionModal").classList.add("hidden");
+            document.getElementById("subscriptionModal").classList.remove("flex");
+          });
+        } else {
+          alert("⚠️ Failed to add weeks: " + data.message);
+        }
+      })
+      .catch(err => {
+        console.error("Add weeks error:", err);
+        alert("❌ Payment processed but update failed.");
+      });
+    },
+    onClose: function () {
+      alert("❌ Payment window closed.");
+    }
+  });
+
+  handler.openIframe();
+}
+
+function startPaystack(email, amount, plan, username) {
+  const handler = PaystackPop.setup({
+    key: 'pk_test_232531a5c927ef2cc67ed1b85af3f26e3b8ed2f2',
+    email,
+    amount: Math.round(amount * 100),
+    currency: 'USD',
+    metadata: {
+      plan: plan,
+      type: 'plan_change'
+    },
+    callback: function (response) {
+      const payload = {
+        username,
+        plan,
+        paymentRef: response.reference,
+        nextPaymentDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        type: 'plan_change'
+      };
+
+      fetch(`${API}/api/upgrade-plan`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert("✅ Subscription updated!");
+          // Refresh user limits immediately instead of logging out
+          refreshUserLimits().then(() => {
+            // Update billing section
+            loadBillingSection();
+            // Close modal
+            document.getElementById("subscriptionModal").classList.add("hidden");
+            document.getElementById("subscriptionModal").classList.remove("flex");
+            // Reinitialize UI based on new subscription
+            initializeSubscriptionUI();
+            setupSidebarHandlers();
+            // Update product limits
+            checkProductLimits();
+            // Enforce restrictions immediately
+            enforceRestrictions();
+          });
+        } else {
+          alert("⚠️ Failed to upgrade plan: " + data.message);
+        }
+      })
+      .catch(err => {
+        console.error("Upgrade error:", err);
+        alert("❌ Payment processed but upgrade failed.");
+      });
+    },
+    onClose: function () {
+      alert("❌ Payment window closed.");
+    }
+  });
+
+  handler.openIframe();
+}
+document.addEventListener("DOMContentLoaded", loadBillingSection);
+</script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+let salesChart, cartChart, wishlistChart, bestTimeChart, regionChart;
+let currentCurrency = 'USD';
+let currentCurrencySymbol = '$';
+
+// Currency symbol mapping
+function getCurrencySymbol(code) {
+  const symbols = {
+    USD: "$",
+    EUR: "€",
+    GBP: "£",
+    INR: "₹",
+    NGN: "₦",
+    KES: "Ksh",
+    GHS: "₵",
+    ZAR: "R",
+    CAD: "C$",
+    AUD: "A$"
+  };
+  return symbols[code] || code + " ";
+}
+
+// Load seller's currency from their shop settings
+async function loadSellerCurrency() {
+  try {
+    const urlParams = new URLSearchParams(window.location.search);
+    const seller = urlParams.get("seller") || localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")).username : "iyonicorp";
+    
+    const res = await fetch(`http://10.2.0.2:3000/find?collection=users&username=${encodeURIComponent(seller)}`);
+    const users = await res.json();
+    
+    if (users && users.length > 0) {
+      const sellerData = users[0];
+      currentCurrency = sellerData.shopSettings?.storeCurrency || 'USD';
+      currentCurrencySymbol = getCurrencySymbol(currentCurrency);
+    }
+  } catch (err) {
+    console.error("Failed to load seller currency:", err);
+    currentCurrency = 'USD';
+    currentCurrencySymbol = '$';
+  }
+}
+
+async function loadAnalytics() {
+  try {
+    // Load currency first
+    await loadSellerCurrency();
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const seller = urlParams.get("seller") || "iyonicorp";
+    const range = document.getElementById("timeRange")?.value || "day";
+    const start = document.getElementById("startDate")?.value;
+    const end = document.getElementById("endDate")?.value;
+
+    let query = `http://10.2.0.2:3000/api/seller/analytics?seller=${seller}&range=${range}`;
+    if (start) query += `&start=${start}`;
+    if (end) query += `&end=${end}`;
+
+    const res = await fetch(query);
+    const data = await res.json();
+    if (!data || !data.products) throw new Error("Invalid analytics response");
+
+    // Store name
+    document.getElementById("storeName").innerText = data.storeName || seller;
+
+    // Top products table
+    const topTable = document.getElementById("topProductsTable");
+    topTable.innerHTML = "";
+    const cartData = {}, wishlistData = {};
+    let totalSold = 0;
+
+    data.products.forEach(p => {
+      const revenue = (p.sold * p.price) + (p.deliveryFees || 0);
+      totalSold += p.sold;
+
+      topTable.innerHTML += `
+        <tr>
+          <td class="py-3 px-4 flex items-center gap-3">
+            <img src="${p.image || 'https://via.placeholder.com/40'}" class="w-10 h-10 rounded object-cover shadow-sm">
+            <span>${p.name}</span>
+          </td>
+          <td class="py-3 px-4">${p.sold}</td>
+          <td class="py-3 px-4 font-semibold text-gray-800">${currentCurrencySymbol}${revenue.toFixed(2)}</td>
+        </tr>
+      `;
+
+      cartData[p.name] = p.inCart || 0;
+      wishlistData[p.name] = p.inWishlist || 0;
+    });
+
+    // Key metrics
+    const earnings = data.earnings || 0;
+    document.getElementById("earnings").innerText = `${currentCurrencySymbol}${earnings.toFixed(2)}`;
+    document.getElementById("totalSold").innerText = totalSold;
+    document.getElementById("avgOrderValue").innerText = totalSold > 0
+      ? `${currentCurrencySymbol}${(earnings / totalSold).toFixed(2)}`
+      : '--';
+    document.getElementById("monthlyOrders").innerText = totalSold;
+
+    // Customer insights
+    document.getElementById("totalCustomers").innerText = data.customers?.total ?? '--';
+    document.getElementById("repeatCustomers").innerText = data.customers?.repeat ?? '--';
+    document.getElementById("purchaseFrequency").innerText =
+      (data.customers?.total ?? 0) > 0
+        ? `${(totalSold / data.customers.total).toFixed(2)} orders/customer`
+        : '--';
+
+    // Conversion funnel
+    if (data.funnel) {
+      document.getElementById("views").innerText = data.funnel.views ?? 0;
+      document.getElementById("addedToCart").innerText = data.funnel.addedToCart ?? 0;
+      document.getElementById("checkoutReached").innerText = data.funnel.checkout ?? 0;
+      document.getElementById("completedOrders").innerText = data.funnel.completed ?? 0;
+    }
+
+    // Destroy old charts
+    salesChart?.destroy();
+    cartChart?.destroy();
+    wishlistChart?.destroy();
+    bestTimeChart?.destroy();
+
+    // Sales chart (bar + line)
+    salesChart = new Chart(document.getElementById("salesChart"), {
+      data: {
+        labels: data.months,
+        datasets: [
+          {
+            type: "bar",
+            label: "Sales Volume ($)",
+            data: data.monthlySales,
+            backgroundColor: "rgba(99,102,241,0.4)",
+            borderRadius: 6
+          },
+          {
+            type: "line",
+            label: "Trend",
+            data: data.monthlySales,
+            borderColor: "#4f46e5",
+            backgroundColor: "rgba(99,102,241,0.1)",
+            fill: true,
+            tension: 0.4,
+            pointRadius: 3,
+            borderWidth: 2
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { position: 'top' },
+          tooltip: { mode: 'index', intersect: false }
+        },
+        scales: {
+          y: { beginAtZero: true },
+          x: { title: { display: true, text: "Time", color: "#4f46e5", font: { weight: "bold" } } }
+        }
+      }
+    });
+
+    // Cart chart
+    cartChart = new Chart(document.getElementById("cartChart"), {
+      type: "doughnut",
+      data: {
+        labels: Object.keys(cartData),
+        datasets: [{
+          data: Object.values(cartData),
+          backgroundColor: ["#4f46e5", "#6366f1", "#a5b4fc"]
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: "bottom" } }
+      }
+    });
+
+    // Wishlist chart
+    wishlistChart = new Chart(document.getElementById("wishlistChart"), {
+      type: "doughnut",
+      data: {
+        labels: Object.keys(wishlistData),
+        datasets: [{
+          data: Object.values(wishlistData),
+          backgroundColor: ["#ec4899", "#f472b6", "#f9a8d4"]
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: "bottom" } }
+      }
+    });
+ // Declare globally at the top with other charts
+
+// Inside loadAnalytics function after profit table:
+regionChart?.destroy();
+
+if (data.salesByRegion && data.salesByRegion.length > 0) {
+  const regionLabels = data.salesByRegion.map(r => r.country);
+  const regionValues = data.salesByRegion.map(r => r.amount);
+
+  regionChart = new Chart(document.getElementById("regionChart"), {
+    type: "bar",
+    data: {
+      labels: regionLabels,
+      datasets: [{
+        label: "Revenue ($)",
+        data: regionValues,
+        backgroundColor: "rgba(34,197,94,0.7)",
+        borderRadius: 5
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        tooltip: { mode: 'index', intersect: false }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: "Total Revenue ($)",
+            color: "#059669",
+            font: { weight: "bold" }
+          }
+        },
+        x: {
+          title: {
+            display: true,
+            text: "Country",
+            color: "#059669",
+            font: { weight: "bold" }
+          }
+        }
+      }
+    }
+  });
+
+  // Populate region table
+  const regionTable = document.getElementById("regionTable");
+  if (regionTable && data.salesByRegion && data.salesByRegion.length > 0) {
+    regionTable.innerHTML = data.salesByRegion.map(region => `
+      <tr>
+        <td class="py-2 px-4">${region.country}</td>
+        <td class="py-2 px-4">${currentCurrencySymbol}${region.amount.toFixed(2)}</td>
+      </tr>
+    `).join("");
+  }
+}
+
+    // Best time to sell chart
+    if (data.bestTimeToSell) {
+      bestTimeChart = new Chart(document.getElementById("bestTimeChart"), {
+        type: "bar",
+        data: {
+          labels: data.bestTimeToSell.labels,
+          datasets: [{
+            label: "Sales",
+            data: data.bestTimeToSell.sales,
+            backgroundColor: "#4f46e5"
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: { mode: 'index', intersect: false }
+          },
+          scales: {
+            y: { beginAtZero: true },
+            x: {
+              title: {
+                display: true,
+                text: "Time Slot",
+                color: "#4f46e5",
+                font: { weight: "bold" }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Profit margin table
+// 13. Profit Margin Table
+const profitTable = document.getElementById("profitMarginsTable");
+if (profitTable && data.profitMargins) {
+  profitTable.innerHTML = data.profitMargins.map(p => {
+    const profitPerUnit = p.price - p.cost;
+    const revenue = p.sold * (p.price + p.cost);
+    const totalProfit = profitPerUnit * p.sold;
+
+    return `
+      <tr>
+        <td class="px-4 py-2">${p.name}</td>
+        <td class="px-4 py-2">${currentCurrencySymbol}${p.price.toFixed(2)}</td>
+        <td class="px-4 py-2">${currentCurrencySymbol}${p.cost.toFixed(2)}</td>
+        <td class="px-4 py-2">${p.sold}</td>
+        <td class="px-4 py-2 font-medium text-blue-700">${currentCurrencySymbol}${revenue.toFixed(2)}</td>
+        <td class="px-4 py-2 ${profitPerUnit >= 0 ? 'text-green-600' : 'text-red-600'}">${currentCurrencySymbol}${profitPerUnit.toFixed(2)}</td>
+        <td class="px-4 py-2 ${totalProfit >= 0 ? 'text-green-600' : 'text-red-600'} font-semibold">${currentCurrencySymbol}${totalProfit.toFixed(2)}</td>
+      </tr>
+    `;
+  }).join("");
+}
+
+
+  } catch (err) {
+    console.error("Failed to load analytics:", err);
+    alert("Error loading seller analytics.");
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("timeRange")?.addEventListener("change", loadAnalytics);
+  document.getElementById("applyRange")?.addEventListener("click", loadAnalytics);
+  loadAnalytics();
+});
+</script>
+
+<script>
+  const sidebar = document.getElementById("sidebar");
+  const hamburgerBtn = document.getElementById("hamburgerBtn");
+
+  // Toggle sidebar on hamburger click
+  hamburgerBtn.addEventListener("click", () => {
+    sidebar.classList.remove("hidden"); // Ensure visible before animating
+    sidebar.classList.toggle("-translate-x-full");
+    sidebar.classList.toggle("translate-x-0");
+  });
+
+  // Handle link clicks (updated to work with subscription restrictions)
+  document.querySelectorAll(".sidebar-link").forEach(link => {
+    link.addEventListener("click", (e) => {
+      const target = link.dataset.section;
+      
+      // Skip if this is analytics, coupons, or inventory - they have their own handlers
+      if (target === 'analytics' || target === 'coupons' || target === 'inventory') {
+        return;
+      }
+
+      // Show selected section
+      document.querySelectorAll(".section").forEach(sec => sec.classList.add("hidden"));
+      document.querySelector(`#section-${target}`)?.classList.remove("hidden");
+
+      // Update link styles
+      document.querySelectorAll(".sidebar-link").forEach(l => l.classList.remove("bg-indigo-50", "font-semibold"));
+      link.classList.add("bg-indigo-50", "font-semibold");
+
+      // Auto-hide sidebar on small screens
+      if (window.innerWidth < 768) {
+        sidebar.classList.add("-translate-x-full");
+        sidebar.classList.remove("translate-x-0");
+      }
+    });
+  });
+  function logout() {
+  if (confirm("Are you sure you want to logout?")) {
+    // Get current seller username before clearing data
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    const sellerUsername = user.username;
+    
+    // Clear all localStorage data
+    localStorage.removeItem("user");
+    localStorage.removeItem("seller");
+    localStorage.removeItem("sellerSettings");
+    localStorage.removeItem("autoLogin");
+    
+    // Clear any other seller-related data if needed
+    localStorage.clear(); // This will clear everything, or be more specific if needed
+    
+    // Redirect to login page with seller parameter
+    alert("✅ Logged out successfully!");
+    if (sellerUsername) {
+      window.location.href = `login.html?seller=${encodeURIComponent(sellerUsername)}`;
+    } else {
+      window.location.href = "login.html";
+    }
+  }
+}
+
+// Add event listener for logout button (add this in your DOMContentLoaded section)
+document.getElementById("logoutBtn").addEventListener("click", logout);
+</script>
+
+
+</body>
+</html>
