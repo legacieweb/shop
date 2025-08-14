@@ -1493,7 +1493,7 @@ function initializeSubscriptionUI() {
 
 // Function to update premium payment gateway availability
 function updatePremiumGateways() {
-  const premiumGateways = ['stripe', 'square', 'iyzipay', 'wise', 'revolut'];
+  const premiumGateways = ['square', 'iyzipay', 'wise', 'revolut'];
   
   premiumGateways.forEach(gateway => {
     const checkbox = document.querySelector(`.paymentOption[value="${gateway}"]`);
@@ -3029,6 +3029,7 @@ const GATEWAY_FIELDS = {
     { label: "Khalti Secret Key", key: "khaltiSecretKey", placeholder: "e.g. test_secret_key_xyz..." }
   ],
 
+  // 🔐 Premium/Backend Gateways
   square: [
     { label: "Square Application ID", key: "squareAppId", placeholder: "e.g. sq0idp-..." }
   ],
@@ -3555,7 +3556,7 @@ function saveStoreSettings() {
   const storeCurrency = document.getElementById("storeCurrency")?.value || "USD"; // 💱 Get selected currency
 
   // ✅ Only allow gateways that don't require backend
-  const disallowedGateways = [ "square"];
+  const disallowedGateways = ["square"];
   const paymentSystems = Array.from(document.querySelectorAll(".paymentOption:checked"))
     .map(el => el.value)
     .filter(val => !disallowedGateways.includes(val));
@@ -3639,7 +3640,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const savedSettings = JSON.parse(localStorage.getItem("sellerSettings") || "{}");
 
   renderCountryList();
-  document.querySelector('.paymentOption[value="stripe"]').disabled = true;
 
   // 🌍 Restore Delivery Regions
   if (savedSettings?.deliveryRegions?.length) {
