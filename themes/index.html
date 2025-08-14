@@ -254,7 +254,7 @@
 </div>
 
 <script>
-const API = "http://10.2.0.2:3000";
+const API = "http://api.iyonicorp.com";
 const sellerParam = new URLSearchParams(location.search).get("seller");
 if (!sellerParam) location.href = "https://iyonicorp.com";
 document.getElementById("backToShop").href = `../dashboard?seller=${encodeURIComponent(sellerParam)}`;

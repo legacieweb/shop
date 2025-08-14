@@ -170,7 +170,7 @@
   </main>
 </div>
 <script>
-  const API = "http://10.2.0.2:3000";
+  const API = "http://api.iyonicorp.com";
   const user = JSON.parse(localStorage.getItem("user"));
 
   if (!user || user.role !== "buyer") {
@@ -288,7 +288,7 @@
           <p class="text-sm text-gray-600 mb-2">$${product.price.toFixed(2)}</p>
           <div class="mt-auto flex justify-between items-center">
             <button onclick="removeWishlist('${item.id}')" class="text-sm text-red-500 hover:underline">Remove</button>
-            <a href="product-detail.html?id=${product.id}" target="_blank" class="text-sm text-blue-600 hover:underline">View Product</a>
+            <a href="../detail?id=${product.id}" target="_blank" class="text-sm text-blue-600 hover:underline">View Product</a>
           </div>
         `;
 
@@ -542,7 +542,7 @@ async function loadMarketData() {
 
     sortedSellers.forEach(([seller, count]) => {
       trendingShops.innerHTML += `
-        <a href="shop.html?seller=${encodeURIComponent(seller)}" class="block">
+        <a href="../shop?seller=${encodeURIComponent(seller)}" class="block">
           <div class="bg-white border rounded p-4 text-center shadow hover:shadow-md transition">
             <h5 class="text-md font-bold text-indigo-600">${seller}</h5>
             <p class="text-xs text-gray-500 mt-1">+${count} orders this week</p>
@@ -581,7 +581,7 @@ async function loadMarketData() {
 
     avgDeals.forEach(({ seller, avgPrice }) => {
       topDealsStores.innerHTML += `
-        <a href="shop.html?seller=${encodeURIComponent(seller)}" class="block">
+        <a href="../shop?seller=${encodeURIComponent(seller)}" class="block">
           <div class="bg-yellow-50 border border-yellow-300 p-4 rounded shadow text-center">
             <h5 class="font-bold text-yellow-800">${seller}</h5>
             <p class="text-xs mt-1 text-yellow-700">Avg. price: $${avgPrice.toFixed(2)}</p>

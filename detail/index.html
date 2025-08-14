@@ -320,7 +320,7 @@
 </main>
 
 <script>
-const API = "http://10.2.0.2:3000";
+const API = "http://api.iyonicorp.com";
 const params = new URLSearchParams(window.location.search);
 const productId = params.get("id");
 
@@ -411,7 +411,7 @@ async function loadProduct() {
     const shopRes = await fetch(`${API}/find?collection=users&username=${encodeURIComponent(product.seller)}`);
     const [seller] = await shopRes.json();
 
-    await fetch("http://10.2.0.2:3000/api/track-view", {
+    await fetch("http://api.iyonicorp.com/api/track-view", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ productId: product.id, seller: product.seller })
@@ -822,7 +822,7 @@ function handleCart(productId) {
   cart.push(cartItem);
   saveCart();
 
-  fetch("http://10.2.0.2:3000/add-cart", {
+  fetch("http://api.iyonicorp.com/add-cart", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

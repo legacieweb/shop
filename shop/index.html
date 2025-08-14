@@ -224,7 +224,7 @@
   <div id="layoutContainer" class="min-h-screen"></div>
 
   <script>
-    const API = "http://10.2.0.2:3000";
+    const API = "http://api.iyonicorp.com";
     const sellerParam = new URLSearchParams(location.search).get("seller");
     const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
     const isOwner = currentUser?.role && currentUser.role.startsWith("seller") && currentUser.username === sellerParam;

@@ -1186,7 +1186,7 @@ function onCategoryChange() {
 
 
 document.addEventListener("DOMContentLoaded", async () => {
-const API = "http://10.2.0.2:3000";
+const API = "http://api.iyonicorp.com";
 const user = JSON.parse(localStorage.getItem("user") || "{}");
 const seller = user.username;
 const categories = ["electronics", "apparel", "shoes", "beauty", "sports","drugs", "home", "books", "toys", "accessories", "others"];
@@ -1357,7 +1357,7 @@ let userLimits = subscriptionLimits[currentPlan] || subscriptionLimits.free;
 window.refreshUserLimits = async function() {
   try {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
-    const API = "http://10.2.0.2:3000";
+    const API = "http://api.iyonicorp.com";
     const response = await fetch(`${API}/api/subscription-info?username=${encodeURIComponent(user.username)}`);
     const data = await response.json();
     if (data.success) {
@@ -3729,7 +3729,7 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 <script src="https://js.paystack.co/v1/inline.js"></script>
 <script>
-const API = "http://10.2.0.2:3000";
+const API = "http://api.iyonicorp.com";
 
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -3767,7 +3767,7 @@ async function loadBillingSection() {
   try {
     if (!sellerUsername) throw new Error("No seller username provided.");
 
-    const API = "http://10.2.0.2:3000"; // Define API constant
+    const API = "http://api.iyonicorp.com"; // Define API constant
     const sellerRes = await fetch(`${API}/find?collection=users&username=${encodeURIComponent(sellerUsername)}`);
     const sellerArray = await sellerRes.json();
 
@@ -4057,7 +4057,7 @@ async function loadSellerCurrency() {
     const urlParams = new URLSearchParams(window.location.search);
     const seller = urlParams.get("seller") || localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")).username : "iyonicorp";
     
-    const res = await fetch(`http://10.2.0.2:3000/find?collection=users&username=${encodeURIComponent(seller)}`);
+    const res = await fetch(`http://api.iyonicorp.com/find?collection=users&username=${encodeURIComponent(seller)}`);
     const users = await res.json();
     
     if (users && users.length > 0) {
@@ -4083,7 +4083,7 @@ async function loadAnalytics() {
     const start = document.getElementById("startDate")?.value;
     const end = document.getElementById("endDate")?.value;
 
-    let query = `http://10.2.0.2:3000/api/seller/analytics?seller=${seller}&range=${range}`;
+    let query = `http://api.iyonicorp.com/api/seller/analytics?seller=${seller}&range=${range}`;
     if (start) query += `&start=${start}`;
     if (end) query += `&end=${end}`;
 
@@ -4404,9 +4404,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // Redirect to login page with seller parameter
     alert("✅ Logged out successfully!");
     if (sellerUsername) {
-      window.location.href = `login.html?seller=${encodeURIComponent(sellerUsername)}`;
+      window.location.href = `../login?seller=${encodeURIComponent(sellerUsername)}`;
     } else {
-      window.location.href = "login.html";
+      window.location.href = "../login";
     }
   }
 }
