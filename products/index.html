@@ -159,7 +159,7 @@ async function loadSellerDetails() {
       </a>
     `;
 
-    sellerHomeBtn.href = `shop.html?seller=${encodeURIComponent(seller)}`;
+    sellerHomeBtn.href = `../shop?seller=${encodeURIComponent(seller)}`;
   } catch (err) {
     console.error("❌ Failed to load seller info", err);
     sellerInfo.innerHTML = `<span class="text-red-500">Error loading seller info</span>`;

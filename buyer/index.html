@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Buyer Dashboard – ShopRight</title>
+  <title>Buyer Dashboard – iyonicorp</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -15,7 +15,7 @@
   <!-- Sidebar -->
   <aside class="w-64 bg-white shadow-md hidden md:block">
     <div class="p-6 border-b">
-      <h1 class="text-xl font-bold text-indigo-600">ShopRight Buyer</h1>
+      <h1 class="text-xl font-bold text-indigo-600">iyonicorp Buyer</h1>
     </div>
     <nav class="mt-6 space-y-1" id="sidebarNav">
       <button data-section="orders" class="nav-btn w-full text-left px-6 py-3 hover:bg-indigo-50 text-gray-700">🛍 My Orders</button>
@@ -94,7 +94,7 @@
     <!-- SUPPORT SECTION -->
     <section id="section-support" class="mt-10 section hidden">
       <h3 class="text-lg font-semibold mb-4">🛠 Support</h3>
-      <p class="text-sm text-gray-600">Need help? Email <a href="mailto:support@shopright.com" class="text-indigo-600 underline">support@shopright.com</a></p>
+      <p class="text-sm text-gray-600">Need help? Email <a href="mailto:support@iyonicorp.com" class="text-indigo-600 underline">support@iyonicorp.com</a></p>
     </section>
 
 
@@ -175,7 +175,7 @@
 
   if (!user || user.role !== "buyer") {
     alert("Access denied. Redirecting...");
-    window.location.href = "login.html";
+    window.location.href = "../login";
   } else {
     document.getElementById("buyerName").textContent = user.username;
     loadOrders(user.email);
@@ -185,7 +185,7 @@
 
   function logout() {
     localStorage.removeItem("user");
-    window.location.href = "login.html";
+    window.location.href = "../login";
   }
 
   async function loadOrders(email) {
@@ -598,7 +598,7 @@ async function loadMarketData() {
 function makeProductCard(prod) {
   const img = resolveProductImage(prod.image);
   return `
-    <a href="product-detail.html?id=${prod.id}" class="block">
+    <a href="../detail?id=${prod.id}" class="block">
       <div class="bg-white border rounded p-3 shadow hover:shadow-lg transition">
         <img src="${img}" class="w-full h-32 object-cover rounded mb-2">
         <h5 class="text-sm font-bold text-indigo-600">${prod.name}</h5>
@@ -615,7 +615,7 @@ function resolveProductImage(img) {
 function makeProductCard(prod) {
   const img = resolveProductImage(prod.image);
   return `
-    <a href="product-detail.html?id=${prod.id}" class="block">
+    <a href="../detail?id=${prod.id}" class="block">
       <div class="bg-white border rounded p-3 shadow hover:shadow-lg transition">
         <img src="${img}" class="w-full h-32 object-cover rounded mb-2">
         <h5 class="text-sm font-bold text-indigo-600">${prod.name}</h5>

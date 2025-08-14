@@ -27,13 +27,13 @@
 
   <!-- 🎉 Success Popup -->
   <div id="successPopup" class="hidden fixed top-6 z-50 px-6 py-4 bg-green-500 text-white text-lg rounded-xl shadow-xl font-semibold popup-show">
-    🎉 Account created! Redirecting...
+    Account created! Redirecting...
   </div>
 
   <div class="w-full min-h-screen flex flex-col justify-center items-center">
     <div class="w-full max-w-lg fade-in" id="mainCard">
       <div class="text-center mb-6">
-        <img id="shopLogo" src="https://iyonicorp.com/signup/20250423_1135_Black%20Lines%20Emblem_remix_01jsgwj1ggetfbngcfv36v4dt5.png" alt="Shop Logo" class="mx-auto w-24 h-24 rounded-full object-cover mb-2" />
+        <img id="shopLogo" src="https://i.imgur.com/6nGQFtj.png" alt="Shop Logo" class="mx-auto w-24 h-24 rounded-full object-cover mb-2" />
         <h1 id="shopName" class="text-3xl font-bold text-gray-800 fade-in" style="animation-delay:0.2s">Loading store...</h1>
         <p class="text-gray-500 text-base fade-in" style="animation-delay:0.3s">Create a new account to get started</p>
       </div>
@@ -50,7 +50,7 @@
 
       <p class="text-sm text-center mt-6 text-gray-600 fade-in" style="animation-delay:0.5s">
         Already have an account?
-        <a id="loginLink" href="login.html" class="text-indigo-600 hover:underline font-medium transition-all duration-200 hover:text-indigo-800">Log in</a>
+        <a id="loginLink" href="../login" class="text-indigo-600 hover:underline font-medium transition-all duration-200 hover:text-indigo-800">Log in</a>
       </p>
     </div>
   </div>
@@ -103,7 +103,7 @@ async function loadShopTheme() {
 
     // Update login link to retain seller param
     const loginLink = document.getElementById("loginLink");
-    loginLink.href = `login.html?seller=${encodeURIComponent(shop.username)}`;
+    loginLink.href = `../login?seller=${encodeURIComponent(shop.username)}`;
   } catch (err) {
     nameEl.textContent = "⚠️ Error loading shop";
     console.error("Theme load failed:", err);

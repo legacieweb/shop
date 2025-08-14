@@ -256,8 +256,8 @@
 <script>
 const API = "http://10.2.0.2:3000";
 const sellerParam = new URLSearchParams(location.search).get("seller");
-if (!sellerParam) location.href = "index.html";
-document.getElementById("backToShop").href = `dashboard.html?seller=${encodeURIComponent(sellerParam)}`;
+if (!sellerParam) location.href = "https://iyonicorp.com";
+document.getElementById("backToShop").href = `../dashboard?seller=${encodeURIComponent(sellerParam)}`;
 
 let currentUserPlan = "free";
 let currentFilters = {
@@ -803,7 +803,7 @@ function closeModal() {
 function previewTheme(index) {
   const selectedTheme = themes[index].theme;
   localStorage.setItem("previewTheme", JSON.stringify(selectedTheme));
-  window.open("preview.html?seller=" + sellerParam, "_blank");
+  window.open("../preview?seller=" + sellerParam, "_blank");
 }
 
 async function applyTheme(index) {

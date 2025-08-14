@@ -433,7 +433,7 @@ async function loadProduct() {
 
     const shopName = seller?.customTheme?.title || seller?.username || "Shop";
     shopHeader.innerHTML = `
-      <a href="shop.html?seller=${encodeURIComponent(product.seller)}" class="flex items-center gap-2 hover:underline">
+      <a href="../shop?seller=${encodeURIComponent(product.seller)}" class="flex items-center gap-2 hover:underline">
         <img src="${product.sellerLogo}" alt="${shopName}" class="w-8 h-8 rounded-full border object-cover" />
         <span class="font-semibold text-indigo-700">${shopName}</span>
       </a>
@@ -649,7 +649,7 @@ async function loadRelated(product, currencyCode = "USD") {
       filtered.forEach(p => {
         const img = resolveUrl(p.image);
         html += `
-          <a href="product-detail.html?id=${p.id}" class="bg-white shadow-sm hover:shadow-md rounded-lg p-3 transition-all duration-200 hover:scale-[1.02] block">
+          <a href="../detail?id=${p.id}" class="bg-white shadow-sm hover:shadow-md rounded-lg p-3 transition-all duration-200 hover:scale-[1.02] block">
             ${img ? `<div class="bg-gray-50 rounded overflow-hidden mb-2">
               <img src="${img}" class="w-full max-h-56 mx-auto object-contain" />
             </div>` : ""}
@@ -872,11 +872,11 @@ function showLoginModal() {
   modal.innerHTML = `
     <div class="bg-white rounded-lg shadow-lg p-6 w-96 relative">
       <button onclick="this.parentElement.parentElement.remove()" class="absolute top-2 right-2 text-gray-500 hover:text-red-500">✖</button>
-      <h2 class="text-lg font-semibold mb-4 text-indigo-700">🔐 You need to log in</h2>
+      <h2 class="text-lg font-semibold mb-4 text-indigo-700">You need to log in</h2>
       <p class="mb-4 text-sm text-gray-600">To use the wishlist, please log in or create an account.</p>
       <div class="flex justify-between gap-4">
-        <a href="login.html" class="w-full bg-indigo-600 text-white py-2 rounded text-center hover:bg-indigo-700">Log In</a>
-        <a href="signup.html" class="w-full bg-gray-200 text-gray-800 py-2 rounded text-center hover:bg-gray-300">Sign Up</a>
+        <a href="../login" class="w-full bg-indigo-600 text-white py-2 rounded text-center hover:bg-indigo-700">Log In</a>
+        <a href="../signup" class="w-full bg-gray-200 text-gray-800 py-2 rounded text-center hover:bg-gray-300">Sign Up</a>
       </div>
     </div>
   `;

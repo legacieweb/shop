@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login - iyonicorp</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-fade-in-up {
+      animation: fadeInUp 0.4s ease-out;
+    }
+
+    .spinner {
+      border: 3px solid #ccc;
+      border-top-color: #4f46e5;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .toast {
+      @apply fixed top-4 right-4 z-50 bg-white border shadow-md rounded px-4 py-2 text-sm text-gray-700 transition-all duration-300;
+    }
+
+    .toast-success { @apply border-green-300 bg-green-50 text-green-700; }
+    .toast-error { @apply border-red-300 bg-red-50 text-red-700; }
+  </style>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-100 flex items-center justify-center">
+  <div class="w-full min-h-screen flex flex-col justify-center items-center">
+    <div class="w-full max-w-lg">
+      <div class="text-center mb-6">
+        <img id="shopLogo" src="https://i.imgur.com/6nGQFtj.png" alt="Shop Logo" class="mx-auto w-20 h-20 rounded-full object-cover mb-2" />
+        <h1 id="shopName" class="text-2xl font-bold text-gray-800">Loading store...</h1>
+        <p class="text-gray-500 text-sm">Log in to your appropriate store</p>
+      </div>
+
+      <form id="loginForm" class="space-y-4">
+        <div class="flex flex-col sm:flex-row gap-4">
+          <input type="email" name="email" placeholder="Email Address" required class="flex-1 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          <input type="password" name="password" placeholder="Password" required class="flex-1 px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+        </div>
+        <button id="loginBtn" type="submit" class="w-full py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700 transition text-lg font-semibold hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          Login
+        </button>
+      </form>
+
+      <div class="flex justify-between text-sm mt-4 text-gray-500">
+        <span></span>
+        <a href="#" class="hover:underline">Forgot Password?</a>
+      </div>
+
+      <p class="text-sm text-center mt-6 text-gray-600">
+        Don't have an account?
+        <a id="signupLink" href="../signup" class="text-indigo-600 hover:underline font-medium">Sign Up</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- Login Preload Modal -->
+  <div id="preloadModal" class="fixed inset-0 z-50 hidden bg-black/30 flex items-center justify-center">
+    <div class="bg-white rounded-lg px-6 py-8 shadow-xl animate-fade-in-up w-full max-w-xs text-center flex flex-col items-center">
+      <div class="spinner mb-4"></div>
+      <h2 class="text-indigo-700 font-semibold text-lg" id="preloadText">🔐 Auto logging in...</h2>
+    </div>
+  </div>
+
+  <!-- Forgot Password Modal -->
+  <div id="forgotModal" class="fixed inset-0 z-50 hidden bg-black/40 flex items-center justify-center">
+    <div class="bg-white rounded-lg p-6 shadow-lg w-full max-w-sm animate-fade-in-up">
+      <h2 class="text-xl font-semibold text-indigo-700 mb-4 text-center">Reset Password</h2>
+      <div id="stepEmail" class="space-y-4">
+        <input type="email" id="forgotEmail" placeholder="Enter your email" class="w-full px-4 py-2 border rounded focus:ring-2 focus:ring-indigo-500" />
+        <button onclick="sendResetCode(event)" class="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition">Send Code</button>
+      </div>
+
+      <div id="stepCode" class="space-y-4 hidden">
+        <input type="text" id="resetCode" placeholder="Enter reset code" class="w-full px-4 py-2 border rounded focus:ring-2 focus:ring-indigo-500" />
+        <button onclick="verifyCode(event)" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition">Verify Code</button>
+      </div>
+
+      <div id="stepNewPassword" class="space-y-4 hidden">
+        <input type="password" id="newPassword" placeholder="New password" class="w-full px-4 py-2 border rounded focus:ring-2 focus:ring-indigo-500" />
+        <button onclick="updatePassword(event)" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Update Password</button>
+      </div>
+
+      <button onclick="closeForgotModal()" class="mt-4 text-sm text-gray-500 hover:underline block text-center">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="fixed top-4 right-4 space-y-2 z-50"></div>
+<script>
+  const API = "http://10.2.0.2:3000";
+
+  function showToast(msg, type = "success", duration = 3000) {
+    const toast = document.createElement("div");
+    toast.className = `toast ${type === "success" ? "toast-success" : "toast-error"}`;
+    toast.textContent = msg;
+    document.getElementById("toastContainer").appendChild(toast);
+    setTimeout(() => {
+      toast.classList.add("opacity-0", "translate-x-4");
+      setTimeout(() => toast.remove(), 500);
+    }, duration);
+  }
+
+  function disableButton(btn, text = "Please wait...") {
+    btn.disabled = true;
+    btn.dataset.originalText = btn.innerHTML;
+    btn.innerHTML = `<span class="spinner inline-block mr-2"></span>${text}`;
+  }
+
+  function enableButton(btn) {
+    if (!btn) return;
+    btn.disabled = false;
+    if (btn.dataset.originalText) btn.innerHTML = btn.dataset.originalText;
+  }
+
+  function getSellerParam() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("seller");
+  }
+
+  function resolveImage(img) {
+    if (!img) return "https://placehold.co/80x80?text=Logo";
+    if (img.startsWith("http") || img.startsWith("data:")) return img;
+    return `${API}/uploads/${img.replace(/^\/?uploads\//, '')}`;
+  }
+
+  async function getProductCount(sellerUsername) {
+    try {
+      const res = await fetch(`${API}/find?collection=products&seller=${encodeURIComponent(sellerUsername)}`);
+      const products = await res.json();
+      return products.length;
+    } catch (err) {
+      console.error("Failed to fetch product count:", err);
+      return 0;
+    }
+  }
+
+  async function loadSellerTheme() {
+    const seller = getSellerParam();
+    const nameEl = document.getElementById("shopName");
+    const logoEl = document.getElementById("shopLogo");
+
+    if (!seller) {
+      nameEl.textContent = "Login";
+      return;
+    }
+
+    try {
+      let res = await fetch(`${API}/find?collection=users&username=${encodeURIComponent(seller)}&role=seller`);
+      let sellers = await res.json();
+
+      // Fallback: try again without role filter
+      if (!sellers.length) {
+        res = await fetch(`${API}/find?collection=users&username=${encodeURIComponent(seller)}`);
+        sellers = await res.json();
+      }
+
+      if (!sellers.length) {
+        nameEl.textContent = "❌ Seller not found";
+        return;
+      }
+
+      const shop = sellers[0];
+      const theme = shop.customTheme || {};
+      nameEl.textContent = theme.name || shop.username || "iyonicorp";
+      logoEl.src = resolveImage(theme.logo);
+      document.getElementById("signupLink").href = `signup.html?seller=${encodeURIComponent(shop.username)}`;
+    } catch (err) {
+      console.error("Theme load failed:", err);
+      nameEl.textContent = "⚠️ Error loading shop";
+    }
+  }
+
+function redirectUser(user) {
+  if (user.role?.startsWith("seller")) {
+    // Use the logged-in user's username as the seller parameter
+    const sellerParam = encodeURIComponent(user.username);
+    const dashboardType = user.product_type?.toLowerCase();
+
+    let dashboard = "../dashboard";
+    if (dashboardType === "digital") dashboard = "digitaldashboard.html";
+    else if (dashboardType === "service") dashboard = "servicedashboard.html";
+
+    // ✅ REDIRECT TO SELLER'S DASHBOARD WITH THEIR USERNAME AS SELLER PARAM
+    const dashboardUrl = `${dashboard}?seller=${sellerParam}`;
+    console.log(`Redirecting seller to: ${dashboardUrl}`);
+    window.location.href = dashboardUrl;
+    return;
+  }
+
+  if (["buyer", "user"].includes(user.role)) {
+    const sellerParam = getSellerParam();
+    window.location.href = sellerParam
+      ? `../shop?seller=${encodeURIComponent(sellerParam)}`
+      : "buyer-dashboard.html";
+    return;
+  }
+
+  if (user.role === "admin") {
+    window.location.href = "admin-panel.html";
+    return;
+  }
+
+  console.warn("Unknown role:", user.role);
+  showToast(`Role "${user.role}" not recognized. Redirecting to dashboard.`, "warning");
+  // Always redirect with seller param if available
+  const sellerParam = getSellerParam();
+  window.location.href = sellerParam
+    ? `dashboard.html?seller=${encodeURIComponent(sellerParam)}`
+    : "dashboard.html";
+}
+
+  document.querySelector('a[href="#"]').addEventListener("click", (e) => {
+    e.preventDefault();
+    document.getElementById("forgotModal").classList.remove("hidden");
+    document.getElementById("forgotEmail").value = document.querySelector("input[name=email]").value || "";
+  });
+
+  function closeForgotModal() {
+    document.getElementById("forgotModal").classList.add("hidden");
+    document.getElementById("stepEmail").classList.remove("hidden");
+    document.getElementById("stepCode").classList.add("hidden");
+    document.getElementById("stepNewPassword").classList.add("hidden");
+  }
+
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const form = e.target;
+  const btn = document.getElementById("loginBtn");
+  disableButton(btn, "Logging in...");
+
+  const email = form.email.value.trim();
+  const password = form.password.value;
+
+  try {
+    const res = await fetch(`${API}/find?collection=users&email=${encodeURIComponent(email)}`);
+    const users = await res.json();
+
+    if (!users.length) {
+      showToast("⚠️ No account found.", "error");
+      return;
+    }
+
+    const user = users.find(u => u.password === password);
+    if (!user) {
+      showToast("❌ Incorrect password.", "error");
+      return;
+    }
+
+    if (user.status === 'suspended') {
+      document.getElementById("preloadModal").classList.add("hidden");
+      showToast("❌ Your account has been suspended. Please contact support.", "error");
+      return;
+    }
+
+    // ✅ Only store minimal info to avoid quota issues
+    // Fetch fresh subscription data to ensure user has latest plan information
+    try {
+      const subscriptionRes = await fetch(`${API}/api/subscription-info?username=${encodeURIComponent(user.username)}`);
+      const subscriptionData = await subscriptionRes.json();
+      
+      if (subscriptionData.success) {
+        // Update user object with fresh subscription data
+        Object.assign(user, subscriptionData.user);
+      }
+    } catch (subscriptionErr) {
+      console.error("Failed to fetch fresh subscription data:", subscriptionErr);
+      // Continue with original user data if subscription fetch fails
+    }
+
+    const minimalUser = {
+      _id: user._id,
+      username: user.username,
+      email: user.email,
+      role: user.role,
+      product_type: user.product_type,
+      token: user.token || null,
+      avatar: user.avatar || null,
+      plan: user.plan || null,
+      nextPaymentDate: user.nextPaymentDate || null,
+      subscriptionWeeks: user.subscriptionWeeks || null
+    };
+
+    const userString = JSON.stringify(minimalUser);
+    const sizeInBytes = new Blob([userString]).size;
+    const sizeInKB = (sizeInBytes / 1024).toFixed(2);
+
+    console.log(`User data size: ${sizeInKB} KB`);
+    if (sizeInBytes > 4500000) { // ~4.5MB threshold
+      console.warn("⚠️ Warning: Stored data is close to localStorage size limit.");
+    }
+
+    localStorage.setItem("user", userString);
+
+    document.getElementById("preloadText").textContent = "✅ Login Successful!";
+    document.getElementById("preloadModal").classList.remove("hidden");
+
+    console.log(`User logged in: ${minimalUser.username}, Role: ${minimalUser.role}`);
+    setTimeout(() => redirectUser(minimalUser), 1500);
+  } catch (err) {
+    console.error(err);
+    showToast("Login failed.", "error");
+  } finally {
+    enableButton(btn);
+  }
+});
+
+  window.addEventListener("DOMContentLoaded", () => {
+    const params = new URLSearchParams(window.location.search);
+    const email = params.get("email");
+    const password = params.get("password");
+    const sellerParam = params.get("seller");
+    const autoLogin = localStorage.getItem("autoLogin");
+
+    loadSellerTheme(); // ✅ Call this earlier
+
+    // Remove auto-login with seller parameter - no seller should auto-login
+    // Keep buyer auto-login functionality only
+    if (autoLogin) {
+      try {
+        const loginData = JSON.parse(autoLogin);
+        const timeDiff = Date.now() - loginData.timestamp;
+
+        if (timeDiff < 5 * 60 * 1000) {
+          document.getElementById("preloadModal").classList.remove("hidden");
+          document.getElementById("preloadText").textContent = "🔄 Refreshing your session...";
+
+          setTimeout(async () => {
+            try {
+              const res = await fetch(`${API}/find?collection=users&username=${encodeURIComponent(loginData.username)}`);
+              const users = await res.json();
+
+              if (users.length > 0) {
+                const user = users[0];
+                if (user.status === 'suspended') {
+                  localStorage.removeItem("autoLogin");
+                  document.getElementById("preloadModal").classList.add("hidden");
+                  showToast("❌ Your account has been suspended. Please contact support.", "error");
+                  return;
+                }
+
+                // Check subscription limits and quota
+                try {
+                  const subscriptionRes = await fetch(`${API}/api/subscription-info?username=${encodeURIComponent(loginData.username)}`);
+                  const subscriptionData = await subscriptionRes.json();
+                  
+                  if (subscriptionData.success) {
+                    // Check if user is a seller and has exceeded quota
+                    if (["seller", "seller1", "seller2", "seller3"].includes(user.role)) {
+                      // For sellers, check product limits
+                      const currentProductCount = await getProductCount(user.username);
+                      if (subscriptionData.limits.maxProducts !== -1 && currentProductCount >= subscriptionData.limits.maxProducts) {
+                        localStorage.removeItem("autoLogin");
+                        document.getElementById("preloadModal").classList.add("hidden");
+                        showToast("❌ Product limit exceeded for your subscription plan. Please upgrade.", "error");
+                        // Redirect to dashboard for subscription upgrade
+                        setTimeout(() => {
+                          const sellerParam = encodeURIComponent(user.username);
+                          window.location.href = `dashboard.html?seller=${sellerParam}`;
+                        }, 2000);
+                        return;
+                      }
+                    }
+                    
+                    // Update user object with fresh subscription data
+                    const updatedUser = { ...user, ...subscriptionData.user };
+                    localStorage.setItem("user", JSON.stringify(updatedUser));
+                  } else {
+                    // Fallback to original user data if subscription fetch fails
+                    localStorage.setItem("user", JSON.stringify(user));
+                  }
+                } catch (subscriptionErr) {
+                  console.error("Failed to fetch fresh subscription data:", subscriptionErr);
+                  // Fallback to original user data if subscription fetch fails
+                  localStorage.setItem("user", JSON.stringify(user));
+                }
+
+                localStorage.removeItem("autoLogin");
+
+                document.getElementById("preloadText").textContent = "✅ Session refreshed!";
+                setTimeout(() => redirectUser(user), 1500);
+              } else {
+                localStorage.removeItem("autoLogin");
+                document.getElementById("preloadModal").classList.add("hidden");
+                showToast("Session expired. Please login again.", "error");
+              }
+            } catch (err) {
+              console.error("Auto-login failed:", err);
+              localStorage.removeItem("autoLogin");
+              document.getElementById("preloadModal").classList.add("hidden");
+              showToast("Auto-login failed. Please login manually.", "error");
+            }
+          }, 1000);
+
+          return;
+        } else {
+          localStorage.removeItem("autoLogin");
+        }
+      } catch (err) {
+        console.error("Invalid auto-login data:", err);
+        localStorage.removeItem("autoLogin");
+      }
+    }
+
+    if (email && password) {
+      document.getElementById("preloadModal").classList.remove("hidden");
+      document.querySelector("input[name=email]").value = email;
+      document.querySelector("input[name=password]").value = password;
+      setTimeout(() => {
+        document.getElementById("loginForm").dispatchEvent(new Event("submit", { bubbles: true }));
+      }, 500);
+    }
+  });
+
+  // Reset Flow
+  async function sendResetCode(event) {
+    const btn = event.target;
+    disableButton(btn, "Sending...");
+    const email = document.getElementById("forgotEmail").value.trim();
+    if (!email) {
+      showToast("Please enter your email.", "error");
+      enableButton(btn);
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API}/auth/request-reset`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email })
+      });
+      const result = await res.json();
+      if (result.success) {
+        document.getElementById("stepEmail").classList.add("hidden");
+        document.getElementById("stepCode").classList.remove("hidden");
+        showToast("📩 Reset code sent to email.");
+      } else {
+        showToast(result.message || "Failed to send code.", "error");
+      }
+    } catch {
+      showToast("❌ Network error.", "error");
+    } finally {
+      enableButton(btn);
+    }
+  }
+
+  async function verifyCode(event) {
+    const btn = event.target;
+    disableButton(btn, "Verifying...");
+    const email = document.getElementById("forgotEmail").value.trim();
+    const code = document.getElementById("resetCode").value.trim();
+    if (!code) {
+      showToast("Enter the code.", "error");
+      enableButton(btn);
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API}/auth/verify-reset-code`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, code })
+      });
+      const result = await res.json();
+      if (result.success) {
+        document.getElementById("stepCode").classList.add("hidden");
+        document.getElementById("stepNewPassword").classList.remove("hidden");
+      } else {
+        showToast("❌ Invalid or expired code.", "error");
+      }
+    } catch {
+      showToast("❌ Network error.", "error");
+    } finally {
+      enableButton(btn);
+    }
+  }
+
+  async function updatePassword(event) {
+    const btn = event.target;
+    disableButton(btn, "Updating...");
+    const email = document.getElementById("forgotEmail").value.trim();
+    const code = document.getElementById("resetCode").value.trim();
+    const newPassword = document.getElementById("newPassword").value;
+    if (!newPassword || newPassword.length < 6) {
+      showToast("Password too short.", "error");
+      enableButton(btn);
+      return;
+    }
+
+    try {
+      const res = await fetch(`${API}/auth/reset-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, code, newPassword })
+      });
+      const result = await res.json();
+      if (result.success) {
+        showToast("✅ Password updated.");
+        closeForgotModal();
+      } else {
+        showToast(result.message || "Reset failed.", "error");
+      }
+    } catch {
+      showToast("❌ Network error.", "error");
+    } finally {
+      enableButton(btn);
+    }
+  }
+</script>
+
+</body>
+</html>

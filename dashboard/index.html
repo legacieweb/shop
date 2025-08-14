@@ -45,14 +45,14 @@
           class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50">Products</a>
         <a href="#" data-section="inventory" id="inventoryLink"
           class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50 relative">
-          📦 Inventory
+          Inventory
           <span id="inventoryLockIcon" class="absolute right-6 text-yellow-500 hidden">🔒</span>
         </a>
         <a href="#" data-section="sales"
           class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50">Sales</a>
         <a href="#" data-section="coupons" id="couponsLink"
           class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50 relative">
-          🎫 Coupons
+          Coupons
           <span id="couponsLockIcon" class="absolute right-6 text-yellow-500 hidden">🔒</span>
         </a>
         <a href="#" data-section="settings"
@@ -62,7 +62,7 @@
           class="block px-6 py-3 text-indigo-600 hover:bg-indigo-50 font-semibold">View My Shop</a>
             <!-- ADD THIS LOGOUT BUTTON -->
   <button id="logoutBtn" class="w-full text-left block px-6 py-3 text-red-600 hover:bg-red-50 font-semibold border-t border-gray-200 mt-4">
-    🚪 Logout
+    Logout
   </button>
       </nav>
     </aside>
@@ -1194,7 +1194,7 @@ let currentProduct = null;
 
 if (!user || !seller || !user.role || !user.role.startsWith("seller")) {
   alert("Unauthorized access");
-  location.href = "login.html";
+  location.href = "../login";
 }
 
 // Real-time session validation for suspended sellers
@@ -1278,9 +1278,9 @@ function handleLogout(message) {
 
   // Redirect to login with seller parameter
   if (sellerUsername) {
-    window.location.href = `login.html?seller=${encodeURIComponent(sellerUsername)}`;
+    window.location.href = `../login?seller=${encodeURIComponent(sellerUsername)}`;
   } else {
-    window.location.href = "login.html";
+    window.location.href = "../login";
   }
 }
 
@@ -1452,8 +1452,8 @@ function enforceRestrictions() {
 
 document.getElementById("storeName").textContent = seller;
 
-const shopURL = `shop.html?seller=${encodeURIComponent(seller)}`;
-document.getElementById("themesLink").href = `themes.html?seller=${encodeURIComponent(seller)}`;
+const shopURL = `../shop?seller=${encodeURIComponent(seller)}`;
+document.getElementById("themesLink").href = `../themes?seller=${encodeURIComponent(seller)}`;
 document.getElementById("shopLink").href = shopURL;
 document.getElementById("publicUrl").textContent = window.location.origin + "/" + shopURL;
 document.getElementById("publicUrl").addEventListener("click", () => window.open(shopURL, "_blank"));
