@@ -737,12 +737,6 @@
 
     <!-- 🔒 PREMIUM GATEWAYS -->
     <label class="flex items-center gap-2 text-gray-400 cursor-not-allowed relative group">
-      <span class="text-xs bg-yellow-100 text-yellow-800 rounded px-2 py-0.5 ml-2">Premium Package</span>
-      <div class="absolute top-full mt-1 hidden group-hover:block bg-black text-white text-xs rounded px-2 py-1 z-10">
-        Upgrade to unlock Stripe integration
-      </div>
-    </label>
-    <label class="flex items-center gap-2 text-gray-400 cursor-not-allowed relative group">
       <input type="checkbox" value="square" class="paymentOption" disabled>
       Square
       <span class="text-xs bg-yellow-100 text-yellow-800 rounded px-2 py-0.5 ml-2">Premium Package</span>
@@ -1499,7 +1493,7 @@ function initializeSubscriptionUI() {
 
 // Function to update premium payment gateway availability
 function updatePremiumGateways() {
-  const premiumGateways = ['square', 'iyzipay', 'wise', 'revolut'];
+  const premiumGateways = ['stripe', 'square', 'iyzipay', 'wise', 'revolut'];
   
   premiumGateways.forEach(gateway => {
     const checkbox = document.querySelector(`.paymentOption[value="${gateway}"]`);
@@ -3084,25 +3078,330 @@ document.querySelectorAll(".tab-btn").forEach(btn => {
 });
 
 const deliveryCountries = {
-  "Nigeria": ["Lagos", "Abuja", "Kano", "Rivers", "Ogun"],
-  "Kenya": ["Nairobi", "Mombasa", "Kisumu"],
-  "South Africa": ["Gauteng", "Western Cape", "KwaZulu-Natal"],
-  "United States": ["California", "Texas", "New York"],
-  "Canada": ["Ontario", "Quebec", "British Columbia"],
-  "Germany": ["Berlin", "Munich"],
-  "India": ["Delhi", "Mumbai", "Bangalore"],
-  "Brazil": ["São Paulo", "Rio", "Brasília"]
+  "Nigeria": [
+    "Abia", "Adamawa", "Akwa Ibom", "Anambra", "Bauchi", "Bayelsa",
+    "Benue", "Borno", "Cross River", "Delta", "Ebonyi", "Edo",
+    "Ekiti", "Enugu", "Gombe", "Imo", "Jigawa", "Kaduna",
+    "Kano", "Katsina", "Kebbi", "Kogi", "Kwara", "Lagos",
+    "Nasarawa", "Niger", "Ogun", "Ondo", "Osun", "Oyo",
+    "Plateau", "Rivers", "Sokoto", "Taraba", "Yobe", "Zamfara",
+    "Federal Capital Territory (Abuja)"
+  ],
+  "Kenya": [
+    "Baringo", "Bomet", "Bungoma", "Busia", "Elgeyo-Marakwet",
+    "Embu", "Garissa", "Homa Bay", "Isiolo", "Kajiado", "Kakamega",
+    "Kericho", "Kiambu", "Kilifi", "Kirinyaga", "Kisii", "Kisumu",
+    "Kitui", "Kwale", "Laikipia", "Lamu", "Machakos", "Makueni",
+    "Mandera", "Marsabit", "Meru", "Migori", "Mombasa", "Murang'a",
+    "Nairobi", "Nakuru", "Nandi", "Narok", "Nyamira", "Nyandarua",
+    "Nyeri", "Samburu", "Siaya", "Taita-Taveta", "Tana River",
+    "Tharaka-Nithi", "Trans Nzoia", "Turkana", "Uasin Gishu",
+    "Vihiga", "Wajir", "West Pokot"
+  ],
+  "South Africa": [
+    "Eastern Cape", "Free State", "Gauteng", "KwaZulu-Natal",
+    "Limpopo", "Mpumalanga", "Northern Cape", "North West", "Western Cape"
+  ],
+  "United States": [
+    "Alabama", "Alaska", "Arizona", "Arkansas", "California",
+    "Colorado", "Connecticut", "Delaware", "Florida", "Georgia",
+    "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa",
+    "Kansas", "Kentucky", "Louisiana", "Maine", "Maryland",
+    "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri",
+    "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey",
+    "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio",
+    "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina",
+    "South Dakota", "Tennessee", "Texas", "Utah", "Vermont",
+    "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"
+  ],
+  "Canada": [
+    "Alberta", "British Columbia", "Manitoba", "New Brunswick",
+    "Newfoundland and Labrador", "Nova Scotia", "Ontario",
+    "Prince Edward Island", "Quebec", "Saskatchewan", "Northwest Territories",
+    "Nunavut", "Yukon"
+  ],
+  "Germany": [
+    "Baden-Württemberg", "Bavaria", "Berlin", "Brandenburg",
+    "Bremen", "Hamburg", "Hesse", "Lower Saxony", "Mecklenburg-Vorpommern",
+    "North Rhine-Westphalia", "Rhineland-Palatinate", "Saarland",
+    "Saxony", "Saxony-Anhalt", "Schleswig-Holstein", "Thuringia"
+  ],
+  "India": [
+    "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar",
+    "Chhattisgarh", "Goa", "Gujarat", "Haryana", "Himachal Pradesh",
+    "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra",
+    "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha",
+    "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana",
+    "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
+    "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu",
+    "Delhi", "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry"
+  ],
+  "Brazil": [
+    "Acre", "Alagoas", "Amapá", "Amazonas", "Bahia", "Ceará",
+    "Distrito Federal", "Espírito Santo", "Goiás", "Maranhão",
+    "Mato Grosso", "Mato Grosso do Sul", "Minas Gerais", "Pará",
+    "Paraíba", "Paraná", "Pernambuco", "Piauí", "Rio de Janeiro",
+    "Rio Grande do Norte", "Rio Grande do Sul", "Rondônia", "Roraima",
+    "Santa Catarina", "São Paulo", "Sergipe", "Tocantins"
+  ]
 };
 
 // 🧩 Optional Subcounty Map
 const subcountiesData = {
-  "Lagos": ["Ikeja", "Surulere", "Lekki"],
-  "Abuja": ["Gwagwalada", "Asokoro"],
-  "Nairobi": ["Westlands", "Karen"],
-  "Gauteng": ["Soweto", "Sandton"],
-  "California": ["Los Angeles", "San Francisco"],
-  "Ontario": ["Toronto", "Ottawa"]
+  "Baringo": [
+    "Baringo Central", "Baringo North", "Baringo South", "Eldama Ravine", "Mogotio", "Tiaty"
+  ],
+  "Bomet": [
+    "Bomet Central", "Bomet East", "Chepalungu", "Konoin", "Sotik"
+  ],
+  "Bungoma": [
+    "Bumula", "Kabuchai", "Kanduyi", "Kimilili", "Mt Elgon", "Sirisia", "Tongaren", "Webuye East", "Webuye West"
+  ],
+  "Busia": [
+    "Budalangi", "Butula", "Funyula", "Matayos", "Nambale", "Teso North", "Teso South"
+  ],
+  "Elgeyo-Marakwet": [
+    "Keiyo North", "Keiyo South", "Marakwet East", "Marakwet West"
+  ],
+  "Embu": [
+    "Manyatta", "Mbeere North", "Mbeere South", "Runyenjes"
+  ],
+  "Garissa": [
+    "Balambala", "Dadaab", "Fafi", "Garissa Township", "Hulugho", "Ijara", "Lagdera"
+  ],
+  "Homa Bay": [
+    "Homa Bay Town", "Kabondo Kasipul", "Karachuonyo", "Kasipul", "Mbita", "Ndhiwa", "Rangwe", "Suba"
+  ],
+  "Isiolo": [
+    "Isiolo", "Garbatulla", "Merti"
+  ],
+  "Kajiado": [
+    "Kajiado Central", "Kajiado East", "Kajiado North", "Kajiado South", "Kajiado West"
+  ],
+  "Kakamega": [
+    "Butere", "Ikolomani", "Khwisero", "Lugari", "Lurambi", "Malava", "Matungu", "Mumias East", "Mumias West", "Navakholo", "Shinyalu"
+  ],
+  "Kericho": [
+    "Ainamoi", "Belgut", "Bureti", "Kipkelion East", "Kipkelion West", "Sigowet/Soin"
+  ],
+  "Kiambu": [
+    "Gatundu North", "Gatundu South", "Githunguri", "Juja", "Kabete", "Kiambaa", "Kiambu", "Kikuyu", "Limuru", "Lari", "Ruiru", "Thika Town"
+  ],
+  "Kilifi": [
+    "Ganze", "Kaloleni", "Kilifi North", "Kilifi South", "Magarini", "Malindi", "Rabai"
+  ],
+  "Kirinyaga": [
+    "Gichugu", "Kirinyaga Central", "Mwea East", "Mwea West"
+  ],
+  "Kisii": [
+    "Bobasi", "Bomachoge Borabu", "Bomachoge Chache", "Bonchari", "Kitutu Chache North", "Kitutu Chache South", "Nyaribari Chache", "Nyaribari Masaba", "South Mugirango"
+  ],
+  "Kisumu": [
+    "Kisumu Central", "Kisumu East", "Kisumu West", "Muhoroni", "Nyakach", "Nyando", "Seme"
+  ],
+  "Kitui": [
+    "Kitui Central", "Kitui East", "Kitui Rural", "Kitui South", "Kitui West", "Mwingi Central", "Mwingi North", "Mwingi West"
+  ],
+  "Kwale": [
+    "Kinango", "Lunga Lunga", "Matuga", "Msambweni"
+  ],
+  "Laikipia": [
+    "Laikipia East", "Laikipia North", "Laikipia West"
+  ],
+  "Lamu": [
+    "Lamu East", "Lamu West"
+  ],
+  "Machakos": [
+    "Kangundo", "Kathiani", "Machakos Town", "Masinga", "Matungulu", "Mavoko", "Mwala", "Yatta"
+  ],
+  "Makueni": [
+    "Kaiti", "Kibwezi East", "Kibwezi West", "Kilome", "Makueni", "Mbooni"
+  ],
+  "Mandera": [
+    "Banissa", "Lafey", "Mandera East", "Mandera North", "Mandera South", "Mandera West"
+  ],
+  "Marsabit": [
+    "Laisamis", "Moyale", "North Horr", "Saku"
+  ],
+  "Meru": [
+    "Buuri", "Central Imenti", "Igembe Central", "Igembe North", "Igembe South", "North Imenti", "South Imenti", "Tigania East", "Tigania West"
+  ],
+  "Migori": [
+    "Awendo", "Kuria East", "Kuria West", "Nyatike", "Rongo", "Suna East", "Suna West", "Uriri"
+  ],
+  "Mombasa": [
+    "Changamwe", "Jomvu", "Kisauni", "Likoni", "Mvita", "Nyali"
+  ],
+  "Murang'a": [
+    "Gatanga", "Kahuro", "Kandara", "Kangema", "Kigumo", "Kiharu", "Mathioya", "Maragua"
+  ],
+  "Nairobi": [
+    "Dagoretti North", "Dagoretti South", "Embakasi Central", "Embakasi East", "Embakasi North", "Embakasi South", "Embakasi West", "Kamukunji", "Kasarani", "Kibra", "Lang'ata", "Makadara", "Mathare", "Roysambu", "Ruaraka", "Starehe", "Westlands"
+  ],
+  "Nakuru": [
+    "Bahati", "Gilgil", "Kuresoi North", "Kuresoi South", "Molo", "Naivasha", "Nakuru Town East", "Nakuru Town West", "Njoro", "Rongai", "Subukia"
+  ],
+  "Nandi": [
+    "Aldai", "Chesumei", "Emgwen", "Mosop", "Nandi Hills", "Tinderet"
+  ],
+  "Narok": [
+    "Emurua Dikirr", "Kilgoris", "Narok East", "Narok North", "Narok South", "Narok West"
+  ],
+  "Nyamira": [
+    "Borabu", "Kitutu Masaba", "North Mugirango", "West Mugirango"
+  ],
+  "Nyandarua": [
+    "Kinangop", "Kipipiri", "Ndaragwa", "Ol Jorok", "Ol Kalou"
+  ],
+  "Nyeri": [
+    "Kieni East", "Kieni West", "Mathira East", "Mathira West", "Mukurweini", "Nyeri Town", "Othaya", "Tetu"
+  ],
+  "Samburu": [
+    "Samburu East", "Samburu North", "Samburu West"
+  ],
+  "Siaya": [
+    "Alego Usonga", "Bondo", "Gem", "Rarieda", "Ugenya", "Ugunja"
+  ],
+  "Taita-Taveta": [
+    "Mwatate", "Taveta", "Voi", "Wundanyi"
+  ],
+  "Tana River": [
+    "Bura", "Galole", "Garsen"
+  ],
+  "Tharaka-Nithi": [
+    "Chuka/Igambang'ombe", "Maara", "Tharaka"
+  ],
+  "Trans Nzoia": [
+    "Cherangany", "Endebess", "Kiminini", "Kwanza", "Saboti"
+  ],
+  "Turkana": [
+    "Loima", "Turkana Central", "Turkana East", "Turkana North", "Turkana South", "Turkana West"
+  ],
+  "Uasin Gishu": [
+    "Ainabkoi", "Kapseret", "Kesses", "Moiben", "Soy", "Turbo"
+  ],
+  "Vihiga": [
+    "Emuhaya", "Hamisi", "Luanda", "Sabatia", "Vihiga"
+  ],
+  "Wajir": [
+    "Eldas", "Tarbaj", "Wajir East", "Wajir North", "Wajir South", "Wajir West"
+  ],
+  "West Pokot": [
+    "Kacheliba", "Kapenguria", "Pokot South", "Sigor"
+  ],
+    "Abia": [
+    "Aba North", "Aba South", "Arochukwu", "Bende", "Ikwuano", "Isiala Ngwa North", "Isiala Ngwa South", "Isuikwuato", "Obi Ngwa", "Ohafia", "Osisioma", "Ugwunagbo", "Ukwa East", "Ukwa West", "Umuahia North", "Umuahia South", "Umu Nneochi"
+  ],
+  "Adamawa": [
+    "Demsa", "Fufore", "Ganye", "Girei", "Gombi", "Guyuk", "Hong", "Jada", "Lamurde", "Madagali", "Maiha", "Mayo-Belwa", "Michika", "Mubi North", "Mubi South", "Numan", "Shelleng", "Song", "Toungo", "Yola North", "Yola South"
+  ],
+  "Akwa Ibom": [
+    "Abak", "Eastern Obolo", "Eket", "Esit Eket", "Essien Udim", "Etim Ekpo", "Etinan", "Ibeno", "Ibesikpo Asutan", "Ibiono-Ibom", "Ika", "Ikono", "Ikot Abasi", "Ikot Ekpene", "Ini", "Itu", "Mbo", "Mkpat-Enin", "Nsit-Atai", "Nsit-Ibom", "Nsit-Ubium", "Obot Akara", "Okobo", "Onna", "Oron", "Oruk Anam", "Udung-Uko", "Ukanafun", "Uruan", "Urue-Offong/Oruko", "Uyo"
+  ],
+  "Anambra": [
+    "Aguata", "Anambra East", "Anambra West", "Anaocha", "Awka North", "Awka South", "Ayamelum", "Dunukofia", "Ekwusigo", "Idemili North", "Idemili South", "Ihiala", "Njikoka", "Nnewi North", "Nnewi South", "Ogbaru", "Onitsha North", "Onitsha South", "Orumba North", "Orumba South", "Oyi"
+  ],
+  "Bauchi": [
+    "Alkaleri", "Bauchi", "Bogoro", "Damban", "Darazo", "Dass", "Gamawa", "Ganjuwa", "Giade", "Itas/Gadau", "Jama'are", "Katagum", "Kirfi", "Misau", "Ningi", "Shira", "Tafawa Balewa", "Toro", "Warji", "Zaki"
+  ],
+  "Bayelsa": [
+    "Brass", "Ekeremor", "Kolokuma/Opokuma", "Nembe", "Ogbia", "Sagbama", "Southern Ijaw", "Yenagoa"
+  ],
+  "Benue": [
+    "Ado", "Agatu", "Apa", "Buruku", "Gboko", "Guma", "Gwer East", "Gwer West", "Katsina-Ala", "Konshisha", "Kwande", "Logo", "Makurdi", "Obi", "Ogbadibo", "Ohimini", "Oju", "Okpokwu", "Oturkpo", "Tarka", "Ukum", "Ushongo", "Vandeikya"
+  ],
+  "Borno": [
+    "Abadam", "Askira/Uba", "Bama", "Bayo", "Biu", "Chibok", "Damboa", "Dikwa", "Gubio", "Guzamala", "Gwoza", "Hawul", "Jere", "Kaga", "Kala/Balge", "Konduga", "Kukawa", "Kwaya Kusar", "Mafa", "Magumeri", "Maiduguri", "Marte", "Mobbar", "Monguno", "Ngala", "Nganzai", "Shani"
+  ],
+  "Cross River": [
+    "Abi", "Akamkpa", "Akpabuyo", "Bakassi", "Bekwarra", "Biase", "Boki", "Calabar Municipal", "Calabar South", "Etung", "Ikom", "Obanliku", "Obubra", "Obudu", "Odukpani", "Ogoja", "Yakurr", "Yala"
+  ],
+  "Delta": [
+    "Aniocha North", "Aniocha South", "Bomadi", "Burutu", "Ethiope East", "Ethiope West", "Ika North East", "Ika South", "Isoko North", "Isoko South", "Ndokwa East", "Ndokwa West", "Okpe", "Oshimili North", "Oshimili South", "Patani", "Sapele", "Udu", "Ughelli North", "Ughelli South", "Ukwuani", "Uvwie", "Warri North", "Warri South", "Warri South West"
+  ],
+  "Ebonyi": [
+    "Abakaliki", "Afikpo North", "Afikpo South", "Ebonyi", "Ezza North", "Ezza South", "Ikwo", "Ishielu", "Ivo", "Izzi", "Ohaozara", "Ohaukwu", "Onicha"
+  ],
+  "Edo": [
+    "Akoko-Edo", "Egor", "Esan Central", "Esan North-East", "Esan South-East", "Esan West", "Etsako Central", "Etsako East", "Etsako West", "Igueben", "Ikpoba-Okha", "Orhionmwon", "Oredo", "Ovia North-East", "Ovia South-West", "Uhunmwonde"
+  ],
+  "Ekiti": [
+    "Ado Ekiti", "Efon", "Ekiti East", "Ekiti South-West", "Ekiti West", "Emure", "Gbonyin", "Ido Osi", "Ijero", "Ikere", "Ikole", "Ilejemeje", "Irepodun/Ifelodun", "Ise/Orun", "Moba", "Oye"
+  ],
+  "Enugu": [
+    "Aninri", "Awgu", "Enugu East", "Enugu North", "Enugu South", "Ezeagu", "Igbo Etiti", "Igbo Eze North", "Igbo Eze South", "Isi Uzo", "Nkanu East", "Nkanu West", "Nsukka", "Oji River", "Udenu", "Udi", "Uzo Uwani"
+  ],
+  "Gombe": [
+    "Akko", "Balanga", "Billiri", "Dukku", "Funakaye", "Gombe", "Kaltungo", "Kwami", "Nafada", "Shongom", "Yamaltu/Deba"
+  ],
+  "Imo": [
+    "Aboh Mbaise", "Ahiazu Mbaise", "Ehime Mbano", "Ezinihitte Mbaise", "Ideato North", "Ideato South", "Ihitte/Uboma", "Ikeduru", "Isiala Mbano", "Isu", "Mbaitoli", "Ngor Okpala", "Njaba", "Nkwerre", "Nwangele", "Obowo", "Oguta", "Ohaji/Egbema", "Okigwe", "Orlu", "Orsu", "Oru East", "Oru West", "Owerri Municipal", "Owerri North", "Owerri West", "Unuimo"
+  ],
+  "Jigawa": [
+    "Auyo", "Babura", "Biriniwa", "Birnin Kudu", "Buji", "Dutse", "Gagarawa", "Garki", "Gumel", "Guri", "Gwaram", "Gwiwa", "Hadejia", "Jahun", "Kafin Hausa", "Kaugama", "Kazaure", "Kiri Kasama", "Kiyawa", "Maigatari", "Malam Madori", "Mallam Madori", "Miga", "Ringim", "Roni", "Sule Tankarkar", "Taura", "Yankwashi"
+  ],
+  "Kaduna": [
+    "Birnin Gwari", "Chikun", "Giwa", "Igabi", "Ikara", "Jaba", "Jema'a", "Kachia", "Kaduna North", "Kaduna South", "Kagarko", "Kajuru", "Kaura", "Kauru", "Kubau", "Kudan", "Lere", "Makarfi", "Sabon Gari", "Sanga", "Soba", "Zangon Kataf", "Zaria"
+  ],
+  "Kano": [
+    "Ajingi", "Albasu", "Bagwai", "Bebeji", "Bichi", "Bunkure", "Dala", "Dambatta", "Dawakin Kudu", "Dawakin Tofa", "Doguwa", "Fagge", "Gabasawa", "Garko", "Garun Mallam", "Gaya", "Gezawa", "Gwale", "Gwarzo", "Kabo", "Kano Municipal", "Karaye", "Kibiya", "Kiru", "Kumbotso", "Kunchi", "Kura", "Madobi", "Makoda", "Minjibir", "Nasarawa", "Rano", "Rimin Gado", "Rogo", "Shanono", "Sumaila", "Takai", "Tarauni", "Tofa", "Tsanyawa", "Tudun Wada", "Ungogo", "Warawa", "Wudil"
+  ],
+  "Katsina": [
+    "Bakori", "Batagarawa", "Batsari", "Baure", "Bindawa", "Charanchi", "Dandume", "Danja", "Dan Musa", "Daura", "Dutsi", "Dutsin-Ma", "Faskari", "Funtua", "Ingawa", "Jibia", "Kafur", "Kaita", "Kankara", "Kankia", "Katsina", "Kurfi", "Kusada", "Mai'Adua", "Malumfashi", "Mani", "Mashi", "Matazu", "Musawa", "Rimi", "Sabuwa", "Safana", "Sandamu", "Zango"
+  ],
+  "Kebbi": [
+    "Aleiro", "Arewa Dandi", "Argungu", "Augie", "Bagudo", "Birnin Kebbi", "Bunza", "Dandi", "Fakai", "Gwandu", "Jega", "Kalgo", "Koko/Besse", "Maiyama", "Ngaski", "Sakaba", "Shanga", "Suru", "Wasagu/Danko", "Yauri", "Zuru"
+  ],
+  "Kogi": [
+    "Adavi", "Ajaokuta", "Ankpa", "Bassa", "Dekina", "Ibaji", "Idah", "Igalamela-Odolu", "Ijumu", "Kabba/Bunu", "Kogi", "Lokoja", "Mopa-Muro", "Ofu", "Ogori/Magongo", "Okehi", "Okene", "Olamaboro", "Omala", "Yagba East", "Yagba West"
+  ],
+  "Kwara": [
+    "Asa", "Baruten", "Edu", "Ekiti", "Ifelodun", "Ilorin East", "Ilorin South", "Ilorin West", "Irepodun", "Isin", "Kaiama", "Moro", "Offa", "Oke Ero", "Oyun", "Pategi"
+  ],
+  "Lagos": [
+    "Agege", "Ajeromi-Ifelodun", "Alimosho", "Amuwo-Odofin", "Apapa", "Badagry", "Epe", "Eti-Osa", "Ibeju-Lekki", "Ifako-Ijaiye", "Ikeja", "Ikorodu", "Kosofe", "Lagos Island", "Lagos Mainland", "Mushin", "Ojo", "Oshodi-Isolo", "Shomolu", "Surulere"
+  ],
+  "Nasarawa": [
+    "Akwanga", "Awe", "Doma", "Karu", "Keana", "Keffi", "Kokona", "Lafia", "Nasarawa", "Nasarawa Egon", "Obi", "Toto", "Wamba"
+  ],
+  "Niger": [
+    "Agaie", "Agwara", "Bida", "Borgu", "Bosso", "Chanchaga", "Edati", "Gbako", "Gurara", "Katcha", "Kontagora", "Lapai", "Lavun", "Magama", "Mariga", "Mashegu", "Mokwa", "Muya", "Paikoro", "Rafi", "Rijau", "Shiroro", "Suleja", "Tafa", "Wushishi"
+  ],
+  "Ogun": [
+    "Abeokuta North", "Abeokuta South", "Ado-Odo/Ota", "Egbado North", "Egbado South", "Ewekoro", "Ifo", "Ijebu East", "Ijebu North", "Ijebu North East", "Ijebu Ode", "Ikenne", "Imeko-Afon", "Ipokia", "Obafemi-Owode", "Odeda", "Odogbolu", "Ogun Waterside", "Remo North", "Shagamu"
+  ],
+  "Ondo": [
+    "Akoko North-East", "Akoko North-West", "Akoko South-East", "Akoko South-West", "Akure North", "Akure South", "Ese Odo", "Idanre", "Ifedore", "Ilaje", "Ile Oluji/Okeigbo", "Irele", "Odigbo", "Okitipupa", "Ondo East", "Ondo West", "Ose", "Owo"
+  ],
+  "Osun": [
+    "Atakunmosa East", "Atakunmosa West", "Aiyedaade", "Aiyedire", "Boluwaduro", "Boripe", "Ede North", "Ede South", "Egbedore", "Ejigbo", "Ife Central", "Ife East", "Ife North", "Ife South", "Ifedayo", "Ifelodun", "Ila", "Ilesa East", "Ilesa West", "Irepodun", "Irewole", "Isokan", "Iwo", "Obokun", "Odo Otin", "Ola Oluwa", "Olorunda", "Oriade", "Orolu", "Osogbo"
+  ],
+  "Oyo": [
+    "Afijio", "Akinyele", "Atiba", "Atisbo", "Egbeda", "Ibadan North", "Ibadan North-East", "Ibadan North-West", "Ibadan South-East", "Ibadan South-West", "Ibarapa Central", "Ibarapa East", "Ibarapa North", "Ido", "Irepo", "Iseyin", "Itesiwaju", "Iwajowa", "Kajola", "Lagelu", "Ogbomosho North", "Ogbomosho South", "Ogo Oluwa", "Olorunsogo", "Oluyole", "Ona Ara", "Orelope", "Ori Ire", "Oyo East", "Oyo West", "Saki East", "Saki West", "Surulere"
+  ],
+  "Plateau": [
+    "Barkin Ladi", "Bassa", "Bokkos", "Jos East", "Jos North", "Jos South", "Kanam", "Kanke", "Langtang North", "Langtang South", "Mangu", "Mikang", "Pankshin", "Qua'an Pan", "Riyom", "Shendam", "Wase"
+  ],
+  "Rivers": [
+    "Abua/Odual", "Ahoada East", "Ahoada West", "Akuku-Toru", "Andoni", "Asari-Toru", "Bonny", "Degema", "Eleme", "Emuoha", "Etche", "Gokana", "Ikwerre", "Khana", "Obio/Akpor", "Ogba/Egbema/Ndoni", "Ogu/Bolo", "Okrika", "Omuma", "Opobo/Nkoro", "Oyigbo", "Port Harcourt", "Tai"
+  ],
+  "Sokoto": [
+    "Binji", "Bodinga", "Dange Shuni", "Gada", "Goronyo", "Gudu", "Gwadabawa", "Illela", "Isa", "Kebbe", "Kware", "Rabah", "Sabon Birni", "Shagari", "Silame", "Sokoto North", "Sokoto South", "Tambuwal", "Tangaza", "Tureta", "Wamakko", "Wurno", "Yabo"
+  ],
+  "Taraba": [
+    "Ardo Kola", "Bali", "Donga", "Gashaka", "Gassol", "Ibi", "Jalingo", "Karim Lamido", "Kumi", "Lau", "Sardauna", "Takum", "Ussa", "Wukari", "Yorro", "Zing"
+  ],
+  "Yobe": [
+    "Bade", "Bursari", "Damaturu", "Fika", "Fune", "Geidam", "Gujba", "Gulani", "Jakusko", "Karasuwa", "Machina", "Nangere", "Nguru", "Potiskum", "Tarmuwa", "Yunusari", "Yusufari"
+  ],
+  "Zamfara": [
+    "Anka", "Bakura", "Birnin Magaji/Kiyaw", "Bukkuyum", "Bungudu", "Chafe", "Gummi", "Gusau", "Kaura Namoda", "Maradun", "Maru", "Shinkafi", "Talata Mafara", "Tsafe", "Zurmi"
+  ],
+  "Federal Capital Territory (Abuja)": [
+    "Abaji", "Bwari", "Gwagwalada", "Kuje", "Kwali", "Municipal Area Council"
+  ]
 };
+
 
 function filterCountries() {
   const input = document.getElementById("countrySearch").value.toLowerCase();
@@ -3256,7 +3555,7 @@ function saveStoreSettings() {
   const storeCurrency = document.getElementById("storeCurrency")?.value || "USD"; // 💱 Get selected currency
 
   // ✅ Only allow gateways that don't require backend
-  const disallowedGateways = ["square"];
+  const disallowedGateways = [ "square"];
   const paymentSystems = Array.from(document.querySelectorAll(".paymentOption:checked"))
     .map(el => el.value)
     .filter(val => !disallowedGateways.includes(val));
@@ -3340,6 +3639,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const savedSettings = JSON.parse(localStorage.getItem("sellerSettings") || "{}");
 
   renderCountryList();
+  document.querySelector('.paymentOption[value="stripe"]').disabled = true;
 
   // 🌍 Restore Delivery Regions
   if (savedSettings?.deliveryRegions?.length) {
@@ -3416,6 +3716,9 @@ document.addEventListener("DOMContentLoaded", () => {
 </script>
 <script src="https://js.paystack.co/v1/inline.js"></script>
 <script>
+const API = "http://10.2.0.2:3000";
+
+
 const urlParams = new URLSearchParams(window.location.search);
 const sellerUsername = urlParams.get("seller") || localStorage.getItem("seller");
 let seller = null;
