@@ -254,7 +254,7 @@
 </div>
 
 <script>
-const API = "http://api.iyonicorp.com";
+const API = "https://941d7aefcce8.ngrok-free.app";
 const sellerParam = new URLSearchParams(location.search).get("seller");
 if (!sellerParam) location.href = "https://iyonicorp.com";
 document.getElementById("backToShop").href = `../dashboard?seller=${encodeURIComponent(sellerParam)}`;
@@ -289,7 +289,7 @@ const themes = [
     bestFor: ["Professional services", "Traditional retail", "B2B businesses"],
     colorScheme: ["#f9fafb", "#ffffff", "#374151", "#6b7280"],
     theme: {
-      layout: "classic",
+      layout: "freestyle",
       title: "Classic Store",
       name: "Welcome to classic store",
       bio: "Best deals, always.",
@@ -502,18 +502,30 @@ const themeDetails = document.getElementById("themeDetails");
 
 async function getUserPlan() {
   try {
-    const res = await fetch(`${API}/find?collection=users&username=${sellerParam}`);
-    const data = await res.json();
-    const user = data[0];
-    currentUserPlan = user?.plan || "free";
-    localStorage.setItem("user", JSON.stringify(user));
-    
+    // Prefer plan from dashboard (localStorage), fallback to API
+    const stored = JSON.parse(localStorage.getItem("user") || "{}");
+    if (stored && stored.username === sellerParam && stored.plan) {
+      currentUserPlan = String(stored.plan).toLowerCase();
+    }
+
+    // Refresh from backend for accuracy
+    const res = await fetch(`${API}/api/subscription-info?username=${encodeURIComponent(sellerParam)}`);
+    if (res.ok) {
+      const payload = await res.json();
+      if (payload && payload.success && payload.user?.plan) {
+        currentUserPlan = String(payload.user.plan).toLowerCase();
+        // Merge back into localStorage user so themes/shop stay in sync with dashboard
+        const updatedUser = { ...(stored || {}), ...payload.user, username: sellerParam };
+        localStorage.setItem("user", JSON.stringify(updatedUser));
+      }
+    }
+
     if (currentUserPlan === "premium" || currentUserPlan === "pro") {
       document.getElementById("premiumBanner").classList.remove("hidden");
     }
   } catch (err) {
-    console.error("Failed to fetch user:", err);
-    currentUserPlan = "free";
+    console.error("Failed to fetch subscription info:", err);
+    currentUserPlan = currentUserPlan || "free";
   }
 }
 
@@ -530,6 +542,9 @@ function getTierAccess(userPlan) {
 function filterThemes() {
   const accessibleTiers = getTierAccess(currentUserPlan);
   let filteredThemes = themes;
+
+  // Always restrict to accessible tiers by subscription
+  filteredThemes = filteredThemes.filter(t => accessibleTiers.includes(t.tier));
 
   // Filter by tier
   if (currentFilters.tier !== "all") {
@@ -811,9 +826,15 @@ async function applyTheme(index) {
   const layoutName = selectedTheme.layout;
 
   try {
+    // Fetch the selected layout HTML (JSON response with { data: { html } })
     const layoutRes = await fetch(`${API}/layouts/${layoutName}`);
-    const layoutHTML = await layoutRes.text();
+    if (!layoutRes.ok) throw new Error("Failed to fetch layout");
+    const layoutJson = await layoutRes.json();
+    const layoutHTML = layoutJson?.data?.html || "";
 
+    if (!layoutHTML) throw new Error("Empty layout HTML");
+
+    // Save theme + layout HTML on the user
     const updateRes = await fetch(`${API}/update`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -822,7 +843,9 @@ async function applyTheme(index) {
         query: { username: sellerParam },
         updates: {
           customTheme: selectedTheme,
-          layoutHTML: layoutHTML
+          layoutHTML: layoutHTML,
+          layoutTheme: layoutName,
+          themeUpdatedAt: new Date().toISOString()
         }
       })
     });
@@ -836,10 +859,10 @@ async function applyTheme(index) {
           <h3 class="text-4xl font-bold gradient-text mb-6">Theme Applied Successfully!</h3>
           <p class="text-gray-600 mb-10 leading-relaxed text-lg">Your store has been transformed with this beautiful new theme. Ready to see the magic?</p>
           <div class="flex flex-col gap-5">
-            <button onclick="this.parentElement.parentElement.parentElement.remove(); window.location.href='shop.html?seller=${encodeURIComponent(sellerParam)}'" class="premium-gradient text-white px-10 py-5 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+            <button onclick="this.parentElement.parentElement.parentElement.remove(); window.location.href='../shop?seller=${encodeURIComponent(sellerParam)}'" class="premium-gradient text-white px-10 py-5 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
               View Your Store
             </button>
-            <button onclick="this.parentElement.parentElement.parentElement.remove(); window.location.href='dashboard.html?seller=${encodeURIComponent(sellerParam)}'" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-10 py-5 rounded-2xl font-bold text-lg transition-all duration-300">
+            <button onclick="this.parentElement.parentElement.parentElement.remove(); window.location.href='../dashboard?seller=${encodeURIComponent(sellerParam)}'" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-10 py-5 rounded-2xl font-bold text-lg transition-all duration-300">
               Return to Dashboard
             </button>
           </div>

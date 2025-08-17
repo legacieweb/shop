@@ -170,11 +170,11 @@
   </main>
 </div>
 <script>
-  const API = "http://api.iyonicorp.com";
-  const user = JSON.parse(localStorage.getItem("user"));
+  const API = "https://941d7aefcce8.ngrok-free.app";
+  const user = JSON.parse(localStorage.getItem("user") || "null");
 
   if (!user || user.role !== "buyer") {
-    alert("Access denied. Redirecting...");
+    // Access denied: redirecting silently
     window.location.href = "../login";
   } else {
     document.getElementById("buyerName").textContent = user.username;
@@ -195,13 +195,16 @@
         fetch(`${API}/find?collection=products`)
       ]);
 
-      const [orders, products] = await Promise.all([
+      const [ordersResult, productsResult] = await Promise.all([
         orderRes.json(),
         productRes.json()
       ]);
 
+      const orders = Array.isArray(ordersResult?.data) ? ordersResult.data : [];
+      const productsArr = Array.isArray(productsResult?.data) ? productsResult.data : [];
+
       const productImageMap = {};
-      products.forEach(p => {
+      productsArr.forEach(p => {
         productImageMap[p.id] = p.image?.startsWith("http") ? p.image : `${API}${p.image}`;
       });
 
@@ -261,10 +264,13 @@
         fetch(`${API}/find?collection=products`)
       ]);
 
-      const [wishlist, products] = await Promise.all([
+      const [wishlistResult, productsResult] = await Promise.all([
         wishRes.json(),
         productRes.json()
       ]);
+
+      const wishlist = Array.isArray(wishlistResult?.data) ? wishlistResult.data : [];
+      const productsArr = Array.isArray(productsResult?.data) ? productsResult.data : [];
 
       const buyerWishlist = wishlist.filter(item => item.buyer === email);
 
@@ -274,7 +280,7 @@
       }
 
       buyerWishlist.forEach(item => {
-        const product = products.find(p => p.id === item.productId);
+        const product = productsArr.find(p => p.id === item.productId);
         if (!product) return;
 
         const image = product.image?.startsWith("http") ? product.image : `${API}${product.image}`;
@@ -288,7 +294,7 @@
           <p class="text-sm text-gray-600 mb-2">$${product.price.toFixed(2)}</p>
           <div class="mt-auto flex justify-between items-center">
             <button onclick="removeWishlist('${item.id}')" class="text-sm text-red-500 hover:underline">Remove</button>
-            <a href="../detail?id=${product.id}" target="_blank" class="text-sm text-blue-600 hover:underline">View Product</a>
+            <a href="product-detail.html?id=${product.id}" target="_blank" class="text-sm text-blue-600 hover:underline">View Product</a>
           </div>
         `;
 
@@ -316,7 +322,8 @@
   async function loadAnalytics(email) {
     try {
       const res = await fetch(`${API}/find?collection=orders`);
-      const orders = await res.json();
+      const result = await res.json();
+      const orders = result.data || [];
       const userOrders = orders.filter(o => o.buyer?.email === email);
 
       if (!userOrders.length) {
@@ -456,7 +463,7 @@ function updateAccount(event) {
       
       // ✅ Update localStorage only after success
       const updatedLocal = { ...user, ...updatedUser };
-      localStorage.setItem("user", JSON.stringify(updatedLocal));
+      localStorage.setItem("user", JSON.stringify(updatedLocal || {}));
 
       alert("✅ Account updated successfully!");
     })
@@ -504,7 +511,9 @@ async function loadMarketData() {
       fetch(`${API}/find?collection=products`)
     ]);
 
-    const [orders, products] = await Promise.all([ordersRes.json(), productsRes.json()]);
+    const [ordersResult, productsResult] = await Promise.all([ordersRes.json(), productsRes.json()]);
+    const orders = ordersResult.data || [];
+    const products = productsResult.data || [];
 
     // 🛒 Top Sold Items
     const salesCount = {};

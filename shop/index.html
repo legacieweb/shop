@@ -224,10 +224,69 @@
   <div id="layoutContainer" class="min-h-screen"></div>
 
   <script>
-    const API = "http://api.iyonicorp.com";
+    const API = "https://941d7aefcce8.ngrok-free.app";
     const sellerParam = new URLSearchParams(location.search).get("seller");
     const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
     const isOwner = currentUser?.role && currentUser.role.startsWith("seller") && currentUser.username === sellerParam;
+
+    // Compatibility wrapper: normalize /find responses to arrays for legacy layout scripts
+    // Also normalize product image URLs to absolute paths so layouts show images reliably
+    (function patchFindResponseShape(){
+      const origFetch = window.fetch.bind(window);
+
+      function normalizeUploadUrl(img){
+        if (!img || typeof img !== 'string') return '';
+        let val = img.trim().replace(/\\\\/g, '/').replace(/\\/g, '/');
+        // Absolute URLs or data URIs
+        if (/^(https?:)?\/\//i.test(val) || val.startsWith('data:')) return val;
+        // Strip any leading host part accidentally embedded
+        const uploadsIdx = val.toLowerCase().lastIndexOf('/uploads/');
+        const uploadsIdx2 = uploadsIdx === -1 ? val.toLowerCase().lastIndexOf('uploads/') : uploadsIdx;
+        if (uploadsIdx2 !== -1) {
+          const clean = val.slice(uploadsIdx2 + (val.toLowerCase().startsWith('/uploads/') ? 9 : (val.toLowerCase().indexOf('uploads/') >= 0 ? val.toLowerCase().indexOf('uploads/') + 8 : 0)));
+          return `${API}/uploads/${clean.replace(/^\/+/, '')}`;
+        }
+        // Starts with uploads path (with or without slash)
+        if (/^\/?uploads\//i.test(val)) {
+          const clean = val.replace(/^\/?uploads\//i, '');
+          return `${API}/uploads/${clean}`;
+        }
+        // Raw filename
+        return `${API}/uploads/${val.replace(/^\/+/, '')}`;
+      }
+
+      window.fetch = async function(...args){
+        const resp = await origFetch(...args);
+        try {
+          const req = args[0];
+          const url = typeof req === 'string' ? req : (req && req.url) || '';
+          if (url.includes('/find')) {
+            const origJson = resp.json.bind(resp);
+            resp.json = async () => {
+              let data = await origJson();
+              // Normalize to array if API returned { data: [...] }
+              if (data && typeof data === 'object' && Array.isArray(data.data)) data = data.data;
+
+              // Fix product image URLs if this is a product query
+              if (Array.isArray(data) && /collection=products/i.test(url)) {
+                data = data.map(p => {
+                  try {
+                    const fixed = { ...p };
+                    fixed.image = normalizeUploadUrl(p.image);
+                    if (Array.isArray(p.gallery)) {
+                      fixed.gallery = p.gallery.map(g => normalizeUploadUrl(g));
+                    }
+                    return fixed;
+                  } catch { return p; }
+                });
+              }
+              return data;
+            };
+          }
+        } catch (_) {}
+        return resp;
+      };
+    })();
 
     const ErrorPages = {
       shopNotFound: (sellerName) => `
@@ -587,7 +646,7 @@
       try {
         const userRes = await fetch(`${API}/find?collection=users&username=${encodeURIComponent(sellerParam)}`);
         const userData = await userRes.json();
-        const seller = userData[0];
+        const seller = Array.isArray(userData) ? userData[0] : userData?.data?.[0];
 
         const container = document.getElementById("layoutContainer");
 
@@ -621,8 +680,20 @@
           return;
         }
 
-        const layoutHTML = seller.layoutHTML;
+        let layoutHTML = seller.layoutHTML;
         const theme = seller.customTheme || {};
+        // Fallback: if the raw HTML is not stored, but layout name is, fetch it from server
+        if (!layoutHTML && seller.layoutTheme) {
+          try {
+            const layoutRes = await fetch(`${API}/layouts/${seller.layoutTheme}`);
+            if (layoutRes.ok) {
+              const layoutJson = await layoutRes.json();
+              layoutHTML = layoutJson?.data?.html || "";
+            }
+          } catch (e) {
+            console.warn("Failed to fetch layout by name:", e);
+          }
+        }
 
         if (!layoutHTML) {
           hideLoader();
@@ -636,7 +707,8 @@
           sellerParam,
           isOwner,
           API,
-          theme
+          theme,
+          actualSeller: sellerParam
         };
 
         const tempDiv = document.createElement("div");

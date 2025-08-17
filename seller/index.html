@@ -526,7 +526,7 @@
 </div>
 
 <script>
-  const API = "http://api.iyonicorp.com";
+  const API = "https://941d7aefcce8.ngrok-free.app";
 
   document.addEventListener("DOMContentLoaded", () => {
     // Init features on page load
@@ -666,7 +666,8 @@
 
       try {
         const res = await fetch(`${API}/find?collection=users&email=${encodeURIComponent(email)}`);
-        const data = await res.json();
+        const response = await res.json();
+        const data = response.data || [];
 
         if (data.length > 0) {
           emailFeedback.textContent = "⚠️ Email already in use.";
@@ -730,8 +731,11 @@ async function setupFormSubmission(formId, redirectUrl) {
         fetch(`${API}/find?collection=users&username=${encodeURIComponent(username)}`)
       ]);
 
-      const existsEmail = await resEmail.json();
-      const existsUsername = await resUsername.json();
+      const emailResponse = await safeJson(resEmail);
+      const usernameResponse = await safeJson(resUsername);
+      
+      const existsEmail = emailResponse.data || [];
+      const existsUsername = usernameResponse.data || [];
 
       if (existsEmail.length > 0) {
         toast("⚠️ Email already in use.", "warning");
@@ -761,7 +765,7 @@ async function setupFormSubmission(formId, redirectUrl) {
       });
 
       if (!res.ok) {
-        const err = await res.json();
+        const err = await safeJson(res);
         throw new Error(err.error || "Signup failed");
       }
 
@@ -787,7 +791,8 @@ async function requestAndVerifyOtp(email) {
     });
 
     if (!otpRes.ok) {
-      toast("❌ Could not send OTP. Try again.", "error");
+      const err = await safeJson(otpRes);
+      toast("❌ Could not send OTP. " + (err.error || ""), "error");
       return false;
     }
 
@@ -797,6 +802,17 @@ async function requestAndVerifyOtp(email) {
     toast("❌ Error sending OTP. Please try again.", "error");
     return false;
   }
+}
+
+// ✅ Helper: safely parse JSON or fall back to text
+async function safeJson(response) {
+  const contentType = response.headers.get("content-type") || "";
+  if (contentType.includes("application/json")) {
+    return response.json();
+  }
+  const text = await response.text();
+  console.warn("Non-JSON response:", text);
+  return {};
 }
 
 function showOtpModal(email) {
@@ -859,12 +875,30 @@ function showOtpModal(email) {
         toast("✅ OTP Verified!", "success");
         resolve(true);
       } catch (err) {
-        console.error(err);
-        error.textContent = "❌ Verification failed.";
-        toast("❌ Verification failed.", "error");
+        console.error("OTP verification error:", err);
+        error.textContent = "❌ Verification failed. Please try again.";
+        toast("❌ Verification failed. Please try again.", "error");
         newBtn.disabled = false;
         newBtn.textContent = "Verify OTP";
         input.focus();
+        // Resend OTP option
+        const resendBtn = document.createElement("button");
+        resendBtn.textContent = "Resend OTP";
+        resendBtn.style.marginLeft = "10px";
+        resendBtn.style.padding = "5px 10px";
+        resendBtn.addEventListener("click", async () => {
+          try {
+            await fetch(`${API}/send-otp`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email })
+            });
+            toast("📧 New OTP sent!", "info");
+          } catch (e) {
+            toast("❌ Failed to resend OTP", "error");
+          }
+        });
+        error.appendChild(resendBtn);
       }
     });
 

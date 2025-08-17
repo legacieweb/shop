@@ -63,7 +63,7 @@
 
       <p class="text-sm text-center mt-6 text-gray-600">
         Don't have an account?
-        <a id="signupLink" href="../signup" class="text-indigo-600 hover:underline font-medium">Sign Up</a>
+        <a id="signupLink" href="../seller" class="text-indigo-600 hover:underline font-medium">Sign Up</a>
       </p>
     </div>
   </div>
@@ -102,7 +102,7 @@
   <!-- Toast Container -->
   <div id="toastContainer" class="fixed top-4 right-4 space-y-2 z-50"></div>
 <script>
-  const API = "https://api.iyonicorp.com"; // Replace with your actual API URL
+  const API = "https://941d7aefcce8.ngrok-free.app";
 
   function showToast(msg, type = "success", duration = 3000) {
     const toast = document.createElement("div");
@@ -141,7 +141,8 @@
   async function getProductCount(sellerUsername) {
     try {
       const res = await fetch(`${API}/find?collection=products&seller=${encodeURIComponent(sellerUsername)}`);
-      const products = await res.json();
+      const response = await res.json();
+      const products = response.data || [];
       return products.length;
     } catch (err) {
       console.error("Failed to fetch product count:", err);
@@ -161,12 +162,14 @@
 
     try {
       let res = await fetch(`${API}/find?collection=users&username=${encodeURIComponent(seller)}&role=seller`);
-      let sellers = await res.json();
+      let response = await res.json();
+      let sellers = response.data || [];
 
       // Fallback: try again without role filter
       if (!sellers.length) {
         res = await fetch(`${API}/find?collection=users&username=${encodeURIComponent(seller)}`);
-        sellers = await res.json();
+        response = await res.json();
+        sellers = response.data || [];
       }
 
       if (!sellers.length) {
@@ -178,7 +181,7 @@
       const theme = shop.customTheme || {};
       nameEl.textContent = theme.name || shop.username || "iyonicorp";
       logoEl.src = resolveImage(theme.logo);
-      document.getElementById("signupLink").href = `signup.html?seller=${encodeURIComponent(shop.username)}`;
+      document.getElementById("signupLink").href = `../seller?seller=${encodeURIComponent(shop.username)}`;
     } catch (err) {
       console.error("Theme load failed:", err);
       nameEl.textContent = "⚠️ Error loading shop";
@@ -237,88 +240,80 @@ function redirectUser(user) {
     document.getElementById("stepNewPassword").classList.add("hidden");
   }
 
-document.getElementById("loginForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const form = e.target;
-  const btn = document.getElementById("loginBtn");
-  disableButton(btn, "Logging in...");
+  document.getElementById("loginForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const btn = document.getElementById("loginBtn");
+    disableButton(btn, "Logging in...");
 
-  const email = form.email.value.trim();
-  const password = form.password.value;
+    const email = form.email.value.trim();
+    const password = form.password.value;
 
-  try {
-    const res = await fetch(`${API}/find?collection=users&email=${encodeURIComponent(email)}`);
-    const users = await res.json();
-
-    if (!users.length) {
-      showToast("⚠️ No account found.", "error");
-      return;
-    }
-
-    const user = users.find(u => u.password === password);
-    if (!user) {
-      showToast("❌ Incorrect password.", "error");
-      return;
-    }
-
-    if (user.status === 'suspended') {
-      document.getElementById("preloadModal").classList.add("hidden");
-      showToast("❌ Your account has been suspended. Please contact support.", "error");
-      return;
-    }
-
-    // ✅ Only store minimal info to avoid quota issues
-    // Fetch fresh subscription data to ensure user has latest plan information
     try {
-      const subscriptionRes = await fetch(`${API}/api/subscription-info?username=${encodeURIComponent(user.username)}`);
-      const subscriptionData = await subscriptionRes.json();
-      
-      if (subscriptionData.success) {
-        // Update user object with fresh subscription data
-        Object.assign(user, subscriptionData.user);
+      const res = await fetch(`${API}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
+      const result = await res.json();
+
+      if (!result.success) {
+        showToast(result.message || "Login failed", "error");
+        return;
       }
-    } catch (subscriptionErr) {
-      console.error("Failed to fetch fresh subscription data:", subscriptionErr);
-      // Continue with original user data if subscription fetch fails
+
+      let user = result.user;
+
+      if (user.status === "suspended") {
+        document.getElementById("preloadModal").classList.add("hidden");
+        showToast("❌ Your account has been suspended. Please contact support.", "error");
+        return;
+      }
+
+      // ✅ Fetch fresh subscription data
+      try {
+        const subscriptionRes = await fetch(`${API}/api/subscription-info?username=${encodeURIComponent(user.username)}`);
+        const subscriptionData = await subscriptionRes.json();
+        if (subscriptionData.success) {
+          user = { ...user, ...subscriptionData.user };
+        }
+      } catch (subscriptionErr) {
+        console.error("Failed to fetch subscription data:", subscriptionErr);
+      }
+
+      const minimalUser = {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        product_type: user.product_type,
+        token: user.token || null,
+        avatar: user.avatar || null,
+        plan: user.plan || null,
+        nextPaymentDate: user.nextPaymentDate || null,
+        subscriptionWeeks: user.subscriptionWeeks || null
+      };
+
+      const userString = JSON.stringify(minimalUser);
+      const sizeInBytes = new Blob([userString]).size;
+      if (sizeInBytes > 4500000) {
+        console.warn("⚠️ Warning: Stored data is close to localStorage size limit.");
+      }
+
+      localStorage.setItem("user", userString);
+
+      document.getElementById("preloadText").textContent = "✅ Login Successful!";
+      document.getElementById("preloadModal").classList.remove("hidden");
+
+      setTimeout(() => redirectUser(minimalUser), 1500);
+
+    } catch (err) {
+      console.error(err);
+      showToast("Login failed.", "error");
+    } finally {
+      enableButton(btn);
     }
-
-    const minimalUser = {
-      _id: user._id,
-      username: user.username,
-      email: user.email,
-      role: user.role,
-      product_type: user.product_type,
-      token: user.token || null,
-      avatar: user.avatar || null,
-      plan: user.plan || null,
-      nextPaymentDate: user.nextPaymentDate || null,
-      subscriptionWeeks: user.subscriptionWeeks || null
-    };
-
-    const userString = JSON.stringify(minimalUser);
-    const sizeInBytes = new Blob([userString]).size;
-    const sizeInKB = (sizeInBytes / 1024).toFixed(2);
-
-    console.log(`User data size: ${sizeInKB} KB`);
-    if (sizeInBytes > 4500000) { // ~4.5MB threshold
-      console.warn("⚠️ Warning: Stored data is close to localStorage size limit.");
-    }
-
-    localStorage.setItem("user", userString);
-
-    document.getElementById("preloadText").textContent = "✅ Login Successful!";
-    document.getElementById("preloadModal").classList.remove("hidden");
-
-    console.log(`User logged in: ${minimalUser.username}, Role: ${minimalUser.role}`);
-    setTimeout(() => redirectUser(minimalUser), 1500);
-  } catch (err) {
-    console.error(err);
-    showToast("Login failed.", "error");
-  } finally {
-    enableButton(btn);
-  }
-});
-
+  });
   window.addEventListener("DOMContentLoaded", () => {
     const params = new URLSearchParams(window.location.search);
     const email = params.get("email");
@@ -342,7 +337,8 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
           setTimeout(async () => {
             try {
               const res = await fetch(`${API}/find?collection=users&username=${encodeURIComponent(loginData.username)}`);
-              const users = await res.json();
+              const response = await res.json();
+              const users = response.data || [];
 
               if (users.length > 0) {
                 const user = users[0];
@@ -378,15 +374,15 @@ document.getElementById("loginForm").addEventListener("submit", async (e) => {
                     
                     // Update user object with fresh subscription data
                     const updatedUser = { ...user, ...subscriptionData.user };
-                    localStorage.setItem("user", JSON.stringify(updatedUser));
+                    localStorage.setItem("user", JSON.stringify(updatedUser || {}));
                   } else {
                     // Fallback to original user data if subscription fetch fails
-                    localStorage.setItem("user", JSON.stringify(user));
+                    localStorage.setItem("user", JSON.stringify(user || {}));
                   }
                 } catch (subscriptionErr) {
                   console.error("Failed to fetch fresh subscription data:", subscriptionErr);
                   // Fallback to original user data if subscription fetch fails
-                  localStorage.setItem("user", JSON.stringify(user));
+                  localStorage.setItem("user", JSON.stringify(user || {}));
                 }
 
                 localStorage.removeItem("autoLogin");
