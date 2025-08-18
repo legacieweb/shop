@@ -1378,7 +1378,7 @@ function renderAuthButtons() {
   container.innerHTML = "";
   if (user) {
     const dashboard = document.createElement("a");
-    dashboard.href = "dashboard.html";
+    dashboard.href = "../dashboard";
     dashboard.className = "luxury-btn-primary text-sm px-4 py-2";
     dashboard.textContent = "Dashboard";
     const logout = document.createElement("button");
@@ -1392,11 +1392,11 @@ function renderAuthButtons() {
     container.appendChild(logout);
   } else {
     const signup = document.createElement("a");
-    signup.href = "signup.html";
+    signup.href = "../signup";
     signup.className = "luxury-btn-primary text-sm px-4 py-2";
     signup.textContent = "Sign Up";
     const login = document.createElement("a");
-    login.href = "login.html";
+    login.href = "../login";
     login.className = "luxury-btn-secondary text-sm px-4 py-2";
     login.textContent = "Log In";
     container.appendChild(signup);
@@ -1411,7 +1411,7 @@ function renderMobileAuthButtons() {
   container.innerHTML = "";
   if (user) {
     const dashboard = document.createElement("a");
-    dashboard.href = "dashboard.html";
+    dashboard.href = "../dashboard";
     dashboard.className = "luxury-btn-primary text-sm px-4 py-2 w-full";
     dashboard.textContent = "Dashboard";
     const logout = document.createElement("button");
@@ -1425,11 +1425,11 @@ function renderMobileAuthButtons() {
     container.appendChild(logout);
   } else {
     const signup = document.createElement("a");
-    signup.href = "signup.html";
+    signup.href = "../signup";
     signup.className = "luxury-btn-primary text-sm px-4 py-2 w-full";
     signup.textContent = "Sign Up";
     const login = document.createElement("a");
-    login.href = "login.html";
+    login.href = "../login";
     login.className = "luxury-btn-secondary text-sm px-4 py-2 w-full mt-2";
     login.textContent = "Log In";
     container.appendChild(signup);

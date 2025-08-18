@@ -51,33 +51,31 @@
         theme
       };
 
-      // Reattach scripts with error handling
-      scripts.forEach(script => {
+      // Simple script reattachment using eval (safer for dynamic content)
+      scripts.forEach((script, index) => {
         try {
-          const newScript = document.createElement("script");
           if (script.src) {
+            // External script - create normally
+            const newScript = document.createElement("script");
             newScript.src = script.src;
-          } else {
-            // Clean and validate script content
-            const scriptContent = script.textContent || script.innerHTML;
-            if (scriptContent && scriptContent.trim()) {
-              newScript.textContent = scriptContent;
-            }
-          }
-          
-          // Copy attributes (excluding problematic ones)
-          for (const attr of script.attributes) {
-            if (attr.name !== 'src' && (attr.name !== 'type' || attr.value !== 'text/template')) {
-              newScript.setAttribute(attr.name, attr.value);
-            }
-          }
-          
-          // Only append if script has valid content or src
-          if (newScript.src || (newScript.textContent && newScript.textContent.trim())) {
+            newScript.onload = () => console.log(`✅ External script loaded: ${script.src}`);
+            newScript.onerror = (e) => console.warn(`⚠️ External script failed: ${script.src}`, e);
             document.body.appendChild(newScript);
+          } else {
+            // Inline script - execute directly using eval to avoid DOM issues
+            const scriptContent = script.textContent || script.innerHTML || "";
+            if (scriptContent.trim()) {
+              try {
+                // Execute script content directly
+                eval(scriptContent);
+                console.log(`✅ Inline script ${index} executed successfully`);
+              } catch (execErr) {
+                console.warn(`⚠️ Script ${index} execution error:`, execErr.message);
+              }
+            }
           }
         } catch (err) {
-          console.warn("⚠️ Failed to reattach script:", err, script);
+          console.warn(`⚠️ Failed to handle script ${index}:`, err);
         }
       });
 

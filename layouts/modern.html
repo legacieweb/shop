@@ -556,7 +556,7 @@
                     `;
 
                     card.addEventListener('click', () => {
-                        window.location.href = `product-detail.html?id=${p.id}`;
+                        window.location.href = `../detail?id=${p.id}`;
                     });
 
                     grid.appendChild(card);
@@ -731,8 +731,8 @@
         if (user) {
             const actualSeller = window.__SHOP_DATA__?.actualSeller || user.username;
             const dashboardLink = user.role?.startsWith("seller")
-                ? `dashboard.html?seller=${encodeURIComponent(actualSeller)}`
-                : `buyer-dashboard.html?seller=${encodeURIComponent(actualSeller)}`;
+                ? `../dashboard?seller=${encodeURIComponent(actualSeller)}`
+                : `../buyer?seller=${encodeURIComponent(actualSeller)}`;
 
             const dashboard = document.createElement("a");
             dashboard.href = dashboardLink;

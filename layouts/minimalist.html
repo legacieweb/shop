@@ -2118,8 +2118,8 @@ if (container) {
     const dashboard = document.createElement("a");
     const actualSeller = window.__SHOP_DATA__?.actualSeller || user.username;
     dashboard.href = user.role?.startsWith("seller")
-      ? `dashboard.html?seller=${encodeURIComponent(actualSeller)}`
-      : `buyer-dashboard.html?seller=${encodeURIComponent(actualSeller)}`;
+      ? `../dashboard?seller=${encodeURIComponent(actualSeller)}`
+      : `../buyer?seller=${encodeURIComponent(actualSeller)}`;
     dashboard.className = baseBtn;
     dashboard.textContent = "Dashboard";
 
@@ -2135,12 +2135,12 @@ if (container) {
     container.appendChild(logout);
   } else {
     const signup = document.createElement("a");
-    signup.href = sellerParam ? `signup.html?seller=${encodeURIComponent(sellerParam)}` : "signup.html";
+    signup.href = sellerParam ? `../signup?seller=${encodeURIComponent(sellerParam)}` : "../signup";
     signup.className = baseBtn;
     signup.textContent = "Sign Up";
 
     const login = document.createElement("a");
-    login.href = sellerParam ? `login.html?seller=${encodeURIComponent(sellerParam)}` : "login.html";
+    login.href = sellerParam ? `../login?seller=${encodeURIComponent(sellerParam)}` : "../login";
     login.className = baseBtn;
     login.textContent = "Log In";
 
