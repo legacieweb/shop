@@ -21,11 +21,7 @@
     }
 
     try {
-      const layoutRes = await fetch(`${API}/layouts/${theme.layout}`, {
-        headers: {
-          'ngrok-skip-browser-warning': 'true'
-        }
-      });
+      const layoutRes = await fetch(`${API}/layouts/${theme.layout}`);
       const layoutHTML = await layoutRes.text();
 
       // Inject layout
@@ -55,61 +51,33 @@
         theme
       };
 
-      // Reattach scripts with improved error handling
-      scripts.forEach((script, index) => {
+      // Reattach scripts with error handling
+      scripts.forEach(script => {
         try {
           const newScript = document.createElement("script");
-          
           if (script.src) {
-            // External script - just copy the src
             newScript.src = script.src;
           } else {
-            // Inline script - handle carefully
-            const scriptContent = script.textContent || script.innerHTML || '';
-            if (scriptContent.trim()) {
-              // Create script with proper text content instead of innerHTML
-              newScript.appendChild(document.createTextNode(scriptContent));
+            // Clean and validate script content
+            const scriptContent = script.textContent || script.innerHTML;
+            if (scriptContent && scriptContent.trim()) {
+              newScript.textContent = scriptContent;
             }
           }
           
-          // Copy attributes safely, excluding problematic ones
-          if (script.attributes) {
-            Array.from(script.attributes).forEach(attr => {
-              try {
-                if (attr.name !== 'src' && attr.name !== 'innerHTML' && attr.name !== 'textContent') {
-                  newScript.setAttribute(attr.name, attr.value);
-                }
-              } catch (attrError) {
-                console.warn(`Failed to set attribute ${attr.name}:`, attrError);
-              }
-            });
+          // Copy attributes (excluding problematic ones)
+          for (const attr of script.attributes) {
+            if (attr.name !== 'src' && (attr.name !== 'type' || attr.value !== 'text/template')) {
+              newScript.setAttribute(attr.name, attr.value);
+            }
           }
           
-          // Append to head instead of body for better compatibility
-          document.head.appendChild(newScript);
-        } catch (scriptError) {
-          console.warn(`Failed to reattach script ${index}:`, scriptError);
-          // Try alternative method for problematic scripts
-          try {
-            const fallbackScript = document.createElement("script");
-            if (script.src) {
-              fallbackScript.src = script.src;
-            } else {
-              const scriptText = script.outerHTML || script.textContent || '';
-              if (scriptText.includes('<script')) {
-                // Extract just the script content
-                const match = scriptText.match(/<script[^>]*>([\s\S]*?)<\/script>/i);
-                if (match && match[1]) {
-                  fallbackScript.text = match[1];
-                }
-              } else {
-                fallbackScript.text = scriptText;
-              }
-            }
-            document.head.appendChild(fallbackScript);
-          } catch (fallbackError) {
-            console.warn(`Fallback script attachment failed for ${index}:`, fallbackError);
+          // Only append if script has valid content or src
+          if (newScript.src || (newScript.textContent && newScript.textContent.trim())) {
+            document.body.appendChild(newScript);
           }
+        } catch (err) {
+          console.warn("⚠️ Failed to reattach script:", err, script);
         }
       });
 
