@@ -102,7 +102,7 @@
   <!-- Toast Container -->
   <div id="toastContainer" class="fixed top-4 right-4 space-y-2 z-50"></div>
 <script>
-  const API = "https://941d7aefcce8.ngrok-free.app";
+  const API = "https://1ec6bc4cee62.ngrok-free.app";
 
   function showToast(msg, type = "success", duration = 3000) {
     const toast = document.createElement("div");
@@ -209,7 +209,7 @@ function redirectUser(user) {
     const sellerParam = getSellerParam();
     window.location.href = sellerParam
       ? `../shop?seller=${encodeURIComponent(sellerParam)}`
-      : "buyer-dashboard.html";
+      : "../buyer";
     return;
   }
 
@@ -223,8 +223,8 @@ function redirectUser(user) {
   // Always redirect with seller param if available
   const sellerParam = getSellerParam();
   window.location.href = sellerParam
-    ? `dashboard.html?seller=${encodeURIComponent(sellerParam)}`
-    : "dashboard.html";
+    ? `../dashboard?seller=${encodeURIComponent(sellerParam)}`
+    : "../dashboard";
 }
 
   document.querySelector('a[href="#"]').addEventListener("click", (e) => {
@@ -366,7 +366,7 @@ function redirectUser(user) {
                         // Redirect to dashboard for subscription upgrade
                         setTimeout(() => {
                           const sellerParam = encodeURIComponent(user.username);
-                          window.location.href = `dashboard.html?seller=${sellerParam}`;
+                          window.location.href = `../dashboard?seller=${sellerParam}`;
                         }, 2000);
                         return;
                       }

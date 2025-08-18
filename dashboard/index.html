@@ -1221,7 +1221,7 @@ function onCategoryChange() {
 
 
 document.addEventListener("DOMContentLoaded", async () => {
-const API = "https://941d7aefcce8.ngrok-free.app";
+const API = "https://1ec6bc4cee62.ngrok-free.app";
 const user = JSON.parse(localStorage.getItem("user") || "{}");
 const seller = user.username;
 const categories = ["electronics", "apparel", "shoes", "beauty", "sports","drugs", "home", "books", "toys", "accessories", "others"];
@@ -1392,7 +1392,7 @@ let userLimits = subscriptionLimits[currentPlan] || subscriptionLimits.free;
 window.refreshUserLimits = async function() {
   try {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
-    const API = "https://941d7aefcce8.ngrok-free.app";
+    const API = "https://1ec6bc4cee62.ngrok-free.app";
     const response = await fetch(`${API}/api/subscription-info?username=${encodeURIComponent(user.username)}`);
     const data = await response.json();
     if (data.success) {
@@ -3818,7 +3818,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 </script>
 <script src="https://js.paystack.co/v1/inline.js"></script>
 <script>
-const API = "https://941d7aefcce8.ngrok-free.app";
+const API = "https://1ec6bc4cee62.ngrok-free.app";
 
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -3856,7 +3856,7 @@ async function loadBillingSection() {
   try {
     if (!sellerUsername) throw new Error("No seller username provided.");
 
-    const API = "https://941d7aefcce8.ngrok-free.app"; // Define API constant
+    const API = "https://1ec6bc4cee62.ngrok-free.app"; // Define API constant
     const sellerRes = await fetch(`${API}/find?collection=users&username=${encodeURIComponent(sellerUsername)}`);
     const sellerResult = await sellerRes.json();
     const sellerArray = sellerResult.data || [];
@@ -4148,7 +4148,7 @@ async function loadSellerCurrency() {
     const urlParams = new URLSearchParams(window.location.search);
     const seller = urlParams.get("seller") || user.username || "iyonicorp";
     
-    const res = await fetch(`https://941d7aefcce8.ngrok-free.app/find?collection=users&username=${encodeURIComponent(seller)}`);
+    const res = await fetch(`https://1ec6bc4cee62.ngrok-free.app/find?collection=users&username=${encodeURIComponent(seller)}`);
     const result = await res.json();
     const users = result.data || [];
     
@@ -4183,7 +4183,7 @@ async function loadAnalytics() {
     console.log("- URL params:", urlParams.toString());
     console.log("- Range:", range);
 
-    let query = `https://941d7aefcce8.ngrok-free.app/api/seller/analytics?seller=${seller}&range=${range}`;
+    let query = `https://1ec6bc4cee62.ngrok-free.app/api/seller/analytics?seller=${seller}&range=${range}`;
     if (start) query += `&start=${start}`;
     if (end) query += `&end=${end}`;
 

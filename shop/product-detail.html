@@ -553,7 +553,7 @@
 </main>
 
 <script>
-const API = "https://941d7aefcce8.ngrok-free.app";
+const API = "https://1ec6bc4cee62.ngrok-free.app";
 const params = new URLSearchParams(window.location.search);
 const productId = params.get("id");
 
@@ -647,7 +647,7 @@ async function loadProduct() {
     const shopResponse = await shopRes.json();
     const seller = shopResponse.success && shopResponse.data && shopResponse.data[0] ? shopResponse.data[0] : null;
 
-    await fetch("https://941d7aefcce8.ngrok-free.app/api/track-view", {
+    await fetch("https://1ec6bc4cee62.ngrok-free.app/api/track-view", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ productId: product.id, seller: product.seller })
@@ -1059,7 +1059,7 @@ function handleCart(productId) {
   cart.push(cartItem);
   saveCart();
 
-  fetch("https://941d7aefcce8.ngrok-free.app/add-cart", {
+  fetch("https://1ec6bc4cee62.ngrok-free.app/add-cart", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"

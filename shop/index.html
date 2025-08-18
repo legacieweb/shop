@@ -224,7 +224,7 @@
   <div id="layoutContainer" class="min-h-screen"></div>
 
   <script>
-    const API = "https://941d7aefcce8.ngrok-free.app";
+    const API = "https://1ec6bc4cee62.ngrok-free.app";
     const sellerParam = new URLSearchParams(location.search).get("seller");
     const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
     const isOwner = currentUser?.role && currentUser.role.startsWith("seller") && currentUser.username === sellerParam;
