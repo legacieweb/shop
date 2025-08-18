@@ -254,7 +254,7 @@
 </div>
 
 <script>
-const API = "https://941d7aefcce8.ngrok-free.app";
+const API = "https://shop-stp5.onrender.com";
 const sellerParam = new URLSearchParams(location.search).get("seller");
 if (!sellerParam) location.href = "https://iyonicorp.com";
 document.getElementById("backToShop").href = `../dashboard?seller=${encodeURIComponent(sellerParam)}`;
@@ -493,39 +493,6 @@ const themes = [
       logo: "https://placehold.co/40x40/065f46/ffffff?text=N",
       heroImage: "https://placehold.co/1920x600/065f46/d1fae5?text=Nature+Hero"
     }
-  },
-  {
-    name: "Freestyle Creative",
-    tier: "pro",
-    previewImage: "https://placehold.co/400x600/7c3aed/c4b5fd?text=Freestyle+Creative+Theme",
-    features: ["animated", "interactive", "responsive", "social"],
-    screenshots: [
-      "https://placehold.co/800x500/7c3aed/c4b5fd?text=Creative+Layout",
-      "https://placehold.co/800x500/8b5cf6/ddd6fe?text=Artistic+Design",
-      "https://placehold.co/800x500/a855f7/e9d5ff?text=Flexible+Grid"
-    ],
-    featureList: [
-      "Artistic and creative layout",
-      "Flexible grid system",
-      "Custom animation effects",
-      "Creative typography",
-      "Interactive elements",
-      "Portfolio-style showcase",
-      "Creative brand expression"
-    ],
-    description: "Unleash your creativity with this artistic and flexible theme designed for creative professionals and unique businesses.",
-    bestFor: ["Creative agencies", "Artists & designers", "Photography studios", "Freelancers"],
-    colorScheme: ["#7c3aed", "#8b5cf6", "#c4b5fd", "#ddd6fe"],
-    theme: {
-      layout: "freestyle",
-      title: "Freestyle Creative",
-      name: "Creative Space",
-      bio: "Where creativity flows.",
-      header: "Creative Works",
-      bgColor: "#faf5ff",
-      logo: "https://placehold.co/40x40/7c3aed/ffffff?text=F",
-      heroImage: "https://placehold.co/1920x600/7c3aed/c4b5fd?text=Freestyle+Hero"
-    }
   }
 ];
 
@@ -542,11 +509,7 @@ async function getUserPlan() {
     }
 
     // Refresh from backend for accuracy
-    const res = await fetch(`${API}/api/subscription-info?username=${encodeURIComponent(sellerParam)}`, {
-      headers: {
-        'ngrok-skip-browser-warning': 'true'
-      }
-    });
+    const res = await fetch(`${API}/api/subscription-info?username=${encodeURIComponent(sellerParam)}`);
     if (res.ok) {
       const payload = await res.json();
       if (payload && payload.success && payload.user?.plan) {
@@ -693,8 +656,7 @@ function renderThemes() {
               <svg class="w-12 h-12 mx-auto mb-3 opacity-80" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
               </svg>
-              <div class="text-sm font-semibold mb-1">🔓 ${t.tier.toUpperCase()} Theme</div>
-              <div class="text-xs opacity-90">Requires ${t.tier} plan or higher</div>
+              <div class="text-sm font-semibold">Upgrade Required</div>
             </div>
           </div>
         ` : ''}
@@ -864,14 +826,11 @@ async function applyTheme(index) {
   const layoutName = selectedTheme.layout;
 
   try {
-    // Fetch the selected layout HTML directly
-    const layoutRes = await fetch(`${API}/layouts/${layoutName}`, {
-      headers: {
-        'ngrok-skip-browser-warning': 'true'
-      }
-    });
+    // Fetch the selected layout HTML (JSON response with { data: { html } })
+    const layoutRes = await fetch(`${API}/layouts/${layoutName}`);
     if (!layoutRes.ok) throw new Error("Failed to fetch layout");
-    const layoutHTML = await layoutRes.text();
+    const layoutJson = await layoutRes.json();
+    const layoutHTML = layoutJson?.data?.html || "";
 
     if (!layoutHTML) throw new Error("Empty layout HTML");
 
@@ -1032,41 +991,6 @@ document.addEventListener("keydown", (e) => {
     closeModal();
   }
 });
-
-// Upgrade modal functionality
-function showUpgradeModal() {
-  const tierNames = {
-    "free": "Basic or Pro",
-    "basic": "Pro",
-    "pro": "You have access to all themes!"
-  };
-  
-  const upgradeMessage = currentUserPlan === "pro" 
-    ? "You already have access to all themes!" 
-    : `Upgrade to ${tierNames[currentUserPlan]} to unlock premium themes`;
-  
-  if (currentUserPlan === "pro") {
-    alert("🎉 You already have access to all themes!");
-    return;
-  }
-  
-  const upgradeConfirm = confirm(`🔓 ${upgradeMessage}\n\nWould you like to go to the seller registration page to upgrade your plan?`);
-  
-  if (upgradeConfirm) {
-    // Redirect to seller page for plan upgrade
-    window.open("../seller", "_blank");
-  }
-}
-
-// Enhanced plan-based theme access messaging
-function getRequiredPlanMessage(themeTier) {
-  const planMessages = {
-    "basic": "Upgrade to Basic plan or higher to unlock this theme",
-    "pro": "Upgrade to Pro plan to unlock this premium theme"
-  };
-  
-  return planMessages[themeTier] || "This theme requires a higher plan";
-}
 
 (async function init() {
   await getUserPlan();
