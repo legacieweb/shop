@@ -5,89 +5,514 @@
   <title>Theme Preview - ShopRight</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+    
+    * {
+      font-family: 'Inter', sans-serif;
+    }
+    
+    @keyframes fadeInUp {
+      from { transform: translateY(50px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes fadeInLeft {
+      from { transform: translateX(-50px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes fadeInRight {
+      from { transform: translateX(50px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes subtleFloat {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+    @keyframes gentlePulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    @keyframes morphGlow {
+      0%, 100% { box-shadow: 0 0 20px rgba(100, 116, 139, 0.15); }
+      50% { box-shadow: 0 0 40px rgba(100, 116, 139, 0.25); }
+    }
+    @keyframes loaderSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes loaderPulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.7; }
+    }
+    @keyframes dotWave {
+      0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    
+    .fade-up { animation: fadeInUp 1s ease-out; }
+    .fade-left { animation: fadeInLeft 1s ease-out; }
+    .fade-right { animation: fadeInRight 1s ease-out; }
+    .slide-up { animation: slideUp 0.8s ease-out; }
+    .float { animation: subtleFloat 4s ease-in-out infinite; }
+    .pulse { animation: gentlePulse 3s ease-in-out infinite; }
+    .rotate { animation: rotate 20s linear infinite; }
+    .morph-glow { animation: morphGlow 4s ease-in-out infinite; }
+    .loader-spin { animation: loaderSpin 1s linear infinite; }
+    .loader-pulse { animation: loaderPulse 2s ease-in-out infinite; }
+    
+    .minimal-gradient {
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #cbd5e1 100%);
+    }
+    .preview-gradient {
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%);
+    }
+    .error-gradient {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 50%, #e2e8f0 100%);
+    }
+    
+    .glass {
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      background: rgba(248, 250, 252, 0.8);
+      border: 1px solid rgba(148, 163, 184, 0.2);
+    }
+    
+    .minimal-shadow {
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+    }
+    
+    .hover-lift {
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+    .hover-lift:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 35px 70px -15px rgba(0, 0, 0, 0.1);
+    }
+
+    .shimmer-effect::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.1), transparent);
+      animation: shimmer 3s infinite;
+    }
+
+    .text-gradient {
+      background: linear-gradient(135deg, #334155 0%, #64748b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Loader Styles */
+    .loader-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .loader-container.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .loader-content {
+      text-align: center;
+    }
+
+    .loader-ring {
+      width: 80px;
+      height: 80px;
+      border: 3px solid rgba(148, 163, 184, 0.2);
+      border-top: 3px solid #64748b;
+      border-radius: 50%;
+      margin: 0 auto 30px;
+      animation: loaderSpin 1s linear infinite;
+    }
+
+    .loader-dots {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin: 20px 0;
+    }
+
+    .loader-dot {
+      width: 8px;
+      height: 8px;
+      background: #64748b;
+      border-radius: 50%;
+      animation: dotWave 1.4s ease-in-out infinite;
+    }
+
+    .loader-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .loader-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    .progress-bar {
+      width: 200px;
+      height: 2px;
+      background: rgba(148, 163, 184, 0.3);
+      border-radius: 1px;
+      overflow: hidden;
+      margin: 20px auto;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #64748b, #94a3b8);
+      border-radius: 1px;
+      width: 0%;
+      animation: progressFill 2.5s ease-in-out;
+    }
+
+    @keyframes progressFill {
+      0% { width: 0%; }
+      25% { width: 40%; }
+      65% { width: 80%; }
+      100% { width: 100%; }
+    }
+
+    /* Preview Banner */
+    .preview-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+      color: white;
+      padding: 12px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 10000;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .preview-banner .preview-badge {
+      display: inline-block;
+      background: rgba(248, 250, 252, 0.2);
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-right: 12px;
+      font-size: 12px;
+      backdrop-filter: blur(10px);
+    }
+
+    body.preview-mode {
+      padding-top: 48px;
+    }
+  </style>
 </head>
-<body class="bg-gray-100 text-gray-800">
-  <div id="layoutContainer"></div>
+<body class="bg-gray-50 text-gray-900 transition-all duration-300">
 
-<script>
-  const API = "https://shop-stp5.onrender.com";
-  const actualSeller = new URLSearchParams(location.search).get("seller");
-  const theme = JSON.parse(localStorage.getItem("previewTheme") || "{}");
+  <!-- Preview Banner -->
+  <div class="preview-banner">
+    <span class="preview-badge">🎨 PREVIEW MODE</span>
+    This is a preview of how your theme will look to customers
+  </div>
 
-  async function loadLayout() {
-    if (!theme.layout) {
-      document.body.innerHTML = "<h2 class='text-center mt-10 text-red-500 font-bold text-xl'>❌ No Theme Loaded</h2>";
-      return;
-    }
+  <!-- Loader -->
+  <div id="loader" class="loader-container">
+    <div class="loader-content">
+      <div class="loader-ring"></div>
+      <div class="loader-dots">
+        <div class="loader-dot"></div>
+        <div class="loader-dot"></div>
+        <div class="loader-dot"></div>
+      </div>
+      <h2 class="text-2xl font-light text-slate-600 mb-2">Loading Preview</h2>
+      <p class="text-slate-400 text-sm mb-4">Preparing theme preview</p>
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+      <p class="text-xs text-slate-300 mt-4">Applying your custom theme settings</p>
+    </div>
+  </div>
 
-    try {
-      const layoutRes = await fetch(`${API}/layouts/${theme.layout}`);
-      const layoutHTML = await layoutRes.text();
+  <div id="layoutContainer" class="min-h-screen"></div>
 
-      // Inject layout
-      const container = document.getElementById("layoutContainer");
-      const tempDiv = document.createElement("div");
-      tempDiv.innerHTML = layoutHTML;
+  <script>
+    const API = "https://shop-stp5.onrender.com";
+    const actualSeller = new URLSearchParams(location.search).get("seller");
+    const theme = JSON.parse(localStorage.getItem("previewTheme") || "{}");
 
-      const scripts = Array.from(tempDiv.querySelectorAll("script"));
-      scripts.forEach(s => s.remove());
+    // Add preview mode class to body
+    document.body.classList.add('preview-mode');
 
-      container.innerHTML = tempDiv.innerHTML;
+    // Compatibility wrapper: normalize /find responses to arrays for legacy layout scripts
+    // Also normalize product image URLs to absolute paths so layouts show images reliably
+    (function patchFindResponseShape(){
+      const origFetch = window.fetch.bind(window);
 
-      // 🔧 Replace any `?seller=...` in links with the actual seller for correct redirection
-      const sellerLinks = container.querySelectorAll("a[href*='seller=']");
-      sellerLinks.forEach(link => {
-        const url = new URL(link.href, location.origin);
-        url.searchParams.set("seller", actualSeller);
-        link.href = url.toString();
-      });
-
-      // Inject global preview data
-      window.__SHOP_DATA__ = {
-        sellerParam: "iyonicorp",       // Render like Iyonicorp
-        actualSeller: actualSeller,     // Logged-in user
-        isOwner: false,
-        API,
-        theme
-      };
-
-      // Simple script reattachment using eval (safer for dynamic content)
-      scripts.forEach((script, index) => {
-        try {
-          if (script.src) {
-            // External script - create normally
-            const newScript = document.createElement("script");
-            newScript.src = script.src;
-            newScript.onload = () => console.log(`✅ External script loaded: ${script.src}`);
-            newScript.onerror = (e) => console.warn(`⚠️ External script failed: ${script.src}`, e);
-            document.body.appendChild(newScript);
-          } else {
-            // Inline script - execute directly using eval to avoid DOM issues
-            const scriptContent = script.textContent || script.innerHTML || "";
-            if (scriptContent.trim()) {
-              try {
-                // Execute script content directly
-                eval(scriptContent);
-                console.log(`✅ Inline script ${index} executed successfully`);
-              } catch (execErr) {
-                console.warn(`⚠️ Script ${index} execution error:`, execErr.message);
-              }
-            }
-          }
-        } catch (err) {
-          console.warn(`⚠️ Failed to handle script ${index}:`, err);
+      function normalizeUploadUrl(img){
+        if (!img || typeof img !== 'string') return '';
+        let val = img.trim().replace(/\\\\/g, '/').replace(/\\/g, '/');
+        // Absolute URLs or data URIs
+        if (/^(https?:)?\/\//i.test(val) || val.startsWith('data:')) return val;
+        // Strip any leading host part accidentally embedded
+        const uploadsIdx = val.toLowerCase().lastIndexOf('/uploads/');
+        const uploadsIdx2 = uploadsIdx === -1 ? val.toLowerCase().lastIndexOf('uploads/') : uploadsIdx;
+        if (uploadsIdx2 !== -1) {
+          const clean = val.slice(uploadsIdx2 + (val.toLowerCase().startsWith('/uploads/') ? 9 : (val.toLowerCase().indexOf('uploads/') >= 0 ? val.toLowerCase().indexOf('uploads/') + 8 : 0)));
+          return `${API}/uploads/${clean.replace(/^\/+/, '')}`;
         }
-      });
+        // Starts with uploads path (with or without slash)
+        if (/^\/?uploads\//i.test(val)) {
+          const clean = val.replace(/^\/?uploads\//i, '');
+          return `${API}/uploads/${clean}`;
+        }
+        // Raw filename
+        return `${API}/uploads/${val.replace(/^\/+/, '')}`;
+      }
 
-    } catch (err) {
-      console.error("❌ Preview Error:", err);
-      document.body.innerHTML = "<h2 class='text-center mt-10 text-red-600 font-bold'>❌ Failed to load layout</h2>";
+      window.fetch = async function(...args){
+        const resp = await origFetch(...args);
+        try {
+          const req = args[0];
+          const url = typeof req === 'string' ? req : (req && req.url) || '';
+          if (url.includes('/find')) {
+            const origJson = resp.json.bind(resp);
+            resp.json = async () => {
+              let data = await origJson();
+              // Normalize to array if API returned { data: [...] }
+              if (data && typeof data === 'object' && Array.isArray(data.data)) data = data.data;
+
+              // Fix product image URLs if this is a product query
+              if (Array.isArray(data) && /collection=products/i.test(url)) {
+                data = data.map(p => {
+                  try {
+                    const fixed = { ...p };
+                    fixed.image = normalizeUploadUrl(p.image);
+                    if (Array.isArray(p.gallery)) {
+                      fixed.gallery = p.gallery.map(g => normalizeUploadUrl(g));
+                    }
+                    return fixed;
+                  } catch { return p; }
+                });
+              }
+              return data;
+            };
+          }
+        } catch (_) {}
+        return resp;
+      };
+    })();
+
+    const ErrorPages = {
+      noTheme: () => `
+        <div class="min-h-screen error-gradient flex items-center justify-center px-6 py-16">
+          <div class="max-w-4xl mx-auto text-center">
+            <div class="glass rounded-3xl p-16 minimal-shadow fade-up">
+              <div class="w-32 h-32 mx-auto mb-12 bg-slate-100 rounded-full flex items-center justify-center float morph-glow">
+                <svg class="w-16 h-16 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a4 4 0 004-4V5z"></path>
+                </svg>
+              </div>
+              
+              <h1 class="text-5xl font-light text-gradient mb-8 fade-left">No Theme Selected</h1>
+              <p class="text-xl text-slate-600 mb-6 font-light fade-right">Please select a theme to preview</p>
+              <p class="text-lg text-slate-500 mb-12 font-light max-w-2xl mx-auto">Go back to your dashboard and choose a theme layout to see how it will look for your customers.</p>
+              
+              <button onclick="window.history.back()" class="glass rounded-xl px-8 py-4 hover-lift text-slate-700 font-medium transition-all duration-300">
+                ← Go Back to Dashboard
+              </button>
+            </div>
+          </div>
+        </div>
+      `,
+
+      layoutError: () => `
+        <div class="min-h-screen preview-gradient flex items-center justify-center px-6 py-16">
+          <div class="max-w-5xl mx-auto text-center">
+            <div class="fade-up">
+              <div class="w-40 h-40 mx-auto mb-16 relative">
+                <div class="rotate">
+                  <svg viewBox="0 0 100 100" class="w-full h-full text-slate-300">
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <circle cx="50" cy="50" r="35" fill="none" stroke="currentColor" stroke-width="1"/>
+                    <circle cx="50" cy="50" r="25" fill="none" stroke="currentColor" stroke-width="1"/>
+                    <circle cx="50" cy="50" r="15" fill="none" stroke="currentColor" stroke-width="1"/>
+                  </svg>
+                </div>
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <svg class="w-12 h-12 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                  </svg>
+                </div>
+              </div>
+              
+              <h1 class="text-5xl font-light text-gradient mb-8 fade-left">Preview Error</h1>
+              <p class="text-xl text-slate-600 mb-6 font-light fade-right">Unable to load the theme layout</p>
+              <p class="text-lg text-slate-500 mb-16 font-light max-w-3xl mx-auto">There was an issue loading the selected theme. Please try selecting a different theme or contact support if the problem continues.</p>
+              
+              <div class="flex gap-4 justify-center">
+                <button onclick="window.location.reload()" class="glass rounded-xl px-8 py-4 hover-lift text-slate-700 font-medium transition-all duration-300">
+                  🔄 Try Again
+                </button>
+                <button onclick="window.history.back()" class="glass rounded-xl px-8 py-4 hover-lift text-slate-700 font-medium transition-all duration-300">
+                  ← Go Back
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `
+    };
+
+    function hideLoader() {
+      const loader = document.getElementById("loader");
+      if (loader) {
+        loader.classList.add("hidden");
+        setTimeout(() => {
+          loader.remove();
+        }, 500);
+      }
     }
-  }
 
-  window.addEventListener("DOMContentLoaded", loadLayout);
-</script>
+    async function loadLayout() {
+      // Show loader for at least 2 seconds for preview experience
+      const startTime = Date.now();
+      const minLoadTime = 2000;
 
+      try {
+        const container = document.getElementById("layoutContainer");
+
+        // Check if theme is loaded
+        if (!theme.layout) {
+          // Ensure minimum load time
+          const elapsed = Date.now() - startTime;
+          const remainingTime = Math.max(0, minLoadTime - elapsed);
+          await new Promise(resolve => setTimeout(resolve, remainingTime));
+          
+          hideLoader();
+          setTimeout(() => {
+            container.innerHTML = ErrorPages.noTheme();
+          }, 300);
+          return;
+        }
+
+        // Fetch layout HTML
+        const layoutRes = await fetch(`${API}/layouts/${theme.layout}`);
+        if (!layoutRes.ok) {
+          throw new Error(`Failed to fetch layout: ${layoutRes.status}`);
+        }
+        
+        const layoutJSON = await layoutRes.json();
+        const layoutHTML = layoutJSON?.data?.html || "";
+
+        if (!layoutHTML) {
+          throw new Error("Layout HTML not found in response");
+        }
+
+        // Ensure minimum load time
+        const elapsed = Date.now() - startTime;
+        const remainingTime = Math.max(0, minLoadTime - elapsed);
+        await new Promise(resolve => setTimeout(resolve, remainingTime));
+
+        // Setup global preview data
+        window.__SHOP_DATA__ = {
+          sellerParam: "iyonicorp",       // Render like Iyonicorp for preview
+          actualSeller: actualSeller,     // Real logged-in user
+          isOwner: false,                 // Not owner in preview mode
+          API,
+          theme
+        };
+
+        // Parse and inject layout
+        const tempDiv = document.createElement("div");
+        tempDiv.innerHTML = layoutHTML;
+
+        // Extract and remove scripts for later execution
+        const scripts = Array.from(tempDiv.querySelectorAll("script"));
+        scripts.forEach(s => s.remove());
+
+        hideLoader();
+        
+        setTimeout(() => {
+          // Inject HTML content
+          container.innerHTML = tempDiv.innerHTML;
+
+          // Fix any seller links to point to actual seller
+          const sellerLinks = container.querySelectorAll("a[href*='seller=']");
+          sellerLinks.forEach(link => {
+            const url = new URL(link.href, location.origin);
+            url.searchParams.set("seller", actualSeller);
+            link.href = url.toString();
+          });
+
+          // Execute scripts
+          scripts.forEach((script, index) => {
+            try {
+              const newScript = document.createElement("script");
+              if (script.src) {
+                // External script
+                newScript.src = script.src;
+                newScript.onload = () => console.log(`✅ External script loaded: ${script.src}`);
+                newScript.onerror = (e) => console.warn(`⚠️ External script failed: ${script.src}`, e);
+              } else {
+                // Inline script
+                newScript.textContent = script.textContent;
+              }
+              
+              // Copy all attributes
+              for (const attr of script.attributes) {
+                newScript.setAttribute(attr.name, attr.value);
+              }
+              
+              document.body.appendChild(newScript);
+            } catch (err) {
+              console.warn(`⚠️ Failed to execute script ${index}:`, err);
+            }
+          });
+        }, 300);
+
+      } catch (err) {
+        console.error("❌ Preview Error:", err);
+        
+        // Ensure minimum load time even on error
+        const elapsed = Date.now() - startTime;
+        const remainingTime = Math.max(0, minLoadTime - elapsed);
+        await new Promise(resolve => setTimeout(resolve, remainingTime));
+        
+        hideLoader();
+        
+        setTimeout(() => {
+          const container = document.getElementById("layoutContainer");
+          container.innerHTML = ErrorPages.layoutError();
+        }, 300);
+      }
+    }
+
+    window.addEventListener("DOMContentLoaded", loadLayout);
+  </script>
 
 </body>
 </html>

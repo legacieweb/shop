@@ -337,17 +337,19 @@
   <section class="max-w-7xl mx-auto px-4 py-12 hidden" id="storeSection">
     <h3 class="text-xl font-semibold mb-4">More From This Store</h3>
     <div id="storeGrid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
-  </section>
   <!-- Size Guide Modal -->
-<div id="sizeGuideModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-  <div class="bg-white w-full max-w-2xl max-h-[80vh] overflow-auto rounded-lg shadow-lg p-6 transform scale-95 opacity-0 transition-all duration-300 ease-out">
-    <div class="flex justify-between items-center mb-4">
-      <h3 class="text-lg font-semibold text-indigo-700">Size Guide</h3>
-      <button onclick="hideSizeGuide()" class="text-gray-500 hover:text-red-500 text-lg">✖</button>
+  <div id="sizeGuideModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden">
+    <div class="bg-white w-full max-w-xl max-h-[80vh] overflow-auto rounded-2xl shadow-2xl p-8 transform scale-95 opacity-0 transition-all duration-300 ease-out relative">
+      <button onclick="hideSizeGuide()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-2xl focus:outline-none transition">
+        <span aria-label="Close">&times;</span>
+      </button>
+      <div class="flex items-center gap-3 mb-6">
+        <span class="inline-block bg-indigo-100 text-indigo-700 rounded-full px-3 py-1 text-base font-bold">📏</span>
+        <h3 class="text-2xl font-bold text-indigo-700">Size Guide</h3>
+      </div>
+      <div id="sizeGuideContent" class="text-base text-gray-700 whitespace-pre-line bg-gray-50 rounded-lg p-6 shadow-inner overflow-auto font-mono"></div>
     </div>
-    <div id="sizeGuideContent" class="text-sm text-gray-700 whitespace-pre overflow-auto"></div>
   </div>
-</div>
 
 <!-- Checkout Modal -->
 <div id="checkoutModal" class="fixed inset-0 bg-black bg-opacity-40 flex justify-end z-50 hidden">
@@ -725,12 +727,16 @@ async function loadProduct() {
       iyzipay: "https://www.iyzico.com/favicon.ico"
     };
     const paymentHTML = paymentSystems.map(p => {
-      console.log("Processing payment system:", p); // Debug log
       return `
         <img src="${gatewayIcons[p] || 'https://placehold.co/24x24'}" alt="${p}" title="${capitalize(p)}"
           class="inline w-6 h-6 rounded border bg-white p-1" />
       `;
     }).join(" ") || "<span class='text-sm text-gray-500'>No payment gateways available.</span>";
+
+    // Show Size Guide button always, not just for variants
+    let sizeGuideButton = `
+      <button onclick="showSizeGuide()" class="text-sm text-blue-600 hover:underline">📏 Size Guide</button>
+    `;
 
     productSection.innerHTML = `
       <div class="space-y-4">
@@ -756,7 +762,7 @@ async function loadProduct() {
           <div class="mt-4">
             <div class="flex items-center justify-between mb-2">
               <h4 class="font-semibold text-gray-700">Available Sizes/Variants</h4>
-              <button onclick="showSizeGuide()" class="text-sm text-blue-600 hover:underline">📏 Size Guide</button>
+              ${sizeGuideButton}
             </div>
             ${variantHTML}
           </div>` : ""}
@@ -766,6 +772,13 @@ async function loadProduct() {
             <h4 class="font-semibold text-gray-700 mb-2">Available Colors</h4>
             ${colorHTML}
           </div>` : ""}
+
+        <!-- Always show Size Guide button if no variants -->
+        ${!variantHTML ? `
+          <div class="mt-2">
+            ${sizeGuideButton}
+          </div>
+        ` : ""}
 
         <div class="text-sm text-gray-600 mt-2">
           <strong>Shipping Info:</strong> ${product.shipping || "Ships within 2-3 days"}

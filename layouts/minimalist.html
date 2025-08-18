@@ -1150,7 +1150,7 @@ function showAllSubTags() {
       `;
 
       card.addEventListener('click', () => {
-        window.location.href = `product-detail.html?id=${product.id}`;
+        window.location.href = `../detail?id=${product.id}`;
       });
 
       grid.appendChild(card);
@@ -1305,12 +1305,12 @@ function renderSectionProducts(container, products, section) {
 
     if (!isOwner || section.type !== 'featured') {
       productEl.addEventListener('click', () => {
-        window.location.href = `product-detail.html?id=${product.id}`;
+        window.location.href = `../detail?id=${product.id}`;
       });
     } else {
       productEl.addEventListener('click', (e) => {
         if (!e.target.closest('.remove-featured-product')) {
-          window.location.href = `product-detail.html?id=${product.id}`;
+          window.location.href = `../detail?id=${product.id}`;
         }
       });
     }
@@ -1390,10 +1390,10 @@ function renderSectionProducts(container, products, section) {
     
     seeMoreBtn.addEventListener('click', () => {
       if (section.type === 'category') {
-        window.location.href = `products.html?seller=${sellerParam}&category=${section.config.category}`;
+        window.location.href = `../products?seller=${sellerParam}&category=${section.config.category}`;
       } else if (section.type === 'featured') {
         const productIds = section.config.productIds.join(',');
-        window.location.href = `products.html?seller=${sellerParam}&featured=${productIds}`;
+        window.location.href = `../products?seller=${sellerParam}&featured=${productIds}`;
       }
     });
     
