@@ -1,0 +1,780 @@
+
+    <!-- Layout -->
+    <div id="layoutDefault" class="flex-grow flex flex-col">
+
+      
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #6366f1;
+            --accent-color: #8b5cf6;
+            --bg-primary: #ffffff;
+            --bg-secondary: #f8fafc;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+        }
+
+        .theme-purple {
+            --primary-color: #7c3aed;
+            --secondary-color: #8b5cf6;
+            --accent-color: #a855f7;
+            --bg-primary: #faf5ff;
+            --bg-secondary: #f3e8ff;
+            --text-primary: #581c87;
+            --text-secondary: #7c2d92;
+            --border-color: #d8b4fe;
+        }
+
+        .theme-green {
+            --primary-color: #059669;
+            --secondary-color: #10b981;
+            --accent-color: #34d399;
+            --bg-primary: #f0fdf4;
+            --bg-secondary: #dcfce7;
+            --text-primary: #064e3b;
+            --text-secondary: #065f46;
+            --border-color: #bbf7d0;
+        }
+
+        .theme-orange {
+            --primary-color: #ea580c;
+            --secondary-color: #f97316;
+            --accent-color: #fb923c;
+            --bg-primary: #fff7ed;
+            --bg-secondary: #fed7aa;
+            --text-primary: #9a3412;
+            --text-secondary: #c2410c;
+            --border-color: #fdba74;
+        }
+
+        .theme-dark {
+            --primary-color: #3b82f6;
+            --secondary-color: #60a5fa;
+            --accent-color: #93c5fd;
+            --bg-primary: #1f2937;
+            --bg-secondary: #374151;
+            --text-primary: #f9fafb;
+            --text-secondary: #d1d5db;
+            --border-color: #4b5563;
+        }
+
+        .custom-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .custom-btn:hover {
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .product-card {
+            background: var(--bg-primary);
+            border: 2px solid var(--border-color);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .product-card:hover::before {
+            left: 100%;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-color: var(--primary-color);
+        }
+
+        .product-image {
+            transition: transform 0.4s ease;
+        }
+
+        .product-card:hover .product-image {
+            transform: scale(1.1);
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            transition: all 0.5s ease;
+        }
+
+        .header-bg {
+            background: var(--bg-primary);
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .footer-bg {
+            background: var(--bg-secondary);
+            border-top: 2px solid var(--border-color);
+        }
+
+        .section-bg {
+            background: var(--bg-secondary);
+        }
+
+        .text-primary { color: var(--text-primary); }
+        .text-secondary { color: var(--text-secondary); }
+
+        @keyframes slideDown {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .slide-down {
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .flame-text-glow {
+            font-weight: bold;
+            display: inline-block;
+            animation: flameGlowShift 3s ease-in-out infinite alternate;
+            transition: text-shadow 0.3s ease;
+        }
+
+        .flame-text-glow:hover {
+            text-decoration: underline;
+        }
+
+        @keyframes flameGlowShift {
+            0% {
+                color: #000;
+                text-shadow: 
+                    0 0 2px #757575,
+                    0 0 4px #838383,
+                    0 0 6px #a1a1a1,
+                    0 0 8px #b1b1b1;
+            }
+            50% {
+                color: #c0c0c0;
+                text-shadow: 
+                    0 0 4px #c0c0c0,
+                    0 0 8px #cecece,
+                    0 0 10px #c2c2c2,
+                    0 0 12px #e0e0e0;
+            }
+            100% {
+                color: #d1cece;
+                text-shadow: 
+                    0 0 6px #dbdbdb,
+                    0 0 12px #f7f4f3,
+                    0 0 18px #f7f5f2,
+                    0 0 24px #ffffff;
+            }
+        }
+    </style>
+<!-- Header -->
+<header id="headerSection" class="header-bg shadow-lg sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <img id="shopLogo" src="https://placehold.co/50x50" 
+                class="w-12 h-12 rounded-full object-cover border-3 border-gray-200 shadow-md" />
+            <span id="shopTitle" class="text-2xl font-bold text-primary">loading...</span>
+        </div>
+
+        <!-- Desktop Auth Buttons -->
+        <div class="hidden md:flex items-center gap-3">
+            <button id="styleBtn" class="hidden custom-btn text-white px-4 py-2 rounded-lg text-sm font-medium shadow-lg">
+                🎨 Style
+            </button>
+            <div id="shopAuthButtons" class="flex items-center gap-2 text-sm"></div>
+        </div>
+
+        <!-- Mobile Hamburger -->
+        <div class="md:hidden relative">
+            <button id="authMenuBtn" class="p-2 border rounded-lg focus:outline-none">
+                ☰
+            </button>
+            <div id="authDropdown" class="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg hidden">
+                <div id="shopAuthButtonsMobile" class="flex flex-col gap-2 p-2 text-sm"></div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+        <!-- Hero Section -->
+        <section id="heroSection" class="hero-section relative py-20 text-center text-white">
+            <div id="heroOverlay" class="absolute inset-0 bg-black/30 z-0"></div>
+            <img id="heroImage" class="absolute inset-0 w-full h-full object-cover z-[-1]" src="https://placehold.co/1200x400" />
+            <div class="relative z-10 max-w-3xl mx-auto px-4">
+                <h2 id="shopName" class="text-5xl font-extrabold mb-4 drop-shadow-lg">Loading Store...</h2>
+                <p id="shopBio" class="text-xl mb-6 drop-shadow-md max-w-2xl mx-auto">Please wait while we load the store.</p>
+                <button id="uploadHeroBtn" class="hidden custom-btn text-white px-6 py-3 rounded-lg font-medium shadow-lg">
+                    📤 Upload Hero Image
+                </button>
+            </div>
+        </section>
+
+        <!-- Product Grid -->
+        <main class="section-bg flex-grow py-16">
+            <div class="max-w-7xl mx-auto px-4">
+                <h3 id="productHeader" class="text-4xl font-bold mb-12 text-center text-primary">Our Products</h3>
+                <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8 min-h-[400px]"></div>
+            </div>
+        </main>
+
+        <!-- Product Not Found -->
+        <section id="productNotFound" class="max-w-2xl mx-auto px-6 py-20 text-center hidden">
+            <h2 class="text-4xl font-bold text-yellow-500 mb-6">🛒 No Products Available</h2>
+            <p class="text-secondary text-lg mb-6">This shop hasn't added any products yet. Check back later!</p>
+            <a href="index.html" class="custom-btn text-white px-8 py-4 rounded-lg inline-block font-medium shadow-lg">← Back to Marketplace</a>
+        </section>
+
+        <!-- Footer -->
+        <footer id="footer" class="footer-bg py-8 text-center mt-auto">
+            <span id="footerText" class="text-primary text-lg font-medium">
+                © <span id="year"></span> ShopRight Seller Store. All rights reserved.
+            </span>
+            <div class="mt-3 text-sm">
+                <a href="https://iyonicorp.com" target="_blank" rel="noopener noreferrer" class="flame-text-glow">
+                    Powered by iyonicorp
+                </a>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Style Selection Modal -->
+    <div id="styleModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md slide-down">
+            <div class="p-6 border-b border-gray-200">
+                <h3 class="text-2xl font-bold text-gray-800 mb-2">Choose Your Style</h3>
+                <p class="text-gray-600">Select a theme for your store</p>
+            </div>
+            <div class="p-6 space-y-4">
+                <div class="grid grid-cols-2 gap-4">
+                    <button class="theme-option p-4 rounded-lg border-2 border-gray-200 hover:border-indigo-500 transition" data-theme="theme-blue">
+                        <div class="w-full h-8 bg-gradient-to-r from-indigo-600 to-indigo-400 rounded mb-2"></div>
+                        <span class="text-sm font-medium">Classic Blue</span>
+                    </button>
+                    <button class="theme-option p-4 rounded-lg border-2 border-gray-200 hover:border-purple-500 transition" data-theme="theme-purple">
+                        <div class="w-full h-8 bg-gradient-to-r from-purple-600 to-purple-400 rounded mb-2"></div>
+                        <span class="text-sm font-medium">Royal Purple</span>
+                    </button>
+                    <button class="theme-option p-4 rounded-lg border-2 border-gray-200 hover:border-green-500 transition" data-theme="theme-green">
+                        <div class="w-full h-8 bg-gradient-to-r from-green-600 to-green-400 rounded mb-2"></div>
+                        <span class="text-sm font-medium">Fresh Green</span>
+                    </button>
+                    <button class="theme-option p-4 rounded-lg border-2 border-gray-200 hover:border-orange-500 transition" data-theme="theme-orange">
+                        <div class="w-full h-8 bg-gradient-to-r from-orange-600 to-orange-400 rounded mb-2"></div>
+                        <span class="text-sm font-medium">Warm Orange</span>
+                    </button>
+                    <button class="theme-option p-4 rounded-lg border-2 border-gray-200 hover:border-gray-500 transition" data-theme="theme-dark">
+                        <div class="w-full h-8 bg-gradient-to-r from-gray-800 to-gray-600 rounded mb-2"></div>
+                        <span class="text-sm font-medium">Dark Mode</span>
+                    </button>
+                </div>
+                
+                <div class="border-t pt-4">
+                    <label class="flex items-center gap-3 cursor-pointer">
+                        <input type="checkbox" id="hideHero" class="w-5 h-5 text-indigo-600 rounded">
+                        <span class="text-gray-700 font-medium">Hide Hero Section</span>
+                    </label>
+                    <p class="text-sm text-gray-500 mt-1">Focus entirely on your products</p>
+                </div>
+            </div>
+            <div class="p-6 border-t border-gray-200 flex gap-3">
+                <button id="cancelStyleBtn" class="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">Cancel</button>
+                <button id="applyStyleBtn" class="flex-1 custom-btn text-white px-4 py-2 rounded-lg font-medium">Apply Style</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customization Modal -->
+    <div id="customModal" class="hidden fixed top-24 left-1/2 -translate-x-1/2 z-50 bg-white p-6 shadow-2xl rounded-2xl w-[420px] max-w-full space-y-4">
+        <h3 class="text-xl font-bold text-indigo-700">Customize This Layout</h3>
+        <div class="space-y-2" id="modalContent"></div>
+        <div class="flex justify-between gap-3 pt-4">
+            <button id="cancelBtn" class="bg-gray-300 px-4 py-2 rounded-lg hover:bg-gray-400 w-1/2 transition">Cancel</button>
+            <button id="applyBtn" class="custom-btn text-white px-4 py-2 rounded-lg w-1/2">Apply</button>
+        </div>
+    </div>
+
+    <script>
+        // Global theme and layout settings
+        let currentTheme = 'theme-blue';
+        let heroHidden = false;
+
+        (async function () {
+            const { sellerParam, isOwner, API, theme } = window.__SHOP_DATA__ || {
+                sellerParam: 'demo-seller',
+                isOwner: true,
+                API: 'https://api.example.com',
+                theme: {}
+            };
+            
+            const set = (id, fn) => { const el = document.getElementById(id); if (el) fn(el); };
+
+            // Fix year display
+            const yearSpan = document.getElementById("year");
+            if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+
+            const resolveImage = (img) => {
+                if (!img || typeof img !== 'string') return '';
+                let val = img.trim().replace(/\\\\/g, '/').replace(/\\/g, '/');
+                // Absolute URLs or data URIs
+                if (/^(https?:)?\/\//i.test(val) || val.startsWith('data:')) return val;
+                // Strip any leading host part accidentally embedded
+                const uploadsIdx = val.toLowerCase().lastIndexOf('/uploads/');
+                const uploadsIdx2 = uploadsIdx === -1 ? val.toLowerCase().lastIndexOf('uploads/') : uploadsIdx;
+                if (uploadsIdx2 !== -1) {
+                    const clean = val.slice(uploadsIdx2 + (val.toLowerCase().startsWith('/uploads/') ? 9 : (val.toLowerCase().indexOf('uploads/') >= 0 ? val.toLowerCase().indexOf('uploads/') + 8 : 0)));
+                    return `${API}/uploads/${clean.replace(/^\/+/, '')}`;
+                }
+                // Starts with uploads path (with or without slash)
+                if (/^\/?uploads\//i.test(val)) {
+                    const clean = val.replace(/^\/?uploads\//i, '');
+                    return `${API}/uploads/${clean}`;
+                }
+                // Raw filename
+                return `${API}/uploads/${val.replace(/^\/+/, '')}`;
+            };
+
+            // Helper: currency symbol map
+            function getCurrencySymbol(code) {
+                const symbols = {
+                    USD: "$", EUR: "€", GBP: "£", NGN: "₦", INR: "₹", KES: "KSh", ZAR: "R"
+                };
+                return symbols[code] || code;
+            }
+
+            // Apply theme from settings
+            if (theme.selectedTheme) {
+                currentTheme = theme.selectedTheme;
+                document.body.className = `${currentTheme} min-h-screen flex flex-col`;
+            }
+            if (theme.heroHidden) {
+                heroHidden = theme.heroHidden;
+                document.getElementById('heroSection').style.display = heroHidden ? 'none' : 'block';
+            }
+
+            // Apply theme to DOM
+            set("shopLogo", el => {
+                el.src = resolveImage(theme.logo) || "https://placehold.co/50x50";
+                el.onerror = () => el.src = "https://placehold.co/50x50?text=Logo";
+            });
+
+            set("shopTitle", el => {
+                el.textContent = theme.title || sellerParam;
+            });
+
+            set("shopName", el => {
+                el.textContent = theme.name || "Welcome to Our Store";
+            });
+
+            set("shopBio", el => {
+                el.textContent = theme.bio || "Discover amazing products at great prices";
+            });
+
+            set("productHeader", el => {
+                el.textContent = theme.header || "Our Products";
+            });
+
+            set("heroImage", el => {
+                el.src = resolveImage(theme.heroImage) || "https://placehold.co/1200x400";
+            });
+
+            set("footerText", el => {
+                el.textContent = theme.footerText || `© ${new Date().getFullYear()} ShopRight Seller Store. All rights reserved.`;
+            });
+
+            // Show style button only for sellers/owners
+            if (isOwner) {
+                document.getElementById('styleBtn').classList.remove('hidden');
+            }
+
+            // Style button functionality
+            document.getElementById('styleBtn').addEventListener('click', () => {
+                document.getElementById('styleModal').classList.remove('hidden');
+                document.getElementById('hideHero').checked = heroHidden;
+            });
+
+            document.getElementById('cancelStyleBtn').addEventListener('click', () => {
+                document.getElementById('styleModal').classList.add('hidden');
+            });
+
+            // Theme selection
+            document.querySelectorAll('.theme-option').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.theme-option').forEach(b => b.classList.remove('ring-2', 'ring-offset-2', 'ring-indigo-500'));
+                    btn.classList.add('ring-2', 'ring-offset-2', 'ring-indigo-500');
+                    currentTheme = btn.dataset.theme;
+                });
+            });
+
+            document.getElementById('applyStyleBtn').addEventListener('click', async () => {
+                heroHidden = document.getElementById('hideHero').checked;
+                document.body.className = `${currentTheme} min-h-screen flex flex-col`;
+                document.getElementById('heroSection').style.display = heroHidden ? 'none' : 'block';
+                
+                // Save theme settings
+                await fetch(`${API}/update`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        collection: "users",
+                        query: { username: sellerParam },
+                        updates: { 
+                            customTheme: { 
+                                ...theme, 
+                                selectedTheme: currentTheme,
+                                heroHidden: heroHidden
+                            }
+                        }
+                    })
+                });
+
+                document.getElementById('styleModal').classList.add('hidden');
+            });
+
+            // 🔄 Fetch products from products.json
+            let products = [];
+            try {
+                const res = await fetch(`${API}/find?collection=products`);
+                if (res.ok) {
+                    const allProducts = await res.json();
+                    // Filter products by seller if sellerParam is provided
+                    if (sellerParam && sellerParam !== 'demo-seller') {
+                        products = allProducts.filter(p => p.seller === sellerParam);
+                    } else {
+                        products = allProducts;
+                    }
+                } else {
+                    throw new Error('Failed to fetch products from API');
+                }
+            } catch (error) {
+                console.warn('Could not fetch products from API, trying direct file:', error);
+                // Try direct file fetch as fallback
+                try {
+                    const res = await fetch('/products.json');
+                    if (res.ok) {
+                        const allProducts = await res.json();
+                        if (sellerParam && sellerParam !== 'demo-seller') {
+                            products = allProducts.filter(p => p.seller === sellerParam);
+                        } else {
+                            products = allProducts;
+                        }
+                    } else {
+                        throw new Error('Failed to fetch products.json');
+                    }
+                } catch (fileError) {
+                    console.warn('Could not fetch products.json, using demo products:', fileError);
+                    // Fallback to demo products
+                    products = [
+                        { id: 1, name: "Premium Headphones", price: 299.99, image: "https://placehold.co/300x300?text=Headphones", seller: sellerParam },
+                        { id: 2, name: "Smart Watch", price: 199.99, image: "https://placehold.co/300x300?text=Watch", seller: sellerParam },
+                        { id: 3, name: "Wireless Speaker", price: 149.99, image: "https://placehold.co/300x300?text=Speaker", seller: sellerParam },
+                        { id: 4, name: "Gaming Mouse", price: 79.99, image: "https://placehold.co/300x300?text=Mouse", seller: sellerParam },
+                        { id: 5, name: "Mechanical Keyboard", price: 159.99, image: "https://placehold.co/300x300?text=Keyboard", seller: sellerParam },
+                        { id: 6, name: "USB-C Hub", price: 59.99, image: "https://placehold.co/300x300?text=Hub", seller: sellerParam }
+                    ];
+                }
+            }
+
+            // Get seller info and currency
+            let storeCurrency = "USD";
+            try {
+                const sellerRes = await fetch(`${API}/find?collection=users&username=${sellerParam}`);
+                if (sellerRes.ok) {
+                    const users = await sellerRes.json();
+                    const seller = users.find(u => u.username === sellerParam);
+                    if (seller && seller.shopSettings && seller.shopSettings.storeCurrency) {
+                        storeCurrency = seller.shopSettings.storeCurrency;
+                    }
+                }
+            } catch (error) {
+                console.warn('Could not fetch seller info, using default currency');
+            }
+            const grid = document.getElementById("productGrid");
+            const notFound = document.getElementById("productNotFound");
+
+            // Clear grid before rendering
+            grid.innerHTML = "";
+
+            if (products.length > 0) {
+                grid.classList.remove("hidden");
+                notFound?.classList.add("hidden");
+
+                products.forEach(p => {
+                    const card = document.createElement("div");
+                    card.className = "product-card rounded-2xl shadow-lg cursor-pointer";
+
+                    // Get payment methods for this product's seller
+                    let paymentBadges = "";
+                    if (p.shopSettings && p.shopSettings.paymentSystems) {
+                        const paymentSystems = p.shopSettings.paymentSystems;
+                        const gatewayIcons = {
+                            paypal: "https://www.paypalobjects.com/webstatic/icon/pp258.png",
+                            paystack: "https://upload.wikimedia.org/wikipedia/commons/2/20/Paystack_Logo.png",
+                            flutterwave: "https://flutterwave.com/images/favicon.png",
+                            razorpay: "https://razorpay.com/favicon.png",
+                            square: "https://squareup.com/favicon.ico",
+                            shopright: "https://placehold.co/24x24?text=S"
+                        };
+                        
+                        paymentBadges = paymentSystems.map(system => `
+                            <img src="${gatewayIcons[system] || 'https://placehold.co/24x24'}"
+                                 alt="${system}"
+                                 title="${system.charAt(0).toUpperCase() + system.slice(1)}"
+                                 class="inline w-5 h-5 rounded border bg-white p-0.5" />
+                        `).join(" ");
+                    }
+
+                    card.innerHTML = `
+                        <div class="relative overflow-hidden rounded-t-2xl aspect-square">
+                            <img src="${p.image}" alt="${p.name}" class="product-image w-full h-full object-cover" />
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
+                            <div class="absolute top-4 right-4 custom-btn text-white rounded-full p-3 shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <h4 class="text-lg font-bold text-primary mb-2 truncate" title="${p.name}">${p.name}</h4>
+                            <p class="text-2xl font-bold text-secondary">${getCurrencySymbol(storeCurrency)}${p.price.toFixed(2)}</p>
+                            ${paymentBadges ? `<div class="flex flex-wrap gap-1 mt-2">${paymentBadges}</div>` : ""}
+                            <button class="custom-btn text-white w-full mt-4 py-2 rounded-lg font-medium text-sm">
+                                Add to Cart
+                            </button>
+                        </div>
+                    `;
+
+                    card.addEventListener('click', () => {
+                        window.location.href = `product-detail.html?id=${p.id}`;
+                    });
+
+                    grid.appendChild(card);
+                });
+
+            } else {
+                grid.classList.add("hidden");
+                notFound?.classList.remove("hidden");
+            }
+
+            // Customization tools for owners
+            if (!isOwner) return;
+
+            const btn = document.createElement("button");
+            btn.textContent = "✨ Customize";
+            btn.className = "fixed top-4 right-4 z-50 custom-btn text-white px-6 py-2 rounded-full shadow-lg font-medium";
+            btn.id = "customizeBtn";
+            document.body.appendChild(btn);
+
+            const customizableElements = {
+                "shopLogo": { label: "Logo (100×100px)", type: "image" },
+                "shopTitle": { label: "Store Title", type: "text-edit", key: "title" },
+                "heroImage": { label: "Hero Banner Image", type: "image" },
+                "shopName": { label: "Hero Title", type: "text-edit", key: "name" },
+                "shopBio": { label: "Hero Bio", type: "text-edit", key: "bio" },
+                "productHeader": { label: "Product Section", type: "text-edit", key: "header" },
+                "footerText": { label: "Footer Text", type: "text-edit", key: "footerText" }
+            };
+
+            let isCustomizing = false;
+            btn.addEventListener("click", () => {
+                isCustomizing = !isCustomizing;
+                btn.textContent = isCustomizing ? "❌ Close" : "✨ Customize";
+                document.getElementById("uploadHeroBtn")?.classList.toggle("hidden", !isCustomizing);
+                if (isCustomizing) {
+                    Object.keys(customizableElements).forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el && !el.dataset.bound) {
+                            el.dataset.bound = "true";
+                            el.classList.add("cursor-pointer", "ring-2", "ring-indigo-500", "ring-offset-2");
+                            el.addEventListener("click", openModal);
+                        }
+                    });
+                } else {
+                    removeHighlights();
+                }
+            });
+
+            document.getElementById("uploadHeroBtn")?.addEventListener("click", () => {
+                if (!isCustomizing) return;
+                openModal({ currentTarget: { id: "heroImage" }, stopPropagation: () => {} });
+            });
+
+            function openModal(e) {
+                e.stopPropagation();
+                const id = e.currentTarget.id;
+                const config = customizableElements[id];
+                if (!config) return;
+
+                const modal = document.getElementById("customModal");
+                const content = document.getElementById("modalContent");
+                modal.classList.remove("hidden");
+                content.innerHTML = `<label class="text-sm font-semibold block mb-1">${config.label}</label>`;
+
+                if (config.type === "image") {
+                    content.innerHTML += `
+                        <input type="text" id="customInputURL" placeholder="Image URL or filename" class="w-full px-3 py-2 border rounded-lg mb-2" />
+                        <input type="file" id="customInputFile" accept="image/*" class="w-full" />
+                    `;
+                } else if (config.type === "text-edit") {
+                    const el = document.getElementById(id);
+                    content.innerHTML += `
+                        <input type="text" id="customTextValue" value="${el.textContent}" class="w-full px-3 py-2 border rounded-lg mb-2" />
+                    `;
+                }
+
+                document.getElementById("applyBtn").onclick = () => applyChange(id, config);
+                document.getElementById("cancelBtn").onclick = () => modal.classList.add("hidden");
+            }
+
+            async function applyChange(id, config) {
+                const el = document.getElementById(id);
+                if (!el) return;
+
+                if (config.type === "image") {
+                    const url = document.getElementById("customInputURL").value.trim();
+                    const fileInput = document.getElementById("customInputFile");
+                    let image = url;
+
+                    if (!url && fileInput?.files?.[0]) {
+                        const file = fileInput.files[0];
+                        
+                        // Use proper server upload for hero image
+                        if (id === "heroImage") {
+                            try {
+                                const formData = new FormData();
+                                formData.append('heroImage', file);
+                                formData.append('username', sellerParam);
+                                formData.append('imageType', 'heroImage');
+
+                                const uploadResponse = await fetch(`${API}/upload-hero-image`, {
+                                    method: 'POST',
+                                    body: formData
+                                });
+
+                                if (uploadResponse.ok) {
+                                    const result = await uploadResponse.json();
+                                    image = result.imageUrl;
+                                } else {
+                                    throw new Error('Upload failed');
+                                }
+                            } catch (error) {
+                                console.error('Hero image upload failed:', error);
+                                alert('Failed to upload hero image. Please try again.');
+                                return;
+                            }
+                        } else {
+                            // For other images, convert to data URL
+                            image = await new Promise(res => {
+                                const reader = new FileReader();
+                                reader.onloadend = () => res(reader.result);
+                                reader.readAsDataURL(file);
+                            });
+                        }
+                    }
+
+                    el.src = resolveImage(image);
+                    if (id === "shopLogo") theme.logo = image;
+                    if (id === "heroImage") theme.heroImage = image;
+
+                } else if (config.type === "text-edit") {
+                    const text = document.getElementById("customTextValue").value;
+                    el.textContent = text;
+                    theme[config.key] = text;
+                }
+
+                // Only update theme if it's not a hero image (hero image is handled by upload endpoint)
+                if (!(config.type === "image" && id === "heroImage")) {
+                    await fetch(`${API}/update`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            collection: "users",
+                            query: { username: sellerParam },
+                            updates: { customTheme: theme }
+                        })
+                    });
+                }
+
+                document.getElementById("customModal").classList.add("hidden");
+            }
+
+            function removeHighlights() {
+                Object.keys(customizableElements).forEach(id => {
+                    const el = document.getElementById(id);
+                    if (el) {
+                        el.classList.remove("cursor-pointer", "ring-2", "ring-indigo-500", "ring-offset-2");
+                        el.removeEventListener("click", openModal);
+                        el.removeAttribute("data-bound");
+                    }
+                });
+                document.getElementById("uploadHeroBtn")?.classList.add("hidden");
+            }
+        })();
+
+(function renderAuthButtons() {
+    const user = JSON.parse(localStorage.getItem("user") || "null");
+
+    function populateContainer(container) {
+        container.innerHTML = "";
+
+        if (user) {
+            const actualSeller = window.__SHOP_DATA__?.actualSeller || user.username;
+            const dashboardLink = user.role?.startsWith("seller")
+                ? `dashboard.html?seller=${encodeURIComponent(actualSeller)}`
+                : `buyer-dashboard.html?seller=${encodeURIComponent(actualSeller)}`;
+
+            const dashboard = document.createElement("a");
+            dashboard.href = dashboardLink;
+            dashboard.className = "custom-btn text-white px-4 py-2 rounded-lg font-medium shadow-lg";
+            dashboard.textContent = "Dashboard";
+
+            const logout = document.createElement("button");
+            logout.className = "border-2 border-current text-current px-4 py-2 rounded-lg font-medium hover:bg-current hover:text-white transition";
+            logout.textContent = "Logout";
+            logout.onclick = () => {
+                localStorage.removeItem("user");
+                location.reload();
+            };
+
+            container.appendChild(dashboard);
+            container.appendChild(logout);
+        } else {
+            const signup = document.createElement("a");
+            signup.href = "signup.html";
+            signup.className = "custom-btn text-white px-4 py-2 rounded-lg font-medium shadow-lg";
+            signup.textContent = "Sign Up";
+
+            const login = document.createElement("a");
+            login.href = "login.html";
+            login.className = "border-2 border-current text-current px-4 py-2 rounded-lg font-medium hover:bg-current hover:text-white transition";
+            login.textContent = "Log In";
+
+            container.appendChild(signup);
+            container.appendChild(login);
+        }
+    }
+
+    // Populate both desktop and mobile containers
+    const desktopContainer = document.getElementById("shopAuthButtons");
+    const mobileContainer = document.getElementById("shopAuthButtonsMobile");
+    if (desktopContainer) populateContainer(desktopContainer);
+    if (mobileContainer) populateContainer(mobileContainer);
+})();
+
+// Mobile menu toggle
+document.getElementById("authMenuBtn")?.addEventListener("click", () => {
+    const dropdown = document.getElementById("authDropdown");
+    dropdown.classList.toggle("hidden");
+});
+  </script>

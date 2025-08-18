@@ -1,0 +1,1056 @@
+<!-- Vintage Layout -->
+<div id="layoutDefault" class="flex-grow flex flex-col bg-amber-50">
+  <!-- Header -->
+  <header id="headerSection" class="bg-gradient-to-r from-amber-100 to-yellow-100 shadow-lg sticky top-0 z-40 border-b-4 border-amber-800">
+    <div class="max-w-7xl mx-auto px-4 py-6 flex items-center justify-between border-2 border-transparent" id="boxHeader">
+      <div class="flex items-center gap-4">
+        <img id="shopLogo" src="https://placehold.co/50x50" class="w-12 h-12 rounded-full object-cover border-4 border-amber-800 shadow-lg" />
+        <span id="shopTitle" class="text-2xl font-bold text-amber-900 border-2 border-transparent vintage-font">loading...</span>
+      </div>
+      <div class="flex items-center gap-4">
+        <div id="shopAuthButtons" class="flex items-center gap-2 text-sm"></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Hero Section -->
+  <section id="heroSection" class="relative py-24 text-center text-white border-2 border-transparent vintage-hero">
+    <div id="heroOverlay" class="absolute inset-0 bg-gradient-to-b from-amber-900/40 via-yellow-900/30 to-amber-800/40 z-0"></div>
+    <img id="heroImage" class="absolute inset-0 w-full h-full object-cover z-[-1] border-2 border-transparent sepia-filter" />
+    <div class="relative z-10 max-w-4xl mx-auto px-4">
+      <h1 id="shopName" class="text-6xl font-extrabold mb-4 border-2 border-transparent vintage-title text-shadow-vintage">Loading Store...</h1>
+      <p id="shopBio" class="text-xl border-2 border-transparent vintage-subtitle mb-6">Please wait while we load the store.</p>
+      <div class="vintage-ornament mx-auto mb-4"></div>
+      <button id="uploadHeroBtn" class="hidden mt-6 inline-block bg-amber-800 hover:bg-amber-900 text-white font-bold px-8 py-3 rounded-lg shadow-lg transition-all duration-300 vintage-button">
+        📤 Upload Hero Image
+      </button>
+    </div>
+  </section>
+
+  <!-- Dynamic Category Sections Container -->
+  <div id="categorySectionsContainer">
+    <!-- Categories will be dynamically generated here -->
+  </div>
+
+  <!-- Product Not Found -->
+  <section id="productNotFound" class="max-w-2xl mx-auto px-6 py-20 text-center hidden">
+    <h2 class="text-4xl font-bold text-amber-800 mb-6 vintage-font">🏺 No Vintage Treasures Available</h2>
+    <p class="text-amber-700 mb-6 text-lg">This vintage shop hasn't added any treasures yet. Check back later for amazing finds!</p>
+    <a href="index.html" class="inline-block bg-amber-800 hover:bg-amber-900 text-white px-8 py-4 rounded-lg transition-all duration-300 vintage-button font-bold">← Back to Marketplace</a>
+  </section>
+
+  <!-- Footer -->
+  <footer id="footer" class="bg-gradient-to-r from-amber-100 to-yellow-100 border-t-4 border-amber-800 py-8 text-center mt-auto">
+    <div class="vintage-ornament-footer mx-auto mb-4"></div>
+    <span id="footerText" class="border-2 border-transparent text-amber-900 font-semibold text-lg vintage-font">
+      © <span id="year"></span> Vintage Emporium. All rights reserved.
+    </span>
+    <div class="mt-4 text-sm">
+      <a href="https://iyonicorp.com"
+         target="_blank"
+         rel="noopener noreferrer"
+         class="vintage-glow-text">
+        Crafted with care by iyonicorp
+      </a>
+    </div>
+  </footer>
+</div>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Crimson+Text:wght@400;600&display=swap');
+  
+  .vintage-font {
+    font-family: 'Playfair Display', serif;
+  }
+  
+  .vintage-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    letter-spacing: 2px;
+  }
+  
+  .vintage-subtitle {
+    font-family: 'Crimson Text', serif;
+    font-weight: 400;
+    font-style: italic;
+  }
+  
+  .vintage-category-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  }
+  
+  .vintage-category-subtitle {
+    font-family: 'Crimson Text', serif;
+    font-style: italic;
+  }
+  
+  .text-shadow-vintage {
+    text-shadow: 3px 3px 6px rgba(0,0,0,0.7), 1px 1px 2px rgba(0,0,0,0.5);
+  }
+  
+  .sepia-filter {
+    filter: sepia(30%) contrast(1.2) brightness(0.9);
+  }
+  
+  .vintage-ornament {
+    width: 100px;
+    height: 20px;
+    background: linear-gradient(90deg, transparent, #d97706, #92400e, #d97706, transparent);
+    position: relative;
+  }
+  
+  .vintage-ornament::before,
+  .vintage-ornament::after {
+    content: '❦';
+    position: absolute;
+    top: -8px;
+    color: #d97706;
+    font-size: 24px;
+  }
+  
+  .vintage-ornament::before {
+    left: -30px;
+  }
+  
+  .vintage-ornament::after {
+    right: -30px;
+  }
+  
+  .vintage-divider {
+    width: 150px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #fbbf24, #f59e0b, #fbbf24, transparent);
+    position: relative;
+  }
+  
+  .vintage-divider::before,
+  .vintage-divider::after {
+    content: '◆';
+    position: absolute;
+    top: -8px;
+    color: #fbbf24;
+    font-size: 16px;
+  }
+  
+  .vintage-divider::before {
+    left: -20px;
+  }
+  
+  .vintage-divider::after {
+    right: -20px;
+  }
+  
+  .vintage-ornament-footer {
+    width: 200px;
+    height: 30px;
+    background: linear-gradient(90deg, transparent, #d97706, #92400e, #d97706, transparent);
+    position: relative;
+  }
+  
+  .vintage-ornament-footer::before,
+  .vintage-ornament-footer::after {
+    content: '❦';
+    position: absolute;
+    top: -5px;
+    color: #d97706;
+    font-size: 30px;
+  }
+  
+  .vintage-ornament-footer::before {
+    left: -40px;
+  }
+  
+  .vintage-ornament-footer::after {
+    right: -40px;
+  }
+  
+  .vintage-pattern {
+    background-image: 
+      radial-gradient(circle at 25% 25%, #fbbf24 2px, transparent 2px),
+      radial-gradient(circle at 75% 75%, #f59e0b 2px, transparent 2px);
+    background-size: 50px 50px;
+    background-position: 0 0, 25px 25px;
+  }
+  
+  .vintage-button {
+    position: relative;
+    overflow: hidden;
+    font-family: 'Playfair Display', serif;
+    letter-spacing: 1px;
+    box-shadow: 0 4px 15px rgba(146, 64, 14, 0.3);
+  }
+  
+  .vintage-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
+  
+  .vintage-button:hover::before {
+    left: 100%;
+  }
+  
+  .vintage-glow-text {
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    color: #d97706;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    text-shadow: 0 0 5px rgba(217, 119, 6, 0.3);
+  }
+  
+  .vintage-glow-text:hover {
+    color: #92400e;
+    text-shadow: 0 0 10px rgba(217, 119, 6, 0.6), 0 0 20px rgba(217, 119, 6, 0.4);
+    text-decoration: underline;
+  }
+  
+  .vintage-category-hero {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .vintage-category-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      linear-gradient(45deg, transparent 30%, rgba(251, 191, 36, 0.1) 50%, transparent 70%),
+      linear-gradient(-45deg, transparent 30%, rgba(245, 158, 11, 0.1) 50%, transparent 70%);
+    z-index: 1;
+  }
+  
+  /* Vintage Product Cards */
+  .vintage-product-card {
+    background: linear-gradient(145deg, #fef3c7, #fde68a);
+    border: 3px solid #d97706;
+    border-radius: 15px;
+    box-shadow: 
+      0 8px 25px rgba(146, 64, 14, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transition: all 0.4s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .vintage-product-card::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #d97706, #f59e0b, #fbbf24, #f59e0b, #d97706);
+    border-radius: 18px;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  
+  .vintage-product-card:hover::before {
+    opacity: 1;
+  }
+  
+  .vintage-product-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 
+      0 15px 35px rgba(146, 64, 14, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  }
+  
+  .vintage-product-image {
+    border-radius: 12px 12px 0 0;
+    filter: sepia(20%) contrast(1.1);
+    transition: filter 0.3s ease;
+  }
+  
+  .vintage-product-card:hover .vintage-product-image {
+    filter: sepia(10%) contrast(1.2) brightness(1.1);
+  }
+  
+  .vintage-product-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    color: #92400e;
+    text-shadow: 1px 1px 2px rgba(146, 64, 14, 0.1);
+  }
+  
+  .vintage-product-price {
+    font-family: 'Crimson Text', serif;
+    font-weight: 600;
+    color: #92400e;
+    font-size: 1.25rem;
+  }
+  
+  .vintage-view-btn {
+    background: linear-gradient(145deg, #d97706, #92400e);
+    border: 2px solid #92400e;
+    color: white;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(146, 64, 14, 0.3);
+  }
+  
+  .vintage-view-btn:hover {
+    background: linear-gradient(145deg, #92400e, #78350f);
+    transform: scale(1.1) rotate(5deg);
+    box-shadow: 0 6px 18px rgba(146, 64, 14, 0.4);
+  }
+  
+  /* Pagination Styles */
+  .vintage-pagination-btn {
+    background: linear-gradient(145deg, #d97706, #92400e);
+    color: white;
+    border: 2px solid #92400e;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-family: 'Playfair Display', serif;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(146, 64, 14, 0.3);
+  }
+  
+  .vintage-pagination-btn:hover:not(:disabled) {
+    background: linear-gradient(145deg, #92400e, #78350f);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(146, 64, 14, 0.4);
+  }
+  
+  .vintage-pagination-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+</style>
+
+<!-- Modal -->
+<div id="customModal" class="hidden fixed top-24 left-1/2 -translate-x-1/2 z-50 bg-gradient-to-br from-amber-50 to-yellow-50 p-8 shadow-2xl rounded-2xl w-[480px] max-w-full space-y-6 border-4 border-amber-800">
+  <h3 class="text-2xl font-bold text-amber-900 vintage-font">Customize Your Vintage Shop</h3>
+  <div class="space-y-4" id="modalContent"></div>
+  <div class="flex justify-between gap-4 pt-6">
+    <button id="cancelBtn" class="bg-amber-200 hover:bg-amber-300 text-amber-900 px-6 py-3 rounded-lg font-semibold transition-all duration-300 w-1/2 vintage-font">Cancel</button>
+    <button id="applyBtn" class="bg-amber-800 hover:bg-amber-900 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 w-1/2 vintage-font">Apply Changes</button>
+  </div>
+</div>
+
+<!-- Script -->
+<script>
+(async function () {
+  const { sellerParam, isOwner, API, theme } = window.__SHOP_DATA__ || {};
+  const set = (id, fn) => { const el = document.getElementById(id); if (el) fn(el); };
+
+  // Fix year display
+  const yearSpan = document.getElementById("year");
+  if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+
+  const resolveImage = (img) => {
+    if (!img || typeof img !== 'string') return '';
+    let val = img.trim().replace(/\\\\/g, '/').replace(/\\/g, '/');
+    // Absolute URLs or data URIs
+    if (/^(https?:)?\/\//i.test(val) || val.startsWith('data:')) return val;
+    // Strip any leading host part accidentally embedded
+    const uploadsIdx = val.toLowerCase().lastIndexOf('/uploads/');
+    const uploadsIdx2 = uploadsIdx === -1 ? val.toLowerCase().lastIndexOf('uploads/') : uploadsIdx;
+    if (uploadsIdx2 !== -1) {
+      const clean = val.slice(uploadsIdx2 + (val.toLowerCase().startsWith('/uploads/') ? 9 : (val.toLowerCase().indexOf('uploads/') >= 0 ? val.toLowerCase().indexOf('uploads/') + 8 : 0)));
+      return `${API}/uploads/${clean.replace(/^\/+/, '')}`;
+    }
+    // Starts with uploads path (with or without slash)
+    if (/^\/?uploads\//i.test(val)) {
+      const clean = val.replace(/^\/?uploads\//i, '');
+      return `${API}/uploads/${clean}`;
+    }
+    // Raw filename
+    return `${API}/uploads/${val.replace(/^\/+/, '')}`;
+  };
+
+  // Helper: currency symbol map
+  function getCurrencySymbol(code) {
+    const symbols = {
+      USD: "$", EUR: "€", GBP: "£", NGN: "₦", INR: "₹", KES: "KSh", ZAR: "R"
+    };
+    return symbols[code] || code;
+  }
+
+  // Apply theme to DOM
+  set("shopLogo", el => {
+    el.src = resolveImage(theme.logo);
+    el.onerror = () => el.src = "https://placehold.co/50x50?text=Logo";
+  });
+
+  set("shopTitle", el => {
+    el.textContent = theme.title || sellerParam;
+    el.style.color = theme.titleColor || "";
+  });
+
+  set("shopName", el => {
+    el.textContent = theme.name || "";
+    el.style.color = theme.nameColor || "";
+  });
+
+  set("shopBio", el => {
+    el.textContent = theme.bio || "";
+    el.style.color = theme.bioColor || "";
+  });
+
+  set("heroImage", el => {
+    el.src = resolveImage(theme.heroImage);
+  });
+
+  set("headerSection", el => {
+    el.style.backgroundColor = theme.headerBg || "";
+  });
+
+  set("footer", el => {
+    el.style.backgroundColor = theme.footerBg || "";
+  });
+
+  set("footerText", el => {
+    el.textContent = theme.footerText || `© ${new Date().getFullYear()} Vintage Emporium. All rights reserved.`;
+    el.style.color = theme.footerColor || "";
+  });
+
+  // 🔄 Fetch products and seller
+  const res = await fetch(`${API}/find?collection=products&seller=${encodeURIComponent(sellerParam)}`);
+  const products = await res.json();
+
+  const sellerRes = await fetch(`${API}/find?collection=users&username=${encodeURIComponent(sellerParam)}`);
+  const [seller] = await sellerRes.json();
+  const shopSettings = seller?.shopSettings || {};
+  const storeCurrency = shopSettings?.storeCurrency || "USD";
+
+  // Get category heroes from theme or create defaults
+  const categoryHeroes = theme.categoryHeroes || {};
+  
+  // Group products by category
+  const productsByCategory = {};
+  products.forEach(product => {
+    const category = product.category || 'Uncategorized';
+    if (!productsByCategory[category]) {
+      productsByCategory[category] = [];
+    }
+    productsByCategory[category].push(product);
+  });
+
+  const categories = Object.keys(productsByCategory);
+  const container = document.getElementById("categorySectionsContainer");
+  const notFound = document.getElementById("productNotFound");
+
+  // Clear container
+  container.innerHTML = "";
+
+  if (categories.length > 0 && products.length > 0) {
+    notFound?.classList.add("hidden");
+
+    // Create sections for each category
+    categories.forEach((category, index) => {
+      const categoryProducts = productsByCategory[category];
+      const categoryId = `category_${category.replace(/\s+/g, '_').toLowerCase()}`;
+      
+      // Get category hero data
+      const categoryHero = categoryHeroes[category] || {
+        title: category,
+        subtitle: `Discover our ${category.toLowerCase()} collection`,
+        backgroundImage: '',
+        backgroundColor: `hsl(${45 + index * 20}, 70%, 50%)`
+      };
+
+      // Create category hero section
+      const heroSection = document.createElement("section");
+      heroSection.id = `categoryHero_${categoryId}`;
+      heroSection.className = "relative py-16 text-center text-white vintage-category-hero border-2 border-transparent";
+      heroSection.style.backgroundColor = categoryHero.backgroundColor || `hsl(${45 + index * 20}, 70%, 50%)`;
+      
+      if (categoryHero.backgroundImage) {
+        heroSection.style.backgroundImage = `url(${resolveImage(categoryHero.backgroundImage)})`;
+        heroSection.style.backgroundSize = 'cover';
+        heroSection.style.backgroundPosition = 'center';
+      }
+
+      heroSection.innerHTML = `
+        <div class="absolute inset-0 bg-gradient-to-r from-amber-800/60 to-yellow-800/60 z-0"></div>
+        <div class="absolute inset-0 vintage-pattern opacity-20"></div>
+        <img class="category-hero-bg-image absolute inset-0 w-full h-full object-cover z-[-1] sepia-filter ${categoryHero.backgroundImage ? '' : 'hidden'}" src="${resolveImage(categoryHero.backgroundImage)}" />
+        <div class="relative z-10 max-w-4xl mx-auto px-4">
+          <h2 class="category-hero-title text-4xl font-bold mb-4 vintage-category-title border-2 border-transparent">${categoryHero.title}</h2>
+          <p class="category-hero-subtitle text-lg vintage-category-subtitle border-2 border-transparent">${categoryHero.subtitle}</p>
+          <div class="vintage-divider mx-auto mt-4"></div>
+          <button class="upload-category-hero-btn hidden mt-6 inline-block bg-amber-800 hover:bg-amber-900 text-white font-bold px-6 py-2 rounded-lg shadow-lg transition-all duration-300 vintage-button">
+            📤 Upload Background Image
+          </button>
+        </div>
+      `;
+
+      container.appendChild(heroSection);
+
+      // Create product grid section
+      const gridSection = document.createElement("main");
+      gridSection.className = "max-w-7xl mx-auto px-4 py-8";
+      
+      const gridContainer = document.createElement("div");
+      gridContainer.id = `productGrid_${categoryId}`;
+      gridContainer.className = "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 min-h-[300px]";
+      
+      // Pagination state
+      const productsPerPage = 10;
+      let currentPage = 1;
+      const totalPages = Math.ceil(categoryProducts.length / productsPerPage);
+
+      function renderProducts(page = 1) {
+        gridContainer.innerHTML = "";
+        const startIndex = (page - 1) * productsPerPage;
+        const endIndex = startIndex + productsPerPage;
+        const pageProducts = categoryProducts.slice(startIndex, endIndex);
+
+        pageProducts.forEach(p => {
+          const imageSrc = resolveImage(p.image);
+          const card = document.createElement("a");
+          card.href = `product-detail.html?id=${p.id}`;
+          card.className = "vintage-product-card block";
+
+          card.innerHTML = `
+            <div class="relative w-full h-64 overflow-hidden">
+              ${p.image ? `
+                <img src="${imageSrc}" alt="${p.name}" class="vintage-product-image w-full h-full object-cover" />
+                <div class="absolute inset-0 bg-gradient-to-t from-amber-900/30 via-transparent to-transparent"></div>
+              ` : `
+                <div class="vintage-product-image w-full h-full bg-gradient-to-br from-amber-200 to-yellow-200 flex items-center justify-center">
+                  <span class="text-4xl text-amber-800">🏺</span>
+                </div>
+              `}
+              <button
+                class="vintage-view-btn absolute bottom-4 right-4"
+                aria-label="View ${p.name}"
+                title="View ${p.name}"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+              </button>
+            </div>
+            <div class="p-6">
+              <h4 class="vintage-product-title text-xl mb-2 truncate" title="${p.name}">${p.name}</h4>
+              <p class="vintage-product-price">${getCurrencySymbol(storeCurrency)}${p.price.toFixed(2)}</p>
+            </div>
+          `;
+
+          gridContainer.appendChild(card);
+        });
+      }
+
+      // Create pagination if needed
+      if (totalPages > 1) {
+        const paginationContainer = document.createElement("div");
+        paginationContainer.className = "flex justify-center items-center gap-4 mt-8";
+        
+        function updatePagination() {
+          paginationContainer.innerHTML = `
+            <button class="vintage-pagination-btn ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}"
+                    ${currentPage === 1 ? 'disabled' : ''}
+                    onclick="changePage(${currentPage - 1})">
+              ← Previous
+            </button>
+            <span class="text-amber-800 font-semibold vintage-font">
+              Page ${currentPage} of ${totalPages}
+            </span>
+            <button class="vintage-pagination-btn ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}"
+                    ${currentPage === totalPages ? 'disabled' : ''}
+                    onclick="changePage(${currentPage + 1})">
+              Next →
+            </button>
+          `;
+        }
+
+        window[`changePage_${categoryId}`] = function(page) {
+          if (page >= 1 && page <= totalPages) {
+            currentPage = page;
+            renderProducts(currentPage);
+            updatePagination();
+          }
+        };
+
+        // Make changePage function available globally for this category
+        const changePageScript = document.createElement("script");
+        changePageScript.textContent = `
+          function changePage(page) {
+            window['changePage_${categoryId}'](page);
+          }
+        `;
+        paginationContainer.appendChild(changePageScript);
+
+        gridSection.appendChild(gridContainer);
+        gridSection.appendChild(paginationContainer);
+        updatePagination();
+      } else {
+        gridSection.appendChild(gridContainer);
+      }
+
+      container.appendChild(gridSection);
+      renderProducts(1);
+    });
+
+  } else {
+    notFound?.classList.remove("hidden");
+  }
+
+  // Customization tools (unchanged functionality, vintage styling)
+  if (!isOwner) return;
+
+  const btn = document.createElement("button");
+  btn.textContent = "✨ Customize Vintage Shop";
+  btn.className = "fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-amber-800 hover:bg-amber-900 text-white px-8 py-3 rounded-full shadow-lg transition-all duration-300 vintage-font font-bold";
+  btn.id = "customizeBtn";
+  document.body.appendChild(btn);
+
+  const customizableElements = {
+    "shopLogo": { label: "Shop Logo (100×100px)", type: "image" },
+    "shopTitle": { label: "Store Title", type: "text-edit", key: "title" },
+    "boxHeader": { label: "Header Background", type: "background", key: "headerBg" },
+    "heroImage": { label: "Hero Banner Image", type: "image" },
+    "shopName": { label: "Hero Title", type: "text-edit", key: "name" },
+    "shopBio": { label: "Hero Bio", type: "text-edit", key: "bio" },
+    "footer": { label: "Footer Background", type: "background", key: "footerBg" },
+    "footerText": { label: "Footer Text", type: "text-edit", key: "footerText", colorKey: "footerColor" }
+  };
+
+  let isCustomizing = false;
+  btn.addEventListener("click", () => {
+    isCustomizing = !isCustomizing;
+    btn.textContent = isCustomizing ? "❌ Close Customization" : "✨ Customize Vintage Shop";
+    document.getElementById("uploadHeroBtn")?.classList.toggle("hidden", !isCustomizing);
+    
+    if (isCustomizing) {
+      // Add customization to main elements
+      Object.keys(customizableElements).forEach(id => {
+        const el = document.getElementById(id);
+        if (el && !el.dataset.bound) {
+          el.dataset.bound = "true";
+          el.classList.add("cursor-pointer", "border-4", "border-amber-600", "border-dashed");
+          el.addEventListener("click", openModal);
+        }
+      });
+      
+      // Add customization to category heroes
+      document.querySelectorAll('.vintage-category-hero').forEach(heroEl => {
+        if (!heroEl.dataset.bound) {
+          heroEl.dataset.bound = "true";
+          heroEl.classList.add("cursor-pointer", "border-4", "border-amber-600", "border-dashed");
+          heroEl.addEventListener("click", openCategoryModal);
+          
+          // Show upload buttons for category heroes
+          const uploadBtn = heroEl.querySelector('.upload-category-hero-btn');
+          if (uploadBtn) {
+            uploadBtn.classList.remove('hidden');
+            uploadBtn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              openCategoryModal({ currentTarget: heroEl, stopPropagation: () => {} });
+            });
+          }
+        }
+      });
+    } else {
+      removeHighlights();
+    }
+  });
+
+  document.getElementById("uploadHeroBtn")?.addEventListener("click", () => {
+    if (!isCustomizing) return;
+    openModal({ currentTarget: { id: "heroImage" }, stopPropagation: () => {} });
+  });
+
+  function openModal(e) {
+    e.stopPropagation();
+    const id = e.currentTarget.id;
+    const config = customizableElements[id];
+    if (!config) return;
+
+    const modal = document.getElementById("customModal");
+    const content = document.getElementById("modalContent");
+    modal.classList.remove("hidden");
+    content.innerHTML = `<label class="text-lg font-semibold block mb-2 text-amber-900 vintage-font">${config.label}</label>`;
+
+    if (config.type === "image") {
+      content.innerHTML += `
+        <input type="text" id="customInputURL" placeholder="Image URL or filename" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg mb-3 focus:border-amber-600 focus:outline-none" />
+        <input type="file" id="customInputFile" accept="image/*" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:border-amber-600 focus:outline-none" />
+        <div id="uploadProgress" class="hidden mt-2">
+          <div class="bg-amber-200 rounded-full h-2">
+            <div id="progressBar" class="bg-amber-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+          </div>
+          <p class="text-sm text-amber-700 mt-1">Uploading...</p>
+        </div>
+      `;
+    } else if (config.type === "text-edit") {
+      const el = document.getElementById(id);
+      content.innerHTML += `
+        <input type="text" id="customTextValue" value="${el.textContent}" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg mb-3 focus:border-amber-600 focus:outline-none" />
+        <input type="color" id="customInputColor" class="w-full h-12 border-2 border-amber-300 rounded-lg focus:border-amber-600 focus:outline-none" />
+      `;
+    } else if (config.type === "background") {
+      content.innerHTML += `<input type="color" id="customInputBg" class="w-full h-12 border-2 border-amber-300 rounded-lg focus:border-amber-600 focus:outline-none" />`;
+    }
+
+    document.getElementById("applyBtn").onclick = () => applyChange(id, config);
+    document.getElementById("cancelBtn").onclick = () => modal.classList.add("hidden");
+  }
+
+  function openCategoryModal(e) {
+    e.stopPropagation();
+    const heroEl = e.currentTarget;
+    const categoryId = heroEl.id.replace('categoryHero_', '');
+    const titleEl = heroEl.querySelector('.category-hero-title');
+    const subtitleEl = heroEl.querySelector('.category-hero-subtitle');
+    const bgImageEl = heroEl.querySelector('.category-hero-bg-image');
+    
+    // Extract category name from the ID
+    const categoryName = categoryId.replace('category_', '').replace(/_/g, ' ');
+    const currentCategoryHero = categoryHeroes[categoryName] || {};
+
+    const modal = document.getElementById("customModal");
+    const content = document.getElementById("modalContent");
+    modal.classList.remove("hidden");
+    content.innerHTML = `
+      <label class="text-lg font-semibold block mb-2 text-amber-900 vintage-font">Customize Category: ${categoryName}</label>
+      
+      <div class="space-y-4">
+        <div>
+          <label class="text-sm font-semibold block mb-1 text-amber-800">Category Title</label>
+          <input type="text" id="categoryTitle" value="${titleEl.textContent}" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:border-amber-600 focus:outline-none" />
+        </div>
+        
+        <div>
+          <label class="text-sm font-semibold block mb-1 text-amber-800">Category Subtitle</label>
+          <input type="text" id="categorySubtitle" value="${subtitleEl.textContent}" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:border-amber-600 focus:outline-none" />
+        </div>
+        
+        <div>
+          <label class="text-sm font-semibold block mb-1 text-amber-800">Background Image</label>
+          <input type="text" id="categoryBgURL" placeholder="Image URL or filename" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg mb-3 focus:border-amber-600 focus:outline-none" />
+          <input type="file" id="categoryBgFile" accept="image/*" class="w-full px-4 py-3 border-2 border-amber-300 rounded-lg focus:border-amber-600 focus:outline-none" />
+          <div id="categoryUploadProgress" class="hidden mt-2">
+            <div class="bg-amber-200 rounded-full h-2">
+              <div id="categoryProgressBar" class="bg-amber-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+            <p class="text-sm text-amber-700 mt-1">Uploading...</p>
+          </div>
+        </div>
+        
+        <div>
+          <label class="text-sm font-semibold block mb-1 text-amber-800">Background Color</label>
+          <input type="color" id="categoryBgColor" value="${currentCategoryHero.backgroundColor || '#d97706'}" class="w-full h-12 border-2 border-amber-300 rounded-lg focus:border-amber-600 focus:outline-none" />
+        </div>
+      </div>
+    `;
+
+    document.getElementById("applyBtn").onclick = () => applyCategoryChange(categoryName, heroEl);
+    document.getElementById("cancelBtn").onclick = () => modal.classList.add("hidden");
+  }
+
+  async function applyCategoryChange(categoryName, heroEl) {
+    const title = document.getElementById("categoryTitle").value;
+    const subtitle = document.getElementById("categorySubtitle").value;
+    const bgUrl = document.getElementById("categoryBgURL").value.trim();
+    const bgColor = document.getElementById("categoryBgColor").value;
+    const fileInput = document.getElementById("categoryBgFile");
+    
+    let backgroundImage = bgUrl;
+    
+    // Show progress bar
+    const progressDiv = document.getElementById("categoryUploadProgress");
+    const progressBar = document.getElementById("categoryProgressBar");
+    
+    if (!bgUrl && fileInput?.files?.[0]) {
+      const file = fileInput.files[0];
+      
+      // Show upload progress
+      if (progressDiv) {
+        progressDiv.classList.remove("hidden");
+        progressBar.style.width = "10%";
+      }
+
+      try {
+        // Use the new server endpoint for category hero uploads
+        const formData = new FormData();
+        formData.append("categoryImage", file);
+        formData.append("username", sellerParam);
+        formData.append("categoryName", categoryName);
+
+        progressBar.style.width = "50%";
+
+        const uploadResponse = await fetch(`${API}/upload-category-hero`, {
+          method: "POST",
+          body: formData
+        });
+
+        progressBar.style.width = "80%";
+
+        if (!uploadResponse.ok) {
+          throw new Error("Upload failed");
+        }
+
+        const uploadResult = await uploadResponse.json();
+        backgroundImage = uploadResult.imageUrl;
+        
+        progressBar.style.width = "100%";
+        setTimeout(() => {
+          if (progressDiv) progressDiv.classList.add("hidden");
+        }, 1000);
+
+      } catch (error) {
+        console.error("Category upload error:", error);
+        if (progressDiv) progressDiv.classList.add("hidden");
+        alert("Upload failed. Please try again.");
+        return;
+      }
+    }
+
+    // Update the category hero data
+    if (!theme.categoryHeroes) theme.categoryHeroes = {};
+    theme.categoryHeroes[categoryName] = {
+      title,
+      subtitle,
+      backgroundImage,
+      backgroundColor: bgColor
+    };
+
+    // Update the DOM elements
+    const titleEl = heroEl.querySelector('.category-hero-title');
+    const subtitleEl = heroEl.querySelector('.category-hero-subtitle');
+    const bgImageEl = heroEl.querySelector('.category-hero-bg-image');
+    
+    if (titleEl) titleEl.textContent = title;
+    if (subtitleEl) subtitleEl.textContent = subtitle;
+    
+    heroEl.style.backgroundColor = bgColor;
+    
+    if (backgroundImage) {
+      heroEl.style.backgroundImage = `url(${resolveImage(backgroundImage)})`;
+      heroEl.style.backgroundSize = 'cover';
+      heroEl.style.backgroundPosition = 'center';
+      if (bgImageEl) {
+        bgImageEl.src = resolveImage(backgroundImage);
+        bgImageEl.classList.remove('hidden');
+      }
+    } else {
+      heroEl.style.backgroundImage = '';
+      if (bgImageEl) {
+        bgImageEl.classList.add('hidden');
+      }
+    }
+
+    // Save to backend only if not using server upload (server already saved it)
+    if (bgUrl || !fileInput?.files?.[0]) {
+      await fetch(`${API}/update`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          collection: "users",
+          query: { username: sellerParam },
+          updates: { customTheme: theme }
+        })
+      });
+    }
+
+    document.getElementById("customModal").classList.add("hidden");
+  }
+
+  async function applyChange(id, config) {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    if (config.type === "image") {
+      const url = document.getElementById("customInputURL").value.trim();
+      const fileInput = document.getElementById("customInputFile");
+      let image = url;
+
+      // Show progress bar
+      const progressDiv = document.getElementById("uploadProgress");
+      const progressBar = document.getElementById("progressBar");
+      
+      if (!url && fileInput?.files?.[0]) {
+        const file = fileInput.files[0];
+        
+        // Show upload progress
+        if (progressDiv) {
+          progressDiv.classList.remove("hidden");
+          progressBar.style.width = "10%";
+        }
+
+        try {
+          // Use the new server endpoint for hero image uploads
+          if (id === "heroImage") {
+            const formData = new FormData();
+            formData.append("heroImage", file);
+            formData.append("username", sellerParam);
+            formData.append("imageType", "heroImage");
+
+            progressBar.style.width = "50%";
+
+            const uploadResponse = await fetch(`${API}/upload-hero-image`, {
+              method: "POST",
+              body: formData
+            });
+
+            progressBar.style.width = "80%";
+
+            if (!uploadResponse.ok) {
+              throw new Error("Upload failed");
+            }
+
+            const uploadResult = await uploadResponse.json();
+            image = uploadResult.imageUrl;
+            
+            progressBar.style.width = "100%";
+            setTimeout(() => {
+              if (progressDiv) progressDiv.classList.add("hidden");
+            }, 1000);
+
+          } else {
+            // For other images, use base64 encoding
+            image = await new Promise(res => {
+              const reader = new FileReader();
+              reader.onloadend = () => res(reader.result);
+              reader.readAsDataURL(file);
+            });
+          }
+        } catch (error) {
+          console.error("Upload error:", error);
+          if (progressDiv) progressDiv.classList.add("hidden");
+          alert("Upload failed. Please try again.");
+          return;
+        }
+      }
+
+      const stored = image;
+      el.src = resolveImage(stored);
+
+      if (id === "shopLogo") theme.logo = stored;
+      if (id === "heroImage") theme.heroImage = stored;
+
+    } else if (config.type === "text-edit") {
+      const color = document.getElementById("customInputColor").value;
+      const text = document.getElementById("customTextValue").value;
+      el.textContent = text;
+      el.style.color = color;
+      theme[config.key] = text;
+      theme[config.colorKey || `${config.key}Color`] = color;
+
+    } else if (config.type === "background") {
+      const bg = document.getElementById("customInputBg").value;
+      el.style.backgroundColor = bg;
+      theme[config.key] = bg;
+    }
+
+    // Only update theme if it's not a hero image (already updated by server)
+    if (id !== "heroImage") {
+      await fetch(`${API}/update`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          collection: "users",
+          query: { username: sellerParam },
+          updates: { customTheme: theme }
+        })
+      });
+    }
+
+    document.getElementById("customModal").classList.add("hidden");
+  }
+
+  function removeHighlights() {
+    Object.keys(customizableElements).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.classList.remove("cursor-pointer", "border-4", "border-amber-600", "border-dashed");
+        el.removeEventListener("click", openModal);
+        el.removeAttribute("data-bound");
+      }
+    });
+    
+    // Remove highlights from category heroes
+    document.querySelectorAll('.vintage-category-hero').forEach(heroEl => {
+      heroEl.classList.remove("cursor-pointer", "border-4", "border-amber-600", "border-dashed");
+      heroEl.removeEventListener("click", openCategoryModal);
+      heroEl.removeAttribute("data-bound");
+      
+      // Hide upload buttons for category heroes
+      const uploadBtn = heroEl.querySelector('.upload-category-hero-btn');
+      if (uploadBtn) {
+        uploadBtn.classList.add('hidden');
+      }
+    });
+    
+    document.getElementById("uploadHeroBtn")?.classList.add("hidden");
+  }
+})();
+
+// 🔐 Auth Buttons: login/signup vs dashboard/logout
+(function renderAuthButtons() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const container = document.getElementById("shopAuthButtons");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  // Get the real seller (not the preview one)
+  const actualSeller =
+    (window.__SHOP_DATA__ && window.__SHOP_DATA__.actualSeller) ||
+    new URLSearchParams(window.location.search).get("seller");
+  if (user) {
+    const dashboard = document.createElement("a");
+    const actualSeller = window.__SHOP_DATA__?.actualSeller || user.username;
+
+    if (user.role && user.role.startsWith("seller")) {
+      dashboard.href = `dashboard.html?seller=${encodeURIComponent(actualSeller)}`;
+    } else {
+      dashboard.href = `buyer-dashboard.html?seller=${encodeURIComponent(actualSeller)}`;
+    }
+    dashboard.className = "px-4 py-2 rounded-lg bg-amber-800 hover:bg-amber-900 text-white transition-all duration-300 vintage-font font-semibold";
+    dashboard.textContent = "Dashboard";
+
+    const logout = document.createElement("button");
+    logout.className = "px-4 py-2 rounded-lg border-2 border-amber-800 text-amber-800 hover:bg-amber-100 transition-all duration-300 vintage-font font-semibold";
+    logout.textContent = "Logout";
+    logout.onclick = () => {
+      localStorage.removeItem("user");
+      location.reload();
+    };
+
+    container.appendChild(dashboard);
+    container.appendChild(logout);
+  } else {
+    const signup = document.createElement("a");
+    signup.href = actualSeller ? `signup.html?seller=${actualSeller}` : "signup.html";
+    signup.className = "px-4 py-2 rounded-lg bg-amber-800 hover:bg-amber-900 text-white transition-all duration-300 vintage-font font-semibold";
+    signup.textContent = "Sign Up";
+
+    const login = document.createElement("a");
+    login.href = actualSeller ? `login.html?seller=${actualSeller}` : "login.html";
+    login.className = "px-4 py-2 rounded-lg border-2 border-amber-800 text-amber-800 hover:bg-amber-100 transition-all duration-300 vintage-font font-semibold";
+    login.textContent = "Log In";
+
+    container.appendChild(signup);
+    container.appendChild(login);
+  }
+})();
+
+
+</script>

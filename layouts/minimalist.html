@@ -1,0 +1,2172 @@
+<!-- Minimalist Shop Layout -->
+<div id="layoutDefault" class="flex-grow flex flex-col min-h-screen bg-gray-50">
+<!-- Header -->
+<header id="headerSection" class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50 border-b border-gray-100 transition-all duration-300">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-4" id="boxHeader">
+    
+    <!-- Shop Title -->
+    <div class="flex items-center">
+      <h1 id="shopTitle" class="text-lg sm:text-2xl font-light tracking-[0.15em] text-gray-800 animated-title whitespace-nowrap overflow-hidden text-ellipsis">
+        Loading...
+      </h1>
+    </div>
+
+    <!-- Auth Dropdown -->
+    <div class="relative">
+      <button id="authToggleBtn" class="p-2 sm:px-4 sm:py-2 rounded-full bg-gray-800 text-white hover:bg-gray-900 transition-all flex items-center gap-2">
+        <span class="hidden sm:inline">Account</span>
+        <svg class="w-4 h-4 transition-transform duration-200" id="authToggleIcon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </button>
+
+      <!-- Dropdown Menu -->
+      <div id="authDropdown" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-100 overflow-hidden">
+        <div id="shopAuthButtons" class="flex flex-col"></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+ 
+<!-- Product Tags Navbar -->
+<nav id="tagsNavbar" class="bg-gradient-to-r from-white/90 to-gray-50/90 backdrop-blur-md border-b border-gray-200 py-4 sticky top-[73px] z-40 shadow-sm">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex items-center gap-3 overflow-x-auto scrollbar-hide pb-2" id="tagsContainer">
+      <!-- Navbar content will be loaded here -->
+    </div>
+  </div>
+</nav>
+
+<!-- Primary Tags Container -->
+<div id="primaryTagsContainer" class="bg-gradient-to-r from-gray-50/80 to-white/80 backdrop-blur-sm border-b border-gray-200 py-4 hidden transition-all duration-300 ease-in-out transform" style="opacity: 0; maxHeight: 0;">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex flex-wrap items-center gap-3 overflow-x-auto scrollbar-hide pb-2" id="primaryTagsList">
+      <!-- Primary tags will be loaded here -->
+    </div>
+  </div>
+</div>
+<!-- Sub Tags Container -->
+<nav id="subTagsContainer" class="bg-gradient-to-r from-gray-50/80 to-white/80 backdrop-blur-sm border-b border-gray-200 py-4 hidden transition-all duration-300 ease-in-out transform" style="opacity: 0; maxHeight: 0;">
+  <div class="max-w-7xl mx-auto px-6">
+    <div class="flex flex-wrap items-center gap-3 overflow-x-auto scrollbar-hide pb-2" id="subTagsList">
+      <!-- Sub tags will be loaded here -->
+    </div>
+  </div>
+</nav>
+<!-- Dynamic Sections Container -->
+<div id="dynamicSections" class="max-w-7xl mx-auto px-6 mb-12">
+  <!-- Dynamic sections will be rendered here -->
+</div>
+<!-- Products Section -->
+<main class="max-w-7xl mx-auto px-6 py-12 flex-grow">
+  <div class="mb-8">
+    <h2 id="productHeader" class="text-3xl font-light text-gray-800 mb-2">All products</h2>
+    <div class="w-16 h-px bg-gray-300"></div>
+  </div>
+  
+  <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+    <!-- Products will be loaded here -->
+  </div>
+
+  <!-- No Products Message -->
+  <div id="noProducts" class="hidden text-center py-20">
+    <div class="max-w-md mx-auto">
+      <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
+        <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2M4 13h2m13-8v2a1 1 0 01-1 1H7a1 1 0 01-1-1V5m16 0h-2M4 5h2"></path>
+        </svg>
+      </div>
+      <h3 class="text-lg font-light text-gray-600 mb-2">No products found</h3>
+      <p class="text-sm text-gray-400">Try selecting a different category or check back later</p>
+    </div>
+  </div>
+</main>
+
+
+
+<!-- Footer -->
+<footer id="footer" class="bg-white border-t border-gray-100 mt-auto">
+  <div class="max-w-7xl mx-auto px-6 py-10">
+    <!-- Top section -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-8 text-center md:text-left">
+      <!-- Logo & Title -->
+      <div class="flex flex-col sm:flex-row items-center sm:items-start gap-4">
+        <img id="footerLogo" src="https://placehold.co/100x100"
+             class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full shadow-sm border border-gray-200 object-cover" />
+        <div>
+          <h4 id="footerTitle" class="text-lg md:text-xl font-light text-gray-800">Store Name</h4>
+          <p class="text-sm md:text-base text-gray-500">Minimalist design, maximum impact</p>
+        </div>
+      </div>
+
+      <!-- Social Links -->
+      <div id="socialLinksSection" class="flex flex-col items-center md:items-end hidden">
+        <h5 class="text-sm font-medium text-gray-600 mb-2">Connect With Us</h5>
+        <div id="socialLinks" class="flex gap-3 flex-wrap justify-center md:justify-end">
+          <!-- Social links will be loaded here -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Links -->
+    <div id="footerLinksSection" class="border-t border-gray-100 pt-6">
+      <div id="footerLinks" class="flex flex-wrap justify-center gap-4 sm:gap-6 mb-6 text-sm text-gray-600">
+        <!-- Footer links will be loaded here -->
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="text-center border-t border-gray-100 pt-4 px-4">
+      <p class="text-sm text-gray-400">
+        © <span id="year"></span> <span id="footerStoreName">Store Name</span>. All rights reserved.
+      </p>
+      <div class="mt-1 text-xs">
+        <a href="https://iyonicorp.com" target="_blank" rel="noopener noreferrer" class="flame-text-glow">
+          Powered by iyonicorp
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</div>
+
+<!-- Section Creation Modal -->
+<div id="sectionModal" class="hidden fixed inset-0 z-50 bg-black/20 backdrop-blur-sm flex items-center justify-center p-4">
+  <!-- Outer scroll container for all screens -->
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+    <div class="p-8 border-b border-gray-100">
+      <h3 class="text-2xl font-light text-gray-800">Create New Section</h3>
+    </div>
+    
+    <div class="p-8">
+      <div class="space-y-6">
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-2">Section Title</label>
+          <input type="text" id="sectionTitle" placeholder="e.g., Featured Products, Best Sellers" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-300 focus:border-transparent">
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-2">Section Type</label>
+          <select id="sectionType" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-300 focus:border-transparent">
+            <option value="">Select section type</option>
+            <option value="category">Category Products</option>
+            <option value="featured">Featured Products</option>
+          </select>
+        </div>
+        
+        <div id="sectionOptions" class="hidden space-y-4">
+          <!-- Dynamic options based on section type -->
+        </div>
+        
+        <!-- Section Settings -->
+        <div class="pt-6 border-t border-gray-100">
+          <h4 class="text-sm font-medium text-gray-600 mb-4">Display Settings</h4>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium text-gray-600 mb-2">Columns on Small Screens</label>
+              <select id="smallColumns" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-300 focus:border-transparent">
+                <option value="1">1 Column</option>
+                <option value="2" selected>2 Columns</option>
+                <option value="3">3 Columns</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-600 mb-2">Columns on Large Screens</label>
+              <select id="largeColumns" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-300 focus:border-transparent">
+                <option value="3">3 Columns</option>
+                <option value="4">4 Columns</option>
+                <option value="5" selected>5 Columns</option>
+                <option value="6">6 Columns</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-600 mb-2">Products Per Page</label>
+              <input type="number" id="productsPerPage" min="1" max="50" value="10" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-300 focus:border-transparent">
+            </div>
+            <div class="flex items-center">
+              <input type="checkbox" id="showPagination" checked class="mr-2 h-5 w-5 text-gray-800 rounded focus:ring-gray-300">
+              <label class="block text-sm font-medium text-gray-600">Enable Pagination</label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="p-8 border-t border-gray-100 flex flex-wrap justify-end gap-4">
+      <button id="cancelSection" class="px-6 py-3 text-gray-600 hover:text-gray-800 transition-colors">
+        Cancel
+      </button>
+      <button id="saveSection" class="px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors">
+        Create Section
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Product Selection Modal -->
+<div id="productSearchModal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
+    <div class="p-6 border-b bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+      <h3 class="text-xl font-bold">Select Featured Products</h3>
+    </div>
+    <div class="p-6 overflow-y-auto flex-1">
+      <div class="mb-4">
+        <input type="text" id="productSearchInput" placeholder="Search products by name or tag..." class="luxury-input w-full">
+      </div>
+      <div class="max-h-96 overflow-y-auto">
+        <div id="searchProductsList" class="space-y-3">
+          <!-- Products will be loaded here -->
+        </div>
+      </div>
+      <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+        <p class="text-sm text-gray-600">Selected: <span id="selectedCount">0</span> products</p>
+      </div>
+    </div>
+    <div class="p-6 border-t bg-gray-50 flex flex-wrap justify-end gap-4">
+      <button id="cancelProductSearch" class="luxury-btn-secondary px-6 py-2">Cancel</button>
+      <button id="confirmProductSelection" class="luxury-btn-primary px-6 py-2">Confirm Selection</button>
+    </div>
+  </div>
+</div>
+
+<!-- Footer Customization Modal -->
+<div id="footerModal" class="hidden fixed inset-0 z-50 bg-black/40 backdrop-blur-md flex items-center justify-center p-4 transition-opacity duration-300">
+  <div class="bg-white rounded-3xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-scaleIn">
+    <!-- Header -->
+    <div class="p-6 sm:p-8 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+      <h3 class="text-xl sm:text-2xl font-semibold text-gray-800">Customize Footer</h3>
+    </div>
+
+    <!-- Scrollable Content -->
+    <div class="p-6 sm:p-8 overflow-y-auto flex-1 space-y-12">
+      <!-- Social Links -->
+      <div>
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <h4 class="text-lg font-medium text-gray-700">Social Links</h4>
+          <button id="addSocialBtn" class="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 shadow-sm transition">
+            + Add Social Link
+          </button>
+        </div>
+        <div id="socialLinksList" class="space-y-4"></div>
+      </div>
+
+      <!-- Footer Links -->
+      <div>
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          <h4 class="text-lg font-medium text-gray-700">Footer Links</h4>
+          <button id="addFooterLinkBtn" class="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 shadow-sm transition">
+            + Add Footer Link
+          </button>
+        </div>
+        <div id="footerLinksList" class="space-y-4"></div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="p-6 sm:p-8 border-t border-gray-100 bg-gray-50 flex flex-wrap justify-end gap-4">
+      <button id="closeFooterModal" class="px-6 py-3 text-gray-600 hover:text-gray-800 rounded-lg transition-colors">
+        Close
+      </button>
+      <button id="saveFooterSettings" class="px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-900 shadow-sm transition">
+        Save Changes
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Footer Link Content Modal -->
+<div id="footerLinkContentModal" class="hidden fixed inset-0 z-50 bg-black/40 backdrop-blur-md flex items-center justify-center p-4 transition-opacity duration-300">
+  <div class="bg-white rounded-3xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden animate-scaleIn">
+    <div class="p-6 sm:p-8 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+      <h3 class="text-lg sm:text-xl font-semibold text-gray-800" id="footerLinkContentTitle">Edit Footer Link</h3>
+    </div>
+
+    <div class="p-6 sm:p-8 overflow-y-auto flex-1 space-y-6">
+      <div>
+        <label class="block text-sm font-medium text-gray-600 mb-2">Link Title</label>
+        <input type="text" id="footerLinkTitle" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-300 focus:border-transparent" placeholder="e.g., Privacy Policy">
+      </div>
+      <div>
+        <label class="block text-sm font-medium text-gray-600 mb-2">Content</label>
+        <textarea id="footerLinkContent" class="w-full px-4 py-3 border border-gray-200 rounded-lg h-64 focus:ring-2 focus:ring-gray-300 focus:border-transparent" placeholder="Enter the content..."></textarea>
+      </div>
+    </div>
+
+    <div class="p-6 sm:p-8 border-t border-gray-100 bg-gray-50 flex flex-wrap justify-end gap-4">
+      <button id="cancelFooterLinkContent" class="px-6 py-3 text-gray-600 hover:text-gray-800 rounded-lg transition-colors">
+        Cancel
+      </button>
+      <button id="saveFooterLinkContent" class="px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-900 shadow-sm transition">
+        Save
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Footer Link Display Modal -->
+<div id="footerLinkDisplayModal" class="hidden fixed inset-0 z-50 bg-black/40 backdrop-blur-md flex items-center justify-center p-4 transition-opacity duration-300">
+  <div class="bg-white rounded-3xl shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden animate-scaleIn">
+    <div class="p-6 sm:p-8 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+      <h3 class="text-lg sm:text-xl font-semibold text-gray-800" id="footerLinkDisplayTitle">Footer Link</h3>
+    </div>
+
+    <div class="p-6 sm:p-8 overflow-y-auto flex-1">
+      <div id="footerLinkDisplayContent" class="prose max-w-none text-gray-600"></div>
+    </div>
+
+    <div class="p-6 sm:p-8 border-t border-gray-100 bg-gray-50 flex justify-end">
+      <button id="closeFooterLinkDisplay" class="px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-900 shadow-sm transition">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Extra Styles for Animation -->
+<style>
+@keyframes scaleIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+.animate-scaleIn {
+  animation: scaleIn 0.25s ease-out;
+}
+</style>
+
+<!-- Custom Modal for Element Customization -->
+<div id="customModal" class="hidden fixed top-24 left-1/2 -translate-x-1/2 z-50 bg-white p-8 shadow-2xl rounded-2xl w-[420px] max-w-full">
+  <h3 class="text-lg font-medium text-gray-800 mb-6">Customize Element</h3>
+  <div class="space-y-4" id="modalContent"></div>
+  <div class="flex justify-between gap-4 pt-6">
+    <button id="cancelBtn" class="px-6 py-3 text-gray-600 hover:text-gray-800 transition-colors">Cancel</button>
+    <button id="applyBtn" class="px-6 py-3 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-colors">Apply</button>
+  </div>
+</div>
+
+<style>
+  .animated-title {
+  animation: fadeInTitle 0.5s ease-in-out forwards;
+}
+@keyframes fadeInTitle {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+  /* Animated title */
+  .animated-title {
+    background: linear-gradient(-45deg, #374151, #6b7280, #374151, #9ca3af);
+    background-size: 400% 400%;
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientShift 4s ease-in-out infinite;
+  }
+
+  @keyframes gradientShift {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  /* Tag filters */
+  .tag-filter {
+    background: #f8fafc;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border-radius: 50px;
+    padding: 8px 20px;
+    font-weight: 500;
+    font-size: 0.875rem;
+    cursor: pointer;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  }
+
+  .tag-filter:hover {
+    background: #f1f5f9;
+    color: #475569;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.08);
+    transform: translateY(-2px);
+  }
+
+  .tag-filter.active {
+    background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
+    color: white;
+    border-color: #374151;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+  }
+
+  .tag-filter::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  .tag-filter:hover::before {
+    left: 100%;
+  }
+
+  /* Cool effect for sub tags */
+  #subTagsContainer {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  }
+
+  /* Scrollbar hide */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Product cards */
+  .product-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  .product-image {
+    transition: transform 0.5s ease;
+  }
+
+  .product-card:hover .product-image {
+    transform: scale(1.02);
+  }
+
+  /* Auth buttons */
+  .auth-btn {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+
+  .auth-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+  }
+
+  .auth-btn:hover::before {
+    left: 100%;
+  }
+
+  /* Flame text glow animation */
+  @keyframes flameGlowShift {
+    0% {
+      color: #6b7280;
+      text-shadow: 0 0 2px #6b7280;
+    }
+    50% {
+      color: #9ca3af;
+      text-shadow: 0 0 4px #9ca3af, 0 0 8px #9ca3af;
+    }
+    100% {
+      color: #374151;
+      text-shadow: 0 0 6px #374151, 0 0 12px #374151;
+    }
+  }
+
+  .flame-text-glow {
+    font-weight: 500;
+    display: inline-block;
+    animation: flameGlowShift 3s ease-in-out infinite alternate;
+    transition: text-shadow 0.3s ease;
+  }
+
+  .flame-text-glow:hover {
+    text-decoration: underline;
+  }
+
+  /* Section styles */
+  .section-container {
+    position: relative;
+    margin-bottom: 4rem;
+  }
+
+  .section-remove-btn {
+    position: absolute;
+    top: -12px;
+    right: -12px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background: #ef4444;
+    color: white;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    items-center: center;
+    justify-content: center;
+    z-index: 10;
+  }
+
+  .section-container:hover .section-remove-btn {
+    opacity: 1;
+  }
+
+  .blank-section-tile {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border: 2px dashed #cbd5e1;
+    transition: all 0.3s ease;
+  }
+
+  .blank-section-tile:hover {
+    border-color: #374151;
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  }
+
+  .social-link {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #64748b;
+    padding: 12px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+  }
+
+  .social-link:hover {
+    background: #374151;
+    color: white;
+    border-color: #374151;
+    transform: translateY(-2px);
+  }
+
+  .footer-display-link {
+    color: #64748b;
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    font-weight: 400;
+  }
+
+  .footer-display-link:hover {
+    background-color: #f8fafc;
+    color: #374151;
+  }
+
+  /* Product checkbox items */
+  .product-checkbox-item {
+    transition: background-color 0.2s;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+  }
+
+  .product-checkbox-item:hover {
+    background-color: #f8fafc;
+  }
+
+  /* Custom scrollbar for modals */
+  .modal-scroll::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .modal-scroll::-webkit-scrollbar-track {
+    background: #f8fafc;
+    border-radius: 3px;
+  }
+
+  .modal-scroll::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+  }
+
+  .modal-scroll::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+</style>
+
+<script>
+(async function() {
+  const { sellerParam, isOwner, API, theme } = window.__SHOP_DATA__ || {};
+  let socialLinks = [];
+  let footerLinks = [];
+  let dynamicSections = [];
+  let allProducts = [];
+  let allTags = new Set();
+  let activeTag = 'all';
+  let currentEditingFooterLinkIndex = null;
+  let selectedProductIds = new Set();
+
+  // Set year
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  const resolveImage = (img) => {
+    if (!img) return "";
+    if (img.startsWith("http") || img.startsWith("data:")) return img;
+    if (img.startsWith("/uploads/")) return `${API}${img}`;
+    return `${API}/uploads/${img}`;
+  };
+
+  // Apply theme
+  const set = (id, fn) => { const el = document.getElementById(id); if (el) fn(el); };
+
+  set("shopTitle", el => {
+    el.textContent = theme.name || theme.title || sellerParam;
+    el.style.color = theme.titleColor || "";
+  });
+
+  set("footerLogo", el => {
+    el.src = resolveImage(theme.logo);
+    el.onerror = () => el.src = "https://placehold.co/60x60?text=Logo";
+  });
+
+  set("footerTitle", el => {
+    el.textContent = theme.name || theme.title || sellerParam;
+  });
+
+  set("footerStoreName", el => {
+    el.textContent = theme.name || theme.title || sellerParam;
+  });
+
+  set("productHeader", el => {
+    el.textContent = theme.header || "Our Collection";
+    el.style.color = theme.headerColor || "";
+  });
+
+  // Load seller data
+  const sellerRes = await fetch(`${API}/find?collection=users&username=${encodeURIComponent(sellerParam)}`);
+  const [seller] = await sellerRes.json();
+  const shopSettings = seller?.shopSettings || {};
+  const storeCurrency = shopSettings?.storeCurrency || "USD";
+  
+  socialLinks = shopSettings.socialLinks || [];
+  footerLinks = shopSettings.footerLinks || [];
+  dynamicSections = shopSettings.dynamicSections || [];
+
+  // Helper: currency symbol map
+  function getCurrencySymbol(code) {
+    const symbols = {
+      USD: "$", EUR: "€", GBP: "£", NGN: "₦", INR: "₹", KES: "KSh", ZAR: "R"
+    };
+    return symbols[code] || code;
+  }
+
+  // Load products and extract tags
+  async function loadProducts() {
+    try {
+      // Add tag data to window object
+      window.tagData = {
+        apparel: {
+          primary: ["men clothing", "women clothing", "kids clothing", "unisex", "seasonal", "others"],
+          sub: {
+            "men clothing": ["shirts", "pants", "jackets", "suits", "t-shirts", "hoodies", "shorts", "coats"],
+            "women clothing": ["dresses", "tops", "skirts", "jeans", "leggings", "blouses", "coats", "tunics"],
+            "kids clothing": ["baby wear", "uniforms", "casuals", "onesies", "shorts", "socks"],
+            "unisex": ["tracksuits", "t-shirts", "jackets", "overalls"],
+            "seasonal": ["winter wear", "raincoats", "swimwear"],
+            "others": []
+          }
+        },
+        shoes: {
+          primary: ["men shoes", "women shoes", "sports shoes", "formal", "casual", "others"],
+          sub: {
+            "men shoes": ["formal", "casual", "boots", "loafers", "sneakers"],
+            "women shoes": ["heels", "sandals", "flats", "sneakers", "wedges"],
+            "sports shoes": ["running", "basketball", "cleats", "trainers", "tennis"],
+            "formal": ["oxfords", "derbies", "monk straps"],
+            "casual": ["flip flops", "canvas", "slip-ons", "espadrilles"],
+            "others": []
+          }
+        },
+        electronics: {
+          primary: ["phones", "laptops", "home appliances", "gaming", "wearables", "audio", "others"],
+          sub: {
+            "phones": ["smartphones", "feature phones", "cases", "chargers", "screen protectors"],
+            "laptops": ["gaming laptops", "ultrabooks", "macbooks", "2-in-1", "accessories"],
+            "home appliances": ["TVs", "refrigerators", "microwaves", "washers", "air conditioners"],
+            "gaming": ["consoles", "controllers", "VR headsets", "gaming accessories"],
+            "wearables": ["smartwatches", "fitness trackers", "AR glasses"],
+            "audio": ["headphones", "earbuds", "speakers", "soundbars"],
+            "others": []
+          }
+        },
+        beauty: {
+          primary: ["skincare", "makeup", "haircare", "fragrances", "tools", "others"],
+          sub: {
+            "skincare": ["moisturizers", "cleansers", "serums", "face masks", "sunscreens"],
+            "makeup": ["lipsticks", "eyeshadow", "foundation", "mascara", "blush", "powder"],
+            "haircare": ["shampoo", "conditioner", "hair oil", "styling gel", "dry shampoo"],
+            "fragrances": ["perfumes", "body sprays", "colognes", "essential oils"],
+            "tools": ["makeup brushes", "curlers", "mirrors", "blenders"],
+            "others": []
+          }
+        },
+        sports: {
+          primary: ["equipment", "clothing", "footwear", "fitness gear", "accessories", "others"],
+          sub: {
+            "equipment": ["balls", "bats", "rackets", "nets", "helmets"],
+            "clothing": ["jerseys", "shorts", "tights", "track pants"],
+            "footwear": ["running shoes", "cleats", "hiking boots", "training shoes"],
+            "fitness gear": ["dumbbells", "resistance bands", "yoga mats", "jump ropes"],
+            "accessories": ["water bottles", "wristbands", "sports bags"],
+            "others": []
+          }
+        },
+        home: {
+          primary: ["furniture", "decor", "kitchenware", "bedding", "bath", "cleaning", "others"],
+          sub: {
+            "furniture": ["sofas", "tables", "chairs", "beds", "cabinets"],
+            "decor": ["paintings", "plants", "vases", "mirrors", "wall art"],
+            "kitchenware": ["cookware", "utensils", "cutlery", "kitchen appliances"],
+            "bedding": ["bedsheets", "pillows", "duvets", "mattresses"],
+            "bath": ["towels", "bathrobes", "mats", "shower curtains"],
+            "cleaning": ["mops", "brooms", "detergents", "cleaners"],
+            "others": []
+          }
+        },
+        books: {
+          primary: ["fiction", "non-fiction", "children", "academic", "religious", "others"],
+          sub: {
+            "fiction": ["novels", "short stories", "fantasy", "thrillers", "romance", "historical"],
+            "non-fiction": ["biographies", "self-help", "memoirs", "business", "wellness"],
+            "children": ["picture books", "activity books", "storybooks", "educational"],
+            "academic": ["textbooks", "guides", "journals", "test prep"],
+            "religious": ["bibles", "qurans", "spiritual books"],
+            "others": []
+          }
+        },
+        toys: {
+          primary: ["action figures", "educational", "soft toys", "outdoor", "remote control", "others"],
+          sub: {
+            "action figures": ["superheroes", "robots", "anime", "movie characters"],
+            "educational": ["puzzles", "STEM kits", "games", "flash cards"],
+            "soft toys": ["teddy bears", "plush animals", "cartoon plush"],
+            "outdoor": ["bikes", "balls", "playhouses", "slides"],
+            "remote control": ["cars", "drones", "boats", "helicopters"],
+            "others": []
+          }
+        },
+        accessories: {
+          primary: ["bags", "jewelry", "watches", "belts", "hats", "scarves", "others"],
+          sub: {
+            "bags": ["backpacks", "handbags", "laptop bags", "wallets", "travel bags"],
+            "jewelry": ["earrings", "necklaces", "bracelets", "rings", "anklets"],
+            "watches": ["smartwatches", "analog", "digital", "luxury watches"],
+            "belts": ["leather", "canvas", "formal", "casual"],
+            "hats": ["baseball caps", "beanies", "sun hats"],
+            "scarves": ["woolen", "cotton", "silk"],
+            "others": []
+          }
+        },
+        drugs: {
+          primary: ["prescription", "otc", "supplements", "first aid", "wellness", "equipment", "others"],
+          sub: {
+            "prescription": ["antibiotics", "antivirals", "pain relievers", "antidepressants", "antihypertensives"],
+            "otc": ["cough syrup", "painkillers", "antacids", "allergy meds"],
+            "supplements": ["vitamins", "minerals", "protein", "herbal", "omega-3"],
+            "first aid": ["bandages", "antiseptics", "gauze", "ointments"],
+            "wellness": ["digestive health", "sleep aids", "immune boosters", "eye drops"],
+            "equipment": ["thermometers", "BP monitors", "nebulizers", "glucose meters"],
+            "others": []
+          }
+        },
+        others: {
+          primary: ["custom", "handmade", "unique", "miscellaneous"],
+          sub: {
+            "custom": ["custom t-shirts", "engraved gifts", "photo mugs"],
+            "handmade": ["crafts", "artisan jewelry", "knitted items", "natural soap"],
+            "unique": ["antiques", "collectibles", "rare finds"],
+            "miscellaneous": []
+          }
+        }
+      };
+
+      const res = await fetch(`${API}/find?collection=products&seller=${encodeURIComponent(sellerParam)}`);
+      allProducts = await res.json();
+      
+      // Extract tags from products
+      allTags.clear();
+      allProducts.forEach(product => {
+        if (product.tags) {
+          // Handle both string and array cases
+          let tags;
+          if (typeof product.tags === 'string') {
+            tags = product.tags.split(',').map(tag => tag.trim().toLowerCase());
+          } else if (Array.isArray(product.tags)) {
+            tags = product.tags.map(tag => tag.toString().trim().toLowerCase());
+          } else {
+            tags = [product.tags.toString().trim().toLowerCase()];
+          }
+          
+          tags.forEach(tag => {
+            if (tag) allTags.add(tag);
+          });
+        }
+        if (product.category) {
+          allTags.add(product.category.toLowerCase());
+        }
+      });
+      
+      renderTagsNavbar();
+      renderProducts();
+      renderDynamicSections();
+    } catch (error) {
+      console.error("Failed to load products:", error);
+    }
+  }
+// Replace the existing renderTagsNavbar and showSubTags functions with these modified versions:
+
+// Render tags navbar
+function renderTagsNavbar() {
+  const navbar = document.getElementById("tagsNavbar");
+  const navbarContainer = document.getElementById("tagsContainer");
+  const primaryTagsContainer = document.getElementById("primaryTagsContainer");
+  const primaryTagsList = document.getElementById("primaryTagsList");
+  
+  // Get all primary tags used by seller's products
+  const primaryTags = Array.from(allTags).filter(tag => {
+    // Check if any product has this tag as a primary category
+    return allProducts.some(product => {
+      if (product.category) {
+        return product.category.toLowerCase() === tag;
+      }
+      return false;
+    });
+  });
+  
+  // Clear existing tags
+  navbarContainer.innerHTML = "";
+  primaryTagsList.innerHTML = "";
+  
+  // Hide navbar if there's only one category (or no categories)
+  if (primaryTags.length <= 1) {
+    navbar.classList.add("hidden");
+    primaryTagsContainer.classList.add("hidden");
+    // Still show sub-tags for the single category if it exists
+    if (primaryTags.length === 1) {
+      showSubTags(primaryTags[0]);
+    }
+    return;
+  }
+  
+  // Show navbar
+  navbar.classList.remove("hidden");
+  primaryTagsContainer.classList.remove("hidden");
+  setTimeout(() => {
+    primaryTagsContainer.style.opacity = "1";
+    primaryTagsContainer.style.maxHeight = "200px";
+  }, 10);
+  
+  // Add "All" button to navbar
+  const allBtn = document.createElement("button");
+  allBtn.className = "tag-filter flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all";
+  allBtn.dataset.tag = "all";
+  allBtn.textContent = "All";
+  allBtn.addEventListener('click', () => {
+    filterProducts('all');
+    showAllSubTags(); // Show all sub-tags when "All" is selected
+  });
+  navbarContainer.appendChild(allBtn);
+  
+  // Add primary tags to primary tags container
+  primaryTags.forEach(tag => {
+    const button = document.createElement("button");
+    button.className = "tag-filter flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all";
+    button.dataset.tag = tag;
+    button.textContent = tag.charAt(0).toUpperCase() + tag.slice(1);
+    button.addEventListener('click', () => {
+      filterProducts(tag);
+      showSubTags(tag);
+    });
+    primaryTagsList.appendChild(button);
+  });
+  
+  // Set "All" as active by default and show all sub-tags
+  if (navbarContainer.firstChild) {
+    navbarContainer.firstChild.classList.add('active');
+    showAllSubTags();
+  }
+}
+
+// Show sub tags for a primary tag or all sub-tags
+function showSubTags(primaryTag = null) {
+  const subTagsContainer = document.getElementById("subTagsContainer");
+  const subTagsList = document.getElementById("subTagsList");
+  
+  // Clear existing sub tags
+  subTagsList.innerHTML = "";
+  
+  // Get sub tags based on actual seller's products
+  let subTags = [];
+  
+  if (primaryTag) {
+    // Get sub-tags for specific primary category
+    subTags = Array.from(allTags).filter(tag => {
+      return allProducts.some(product => {
+        // Check if product belongs to this primary category and has this tag
+        const belongsToPrimary = product.category && product.category.toLowerCase() === primaryTag;
+        if (!belongsToPrimary) return false;
+        
+        // Check if product has this tag in its tags array
+        if (product.tags) {
+          let tags = [];
+          if (typeof product.tags === 'string') {
+            tags = product.tags.split(',').map(t => t.trim().toLowerCase());
+          } else if (Array.isArray(product.tags)) {
+            tags = product.tags.map(t => t.toString().trim().toLowerCase());
+          } else {
+            tags = [product.tags.toString().trim().toLowerCase()];
+          }
+          return tags.includes(tag) && tag !== primaryTag.toLowerCase();
+        }
+        return false;
+      });
+    });
+  } else {
+    // Show all sub-tags (when "All" is selected or no primary tag)
+    showAllSubTags();
+    return;
+  }
+  
+  if (subTags.length > 0) {
+    // Add sub tags
+    subTags.forEach(tag => {
+      const button = document.createElement("button");
+      button.className = "tag-filter flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all";
+      button.dataset.tag = tag;
+      button.textContent = tag.charAt(0).toUpperCase() + tag.slice(1);
+      button.addEventListener('click', () => filterProducts(tag));
+      subTagsList.appendChild(button);
+    });
+    
+    // Show sub tags container with animation
+    subTagsContainer.classList.remove("hidden");
+    setTimeout(() => {
+      subTagsContainer.style.opacity = "1";
+      subTagsContainer.style.maxHeight = "200px";
+    }, 10);
+  } else {
+    // Hide sub tags container with animation
+    subTagsContainer.style.opacity = "0";
+    subTagsContainer.style.maxHeight = "0";
+    setTimeout(() => {
+      subTagsContainer.classList.add("hidden");
+    }, 300);
+  }
+  
+  // Update active state for primary tags
+  document.querySelectorAll('#tagsContainer .tag-filter').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.dataset.tag === primaryTag) {
+      btn.classList.add('active');
+    }
+  });
+}
+
+// Show all sub-tags from all categories
+function showAllSubTags() {
+  const subTagsContainer = document.getElementById("subTagsContainer");
+  const subTagsList = document.getElementById("subTagsList");
+  
+  // Clear existing sub tags
+  subTagsList.innerHTML = "";
+  
+  // Get all sub-tags from seller's products (excluding primary categories)
+  const primaryCategories = Array.from(allTags).filter(tag => {
+    return allProducts.some(product => {
+      return product.category && product.category.toLowerCase() === tag;
+    });
+  });
+  
+  const subTags = Array.from(allTags).filter(tag => {
+    // Exclude primary categories
+    if (primaryCategories.includes(tag)) return false;
+    
+    // Include tags that appear in product tags but are not primary categories
+    return allProducts.some(product => {
+      if (product.tags) {
+        let tags = [];
+        if (typeof product.tags === 'string') {
+          tags = product.tags.split(',').map(t => t.trim().toLowerCase());
+        } else if (Array.isArray(product.tags)) {
+          tags = product.tags.map(t => t.toString().trim().toLowerCase());
+        } else {
+          tags = [product.tags.toString().trim().toLowerCase()];
+        }
+        return tags.includes(tag);
+      }
+      return false;
+    });
+  });
+  
+  if (subTags.length > 0) {
+    // Add sub tags
+    subTags.forEach(tag => {
+      const button = document.createElement("button");
+      button.className = "tag-filter flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all";
+      button.dataset.tag = tag;
+      button.textContent = tag.charAt(0).toUpperCase() + tag.slice(1);
+      button.addEventListener('click', () => filterProducts(tag));
+      subTagsList.appendChild(button);
+    });
+    
+    // Show sub tags container with animation
+    subTagsContainer.classList.remove("hidden");
+    setTimeout(() => {
+      subTagsContainer.style.opacity = "1";
+      subTagsContainer.style.maxHeight = "200px";
+    }, 10);
+  } else {
+    // Hide sub tags container with animation
+    subTagsContainer.style.opacity = "0";
+    subTagsContainer.style.maxHeight = "0";
+    setTimeout(() => {
+      subTagsContainer.classList.add("hidden");
+    }, 300);
+  }
+  
+  // Update active state for primary tags - set "All" as active
+  document.querySelectorAll('#tagsContainer .tag-filter').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.dataset.tag === 'all') {
+      btn.classList.add('active');
+    }
+  });
+}
+  // Filter products by tag with sliding animation
+  function filterProducts(tag) {
+    activeTag = tag;
+    
+    // Update active state for sub tags
+    document.querySelectorAll('#subTagsList .tag-filter').forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.dataset.tag === tag || (btn.dataset.tag === activeTag && tag === activeTag)) {
+        btn.classList.add('active');
+      }
+    });
+
+    // Add sliding animation
+    const grid = document.getElementById("productGrid");
+    grid.style.opacity = "0";
+    grid.style.transform = "translateY(20px)";
+    grid.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+    
+    setTimeout(() => {
+      renderProducts();
+      
+      // Reset animation
+      grid.style.opacity = "1";
+      grid.style.transform = "translateY(0)";
+      
+      // Scroll to products section
+      document.getElementById("productGrid").scrollIntoView({ behavior: "smooth" });
+    }, 300);
+  }
+
+  // Render products
+  function renderProducts() {
+    const grid = document.getElementById("productGrid");
+    const noProducts = document.getElementById("noProducts");
+    
+    grid.innerHTML = "";
+
+    let filteredProducts = allProducts;
+    
+    if (activeTag && activeTag !== 'all') {
+      filteredProducts = allProducts.filter(product => {
+        // Check product tags
+        let tags = [];
+        if (product.tags) {
+          if (typeof product.tags === 'string') {
+            tags = product.tags.split(',').map(t => t.trim().toLowerCase());
+          } else if (Array.isArray(product.tags)) {
+            tags = product.tags.map(t => t.toString().trim().toLowerCase());
+          } else {
+            tags = [product.tags.toString().trim().toLowerCase()];
+          }
+        }
+        
+        // Check product category
+        const category = product.category ? product.category.toLowerCase() : '';
+        
+        // Check if active tag matches product tags or category
+        return tags.includes(activeTag) || category === activeTag;
+      });
+    }
+
+    if (filteredProducts.length === 0) {
+      grid.classList.add("hidden");
+      noProducts.classList.remove("hidden");
+      return;
+    }
+
+    grid.classList.remove("hidden");
+    noProducts.classList.add("hidden");
+
+    filteredProducts.forEach(product => {
+      const card = document.createElement("div");
+      card.className = "product-card bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 group cursor-pointer";
+      
+      card.innerHTML = `
+        <div class="aspect-square relative overflow-hidden bg-gray-50">
+          <img src="${resolveImage(product.image) || 'https://placehold.co/300x300?text=' + encodeURIComponent(product.name)}"
+               alt="${product.name}" class="product-image w-full h-full object-contain" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div class="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-all duration-300">
+            <div class="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-gray-700">
+              ${product.inventory || product.stock || 0} left
+            </div>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="mb-3">
+            <h3 class="font-medium text-gray-800 text-lg mb-1 line-clamp-1">${product.name}</h3>
+            <p class="text-sm text-gray-500 capitalize">${product.category || 'Uncategorized'}</p>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex flex-col">
+              ${product.strikeThroughPrice && parseFloat(product.strikeThroughPrice) > parseFloat(product.price) ?
+                `<span class="text-lg text-gray-500 line-through">${getCurrencySymbol(storeCurrency)}${parseFloat(product.strikeThroughPrice).toFixed(2)}</span>` : ''}
+              <span class="text-2xl font-light text-gray-900">${getCurrencySymbol(storeCurrency)}${parseFloat(product.price).toFixed(2)}</span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      card.addEventListener('click', () => {
+        window.location.href = `product-detail.html?id=${product.id}`;
+      });
+
+      grid.appendChild(card);
+    });
+  }
+
+  // Render dynamic sections
+  function renderDynamicSections() {
+    const container = document.getElementById("dynamicSections");
+    container.innerHTML = '';
+
+    dynamicSections.forEach((section, index) => {
+      const sectionEl = document.createElement("section");
+      sectionEl.className = "section-container mb-16";
+      sectionEl.innerHTML = `
+        ${isOwner ? `
+          <button class="section-remove-btn absolute -top-3 -right-3 w-8 h-8 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors z-10 opacity-0 group-hover:opacity-100 flex items-center justify-center" data-section-index="${index}">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        ` : ''}
+        <div class="mb-8">
+          <h3 class="text-3xl font-light text-gray-800 mb-2">${section.title}</h3>
+          <div class="w-16 h-px bg-gray-300"></div>
+        </div>
+        <div id="section-${section.id}" class="section-products-grid">
+          <!-- Products will be loaded here -->
+        </div>
+      `;
+      container.appendChild(sectionEl);
+      
+      // Load section products
+      loadSectionProducts(section);
+    });
+
+    // Add blank section tile for owners
+    if (isOwner) {
+      const blankSection = document.createElement("section");
+      blankSection.className = "mb-16";
+      blankSection.innerHTML = `
+        <div class="blank-section-tile rounded-2xl p-16 text-center cursor-pointer transition-all">
+          <div class="max-w-md mx-auto">
+            <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
+              <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4"></path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-light text-gray-600 mb-2">Create New Section</h3>
+            <p class="text-gray-400">Add featured products or category sections to showcase your best items</p>
+          </div>
+        </div>
+      `;
+      blankSection.addEventListener('click', openSectionModal);
+      container.appendChild(blankSection);
+    }
+  }
+
+  // Load products for a specific section
+  async function loadSectionProducts(section) {
+    const container = document.getElementById(`section-${section.id}`);
+    if (!container) return;
+
+    let products = [];
+
+    try {
+      if (section.type === 'category') {
+        products = allProducts.filter(p => p.category && p.category.toLowerCase() === section.config.category.toLowerCase());
+      } else if (section.type === 'featured') {
+        products = allProducts.filter(p => section.config.productIds.includes(p.id));
+      }
+
+      renderSectionProducts(container, products, section);
+    } catch (error) {
+      console.error("Failed to load section products:", error);
+    }
+  }
+
+function renderSectionProducts(container, products, section) {
+  container.innerHTML = '';
+
+  if (products.length === 0) {
+    container.innerHTML = `
+      <div class="flex flex-col items-center justify-center py-20 text-gray-400">
+        <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
+          <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2M4 13h2m13-8v2a1 1 0 01-1 1H7a1 1 0 01-1-1V5m16 0h-2M4 5h2"></path>
+          </svg>
+        </div>
+        <p class="text-lg font-light mb-1">No products found</p>
+        <p class="text-sm">This section doesn't have any products yet</p>
+      </div>
+    `;
+    return;
+  }
+
+  // Get section settings or use defaults
+  const settings = section.settings || {
+    columns: { sm: 2, lg: 5 },
+    productsPerPage: 10,
+    showPagination: true
+  };
+
+  // Create responsive grid container
+  const gridContainer = document.createElement("div");
+  gridContainer.className = `grid grid-cols-1 sm:grid-cols-${settings.columns.sm} lg:grid-cols-${settings.columns.lg} gap-8`;
+
+  // Pagination variables
+  const currentPage = section.currentPage || 1;
+  const startIndex = (currentPage - 1) * settings.productsPerPage;
+  const endIndex = startIndex + settings.productsPerPage;
+  const displayProducts = products.slice(startIndex, endIndex);
+  const totalPages = Math.ceil(products.length / settings.productsPerPage);
+
+  displayProducts.forEach(product => {
+    const productEl = document.createElement("div");
+    productEl.className = "product-card bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 group cursor-pointer relative";
+    
+    productEl.innerHTML = `
+      <div class="relative overflow-hidden bg-gray-50">
+        <img src="${resolveImage(product.image) || 'https://placehold.co/300x300?text=' + encodeURIComponent(product.name)}"
+             alt="${product.name}" class="product-image w-full h-full object-contain" />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        ${isOwner && section.type === 'featured' ? `
+          <button class="remove-featured-product absolute top-3 right-3 bg-red-500 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-red-600"
+                  data-section-id="${section.id}" data-product-id="${product.id}">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        ` : ''}
+        <div class="absolute top-4 left-4 opacity-0 group-hover:opacity-100 transition-all duration-300">
+          <div class="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-gray-700">
+            ${product.inventory || product.stock || 0} left
+          </div>
+        </div>
+      </div>
+      <div class="p-6">
+        <div class="mb-3">
+          <h4 class="font-medium text-gray-800 line-clamp-1 mb-1">${product.name}</h4>
+          <p class="text-sm text-gray-500 capitalize">${product.category || 'Uncategorized'}</p>
+        </div>
+        <div class="flex items-center justify-between">
+          <div class="flex flex-col">
+            ${product.strikeThroughPrice && parseFloat(product.strikeThroughPrice) > parseFloat(product.price) ?
+              `<span class="text-base text-gray-500 line-through">${getCurrencySymbol(storeCurrency)}${parseFloat(product.strikeThroughPrice).toFixed(2)}</span>` : ''}
+            <span class="text-xl font-light text-gray-900">${getCurrencySymbol(storeCurrency)}${parseFloat(product.price).toFixed(2)}</span>
+          </div>
+        </div>
+      </div>
+    `;
+
+    if (!isOwner || section.type !== 'featured') {
+      productEl.addEventListener('click', () => {
+        window.location.href = `product-detail.html?id=${product.id}`;
+      });
+    } else {
+      productEl.addEventListener('click', (e) => {
+        if (!e.target.closest('.remove-featured-product')) {
+          window.location.href = `product-detail.html?id=${product.id}`;
+        }
+      });
+    }
+
+    gridContainer.appendChild(productEl);
+  });
+
+  container.appendChild(gridContainer);
+
+  // Pagination controls
+  if (settings.showPagination && totalPages > 1) {
+    const paginationContainer = document.createElement("div");
+    paginationContainer.className = "mt-12 flex justify-center";
+    
+    const paginationControls = document.createElement("div");
+    paginationControls.className = "flex items-center gap-2";
+    
+    if (currentPage > 1) {
+      const prevBtn = document.createElement("button");
+      prevBtn.className = "px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors";
+      prevBtn.innerHTML = `
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+      `;
+      prevBtn.addEventListener('click', () => {
+        section.currentPage = currentPage - 1;
+        loadSectionProducts(section);
+      });
+      paginationControls.appendChild(prevBtn);
+    }
+    
+    for (let i = 1; i <= totalPages; i++) {
+      const pageBtn = document.createElement("button");
+      pageBtn.className = `px-4 py-2 rounded-lg transition-colors ${
+        i === currentPage
+          ? "bg-gray-800 text-white"
+          : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+      }`;
+      pageBtn.textContent = i;
+      pageBtn.addEventListener('click', () => {
+        section.currentPage = i;
+        loadSectionProducts(section);
+      });
+      paginationControls.appendChild(pageBtn);
+    }
+    
+    if (currentPage < totalPages) {
+      const nextBtn = document.createElement("button");
+      nextBtn.className = "px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors";
+      nextBtn.innerHTML = `
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      `;
+      nextBtn.addEventListener('click', () => {
+        section.currentPage = currentPage + 1;
+        loadSectionProducts(section);
+      });
+      paginationControls.appendChild(nextBtn);
+    }
+    
+    paginationContainer.appendChild(paginationControls);
+    container.appendChild(paginationContainer);
+  } else if (products.length > settings.productsPerPage) {
+    const seeMoreContainer = document.createElement("div");
+    seeMoreContainer.className = "mt-12 text-center";
+    
+    const seeMoreBtn = document.createElement("button");
+    seeMoreBtn.className = "inline-flex items-center px-8 py-4 bg-gray-800 text-white font-medium rounded-full hover:bg-gray-900 transition-colors";
+    seeMoreBtn.innerHTML = `
+      <span>View All ${products.length} Products</span>
+      <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+      </svg>
+    `;
+    
+    seeMoreBtn.addEventListener('click', () => {
+      if (section.type === 'category') {
+        window.location.href = `products.html?seller=${sellerParam}&category=${section.config.category}`;
+      } else if (section.type === 'featured') {
+        const productIds = section.config.productIds.join(',');
+        window.location.href = `products.html?seller=${sellerParam}&featured=${productIds}`;
+      }
+    });
+    
+    seeMoreContainer.appendChild(seeMoreBtn);
+    container.appendChild(seeMoreContainer);
+  }
+}
+
+  // Section management functions
+  function openSectionModal() {
+    document.getElementById("sectionModal").classList.remove("hidden");
+    document.getElementById("sectionTitle").value = '';
+    document.getElementById("sectionType").value = '';
+    document.getElementById("sectionOptions").classList.add("hidden");
+  }
+
+  async function updateSectionOptions(sectionType) {
+    const optionsDiv = document.getElementById("sectionOptions");
+    
+    if (!sectionType) {
+      optionsDiv.classList.add("hidden");
+      return;
+    }
+
+    optionsDiv.classList.remove("hidden");
+    optionsDiv.innerHTML = '';
+
+    if (sectionType === 'category') {
+      const categories = Array.from(allTags).filter(tag => {
+        return allProducts.some(p => p.category && p.category.toLowerCase() === tag);
+      });
+
+      optionsDiv.innerHTML = `
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-2">Select Category</label>
+          <select id="sectionCategory" class="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-300 focus:border-transparent">
+            <option value="">Choose a category</option>
+            ${categories.map(cat => `<option value="${cat}">${cat.charAt(0).toUpperCase() + cat.slice(1)}</option>`).join('')}
+          </select>
+        </div>
+      `;
+    } else if (sectionType === 'featured') {
+      optionsDiv.innerHTML = `
+        <div>
+          <label class="block text-sm font-medium text-gray-600 mb-2">Select Products</label>
+          <button type="button" id="openProductSearch" class="w-full px-6 py-4 border-2 border-dashed border-gray-200 rounded-lg text-gray-500 hover:border-gray-300 hover:text-gray-600 transition-all">
+            <svg class="w-6 h-6 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+            Click to search and select products
+          </button>
+          <div id="selectedProductsPreview" class="mt-4 hidden">
+            <p class="text-sm font-medium text-gray-600 mb-3">Selected Products:</p>
+            <div id="selectedProductsList" class="space-y-2">
+              <!-- Selected products will be shown here -->
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("openProductSearch").addEventListener('click', openProductSearchModal);
+    }
+  }
+
+  function openProductSearchModal() {
+    selectedProductIds.clear();
+    document.getElementById("productSearchModal").classList.remove("hidden");
+    document.getElementById("productSearchInput").value = "";
+    renderProductSearchList();
+    updateSelectedCount();
+  }
+
+  function renderProductSearchList(searchTerm = '') {
+    const container = document.getElementById("searchProductsList");
+    container.innerHTML = '';
+
+    const filteredProducts = allProducts.filter(product => {
+      if (!searchTerm) return true;
+      const searchLower = searchTerm.toLowerCase();
+      
+      // Handle tags search with different data types
+      let tagsMatch = false;
+      if (product.tags) {
+        if (typeof product.tags === 'string') {
+          tagsMatch = product.tags.toLowerCase().includes(searchLower);
+        } else if (Array.isArray(product.tags)) {
+          tagsMatch = product.tags.some(tag => tag.toString().toLowerCase().includes(searchLower));
+        } else {
+          tagsMatch = product.tags.toString().toLowerCase().includes(searchLower);
+        }
+      }
+      
+      return product.name.toLowerCase().includes(searchLower) ||
+             tagsMatch ||
+             (product.category && product.category.toLowerCase().includes(searchLower));
+    });
+
+    filteredProducts.forEach(product => {
+      const productItem = document.createElement("div");
+      productItem.className = "product-checkbox-item flex items-center p-4 hover:bg-gray-50 rounded-lg border transition-colors";
+      
+      // Format tags for display
+      let tagsDisplay = '';
+      if (product.tags) {
+        if (typeof product.tags === 'string') {
+          tagsDisplay = product.tags;
+        } else if (Array.isArray(product.tags)) {
+          tagsDisplay = product.tags.join(', ');
+        } else {
+          tagsDisplay = product.tags.toString();
+        }
+      }
+      
+      productItem.innerHTML = `
+        <input type="checkbox" id="search-product-${product.id}" value="${product.id}" class="mr-4 rounded product-search-checkbox">
+        <img src="${resolveImage(product.image) || 'https://placehold.co/48x48'}" alt="${product.name}" class="w-12 h-12 object-cover rounded-lg mr-4">
+        <div class="flex-1">
+          <p class="font-medium text-gray-800 text-sm">${product.name}</p>
+          <p class="text-xs text-gray-500">${getCurrencySymbol(storeCurrency)}${parseFloat(product.price).toFixed(2)} - ${product.category || 'Uncategorized'}</p>
+          ${tagsDisplay ? `<p class="text-xs text-blue-600 mt-1">Tags: ${tagsDisplay}</p>` : ''}
+        </div>
+      `;
+      container.appendChild(productItem);
+    });
+
+    // Add event listeners to checkboxes
+    document.querySelectorAll('.product-search-checkbox').forEach(checkbox => {
+      checkbox.addEventListener('change', (e) => {
+        if (e.target.checked) {
+          selectedProductIds.add(e.target.value);
+        } else {
+          selectedProductIds.delete(e.target.value);
+        }
+        updateSelectedCount();
+      });
+    });
+  }
+
+  function updateSelectedCount() {
+    document.getElementById("selectedCount").textContent = selectedProductIds.size;
+  }
+
+  function confirmProductSelection() {
+    if (selectedProductIds.size === 0) {
+      alert("Please select at least one product");
+      return;
+    }
+
+    // Update the preview in the section modal
+    const preview = document.getElementById("selectedProductsPreview");
+    const list = document.getElementById("selectedProductsList");
+    
+    preview.classList.remove("hidden");
+    list.innerHTML = '';
+
+    Array.from(selectedProductIds).forEach(productId => {
+      const product = allProducts.find(p => p.id === productId);
+      if (product) {
+        const item = document.createElement("div");
+        item.className = "flex items-center gap-3 p-3 bg-gray-50 rounded-lg";
+        item.innerHTML = `
+          <img src="${resolveImage(product.image) || 'https://placehold.co/32x32'}" alt="${product.name}" class="w-8 h-8 object-cover rounded">
+          <span class="text-sm text-gray-700 flex-1">${product.name}</span>
+          <button class="text-red-500 hover:text-red-700 transition-colors" onclick="removeSelectedProduct('${productId}')">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        `;
+        list.appendChild(item);
+      }
+    });
+
+    document.getElementById("productSearchModal").classList.add("hidden");
+  }
+
+  window.removeSelectedProduct = function(productId) {
+    selectedProductIds.delete(productId);
+    confirmProductSelection(); // Refresh the preview
+  };
+
+  async function saveSection() {
+    const title = document.getElementById("sectionTitle").value.trim();
+    const type = document.getElementById("sectionType").value;
+
+    if (!title || !type) {
+      alert("Please fill in all required fields");
+      return;
+    }
+
+    let config = {};
+
+    if (type === 'category') {
+      const category = document.getElementById("sectionCategory").value;
+      if (!category) {
+        alert("Please select a category");
+        return;
+      }
+      config = { category };
+    } else if (type === 'featured') {
+      if (selectedProductIds.size === 0) {
+        alert("Please select at least one product");
+        return;
+      }
+      config = { productIds: Array.from(selectedProductIds) };
+    }
+
+    // Get settings from UI
+    const settings = {
+      columns: {
+        sm: parseInt(document.getElementById("smallColumns").value),
+        lg: parseInt(document.getElementById("largeColumns").value)
+      },
+      productsPerPage: parseInt(document.getElementById("productsPerPage").value),
+      showPagination: document.getElementById("showPagination").checked
+    };
+
+    const section = {
+      id: Date.now().toString(),
+      title,
+      type,
+      config,
+      settings,
+      createdAt: new Date().toISOString()
+    };
+
+    dynamicSections.push(section);
+    await saveShopSettings();
+    renderDynamicSections();
+    document.getElementById("sectionModal").classList.add("hidden");
+    selectedProductIds.clear();
+  }
+
+  function removeSection(index) {
+    if (confirm("Are you sure you want to remove this section?")) {
+      dynamicSections.splice(index, 1);
+      saveShopSettings();
+      renderDynamicSections();
+    }
+  }
+
+  function removeFeaturedProduct(sectionId, productId) {
+    const section = dynamicSections.find(s => s.id === sectionId);
+    if (section && section.type === 'featured') {
+      section.config.productIds = section.config.productIds.filter(id => id !== productId);
+      saveShopSettings();
+      loadSectionProducts(section);
+    }
+  }
+
+  // Social links management
+  function renderSocialLinks() {
+    const container = document.getElementById("socialLinks");
+    const section = document.getElementById("socialLinksSection");
+    
+    if (socialLinks.length === 0) {
+      section.classList.add("hidden");
+      return;
+    }
+
+    section.classList.remove("hidden");
+    container.innerHTML = '';
+
+    socialLinks.forEach(link => {
+      const linkEl = document.createElement("a");
+      linkEl.href = link.url;
+      linkEl.target = "_blank";
+      linkEl.rel = "noopener noreferrer";
+      linkEl.className = "social-link";
+      linkEl.innerHTML = getSocialIcon(link.platform);
+      container.appendChild(linkEl);
+    });
+  }
+
+  function getSocialIcon(platform) {
+    const icons = {
+      facebook: '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>',
+      twitter: '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>',
+      instagram: '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.62 5.367 11.987 11.988 11.987 6.62 0 11.987-5.367 11.987-11.987C24.014 5.367 18.637.001 12.017.001zM8.449 16.988c-1.297 0-2.448-.49-3.323-1.297C4.198 14.97 3.708 13.819 3.708 12.522s.49-2.448 1.418-3.323c.928-.875 2.079-1.365 3.323-1.365s2.395.49 3.323 1.365c.928.875 1.418 2.026 1.418 3.323s-.49 2.448-1.418 3.169c-.928.721-2.026 1.297-3.323 1.297z"/></svg>',
+      linkedin: '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>',
+      youtube: '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>',
+      tiktok: '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>'
+    };
+    return icons[platform] || '<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12s5.374 12 12 12 12-5.373 12-12S18.626 0 12 0zm5.568 8.16c-.169 1.858-.896 3.49-2.068 4.663-1.197 1.172-2.858 1.899-4.717 2.068-1.858.169-3.49-.896-4.663-2.068C4.947 11.651 4.22 9.99 4.051 8.131 3.882 6.273 4.947 4.612 6.12 3.44 7.292 2.268 8.954 1.541 10.812 1.372c1.858-.169 3.49.896 4.663 2.068 1.172 1.197 1.899 2.858 2.068 4.717z"/></svg>';
+  }
+
+  // Footer links management
+  function renderFooterLinks() {
+    const container = document.getElementById("footerLinks");
+    container.innerHTML = '';
+
+    footerLinks.forEach(link => {
+      const linkEl = document.createElement("button");
+      linkEl.className = "footer-display-link";
+      linkEl.textContent = link.title;
+      linkEl.addEventListener('click', () => showFooterLinkContent(link));
+      container.appendChild(linkEl);
+    });
+  }
+
+  function showFooterLinkContent(link) {
+    document.getElementById("footerLinkDisplayTitle").textContent = link.title;
+    document.getElementById("footerLinkDisplayContent").innerHTML = link.content.replace(/\n/g, '<br>');
+    document.getElementById("footerLinkDisplayModal").classList.remove("hidden");
+  }
+
+  // Footer management functions
+  function openFooterModal() {
+    document.getElementById("footerModal").classList.remove("hidden");
+    renderSocialLinksList();
+    renderFooterLinksList();
+  }
+
+  function renderSocialLinksList() {
+    const list = document.getElementById("socialLinksList");
+    list.innerHTML = '';
+
+    socialLinks.forEach((link, index) => {
+      const linkItem = document.createElement("div");
+      linkItem.className = "flex items-center gap-4 p-4 bg-gray-50 rounded-lg";
+      linkItem.innerHTML = `
+        <select class="social-platform px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-300 focus:border-transparent" data-index="${index}">
+          <option value="facebook" ${link.platform === 'facebook' ? 'selected' : ''}>Facebook</option>
+          <option value="twitter" ${link.platform === 'twitter' ? 'selected' : ''}>Twitter</option>
+          <option value="instagram" ${link.platform === 'instagram' ? 'selected' : ''}>Instagram</option>
+          <option value="linkedin" ${link.platform === 'linkedin' ? 'selected' : ''}>LinkedIn</option>
+          <option value="youtube" ${link.platform === 'youtube' ? 'selected' : ''}>YouTube</option>
+          <option value="tiktok" ${link.platform === 'tiktok' ? 'selected' : ''}>TikTok</option>
+        </select>
+        <input type="url" class="social-url flex-1 px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-300 focus:border-transparent" 
+               placeholder="Enter URL" value="${link.url}" data-index="${index}" />
+        <button class="remove-social bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors" data-index="${index}">
+          Remove
+        </button>
+      `;
+      list.appendChild(linkItem);
+    });
+  }
+
+  function renderFooterLinksList() {
+    const list = document.getElementById("footerLinksList");
+    list.innerHTML = '';
+
+    footerLinks.forEach((link, index) => {
+      const linkItem = document.createElement("div");
+      linkItem.className = "flex items-center gap-4 p-4 bg-gray-50 rounded-lg";
+      linkItem.innerHTML = `
+        <div class="flex-1">
+          <p class="font-medium text-gray-800">${link.title}</p>
+          <p class="text-sm text-gray-500">${link.content.substring(0, 100)}${link.content.length > 100 ? '...' : ''}</p>
+        </div>
+        <div class="flex gap-2">
+          <button class="edit-footer-link bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors" data-index="${index}">
+            Edit
+          </button>
+          <button class="remove-footer-link bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors" data-index="${index}">
+            Remove
+          </button>
+        </div>
+      `;
+      list.appendChild(linkItem);
+    });
+  }
+
+  function addSocialLink() {
+    socialLinks.push({
+      platform: 'facebook',
+      url: ''
+    });
+    renderSocialLinksList();
+  }
+
+  function addFooterLink() {
+    currentEditingFooterLinkIndex = footerLinks.length;
+    document.getElementById("footerLinkContentTitle").textContent = "Add New Footer Link";
+    document.getElementById("footerLinkTitle").value = "";
+    document.getElementById("footerLinkContent").value = "";
+    document.getElementById("footerLinkContentModal").classList.remove("hidden");
+  }
+
+  function editFooterLink(index) {
+    currentEditingFooterLinkIndex = index;
+    const link = footerLinks[index];
+    document.getElementById("footerLinkContentTitle").textContent = "Edit Footer Link";
+    document.getElementById("footerLinkTitle").value = link.title;
+    document.getElementById("footerLinkContent").value = link.content;
+    document.getElementById("footerLinkContentModal").classList.remove("hidden");
+  }
+
+  function saveFooterLinkContent() {
+    const title = document.getElementById("footerLinkTitle").value.trim();
+    const content = document.getElementById("footerLinkContent").value.trim();
+
+    if (!title || !content) {
+      alert("Please fill in both title and content");
+      return;
+    }
+
+    const linkData = { title, content };
+
+    if (currentEditingFooterLinkIndex < footerLinks.length) {
+      footerLinks[currentEditingFooterLinkIndex] = linkData;
+    } else {
+      footerLinks.push(linkData);
+    }
+
+    renderFooterLinksList();
+    document.getElementById("footerLinkContentModal").classList.add("hidden");
+    currentEditingFooterLinkIndex = null;
+  }
+
+  function removeSocialLink(index) {
+    socialLinks.splice(index, 1);
+    renderSocialLinksList();
+  }
+
+  function removeFooterLink(index) {
+    footerLinks.splice(index, 1);
+    renderFooterLinksList();
+  }
+
+  function saveFooterSettings() {
+    // Update socialLinks array with current form values
+    document.querySelectorAll('.social-platform').forEach(select => {
+      const index = parseInt(select.dataset.index);
+      if (socialLinks[index]) {
+        socialLinks[index].platform = select.value;
+      }
+    });
+
+    document.querySelectorAll('.social-url').forEach(input => {
+      const index = parseInt(input.dataset.index);
+      if (socialLinks[index]) {
+        socialLinks[index].url = input.value.trim();
+      }
+    });
+
+    // Remove empty links
+    socialLinks = socialLinks.filter(link => link.url);
+
+    saveShopSettings();
+    renderSocialLinks();
+    renderFooterLinks();
+    document.getElementById("footerModal").classList.add("hidden");
+  }
+
+  // Save shop settings
+  async function saveShopSettings() {
+    try {
+      await fetch(`${API}/update`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          collection: "users",
+          query: { username: sellerParam },
+          updates: { 
+            shopSettings: {
+              ...shopSettings,
+              socialLinks: socialLinks,
+              footerLinks: footerLinks,
+              dynamicSections: dynamicSections
+            }
+          }
+        })
+      });
+    } catch (error) {
+      console.error("Failed to save shop settings:", error);
+    }
+  }
+
+  // Customization functionality for owners
+  if (isOwner) {
+    // Add customization button
+    const customizeBtn = document.createElement("button");
+    customizeBtn.textContent = "✨ Customize";
+    customizeBtn.className = "fixed top-4 left-4 z-50 bg-gray-800 text-white px-6 py-3 rounded-full shadow-lg hover:bg-gray-900 transition-colors";
+    customizeBtn.id = "customizeBtn";
+    document.body.appendChild(customizeBtn);
+
+    // Define customizable elements
+    const customizableElements = {
+      "shopTitle": { label: "Store Title", type: "text-edit", key: "title" },
+      "footerLogo": { label: "Store Logo", type: "image" },
+      "footerTitle": { label: "Footer Store Name", type: "text-edit", key: "name" },
+      "footerStoreName": { label: "Footer Copyright Name", type: "text-edit", key: "name" },
+      "productHeader": { label: "Products Section Header", type: "text-edit", key: "header" }
+    };
+
+    let isCustomizing = false;
+    
+    customizeBtn.addEventListener("click", async () => {
+      isCustomizing = !isCustomizing;
+      customizeBtn.textContent = isCustomizing ? "❌ Close Customization" : "✨ Customize";
+      
+      if (isCustomizing) {
+        Object.keys(customizableElements).forEach(id => {
+          const el = document.getElementById(id);
+          if (el && !el.dataset.bound) {
+            el.dataset.bound = "true";
+            el.classList.add("cursor-pointer", "ring-2", "ring-blue-400", "ring-offset-2");
+            el.addEventListener("click", openCustomModal);
+          }
+        });
+      } else {
+        removeCustomHighlights();
+        await saveThemeChanges();
+      }
+    });
+
+    function openCustomModal(e) {
+      e.stopPropagation();
+      const id = e.currentTarget.id;
+      const config = customizableElements[id];
+      if (!config) return;
+
+      const modal = document.getElementById("customModal");
+      const content = document.getElementById("modalContent");
+      modal.classList.remove("hidden");
+      content.innerHTML = `<label class="text-sm font-medium block mb-2">${config.label}</label>`;
+
+      if (config.type === "image") {
+        content.innerHTML += `
+          <input type="text" id="customInputURL" placeholder="Image URL or filename" class="w-full px-3 py-2 border border-gray-200 rounded-lg mb-3 focus:ring-2 focus:ring-gray-300 focus:border-transparent" />
+          <input type="file" id="customInputFile" accept="image/*" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-300 focus:border-transparent" />
+        `;
+      } else if (config.type === "text-edit") {
+        const el = document.getElementById(id);
+        content.innerHTML += `
+          <input type="text" id="customTextValue" value="${el.textContent}" class="w-full px-3 py-2 border border-gray-200 rounded-lg mb-3 focus:ring-2 focus:ring-gray-300 focus:border-transparent" />
+          <input type="color" id="customInputColor" class="w-full h-12 border border-gray-200 rounded-lg focus:ring-2 focus:ring-gray-300 focus:border-transparent" />
+        `;
+      }
+
+      document.getElementById("applyBtn").onclick = () => applyCustomChange(id, config);
+      document.getElementById("cancelBtn").onclick = () => modal.classList.add("hidden");
+    }
+
+    async function applyCustomChange(id, config) {
+      const el = document.getElementById(id);
+      if (!el) return;
+
+      if (config.type === "image") {
+        const url = document.getElementById("customInputURL").value.trim();
+        const fileInput = document.getElementById("customInputFile");
+        let image = url;
+
+        if (!url && fileInput?.files?.[0]) {
+          const file = fileInput.files[0];
+          image = await new Promise(res => {
+            const reader = new FileReader();
+            reader.onloadend = () => res(reader.result);
+            reader.readAsDataURL(file);
+          });
+        }
+
+        if (image) {
+          const stored = image;
+          el.src = resolveImage(stored);
+          theme.logo = stored;
+
+          // Update all logo instances
+          set("footerLogo", logoEl => {
+            logoEl.src = resolveImage(stored);
+            logoEl.onerror = () => logoEl.src = "https://placehold.co/60x60?text=Logo";
+          });
+        }
+
+      } else if (config.type === "text-edit") {
+        const color = document.getElementById("customInputColor").value;
+        const text = document.getElementById("customTextValue").value;
+        el.textContent = text;
+        if (color) el.style.color = color;
+        
+        theme[config.key] = text;
+        theme[`${config.key}Color`] = color;
+
+        // Update related elements
+        if (config.key === "title") {
+          set("shopTitle", titleEl => titleEl.textContent = text);
+        } else if (config.key === "name") {
+          set("footerTitle", titleEl => titleEl.textContent = text);
+          set("footerStoreName", titleEl => titleEl.textContent = text);
+        } else if (config.key === "header") {
+          set("productHeader", headerEl => headerEl.textContent = text);
+        }
+      }
+
+      await fetch(`${API}/update`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          collection: "users",
+          query: { username: sellerParam },
+          updates: {
+            customTheme: theme,
+            theme: theme
+          }
+        })
+      });
+
+      document.getElementById("customModal").classList.add("hidden");
+    }
+
+    async function saveThemeChanges() {
+      try {
+        await fetch(`${API}/update`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            collection: "users",
+            query: { username: sellerParam },
+            updates: { 
+              customTheme: theme,
+              theme: theme
+            }
+          })
+        });
+      } catch (error) {
+        console.error("Failed to save theme changes:", error);
+      }
+    }
+
+    function removeCustomHighlights() {
+      Object.keys(customizableElements).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.remove("cursor-pointer", "ring-2", "ring-blue-400", "ring-offset-2");
+          el.removeEventListener("click", openCustomModal);
+          el.removeAttribute("data-bound");
+        }
+      });
+    }
+
+    // Event listeners for owner functionality
+    document.getElementById("sectionType").addEventListener("change", (e) => {
+      updateSectionOptions(e.target.value);
+    });
+
+    document.getElementById("cancelSection").addEventListener("click", () => {
+      document.getElementById("sectionModal").classList.add("hidden");
+    });
+
+    document.getElementById("saveSection").addEventListener("click", saveSection);
+
+    document.getElementById("productSearchInput").addEventListener("input", (e) => {
+      renderProductSearchList(e.target.value);
+    });
+
+    document.getElementById("cancelProductSearch").addEventListener("click", () => {
+      document.getElementById("productSearchModal").classList.add("hidden");
+    });
+
+    document.getElementById("confirmProductSelection").addEventListener("click", confirmProductSelection);
+
+    document.getElementById("addSocialBtn").addEventListener("click", addSocialLink);
+    document.getElementById("addFooterLinkBtn").addEventListener("click", addFooterLink);
+    document.getElementById("closeFooterModal").addEventListener("click", () => {
+      document.getElementById("footerModal").classList.add("hidden");
+    });
+    document.getElementById("saveFooterSettings").addEventListener("click", saveFooterSettings);
+
+    document.getElementById("cancelFooterLinkContent").addEventListener("click", () => {
+      document.getElementById("footerLinkContentModal").classList.add("hidden");
+    });
+    document.getElementById("saveFooterLinkContent").addEventListener("click", saveFooterLinkContent);
+
+    // Footer click for customization
+    document.getElementById("footer").addEventListener("click", openFooterModal);
+
+    // Event delegation for dynamic buttons
+    document.addEventListener("click", (e) => {
+      if (e.target.closest(".remove-social")) {
+        const index = parseInt(e.target.closest(".remove-social").dataset.index);
+        removeSocialLink(index);
+      }
+
+      if (e.target.closest(".edit-footer-link")) {
+        const index = parseInt(e.target.closest(".edit-footer-link").dataset.index);
+        editFooterLink(index);
+      }
+
+      if (e.target.closest(".remove-footer-link")) {
+        const index = parseInt(e.target.closest(".remove-footer-link").dataset.index);
+        removeFooterLink(index);
+      }
+
+      if (e.target.closest(".section-remove-btn")) {
+        const index = parseInt(e.target.closest(".section-remove-btn").dataset.sectionIndex);
+        removeSection(index);
+      }
+
+      if (e.target.closest(".remove-featured-product")) {
+        const btn = e.target.closest(".remove-featured-product");
+        const sectionId = btn.dataset.sectionId;
+        const productId = btn.dataset.productId;
+        removeFeaturedProduct(sectionId, productId);
+      }
+    });
+  } else {
+    // For non-owners, make footer non-clickable for customization
+    document.getElementById("footer").style.cursor = "default";
+  }
+
+  // Footer link display modal
+  document.getElementById("closeFooterLinkDisplay").addEventListener("click", () => {
+    document.getElementById("footerLinkDisplayModal").classList.add("hidden");
+  });
+
+  // Initialize everything
+  loadProducts();
+  renderSocialLinks();
+  renderFooterLinks();
+
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+const container = document.getElementById("shopAuthButtons");
+
+if (container) {
+  container.innerHTML = "";
+
+  const baseBtn = "px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-all text-left w-full";
+  if (user) {
+    const dashboard = document.createElement("a");
+    const actualSeller = window.__SHOP_DATA__?.actualSeller || user.username;
+    dashboard.href = user.role?.startsWith("seller")
+      ? `dashboard.html?seller=${encodeURIComponent(actualSeller)}`
+      : `buyer-dashboard.html?seller=${encodeURIComponent(actualSeller)}`;
+    dashboard.className = baseBtn;
+    dashboard.textContent = "Dashboard";
+
+    const logout = document.createElement("button");
+    logout.className = baseBtn;
+    logout.textContent = "Logout";
+    logout.onclick = () => {
+      localStorage.removeItem("user");
+      location.reload();
+    };
+
+    container.appendChild(dashboard);
+    container.appendChild(logout);
+  } else {
+    const signup = document.createElement("a");
+    signup.href = sellerParam ? `signup.html?seller=${encodeURIComponent(sellerParam)}` : "signup.html";
+    signup.className = baseBtn;
+    signup.textContent = "Sign Up";
+
+    const login = document.createElement("a");
+    login.href = sellerParam ? `login.html?seller=${encodeURIComponent(sellerParam)}` : "login.html";
+    login.className = baseBtn;
+    login.textContent = "Log In";
+
+    container.appendChild(signup);
+    container.appendChild(login);
+  }
+}
+
+// Toggle dropdown
+const toggleBtn = document.getElementById("authToggleBtn");
+const dropdown = document.getElementById("authDropdown");
+const icon = document.getElementById("authToggleIcon");
+
+toggleBtn.addEventListener("click", () => {
+  dropdown.classList.toggle("hidden");
+  icon.classList.toggle("rotate-180");
+});
+
+// Close dropdown when clicking outside
+document.addEventListener("click", (e) => {
+  if (!dropdown.contains(e.target) && !toggleBtn.contains(e.target)) {
+    dropdown.classList.add("hidden");
+    icon.classList.remove("rotate-180");
+  }
+});
+
+})();
+</script>
+

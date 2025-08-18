@@ -1,0 +1,271 @@
+[
+  {
+    "id": "free_physical",
+    "name": "Free",
+    "type": "physical",
+    "price": 0,
+    "billingCycle": "weekly",
+    "trialDays": 0,
+    "features": [
+      "✔️ 20 product listings",
+      "❌ No analytics",
+      "❌ No priority listing",
+      "✔️ Community support"
+    ],
+    "limitations": {
+      "maxProducts": 20,
+      "analytics": false,
+      "discounts": false,
+      "priorityListing": false,
+      "support": "community",
+      "commission": 0.1
+    },
+    "role": "seller_free"
+  },
+  {
+    "id": "basic_physical",
+    "name": "Basic",
+    "type": "physical",
+    "price": 2,
+    "billingCycle": "weekly",
+    "trialDays": 4,
+    "features": [
+      "✔️ Up to 50 products",
+      "✔️ Email support",
+      "✔️ Basic dashboard",
+      "🆓 14-day free trial"
+    ],
+    "limitations": {
+      "maxProducts": 50,
+      "analytics": true,
+      "discounts": false,
+      "priorityListing": false,
+      "support": "email",
+      "commission": 0.08
+    },
+    "role": "seller_basic"
+  },
+  {
+    "id": "pro_physical",
+    "name": "Pro",
+    "type": "physical",
+    "price": 5,
+    "billingCycle": "weekly",
+    "trialDays": 4,
+    "features": [
+      "✔️ Unlimited listings",
+      "✔️ Priority listing",
+      "✔️ 5% commission",
+      "🆓 14-day free trial"
+    ],
+    "limitations": {
+      "maxProducts": -1,
+      "analytics": true,
+      "discounts": true,
+      "priorityListing": true,
+      "support": "priority",
+      "commission": 0.05
+    },
+    "role": "seller_pro"
+  },
+  {
+    "id": "premium_physical",
+    "name": "Premium",
+    "type": "physical",
+    "price": 10,
+    "billingCycle": "weekly",
+    "trialDays": 4,
+    "features": [
+      "✔️ Unlimited everything",
+      "✔️ Ads & promotions",
+      "✔️ 24/7 VIP support",
+      "🆓 14-day free trial"
+    ],
+    "limitations": {
+      "maxProducts": -1,
+      "analytics": true,
+      "discounts": true,
+      
+      "priorityListing": true,
+      "ads": true,
+      "support": "vip",
+      "commission": 0.03
+    },
+    "role": "seller_premium"
+  },
+
+  {
+    "id": "free_digital",
+    "name": "Free Digital",
+    "type": "digital",
+    "price": 0,
+    "billingCycle": "weekly",
+    "trialDays": 0,
+    "features": [
+      "✔️ 2 digital products",
+      "✔️ 100MB storage",
+      "❌ No analytics",
+      "✔️ 10% commission"
+    ],
+    "limitations": {
+      "maxProducts": 2,
+      "maxStorageMB": 100,
+      "analytics": false,
+      "support": "community",
+      "commission": 0.1
+    },
+    "role": "seller_free_digital"
+  },
+  {
+    "id": "basic_digital",
+    "name": "Basic Digital",
+    "type": "digital",
+    "price": 9,
+    "billingCycle": "weekly",
+    "trialDays": 14,
+    "features": [
+      "✔️ 10 digital products",
+      "✔️ 1GB storage",
+      "✔️ Basic analytics",
+      "✔️ 7% commission"
+    ],
+    "limitations": {
+      "maxProducts": 10,
+      "maxStorageMB": 1024,
+      "analytics": true,
+      "support": "email",
+      "commission": 0.07
+    },
+    "role": "seller_basic_digital"
+  },
+  {
+    "id": "pro_digital",
+    "name": "Pro Digital",
+    "type": "digital",
+    "price": 19,
+    "billingCycle": "weekly",
+    "trialDays": 14,
+    "features": [
+      "✔️ 50 digital products",
+      "✔️ 10GB storage",
+      "✔️ Advanced analytics",
+      "✔️ 5% commission"
+    ],
+    "limitations": {
+      "maxProducts": 50,
+      "maxStorageMB": 10240,
+      "analytics": true,
+      "support": "priority",
+      "commission": 0.05
+    },
+    "role": "seller_pro_digital"
+  },
+  {
+    "id": "premium_digital",
+    "name": "Premium Digital",
+    "type": "digital",
+    "price": 39,
+    "billingCycle": "weekly",
+    "trialDays": 14,
+    "features": [
+      "✔️ Unlimited digital products",
+      "✔️ 100GB storage",
+      "✔️ Premium analytics",
+      "✔️ 3% commission"
+    ],
+    "limitations": {
+      "maxProducts": -1,
+      "maxStorageMB": 102400,
+      "analytics": true,
+      "support": "vip",
+      "commission": 0.03
+    },
+    "role": "seller_premium_digital"
+  },
+
+
+  {
+    "id": "free_service",
+    "name": "Free",
+    "type": "service",
+    "price": 0,
+    "billingCycle": "project",
+    "trialDays": 0,
+    "features": [
+      "✔️ 1 service listing",
+      "✔️ Basic profile",
+      "❌ No analytics",
+      "✔️ 15% commission"
+    ],
+    "limitations": {
+      "maxServices": 1,
+      "analytics": false,
+      "support": "community",
+      "commission": 0.15
+    },
+    "role": "seller_free_service"
+  },
+  {
+    "id": "basic_service",
+    "name": "Basic",
+    "type": "service",
+    "price": 99,
+    "billingCycle": "project",
+    "trialDays": 0,
+    "features": [
+      "✔️ Basic consultation",
+      "✔️ 1 revision",
+      "✔️ 3-day delivery",
+      "✔️ Premium support"
+    ],
+    "limitations": {
+      "maxServices": 5,
+      "support": "premium",
+      "analytics": true,
+      "commission": 0.12
+    },
+    "role": "seller_basic_service"
+  },
+  {
+    "id": "standard_service",
+    "name": "Standard",
+    "type": "service",
+    "price": 199,
+    "billingCycle": "project",
+    "trialDays": 0,
+    "features": [
+      "✔️ Comprehensive consultation",
+      "✔️ 3 revisions",
+      "✔️ 2-day delivery",
+      "✔️ Premium support"
+    ],
+    "limitations": {
+      "maxServices": 10,
+      "support": "priority",
+      "analytics": true,
+      "commission": 0.1
+    },
+    "role": "seller_standard_service"
+  },
+  {
+    "id": "premium_service",
+    "name": "Premium",
+    "type": "service",
+    "price": 299,
+    "billingCycle": "project",
+    "trialDays": 0,
+    "features": [
+      "✔️ Full-service package",
+      "✔️ Unlimited revisions",
+      "✔️ 1-day delivery",
+      "✔️ Premium support"
+    ],
+    "limitations": {
+      "maxServices": -1,
+      "support": "vip",
+      "analytics": true,
+      "commission": 0.07
+    },
+    "role": "seller_premium_service"
+  }
+]

@@ -1,0 +1,2191 @@
+<!-- Modern Shop Layout -->
+<div id="layoutDefault" class="flex-grow flex flex-col min-h-screen">
+
+<!-- Header -->
+<header id="headerSection" class="bg-gradient-to-r from-purple-900 via-black to-indigo-900 shadow-2xl sticky top-0 z-50 border-b-4 border-cyan-400">
+  <div class="max-w-7xl mx-auto px-4 py-6 flex items-center justify-between" id="boxHeader">
+    <div class="flex items-center gap-4">
+      <img id="shopLogo" src="https://placehold.co/50x50" class="w-14 h-14 rounded-full object-cover border-4 border-cyan-500 shadow-cyan-500/50 shadow-lg" />
+      <h1 id="shopTitle" class="text-3xl font-bold text-cyan-300 tracking-widest glow">Loading...</h1>
+    </div>
+    <div class="flex items-center gap-4">
+      <div id="shopAuthButtons" class="flex items-center gap-2 text-sm"></div>
+    </div>
+  </div>
+</header>
+
+<style>
+  /* Cyber-style glow */
+  .glow {
+    text-shadow: 0 0 5px #0ff, 0 0 10px #0ff, 0 0 15px #0ff;
+  }
+</style>
+
+  
+  <!-- Hero Carousel -->
+  <section id="heroSection" class="relative h-96 overflow-hidden bg-gray-900">
+    <div id="carousel" class="relative w-full h-full">
+      <div id="carouselSlides" class="flex transition-transform duration-500 ease-in-out h-full">
+        <!-- Default slide -->
+        <div class="min-w-full h-full relative flex items-center justify-center bg-gradient-to-r from-indigo-600 to-purple-600">
+          <div class="text-center text-white z-10">
+            <h2 class="text-4xl font-bold mb-4">Welcome to Our Store</h2>
+            <p class="text-xl">Discover amazing products</p>
+          </div>
+          <div class="absolute inset-0 bg-black/20"></div>
+        </div>
+      </div>
+      
+      <!-- Carousel Navigation -->
+      <button id="prevSlide" class="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-3 rounded-full backdrop-blur-sm transition-all">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+      </button>
+      <button id="nextSlide" class="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/30 text-white p-3 rounded-full backdrop-blur-sm transition-all">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+        </svg>
+      </button>
+      
+      <!-- Slide Indicators -->
+      <div id="slideIndicators" class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+        <button class="w-3 h-3 rounded-full bg-white/50 hover:bg-white/80 transition-all active-indicator"></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Shop by Category -->
+  <section class="max-w-7xl mx-auto px-4 py-12">
+    <div class="flex items-center justify-between mb-8">
+      <h3 class="text-3xl font-bold text-gray-800">Shop by Category</h3>
+    </div>
+    <div id="categoryGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <!-- Categories will be loaded here -->
+    </div>
+  </section>
+
+  <!-- Dynamic Sections Container -->
+  <div id="dynamicSections" class="max-w-7xl mx-auto px-4">
+    <!-- Dynamic sections will be rendered here -->
+  </div>
+
+<!-- Footer -->
+<footer id="footer" class="bg-gradient-to-r from-gray-950 via-gray-900 to-gray-800 text-white py-12 mt-auto transition-all duration-300 hover:brightness-110">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex flex-col md:flex-row items-center justify-between">
+      
+      <!-- Logo & Tagline -->
+      <div class="flex items-center gap-4 mb-6 md:mb-0">
+        <img id="footerLogo" src="https://placehold.co/80x80" class="w-20 h-20 rounded-full shadow-lg border-4 border-cyan-400/30 glow-border" />
+        <div>
+          <h4 id="footerTitle" class="text-2xl font-bold text-cyan-200 glow-text">Store Name</h4>
+          <p class="text-gray-400">Quality products, excellent service</p>
+        </div>
+      </div>
+
+      <!-- Social Links Section -->
+      <div id="socialLinksSection" class="flex flex-col items-center hidden">
+        <h5 class="text-lg font-semibold mb-4 text-cyan-300 glow-text">Follow Us</h5>
+        <div id="socialLinks" class="flex gap-4">
+          <!-- Social links will be loaded here -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Footer Navigation Links -->
+    <div id="footerLinksSection" class="border-t border-gray-700 mt-10 pt-6">
+      <div id="footerLinks" class="flex flex-wrap justify-center gap-6 mb-6 text-sm text-gray-300">
+        <!-- Footer links will be loaded here -->
+      </div>
+    </div>
+
+    <!-- Bottom Text -->
+    <div class="text-center mt-4">
+      <p class="text-gray-500 text-sm">
+        © <span id="year"></span> <span id="footerStoreName" class="text-cyan-300 glow-text">Store Name</span>. All rights reserved.
+      </p>
+      <div class="mt-2 text-xs">
+        <a href="https://iyonicorp.com" target="_blank" rel="noopener noreferrer" class="flame-text-glow text-cyan-400 hover:text-cyan-300 transition-all duration-200">
+          Powered by iyonicorp
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Cyberpunk Footer Glow Styles -->
+<style>
+  .glow-border {
+    box-shadow: 0 0 6px #0ff, 0 0 12px #0ff;
+  }
+
+  .glow-text {
+    text-shadow: 0 0 4px #0ff, 0 0 8px #0ff;
+  }
+
+  .flame-text-glow {
+    text-shadow: 0 0 4px #39f, 0 0 10px #0ff, 0 0 15px #0ff;
+    font-weight: 600;
+  }
+</style>
+
+</div>
+
+<!-- Manage Slides Modal -->
+<div id="slidesModal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
+    <div class="p-6 border-b bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+      <h3 class="text-2xl font-bold">Manage Carousel Slides</h3>
+    </div>
+    
+    <div class="p-6 overflow-y-auto max-h-[70vh]">
+      <div class="mb-6">
+        <button id="addSlideBtn" class="bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 transition-all font-semibold">
+          + Add New Slide
+        </button>
+      </div>
+      
+      <div id="slidesList" class="space-y-4">
+        <!-- Slides list will be populated here -->
+      </div>
+    </div>
+    
+    <div class="p-6 border-t bg-gray-50 flex justify-end gap-4">
+      <button id="closeSlidesModal" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-all">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Slide Modal -->
+<div id="slideEditModal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl">
+    <div class="p-6 border-b bg-gradient-to-r from-green-600 to-teal-600 text-white">
+      <h3 class="text-xl font-bold" id="slideEditTitle">Add New Slide</h3>
+    </div>
+    
+    <div class="p-6">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-semibold mb-2">Slide Image</label>
+          <input type="file" id="slideImageInput" accept="image/*" class="w-full px-3 py-2 border rounded-lg">
+          <input type="text" id="slideImageURL" placeholder="Or enter image URL" class="w-full px-3 py-2 border rounded-lg mt-2">
+        </div>
+        
+        <div>
+          <label class="block text-sm font-semibold mb-2">Title</label>
+          <input type="text" id="slideTitle" placeholder="Slide title" class="w-full px-3 py-2 border rounded-lg">
+        </div>
+        
+        <div>
+          <label class="block text-sm font-semibold mb-2">Description</label>
+          <textarea id="slideDescription" placeholder="Slide description" class="w-full px-3 py-2 border rounded-lg h-20"></textarea>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-semibold mb-2">Link Type</label>
+          <select id="slideLinkType" class="w-full px-3 py-2 border rounded-lg">
+            <option value="">No link</option>
+            <option value="category">Link to Category</option>
+            <option value="product">Link to Product</option>
+            <option value="external">External Link</option>
+          </select>
+        </div>
+        
+        <div id="slideLinkOptions" class="hidden">
+          <label class="block text-sm font-semibold mb-2" id="linkOptionsLabel">Select Option</label>
+          <select id="slideLinkTarget" class="w-full px-3 py-2 border rounded-lg">
+            <!-- Options will be populated based on link type -->
+          </select>
+          <input type="text" id="slideExternalLink" placeholder="Enter URL" class="hidden w-full px-3 py-2 border rounded-lg mt-2">
+        </div>
+
+        <div id="slideLinkLabelDiv" class="hidden">
+          <label class="block text-sm font-semibold mb-2">Button Label</label>
+          <input type="text" id="slideLinkLabel" placeholder="e.g., Shop Now, Learn More" class="w-full px-3 py-2 border rounded-lg">
+        </div>
+      </div>
+    </div>
+    
+    <div class="p-6 border-t bg-gray-50 flex justify-end gap-4">
+      <button id="cancelSlideEdit" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-all">
+        Cancel
+      </button>
+      <button id="saveSlide" class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all">
+        Save Slide
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Category Addition Modal -->
+<div id="addCategoryModal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl shadow-2xl w-full max-w-md">
+    <div class="p-6 border-b bg-gradient-to-r from-purple-600 to-pink-600 text-white">
+      <h3 class="text-xl font-bold">Add New Category</h3>
+    </div>
+    
+    <div class="p-6">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-semibold mb-2">Select Category</label>
+          <select id="newCategorySelect" class="w-full px-3 py-2 border rounded-lg">
+            <option value="">Choose a category</option>
+            <option value="electronics">Electronics</option>
+            <option value="apparel">Apparel</option>
+            <option value="shoes">Shoes</option>
+            <option value="beauty">Beauty</option>
+            <option value="sports">Sports</option>
+            <option value="drugs">Drugs</option>
+            <option value="home">Home</option>
+            <option value="books">Books</option>
+            <option value="toys">Toys</option>
+            <option value="accessories">Accessories</option>
+            <option value="others">Others</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    
+    <div class="p-6 border-t bg-gray-50 flex justify-end gap-4">
+      <button id="cancelAddCategory" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-all">
+        Cancel
+      </button>
+      <button id="saveNewCategory" class="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-all">
+        Add Category
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Category Image Upload Modal -->
+<div id="categoryImageModal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl shadow-2xl w-full max-w-md">
+    <div class="p-6 border-b bg-gradient-to-r from-blue-600 to-cyan-600 text-white">
+      <h3 class="text-xl font-bold">Update Category Image</h3>
+    </div>
+    
+    <div class="p-6">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-semibold mb-2">Upload Image</label>
+          <input type="file" id="categoryImageFile" accept="image/*" class="w-full px-3 py-2 border rounded-lg">
+        </div>
+        <div>
+          <label class="block text-sm font-semibold mb-2">Or Enter Image URL</label>
+          <input type="text" id="categoryImageURL" placeholder="https://example.com/image.jpg" class="w-full px-3 py-2 border rounded-lg">
+        </div>
+      </div>
+    </div>
+    
+    <div class="p-6 border-t bg-gray-50 flex justify-end gap-4">
+      <button id="cancelCategoryImage" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-all">
+        Cancel
+      </button>
+      <button id="saveCategoryImage" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-all">
+        Save Image
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Section Creation Modal -->
+<div id="sectionModal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl shadow-2xl w-full max-w-2xl">
+    <div class="p-6 border-b bg-gradient-to-r from-emerald-600 to-teal-600 text-white">
+      <h3 class="text-2xl font-bold">Create New Section</h3>
+    </div>
+    
+    <div class="p-6">
+      <div class="space-y-6">
+        <div>
+          <label class="block text-sm font-semibold mb-2">Section Title</label>
+          <input type="text" id="sectionTitle" placeholder="e.g., Featured Products, Best Sellers" class="w-full px-3 py-2 border rounded-lg">
+        </div>
+        
+        <div>
+          <label class="block text-sm font-semibold mb-2">Section Type</label>
+          <select id="sectionType" class="w-full px-3 py-2 border rounded-lg">
+            <option value="">Select section type</option>
+            <option value="category">Category Products</option>
+            <option value="featured">Featured Products</option>
+          </select>
+        </div>
+        
+        <div id="sectionOptions" class="hidden space-y-4">
+          <!-- Dynamic options based on section type -->
+        </div>
+      </div>
+    </div>
+    
+    <div class="p-6 border-t bg-gray-50 flex justify-end gap-4">
+      <button id="cancelSection" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-all">
+        Cancel
+      </button>
+      <button id="saveSection" class="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all">
+        Create Section
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Product Search Modal for Featured Products -->
+<div id="productSearchModal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[80vh] overflow-hidden">
+    <div class="p-6 border-b bg-gradient-to-r from-indigo-600 to-purple-600 text-white">
+      <h3 class="text-xl font-bold">Select Featured Products</h3>
+    </div>
+    
+    <div class="p-6">
+      <div class="mb-4">
+        <input type="text" id="productSearchInput" placeholder="Search products by name or tag..." class="w-full px-4 py-2 border rounded-lg">
+      </div>
+      
+      <div class="max-h-96 overflow-y-auto">
+        <div id="searchProductsList" class="space-y-3">
+          <!-- Products will be loaded here -->
+        </div>
+      </div>
+      
+      <div class="mt-4 p-3 bg-gray-50 rounded-lg">
+        <p class="text-sm text-gray-600">Selected: <span id="selectedCount">0</span> products</p>
+      </div>
+    </div>
+    
+    <div class="p-6 border-t bg-gray-50 flex justify-end gap-4">
+      <button id="cancelProductSearch" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-all">
+        Cancel
+      </button>
+      <button id="confirmProductSelection" class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-all">
+        Add Selected Products
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Footer Customization Modal -->
+<div id="footerModal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
+    <div class="p-6 border-b bg-gradient-to-r from-gray-800 to-gray-600 text-white">
+      <h3 class="text-2xl font-bold">Customize Footer</h3>
+    </div>
+    
+    <div class="p-6 overflow-y-auto max-h-[70vh]">
+      <!-- Social Links Section -->
+      <div class="mb-8">
+        <div class="flex items-center justify-between mb-4">
+          <h4 class="text-lg font-semibold">Social Links</h4>
+          <button id="addSocialBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all">
+            + Add Social Link
+          </button>
+        </div>
+        <div id="socialLinksList" class="space-y-3">
+          <!-- Social links will be populated here -->
+        </div>
+      </div>
+
+      <!-- Footer Links Section -->
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <h4 class="text-lg font-semibold">Footer Links</h4>
+          <button id="addFooterLinkBtn" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-all">
+            + Add Footer Link
+          </button>
+        </div>
+        <div id="footerLinksList" class="space-y-3">
+          <!-- Footer links will be populated here -->
+        </div>
+      </div>
+    </div>
+    
+    <div class="p-6 border-t bg-gray-50 flex justify-end gap-4">
+      <button id="closeFooterModal" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-all">
+        Close
+      </button>
+      <button id="saveFooterSettings" class="px-6 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-all">
+        Save Changes
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Footer Link Content Modal -->
+<div id="footerLinkContentModal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden">
+    <div class="p-6 border-b bg-gradient-to-r from-emerald-600 to-teal-600 text-white">
+      <h3 class="text-xl font-bold" id="footerLinkContentTitle">Edit Footer Link</h3>
+    </div>
+    
+    <div class="p-6 overflow-y-auto max-h-[70vh]">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-semibold mb-2">Link Title</label>
+          <input type="text" id="footerLinkTitle" placeholder="e.g., Privacy Policy, Terms & Conditions" class="w-full px-3 py-2 border rounded-lg">
+        </div>
+        
+        <div>
+          <label class="block text-sm font-semibold mb-2">Content</label>
+          <textarea id="footerLinkContent" placeholder="Enter the content for this link..." class="w-full px-3 py-2 border rounded-lg h-64"></textarea>
+        </div>
+      </div>
+    </div>
+    
+    <div class="p-6 border-t bg-gray-50 flex justify-end gap-4">
+      <button id="cancelFooterLinkContent" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-all">
+        Cancel
+      </button>
+      <button id="saveFooterLinkContent" class="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all">
+        Save
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Footer Link Display Modal -->
+<div id="footerLinkDisplayModal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden">
+    <div class="p-6 border-b bg-gradient-to-r from-gray-700 to-gray-500 text-white">
+      <h3 class="text-xl font-bold" id="footerLinkDisplayTitle">Footer Link</h3>
+    </div>
+    
+    <div class="p-6 overflow-y-auto max-h-[70vh]">
+      <div id="footerLinkDisplayContent" class="prose max-w-none">
+        <!-- Content will be loaded here -->
+      </div>
+    </div>
+    
+    <div class="p-6 border-t bg-gray-50 flex justify-end">
+      <button id="closeFooterLinkDisplay" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-all">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  @keyframes flameGlowShift {
+    0% {
+      color: #000;
+      text-shadow: 
+        0 0 2px #757575,
+        0 0 4px #838383,
+        0 0 6px #a1a1a1,
+        0 0 8px #b1b1b1;
+    }
+    50% {
+      color: #c0c0c0;
+      text-shadow: 
+        0 0 4px #c0c0c0,
+        0 0 8px #cecece,
+        0 0 10px #c2c2c2,
+        0 0 12px #e0e0e0;
+    }
+    100% {
+      color: #d1cece;
+      text-shadow: 
+        0 0 6px #dbdbdb,
+        0 0 12px #f7f4f3,
+        0 0 18px #f7f5f2,
+        0 0 24px #ffffff;
+    }
+  }
+
+  .flame-text-glow {
+    font-weight: bold;
+    display: inline-block;
+    animation: flameGlowShift 3s ease-in-out infinite alternate;
+    transition: text-shadow 0.3s ease;
+  }
+
+  .flame-text-glow:hover {
+    text-decoration: underline;
+  }
+
+  .active-indicator {
+    background-color: white !important;
+  }
+
+  .category-tile, .product-tile {
+    transition: all 0.3s ease;
+  }
+
+  .category-tile:hover, .product-tile:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  }
+
+  .section-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    margin: 3rem 0 2rem 0;
+  }
+
+  .section-container {
+    position: relative;
+    margin-bottom: 4rem;
+  }
+
+  .section-remove-btn {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .section-container:hover .section-remove-btn {
+    opacity: 1;
+  }
+
+  .blank-section-tile {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    transition: all 0.3s ease;
+  }
+
+  .blank-section-tile:hover {
+    transform: scale(1.05);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+  }
+
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .product-checkbox-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    border-radius: 0.375rem;
+    transition: background-color 0.2s;
+  }
+
+  .product-checkbox-item:hover {
+    background-color: #f3f4f6;
+  }
+
+  .slide-link-button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 25px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+  }
+
+  .slide-link-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+  }
+
+  @keyframes slideInFromBottom {
+    from {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .section-animate {
+    animation: slideInFromBottom 0.6s ease-out;
+  }
+
+  .footer-link {
+    color: #d1d5db;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .footer-link:hover {
+    background-color: rgba(255,255,255,0.1);
+    color: white;
+  }
+</style>
+
+<script>
+(async function() {
+  const { sellerParam, isOwner, API, theme } = window.__SHOP_DATA__ || {};
+  let slides = [];
+  let categories = [];
+  let socialLinks = [];
+  let footerLinks = [];
+  let dynamicSections = [];
+  let allProducts = [];
+  let currentSlideIndex = 0;
+  let slideInterval;
+  let currentEditingCategoryId = null;
+  let currentEditingFooterLinkIndex = null;
+  let selectedProductIds = new Set();
+
+  // Set year
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  const resolveImage = (img) => {
+    if (!img || typeof img !== 'string') return '';
+    let val = img.trim().replace(/\\\\/g, '/').replace(/\\/g, '/');
+    // Absolute URLs or data URIs
+    if (/^(https?:)?\/\//i.test(val) || val.startsWith('data:')) return val;
+    // Strip any leading host part accidentally embedded
+    const uploadsIdx = val.toLowerCase().lastIndexOf('/uploads/');
+    const uploadsIdx2 = uploadsIdx === -1 ? val.toLowerCase().lastIndexOf('uploads/') : uploadsIdx;
+    if (uploadsIdx2 !== -1) {
+      const clean = val.slice(uploadsIdx2 + (val.toLowerCase().startsWith('/uploads/') ? 9 : (val.toLowerCase().indexOf('uploads/') >= 0 ? val.toLowerCase().indexOf('uploads/') + 8 : 0)));
+      return `${API}/uploads/${clean.replace(/^\/+/, '')}`;
+    }
+    // Starts with uploads path (with or without slash)
+    if (/^\/?uploads\//i.test(val)) {
+      const clean = val.replace(/^\/?uploads\//i, '');
+      return `${API}/uploads/${clean}`;
+    }
+    // Raw filename
+    return `${API}/uploads/${val.replace(/^\/+/, '')}`;
+  };
+
+  // Apply theme
+  const set = (id, fn) => { const el = document.getElementById(id); if (el) fn(el); };
+
+  set("shopLogo", el => {
+    el.src = resolveImage(theme.logo);
+    el.onerror = () => el.src = "https://placehold.co/60x60?text=Logo";
+  });
+
+  set("shopTitle", el => {
+    el.textContent = theme.name || theme.title || sellerParam;
+    el.style.color = theme.titleColor || "";
+  });
+
+  set("footerLogo", el => {
+    el.src = resolveImage(theme.logo);
+    el.onerror = () => el.src = "https://placehold.co/80x80?text=Logo";
+  });
+
+  set("footerTitle", el => {
+    el.textContent = theme.name || theme.title || sellerParam;
+  });
+
+  set("footerStoreName", el => {
+    el.textContent = theme.name || theme.title || sellerParam;
+  });
+
+  // Load seller data
+  const sellerRes = await fetch(`${API}/find?collection=users&username=${encodeURIComponent(sellerParam)}`);
+  const [seller] = await sellerRes.json();
+  const shopSettings = seller?.shopSettings || {};
+  
+  slides = shopSettings.carouselSlides || [];
+  categories = shopSettings.categories || [];
+  socialLinks = shopSettings.socialLinks || [];
+  footerLinks = shopSettings.footerLinks || [];
+  dynamicSections = shopSettings.dynamicSections || [];
+
+  // Initialize carousel with support for default slide editing
+  function initCarousel() {
+    if (slides.length === 0) {
+      slides = [{
+        id: 'default',
+        image: '',
+        title: 'Welcome to Our Store',
+        description: 'Discover amazing products',
+        linkType: '',
+        linkTarget: '',
+        linkLabel: '',
+        isDefault: true
+      }];
+    }
+
+    renderCarousel();
+    startAutoSlide();
+  }
+
+  function renderCarousel() {
+    const slidesContainer = document.getElementById("carouselSlides");
+    const indicators = document.getElementById("slideIndicators");
+    
+    slidesContainer.innerHTML = '';
+    indicators.innerHTML = '';
+
+    slides.forEach((slide, index) => {
+      // Create slide
+      const slideEl = document.createElement("div");
+      slideEl.className = "min-w-full h-full relative flex items-center justify-center";
+      
+      let slideContent = `
+        <div class="text-center text-white z-10 max-w-2xl px-4">
+          <h2 class="text-4xl font-bold mb-4">${slide.title}</h2>
+          <p class="text-xl mb-6">${slide.description}</p>
+          ${slide.linkType && slide.linkTarget && slide.linkLabel ? `
+            <button class="slide-link-button" data-slide-index="${index}">
+              ${slide.linkLabel}
+            </button>
+          ` : ''}
+        </div>
+      `;
+
+      if (slide.image) {
+        slideEl.style.backgroundImage = `url(${resolveImage(slide.image)})`;
+        slideEl.style.backgroundSize = 'cover';
+        slideEl.style.backgroundPosition = 'center';
+        slideEl.innerHTML = slideContent + `<div class="absolute inset-0 bg-black/40"></div>`;
+      } else {
+        slideEl.className += " bg-gradient-to-r from-indigo-600 to-purple-600";
+        slideEl.innerHTML = slideContent;
+      }
+
+      slidesContainer.appendChild(slideEl);
+
+      // Create indicator
+      const indicator = document.createElement("button");
+      indicator.className = "w-3 h-3 rounded-full bg-white/50 hover:bg-white/80 transition-all";
+      if (index === 0) indicator.classList.add("active-indicator");
+      indicator.addEventListener("click", () => goToSlide(index));
+      indicators.appendChild(indicator);
+    });
+
+    // Add click handlers for slide link buttons
+    document.querySelectorAll('.slide-link-button').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const slideIndex = parseInt(btn.dataset.slideIndex);
+        const slide = slides[slideIndex];
+        handleSlideLink(slide);
+      });
+    });
+  }
+
+  function handleSlideLink(slide) {
+    if (slide.linkType === 'external') {
+      window.open(slide.linkTarget, '_blank');
+    } else if (slide.linkType === 'category') {
+      window.location.href = `products.html?seller=${sellerParam}&category=${slide.linkTarget}`;
+    } else if (slide.linkType === 'product') {
+      window.location.href = `product-detail.html?id=${slide.linkTarget}`;
+    }
+  }
+
+  function goToSlide(index) {
+    currentSlideIndex = index;
+    const slidesContainer = document.getElementById("carouselSlides");
+    slidesContainer.style.transform = `translateX(-${index * 100}%)`;
+    
+    // Update indicators
+    document.querySelectorAll("#slideIndicators button").forEach((btn, i) => {
+      btn.classList.toggle("active-indicator", i === index);
+    });
+  }
+
+  function nextSlide() {
+    currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+    goToSlide(currentSlideIndex);
+  }
+
+  function prevSlide() {
+    currentSlideIndex = (currentSlideIndex - 1 + slides.length) % slides.length;
+    goToSlide(currentSlideIndex);
+  }
+
+  function startAutoSlide() {
+    slideInterval = setInterval(nextSlide, 5000);
+  }
+
+  function stopAutoSlide() {
+    if (slideInterval) clearInterval(slideInterval);
+  }
+
+  // Navigation event listeners
+  document.getElementById("nextSlide").addEventListener("click", () => {
+    stopAutoSlide();
+    nextSlide();
+    startAutoSlide();
+  });
+
+  document.getElementById("prevSlide").addEventListener("click", () => {
+    stopAutoSlide();
+    prevSlide();
+    startAutoSlide();
+  });
+
+  // Auto-generate categories from products
+  function generateCategoriesFromProducts() {
+    const productCategories = new Set();
+    allProducts.forEach(product => {
+      if (product.category && product.category.trim()) {
+        productCategories.add(product.category.toLowerCase());
+      }
+    });
+
+    // Add any missing categories
+    productCategories.forEach(categoryName => {
+      const existingCategory = categories.find(c => c.name.toLowerCase() === categoryName);
+      if (!existingCategory) {
+        categories.push({
+          id: Date.now().toString() + Math.random(),
+          name: categoryName,
+          image: '',
+          productCount: 0
+        });
+      }
+    });
+
+    // Remove categories that no longer have products (except manually added ones)
+    categories = categories.filter(category => {
+      const hasProducts = allProducts.some(p => p.category && p.category.toLowerCase() === category.name.toLowerCase());
+      return hasProducts || category.manuallyAdded;
+    });
+  }
+
+  // Render categories
+  function renderCategories() {
+    const grid = document.getElementById("categoryGrid");
+    grid.innerHTML = '';
+
+    // Update product counts
+    const categoryMap = new Map();
+    allProducts.forEach(product => {
+      const category = product.category?.toLowerCase() || 'uncategorized';
+      categoryMap.set(category, (categoryMap.get(category) || 0) + 1);
+    });
+    
+    categories.forEach(cat => {
+      cat.productCount = categoryMap.get(cat.name.toLowerCase()) || 0;
+    });
+
+    categories.forEach(category => {
+      const tile = document.createElement("div");
+      tile.className = "category-tile relative bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer group";
+      
+      tile.innerHTML = `
+        <div class="aspect-square relative">
+          <img src="${resolveImage(category.image) || 'https://placehold.co/300x300?text=' + encodeURIComponent(category.name)}" 
+               alt="${category.name}" class="w-full h-full object-cover" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+          <div class="absolute bottom-4 left-4 text-white">
+            <h4 class="text-lg font-bold capitalize">${category.name}</h4>
+            <p class="text-sm opacity-90">${category.productCount || 0} products</p>
+          </div>
+          ${isOwner ? `
+            <div class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity flex gap-2">
+              <button class="upload-category-image bg-blue-500 text-white p-2 rounded-full hover:bg-blue-600" data-category-id="${category.id}" title="Upload Image">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+              </button>
+              <button class="delete-category bg-red-500 text-white p-2 rounded-full hover:bg-red-600" data-category-id="${category.id}" title="Delete Category">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                </svg>
+              </button>
+            </div>
+          ` : ''}
+        </div>
+      `;
+
+      if (!isOwner) {
+        tile.addEventListener('click', () => {
+          window.location.href = `products.html?seller=${sellerParam}&category=${category.name}`;
+        });
+      } else {
+        tile.addEventListener('click', (e) => {
+          if (!e.target.closest('.upload-category-image') && !e.target.closest('.delete-category')) {
+            window.location.href = `products.html?seller=${sellerParam}&category=${category.name}`;
+          }
+        });
+      }
+
+      grid.appendChild(tile);
+    });
+
+    // Add "Add Category" tile for owners
+    if (isOwner) {
+      const addTile = document.createElement("div");
+      addTile.className = "category-tile bg-gray-200 rounded-xl shadow-lg flex items-center justify-center cursor-pointer hover:bg-gray-300 transition-all aspect-square";
+      addTile.innerHTML = `
+        <div class="text-center text-gray-600">
+          <svg class="w-12 h-12 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          <p class="font-semibold">Add Category</p>
+        </div>
+      `;
+      addTile.addEventListener('click', openAddCategoryModal);
+      grid.appendChild(addTile);
+    }
+  }
+
+  // Category management functions
+  function openAddCategoryModal() {
+    document.getElementById("addCategoryModal").classList.remove("hidden");
+    document.getElementById("newCategorySelect").value = "";
+  }
+
+  function saveNewCategory() {
+    const selectedCategory = document.getElementById("newCategorySelect").value;
+    if (!selectedCategory) {
+      alert("Please select a category");
+      return;
+    }
+
+    // Check if category already exists
+    const existingCategory = categories.find(c => c.name.toLowerCase() === selectedCategory.toLowerCase());
+    if (existingCategory) {
+      alert("This category already exists");
+      return;
+    }
+
+    const category = {
+      id: Date.now().toString(),
+      name: selectedCategory,
+      image: '',
+      productCount: 0,
+      manuallyAdded: true
+    };
+
+    categories.push(category);
+    saveShopSettings();
+    renderCategories();
+    document.getElementById("addCategoryModal").classList.add("hidden");
+  }
+
+  function openCategoryImageModal(categoryId) {
+    currentEditingCategoryId = categoryId;
+    document.getElementById("categoryImageModal").classList.remove("hidden");
+    document.getElementById("categoryImageFile").value = "";
+    document.getElementById("categoryImageURL").value = "";
+  }
+
+  async function saveCategoryImage() {
+    if (!currentEditingCategoryId) return;
+
+    const category = categories.find(c => c.id === currentEditingCategoryId);
+    if (!category) return;
+
+    const fileInput = document.getElementById("categoryImageFile");
+    const urlInput = document.getElementById("categoryImageURL");
+
+    let imageData = '';
+    if (fileInput.files[0]) {
+      imageData = await new Promise(resolve => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.readAsDataURL(fileInput.files[0]);
+      });
+    } else if (urlInput.value.trim()) {
+      imageData = urlInput.value.trim();
+    }
+
+    if (imageData) {
+      category.image = imageData;
+      await saveShopSettings();
+      renderCategories();
+    }
+
+    document.getElementById("categoryImageModal").classList.add("hidden");
+    currentEditingCategoryId = null;
+  }
+
+  function deleteCategory(categoryId) {
+    const category = categories.find(c => c.id === categoryId);
+    if (!category) return;
+
+    if (confirm(`Are you sure you want to delete the "${category.name}" category?`)) {
+      categories = categories.filter(c => c.id !== categoryId);
+      saveShopSettings();
+      renderCategories();
+    }
+  }
+
+  // Render dynamic sections
+  function renderDynamicSections() {
+    const container = document.getElementById("dynamicSections");
+    container.innerHTML = '';
+
+    dynamicSections.forEach((section, index) => {
+      const sectionEl = document.createElement("section");
+      sectionEl.className = "section-container py-12 section-animate";
+      sectionEl.innerHTML = `
+        ${isOwner ? `
+          <button class="section-remove-btn bg-red-500 text-white p-2 rounded-full hover:bg-red-600 z-10 absolute top-4 right-4" data-section-index="${index}">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        ` : ''}
+        <div class="section-header bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-6 rounded-t-xl">
+          <h3 class="text-3xl font-bold">${section.title}</h3>
+        </div>
+        <div class="bg-white rounded-b-xl shadow-lg p-6">
+          <div id="section-${section.id}" class="section-products-grid">
+            <!-- Products will be loaded here -->
+          </div>
+        </div>
+      `;
+      container.appendChild(sectionEl);
+      
+      // Load section products
+      loadSectionProducts(section);
+    });
+
+    // Add blank section tile for owners
+    if (isOwner) {
+      const blankSection = document.createElement("section");
+      blankSection.className = "py-12";
+      blankSection.innerHTML = `
+        <div class="blank-section-tile bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 rounded-xl shadow-lg p-12 text-center cursor-pointer">
+          <div class="text-white">
+            <svg class="w-16 h-16 mx-auto mb-4 opacity-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            <h3 class="text-2xl font-bold mb-2">Create New Section</h3>
+            <p class="text-lg opacity-90">Add featured products or category sections</p>
+          </div>
+        </div>
+      `;
+      blankSection.addEventListener('click', openSectionModal);
+      container.appendChild(blankSection);
+    }
+  }
+
+  // Load products for a specific section
+  async function loadSectionProducts(section) {
+    const container = document.getElementById(`section-${section.id}`);
+    if (!container) return;
+
+    let products = [];
+
+    try {
+      if (section.type === 'category') {
+        products = allProducts.filter(p => p.category && p.category.toLowerCase() === section.config.category.toLowerCase());
+      } else if (section.type === 'featured') {
+        products = allProducts.filter(p => section.config.productIds.includes(p.id));
+      }
+
+      renderSectionProducts(container, products, section);
+    } catch (error) {
+      console.error("Failed to load section products:", error);
+    }
+  }
+
+  function renderSectionProducts(container, products, section) {
+    container.innerHTML = '';
+
+    if (products.length === 0) {
+      container.innerHTML = `
+        <div class="flex flex-col items-center justify-center py-20 text-gray-500">
+          <svg class="w-20 h-20 mb-6 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2M4 13h2m13-8v2a1 1 0 01-1 1H7a1 1 0 01-1-1V5m16 0h-2M4 5h2"></path>
+          </svg>
+          <p class="text-xl font-semibold mb-2">No products found</p>
+          <p class="text-gray-400">This section doesn't have any products yet</p>
+        </div>
+      `;
+      return;
+    }
+
+    // Create responsive grid container
+    const gridContainer = document.createElement("div");
+    gridContainer.className = "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4 gap-4 lg:gap-6";
+
+    // Show maximum 20 products
+    const maxProducts = 20;
+    const displayProducts = products.slice(0, maxProducts);
+    const hasMore = products.length > maxProducts;
+
+    displayProducts.forEach(product => {
+      const productEl = document.createElement("div");
+      productEl.className = "product-tile bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer group relative transform transition-all duration-300 hover:scale-105 hover:shadow-xl";
+      
+      productEl.innerHTML = `
+        <div class="aspect-square relative overflow-hidden">
+          <img src="${resolveImage(product.image) || 'https://placehold.co/300x300?text=' + encodeURIComponent(product.name)}" 
+               alt="${product.name}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          ${isOwner && section.type === 'featured' ? `
+            <button class="remove-featured-product absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-90 hover:scale-100" 
+                    data-section-id="${section.id}" data-product-id="${product.id}">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+              </svg>
+            </button>
+          ` : ''}
+          <div class="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <span class="bg-white/90 text-gray-800 px-2 py-1 rounded-full text-xs font-semibold">
+              ${product.stock || 0} left
+            </span>
+          </div>
+        </div>
+        <div class="p-4">
+          <h4 class="font-semibold text-gray-800 truncate text-sm lg:text-base mb-1">${product.name}</h4>
+          <p class="text-xs lg:text-sm text-gray-600 mb-2 truncate capitalize">${product.category || 'Uncategorized'}</p>
+          <div class="flex items-center justify-between">
+            <span class="text-lg lg:text-xl font-bold text-indigo-600">${product.price}</span>
+            <div class="flex items-center text-yellow-500">
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+              </svg>
+              <span class="text-xs text-gray-600 ml-1">4.5</span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      if (!isOwner || section.type !== 'featured') {
+        productEl.addEventListener('click', () => {
+          window.location.href = `product-detail.html?id=${product.id}`;
+        });
+      }
+
+      gridContainer.appendChild(productEl);
+    });
+
+    container.appendChild(gridContainer);
+
+    // Add "See More" button if there are more products
+    if (hasMore) {
+      const seeMoreContainer = document.createElement("div");
+      seeMoreContainer.className = "mt-8 text-center";
+      
+      const seeMoreBtn = document.createElement("button");
+      seeMoreBtn.className = "inline-flex items-center px-8 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300";
+      seeMoreBtn.innerHTML = `
+        <span>See All ${products.length} Products</span>
+        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+        </svg>
+      `;
+      
+      seeMoreBtn.addEventListener('click', () => {
+        if (section.type === 'category') {
+          window.location.href = `products.html?seller=${sellerParam}&category=${section.config.category}`;
+        } else if (section.type === 'featured') {
+          const productIds = section.config.productIds.join(',');
+          window.location.href = `products.html?seller=${sellerParam}&featured=${productIds}`;
+        }
+      });
+      
+      seeMoreContainer.appendChild(seeMoreBtn);
+      container.appendChild(seeMoreContainer);
+    }
+  }
+
+  // Section management functions
+  function openSectionModal() {
+    document.getElementById("sectionModal").classList.remove("hidden");
+    document.getElementById("sectionTitle").value = '';
+    document.getElementById("sectionType").value = '';
+    document.getElementById("sectionOptions").classList.add("hidden");
+  }
+
+  async function updateSectionOptions(sectionType) {
+    const optionsDiv = document.getElementById("sectionOptions");
+    
+    if (!sectionType) {
+      optionsDiv.classList.add("hidden");
+      return;
+    }
+
+    optionsDiv.classList.remove("hidden");
+    optionsDiv.innerHTML = '';
+
+    if (sectionType === 'category') {
+      optionsDiv.innerHTML = `
+        <div>
+          <label class="block text-sm font-semibold mb-2">Select Category</label>
+          <select id="sectionCategory" class="w-full px-3 py-2 border rounded-lg">
+            <option value="">Choose a category</option>
+            ${categories.map(cat => `<option value="${cat.name}">${cat.name}</option>`).join('')}
+          </select>
+        </div>
+      `;
+    } else if (sectionType === 'featured') {
+      optionsDiv.innerHTML = `
+        <div>
+          <label class="block text-sm font-semibold mb-2">Select Products</label>
+          <button type="button" id="openProductSearch" class="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg text-gray-600 hover:border-indigo-500 hover:text-indigo-600 transition-all">
+            <svg class="w-6 h-6 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+            Click to search and select products
+          </button>
+          <div id="selectedProductsPreview" class="mt-4 hidden">
+            <p class="text-sm font-semibold mb-2">Selected Products:</p>
+            <div id="selectedProductsList" class="space-y-2">
+              <!-- Selected products will be shown here -->
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("openProductSearch").addEventListener('click', openProductSearchModal);
+    }
+  }
+
+  function openProductSearchModal() {
+    selectedProductIds.clear();
+    document.getElementById("productSearchModal").classList.remove("hidden");
+    document.getElementById("productSearchInput").value = "";
+    renderProductSearchList();
+    updateSelectedCount();
+  }
+
+  function renderProductSearchList(searchTerm = '') {
+    const container = document.getElementById("searchProductsList");
+    container.innerHTML = '';
+
+    const filteredProducts = allProducts.filter(product => {
+      if (!searchTerm) return true;
+      const searchLower = searchTerm.toLowerCase();
+      return product.name.toLowerCase().includes(searchLower) ||
+             (product.tags && product.tags.toLowerCase().includes(searchLower)) ||
+             (product.category && product.category.toLowerCase().includes(searchLower));
+    });
+
+    filteredProducts.forEach(product => {
+      const productItem = document.createElement("div");
+      productItem.className = "product-checkbox-item flex items-center p-3 hover:bg-gray-50 rounded-lg border";
+      productItem.innerHTML = `
+        <input type="checkbox" id="search-product-${product.id}" value="${product.id}" class="mr-3 rounded product-search-checkbox">
+        <img src="${resolveImage(product.image) || 'https://placehold.co/40x40'}" alt="${product.name}" class="w-12 h-12 object-cover rounded-lg mr-3">
+        <div class="flex-1">
+          <p class="font-medium text-sm">${product.name}</p>
+          <p class="text-xs text-gray-600">${product.price} - ${product.category || 'Uncategorized'}</p>
+          ${product.tags ? `<p class="text-xs text-blue-600">Tags: ${product.tags}</p>` : ''}
+        </div>
+      `;
+      container.appendChild(productItem);
+    });
+
+    // Add event listeners to checkboxes
+    document.querySelectorAll('.product-search-checkbox').forEach(checkbox => {
+      checkbox.addEventListener('change', (e) => {
+        if (e.target.checked) {
+          selectedProductIds.add(e.target.value);
+        } else {
+          selectedProductIds.delete(e.target.value);
+        }
+        updateSelectedCount();
+      });
+    });
+  }
+
+  function updateSelectedCount() {
+    document.getElementById("selectedCount").textContent = selectedProductIds.size;
+  }
+
+  function confirmProductSelection() {
+    if (selectedProductIds.size === 0) {
+      alert("Please select at least one product");
+      return;
+    }
+
+    // Update the preview in the section modal
+    const preview = document.getElementById("selectedProductsPreview");
+    const list = document.getElementById("selectedProductsList");
+    
+    preview.classList.remove("hidden");
+    list.innerHTML = '';
+
+    Array.from(selectedProductIds).forEach(productId => {
+      const product = allProducts.find(p => p.id === productId);
+      if (product) {
+        const item = document.createElement("div");
+        item.className = "flex items-center gap-3 p-2 bg-gray-50 rounded-lg";
+        item.innerHTML = `
+          <img src="${resolveImage(product.image) || 'https://placehold.co/30x30'}" alt="${product.name}" class="w-8 h-8 object-cover rounded">
+          <span class="text-sm">${product.name}</span>
+          <button class="ml-auto text-red-500 hover:text-red-700" onclick="removeSelectedProduct('${productId}')">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        `;
+        list.appendChild(item);
+      }
+    });
+
+    document.getElementById("productSearchModal").classList.add("hidden");
+  }
+
+  window.removeSelectedProduct = function(productId) {
+    selectedProductIds.delete(productId);
+    confirmProductSelection(); // Refresh the preview
+  };
+
+  async function saveSection() {
+    const title = document.getElementById("sectionTitle").value.trim();
+    const type = document.getElementById("sectionType").value;
+
+    if (!title || !type) {
+      alert("Please fill in all required fields");
+      return;
+    }
+
+    let config = {};
+
+    if (type === 'category') {
+      const category = document.getElementById("sectionCategory").value;
+      if (!category) {
+        alert("Please select a category");
+        return;
+      }
+      config = { category };
+    } else if (type === 'featured') {
+      if (selectedProductIds.size === 0) {
+        alert("Please select at least one product");
+        return;
+      }
+      config = { productIds: Array.from(selectedProductIds) };
+    }
+
+    const section = {
+      id: Date.now().toString(),
+      title,
+      type,
+      config,
+      createdAt: new Date().toISOString()
+    };
+
+    dynamicSections.push(section);
+    await saveShopSettings();
+    renderDynamicSections();
+    document.getElementById("sectionModal").classList.add("hidden");
+    selectedProductIds.clear();
+  }
+
+  function removeSection(index) {
+    if (confirm("Are you sure you want to remove this section?")) {
+      dynamicSections.splice(index, 1);
+      saveShopSettings();
+      renderDynamicSections();
+    }
+  }
+
+  function removeFeaturedProduct(sectionId, productId) {
+    const section = dynamicSections.find(s => s.id === sectionId);
+    if (section && section.type === 'featured') {
+      section.config.productIds = section.config.productIds.filter(id => id !== productId);
+      saveShopSettings();
+      loadSectionProducts(section);
+    }
+  }
+
+  // Render social links
+  function renderSocialLinks() {
+    const container = document.getElementById("socialLinks");
+    const section = document.getElementById("socialLinksSection");
+    
+    if (socialLinks.length === 0) {
+      section.classList.add("hidden");
+      return;
+    }
+
+    section.classList.remove("hidden");
+    container.innerHTML = '';
+
+    socialLinks.forEach(link => {
+      const linkEl = document.createElement("a");
+      linkEl.href = link.url;
+      linkEl.target = "_blank";
+      linkEl.rel = "noopener noreferrer";
+      linkEl.className = "bg-white/10 hover:bg-white/20 p-3 rounded-full transition-all transform hover:scale-110";
+      linkEl.innerHTML = getSocialIcon(link.platform);
+      container.appendChild(linkEl);
+    });
+  }
+
+  function getSocialIcon(platform) {
+    const icons = {
+      facebook: '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>',
+      twitter: '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>',
+      instagram: '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.62 5.367 11.987 11.988 11.987 6.62 0 11.987-5.367 11.987-11.987C24.014 5.367 18.637.001 12.017.001zM8.449 16.988c-1.297 0-2.448-.49-3.323-1.297C4.198 14.97 3.708 13.819 3.708 12.522s.49-2.448 1.418-3.323c.928-.875 2.079-1.365 3.323-1.365s2.395.49 3.323 1.365c.928.875 1.418 2.026 1.418 3.323s-.49 2.448-1.418 3.169c-.928.721-2.026 1.297-3.323 1.297z"/></svg>',
+      linkedin: '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>',
+      youtube: '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>',
+      tiktok: '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>'
+    };
+    return icons[platform] || '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12s5.374 12 12 12 12-5.373 12-12S18.626 0 12 0zm5.568 8.16c-.169 1.858-.896 3.49-2.068 4.663-1.197 1.172-2.858 1.899-4.717 2.068-1.858.169-3.49-.896-4.663-2.068C4.947 11.651 4.22 9.99 4.051 8.131 3.882 6.273 4.947 4.612 6.12 3.44 7.292 2.268 8.954 1.541 10.812 1.372c1.858-.169 3.49.896 4.663 2.068 1.172 1.197 1.899 2.858 2.068 4.717z"/></svg>';
+  }
+
+  // Render footer links
+  function renderFooterLinks() {
+    const container = document.getElementById("footerLinks");
+    container.innerHTML = '';
+
+    footerLinks.forEach(link => {
+      const linkEl = document.createElement("button");
+      linkEl.className = "footer-link";
+      linkEl.textContent = link.title;
+      linkEl.addEventListener('click', () => showFooterLinkContent(link));
+      container.appendChild(linkEl);
+    });
+  }
+
+  function showFooterLinkContent(link) {
+    document.getElementById("footerLinkDisplayTitle").textContent = link.title;
+    document.getElementById("footerLinkDisplayContent").innerHTML = link.content.replace(/\n/g, '<br>');
+    document.getElementById("footerLinkDisplayModal").classList.remove("hidden");
+  }
+
+  // Load and render products/categories
+  async function loadProducts() {
+    try {
+      const res = await fetch(`${API}/find?collection=products&seller=${encodeURIComponent(sellerParam)}`);
+      allProducts = await res.json();
+      
+      // Generate categories from products
+      generateCategoriesFromProducts();
+      
+      renderCategories();
+      renderDynamicSections();
+    } catch (error) {
+      console.error("Failed to load products:", error);
+    }
+  }
+
+  // Management functions
+  async function saveShopSettings() {
+    try {
+      await fetch(`${API}/update`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          collection: "users",
+          query: { username: sellerParam },
+          updates: { 
+            shopSettings: {
+              ...shopSettings,
+              carouselSlides: slides,
+              categories: categories,
+              socialLinks: socialLinks,
+              footerLinks: footerLinks,
+              dynamicSections: dynamicSections
+            }
+          }
+        })
+      });
+    } catch (error) {
+      console.error("Failed to save shop settings:", error);
+    }
+  }
+
+  // Slide management
+  function openSlidesModal() {
+    document.getElementById("slidesModal").classList.remove("hidden");
+    renderSlidesList();
+  }
+
+  function renderSlidesList() {
+    const list = document.getElementById("slidesList");
+    list.innerHTML = '';
+
+    slides.forEach((slide, index) => {
+      const slideItem = document.createElement("div");
+      slideItem.className = "bg-gray-50 rounded-lg p-4 flex items-center justify-between";
+      slideItem.innerHTML = `
+        <div class="flex items-center gap-4">
+          <img src="${resolveImage(slide.image) || 'https://placehold.co/80x80'}" 
+               alt="${slide.title}" class="w-20 h-20 object-cover rounded-lg" />
+          <div>
+            <h4 class="font-semibold">${slide.title}</h4>
+            <p class="text-gray-600 text-sm">${slide.description}</p>
+            ${slide.linkType ? `<span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">${slide.linkType}${slide.linkLabel ? ` - ${slide.linkLabel}` : ''}</span>` : ''}
+            ${slide.isDefault ? `<span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded ml-2">Default</span>` : ''}
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <button class="edit-slide bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600" data-slide-index="${index}">
+            Edit
+          </button>
+          ${!slide.isDefault ? `
+            <button class="delete-slide bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600" data-slide-index="${index}">
+              Delete
+            </button>
+          ` : ''}
+        </div>
+      `;
+      list.appendChild(slideItem);
+    });
+  }
+
+  function openSlideEditModal(slideIndex = null) {
+    const modal = document.getElementById("slideEditModal");
+    const title = document.getElementById("slideEditTitle");
+    
+    modal.classList.remove("hidden");
+    title.textContent = slideIndex !== null ? "Edit Slide" : "Add New Slide";
+    
+    if (slideIndex !== null && slides[slideIndex]) {
+      const slide = slides[slideIndex];
+      document.getElementById("slideTitle").value = slide.title;
+      document.getElementById("slideDescription").value = slide.description;
+      document.getElementById("slideLinkType").value = slide.linkType || '';
+      document.getElementById("slideLinkLabel").value = slide.linkLabel || '';
+      updateLinkOptions(slide.linkType, slide.linkTarget);
+    } else {
+      // Clear form
+      document.getElementById("slideTitle").value = '';
+      document.getElementById("slideDescription").value = '';
+      document.getElementById("slideLinkType").value = '';
+      document.getElementById("slideLinkLabel").value = '';
+      document.getElementById("slideLinkOptions").classList.add("hidden");
+      document.getElementById("slideLinkLabelDiv").classList.add("hidden");
+    }
+
+    document.getElementById("saveSlide").onclick = () => saveSlide(slideIndex);
+  }
+
+  async function updateLinkOptions(linkType, currentTarget = '') {
+    const optionsDiv = document.getElementById("slideLinkOptions");
+    const labelDiv = document.getElementById("slideLinkLabelDiv");
+    const select = document.getElementById("slideLinkTarget");
+    const externalInput = document.getElementById("slideExternalLink");
+    const label = document.getElementById("linkOptionsLabel");
+
+    if (!linkType) {
+      optionsDiv.classList.add("hidden");
+      labelDiv.classList.add("hidden");
+      return;
+    }
+
+    optionsDiv.classList.remove("hidden");
+    labelDiv.classList.remove("hidden");
+    externalInput.classList.add("hidden");
+    select.classList.remove("hidden");
+
+    if (linkType === 'external') {
+      select.classList.add("hidden");
+      externalInput.classList.remove("hidden");
+      externalInput.value = currentTarget;
+      label.textContent = "Enter URL";
+      return;
+    }
+
+    label.textContent = linkType === 'category' ? "Select Category" : "Select Product";
+    select.innerHTML = '<option value="">Select...</option>';
+
+    if (linkType === 'category') {
+      categories.forEach(cat => {
+        const option = document.createElement("option");
+        option.value = cat.name;
+        option.textContent = cat.name;
+        if (cat.name === currentTarget) option.selected = true;
+        select.appendChild(option);
+      });
+    } else if (linkType === 'product') {
+      allProducts.forEach(product => {
+        const option = document.createElement("option");
+        option.value = product.id;
+        option.textContent = product.name;
+        if (product.id === currentTarget) option.selected = true;
+        select.appendChild(option);
+      });
+    }
+  }
+
+  async function saveSlide(editIndex = null) {
+    const title = document.getElementById("slideTitle").value.trim();
+    const description = document.getElementById("slideDescription").value.trim();
+    const linkType = document.getElementById("slideLinkType").value;
+    const linkLabel = document.getElementById("slideLinkLabel").value.trim();
+    
+    let linkTarget = '';
+    if (linkType === 'external') {
+      linkTarget = document.getElementById("slideExternalLink").value.trim();
+    } else if (linkType) {
+      linkTarget = document.getElementById("slideLinkTarget").value;
+    }
+
+    let image = '';
+    const fileInput = document.getElementById("slideImageInput");
+    const urlInput = document.getElementById("slideImageURL");
+
+    if (fileInput.files[0]) {
+      image = await new Promise(resolve => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.readAsDataURL(fileInput.files[0]);
+      });
+    } else if (urlInput.value.trim()) {
+      image = urlInput.value.trim();
+    } else if (editIndex !== null) {
+      image = slides[editIndex].image; // Keep existing image
+    }
+
+    const slideData = {
+      id: editIndex !== null ? slides[editIndex].id : Date.now().toString(),
+      title: title || 'Untitled Slide',
+      description: description || '',
+      image: image,
+      linkType: linkType,
+      linkTarget: linkTarget,
+      linkLabel: linkLabel,
+      isDefault: editIndex !== null ? slides[editIndex].isDefault : false
+    };
+
+    if (editIndex !== null) {
+      slides[editIndex] = slideData;
+    } else {
+      slides.push(slideData);
+    }
+
+    await saveShopSettings();
+    renderCarousel();
+    renderSlidesList();
+    document.getElementById("slideEditModal").classList.add("hidden");
+  }
+
+  function deleteSlide(index) {
+    if (slides[index].isDefault) return; // Can't delete default slide
+    
+    if (confirm("Are you sure you want to delete this slide?")) {
+      slides.splice(index, 1);
+      saveShopSettings();
+      renderCarousel();
+      renderSlidesList();
+    }
+  }
+
+  // Footer management functions
+  function openFooterModal() {
+    document.getElementById("footerModal").classList.remove("hidden");
+    renderSocialLinksList();
+    renderFooterLinksList();
+  }
+
+  function renderSocialLinksList() {
+    const list = document.getElementById("socialLinksList");
+    list.innerHTML = '';
+
+    socialLinks.forEach((link, index) => {
+      const linkItem = document.createElement("div");
+      linkItem.className = "flex items-center gap-3 p-3 bg-gray-50 rounded-lg";
+      linkItem.innerHTML = `
+        <select class="social-platform px-3 py-1 border rounded" data-index="${index}">
+          <option value="facebook" ${link.platform === 'facebook' ? 'selected' : ''}>Facebook</option>
+          <option value="twitter" ${link.platform === 'twitter' ? 'selected' : ''}>Twitter</option>
+          <option value="instagram" ${link.platform === 'instagram' ? 'selected' : ''}>Instagram</option>
+          <option value="linkedin" ${link.platform === 'linkedin' ? 'selected' : ''}>LinkedIn</option>
+          <option value="youtube" ${link.platform === 'youtube' ? 'selected' : ''}>YouTube</option>
+          <option value="tiktok" ${link.platform === 'tiktok' ? 'selected' : ''}>TikTok</option>
+        </select>
+        <input type="url" class="social-url flex-1 px-3 py-1 border rounded" 
+               placeholder="Enter URL" value="${link.url}" data-index="${index}" />
+        <button class="remove-social bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600" data-index="${index}">
+          Remove
+        </button>
+      `;
+      list.appendChild(linkItem);
+    });
+  }
+
+  function renderFooterLinksList() {
+    const list = document.getElementById("footerLinksList");
+    list.innerHTML = '';
+
+    footerLinks.forEach((link, index) => {
+      const linkItem = document.createElement("div");
+      linkItem.className = "flex items-center gap-3 p-3 bg-gray-50 rounded-lg";
+      linkItem.innerHTML = `
+        <div class="flex-1">
+          <p class="font-semibold">${link.title}</p>
+          <p class="text-sm text-gray-600">${link.content.substring(0, 100)}${link.content.length > 100 ? '...' : ''}</p>
+        </div>
+        <div class="flex gap-2">
+          <button class="edit-footer-link bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600" data-index="${index}">
+            Edit
+          </button>
+          <button class="remove-footer-link bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600" data-index="${index}">
+            Remove
+          </button>
+        </div>
+      `;
+      list.appendChild(linkItem);
+    });
+  }
+
+  function addSocialLink() {
+    socialLinks.push({
+      platform: 'facebook',
+      url: ''
+    });
+    renderSocialLinksList();
+  }
+
+  function addFooterLink() {
+    currentEditingFooterLinkIndex = footerLinks.length;
+    document.getElementById("footerLinkContentTitle").textContent = "Add New Footer Link";
+    document.getElementById("footerLinkTitle").value = "";
+    document.getElementById("footerLinkContent").value = "";
+    document.getElementById("footerLinkContentModal").classList.remove("hidden");
+  }
+
+  function editFooterLink(index) {
+    currentEditingFooterLinkIndex = index;
+    const link = footerLinks[index];
+    document.getElementById("footerLinkContentTitle").textContent = "Edit Footer Link";
+    document.getElementById("footerLinkTitle").value = link.title;
+    document.getElementById("footerLinkContent").value = link.content;
+    document.getElementById("footerLinkContentModal").classList.remove("hidden");
+  }
+
+  function saveFooterLinkContent() {
+    const title = document.getElementById("footerLinkTitle").value.trim();
+    const content = document.getElementById("footerLinkContent").value.trim();
+
+    if (!title || !content) {
+      alert("Please fill in both title and content");
+      return;
+    }
+
+    const linkData = { title, content };
+
+    if (currentEditingFooterLinkIndex < footerLinks.length) {
+      footerLinks[currentEditingFooterLinkIndex] = linkData;
+    } else {
+      footerLinks.push(linkData);
+    }
+
+    renderFooterLinksList();
+    document.getElementById("footerLinkContentModal").classList.add("hidden");
+    currentEditingFooterLinkIndex = null;
+  }
+
+  function removeSocialLink(index) {
+    socialLinks.splice(index, 1);
+    renderSocialLinksList();
+  }
+
+  function removeFooterLink(index) {
+    footerLinks.splice(index, 1);
+    renderFooterLinksList();
+  }
+
+  function saveFooterSettings() {
+    // Update socialLinks array with current form values
+    document.querySelectorAll('.social-platform').forEach(select => {
+      const index = parseInt(select.dataset.index);
+      if (socialLinks[index]) {
+        socialLinks[index].platform = select.value;
+      }
+    });
+
+    document.querySelectorAll('.social-url').forEach(input => {
+      const index = parseInt(input.dataset.index);
+      if (socialLinks[index]) {
+        socialLinks[index].url = input.value.trim();
+      }
+    });
+
+    // Remove empty links
+    socialLinks = socialLinks.filter(link => link.url);
+
+    saveShopSettings();
+    renderSocialLinks();
+    renderFooterLinks();
+    document.getElementById("footerModal").classList.add("hidden");
+  }
+// Add this code to the cyber layout script, after the existing owner customization section
+
+if (isOwner) {
+  // Add the customization button if it doesn't exist
+  let customizeBtn = document.getElementById("customizeBtn");
+  if (!customizeBtn) {
+    customizeBtn = document.createElement("button");
+    customizeBtn.textContent = "✨ Customize";
+    customizeBtn.className = "fixed top-4 left-4 z-50 bg-indigo-600 text-white px-6 py-2 rounded-full shadow hover:bg-indigo-700";
+    customizeBtn.id = "customizeBtn";
+    document.body.appendChild(customizeBtn);
+  }
+
+  // Define customizable elements including logo and title
+  const customizableElements = {
+    "shopLogo": { label: "Logo (60×60px)", type: "image" },
+    "shopTitle": { label: "Store Title", type: "text-edit", key: "title" },
+    "footerLogo": { label: "Footer Logo (80×80px)", type: "image" },
+    "footerTitle": { label: "Footer Store Name", type: "text-edit", key: "name" },
+    "footerStoreName": { label: "Footer Copyright Name", type: "text-edit", key: "name" }
+  };
+
+  let isCustomizing = false;
+  
+  customizeBtn.addEventListener("click", async () => {
+    isCustomizing = !isCustomizing;
+    customizeBtn.textContent = isCustomizing ? "❌ Close Customization" : "✨ Customize";
+    
+    if (isCustomizing) {
+      Object.keys(customizableElements).forEach(id => {
+        const el = document.getElementById(id);
+        if (el && !el.dataset.bound) {
+          el.dataset.bound = "true";
+          el.classList.add("cursor-pointer", "border-2", "border-yellow-400", "border-dashed");
+          el.addEventListener("click", openCustomModal);
+        }
+      });
+    } else {
+      removeCustomHighlights();
+      // Save theme changes when closing customization
+      await saveThemeChanges();
+    }
+  });
+
+  function openCustomModal(e) {
+    e.stopPropagation();
+    const id = e.currentTarget.id;
+    const config = customizableElements[id];
+    if (!config) return;
+
+    // Create modal if it doesn't exist
+    let modal = document.getElementById("customModal");
+    if (!modal) {
+      modal = document.createElement("div");
+      modal.id = "customModal";
+      modal.className = "hidden fixed top-24 left-1/2 -translate-x-1/2 z-50 bg-white p-6 shadow-xl rounded-lg w-[420px] max-w-full space-y-4";
+      modal.innerHTML = `
+        <h3 class="text-lg font-bold text-indigo-700">Customize This Element</h3>
+        <div class="space-y-2" id="modalContent"></div>
+        <div class="flex justify-between gap-2 pt-4">
+          <button id="cancelBtn" class="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400 w-1/2">Cancel</button>
+          <button id="applyBtn" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 w-1/2">Apply</button>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+
+    const content = document.getElementById("modalContent");
+    modal.classList.remove("hidden");
+    content.innerHTML = `<label class="text-sm font-semibold block mb-1">${config.label}</label>`;
+
+    if (config.type === "image") {
+      content.innerHTML += `
+        <input type="text" id="customInputURL" placeholder="Image URL or filename" class="w-full px-3 py-2 border rounded mb-2" />
+        <input type="file" id="customInputFile" accept="image/*" class="w-full" />
+      `;
+    } else if (config.type === "text-edit") {
+      const el = document.getElementById(id);
+      content.innerHTML += `
+        <input type="text" id="customTextValue" value="${el.textContent}" class="w-full px-3 py-2 border rounded mb-2" />
+        <input type="color" id="customInputColor" class="w-full h-10 border rounded" />
+      `;
+    }
+
+    document.getElementById("applyBtn").onclick = () => applyCustomChange(id, config);
+    document.getElementById("cancelBtn").onclick = () => modal.classList.add("hidden");
+  }
+
+  async function applyCustomChange(id, config) {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    if (config.type === "image") {
+      const url = document.getElementById("customInputURL").value.trim();
+      const fileInput = document.getElementById("customInputFile");
+      let image = url;
+
+      if (!url && fileInput?.files?.[0]) {
+        const file = fileInput.files[0];
+        image = await new Promise(res => {
+          const reader = new FileReader();
+          reader.onloadend = () => res(reader.result);
+          reader.readAsDataURL(file);
+        });
+      }
+
+      if (image) {
+        const stored = image;
+        el.src = resolveImage(stored);
+
+        if (id === "shopLogo" || id === "footerLogo") {
+          theme.logo = stored;
+          // Update both logos
+          set("shopLogo", logoEl => {
+            logoEl.src = resolveImage(stored);
+            logoEl.onerror = () => logoEl.src = "https://placehold.co/60x60?text=Logo";
+          });
+          set("footerLogo", logoEl => {
+            logoEl.src = resolveImage(stored);
+            logoEl.onerror = () => logoEl.src = "https://placehold.co/80x80?text=Logo";
+          });
+        }
+      }
+
+    } else if (config.type === "text-edit") {
+      const color = document.getElementById("customInputColor").value;
+      const text = document.getElementById("customTextValue").value;
+      el.textContent = text;
+      if (color) el.style.color = color;
+      
+      theme[config.key] = text;
+      theme[`${config.key}Color`] = color;
+
+      // Update related elements
+      if (config.key === "title") {
+        set("shopTitle", titleEl => titleEl.textContent = text);
+      } else if (config.key === "name") {
+        set("footerTitle", titleEl => titleEl.textContent = text);
+        set("footerStoreName", titleEl => titleEl.textContent = text);
+      }
+    }
+
+    // Save changes immediately like classic layout does
+    await fetch(`${API}/update`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        collection: "users",
+        query: { username: sellerParam },
+        updates: {
+          customTheme: theme,
+          theme: theme  // Also save to theme field for consistency
+        }
+      })
+    });
+
+    document.getElementById("customModal").classList.add("hidden");
+  }
+
+  // Separate function to save theme changes
+  async function saveThemeChanges() {
+    try {
+      await fetch(`${API}/update`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          collection: "users",
+          query: { username: sellerParam },
+          updates: { 
+            customTheme: theme,
+            theme: theme  // Also save to theme field for consistency
+          }
+        })
+      });
+      console.log("Theme changes saved successfully");
+    } catch (error) {
+      console.error("Failed to save theme changes:", error);
+    }
+  }
+
+  function removeCustomHighlights() {
+    Object.keys(customizableElements).forEach(id => {
+      const el = document.getElementById(id);
+      if (el) {
+        el.classList.remove("cursor-pointer", "border-2", "border-yellow-400", "border-dashed");
+        el.removeEventListener("click", openCustomModal);
+        el.removeAttribute("data-bound");
+      }
+    });
+  }
+}
+  // Event listeners
+  if (isOwner) {
+    // Add customize button
+    const customizeBtn = document.createElement("button");
+    customizeBtn.textContent = "✨ Manage Slides";
+    customizeBtn.className = "fixed top-4 right-4 z-50 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-full shadow-lg hover:shadow-xl transform hover:scale-105 transition-all";
+    customizeBtn.addEventListener("click", openSlidesModal);
+    document.body.appendChild(customizeBtn);
+
+    // Modal event listeners
+    document.getElementById("addSlideBtn").addEventListener("click", () => openSlideEditModal());
+    document.getElementById("closeSlidesModal").addEventListener("click", () => {
+      document.getElementById("slidesModal").classList.add("hidden");
+    });
+
+    document.getElementById("cancelSlideEdit").addEventListener("click", () => {
+      document.getElementById("slideEditModal").classList.add("hidden");
+    });
+
+    document.getElementById("slideLinkType").addEventListener("change", (e) => {
+      updateLinkOptions(e.target.value);
+    });
+
+    // Section management
+    document.getElementById("sectionType").addEventListener("change", (e) => {
+      updateSectionOptions(e.target.value);
+    });
+
+    document.getElementById("cancelSection").addEventListener("click", () => {
+      document.getElementById("sectionModal").classList.add("hidden");
+    });
+
+    document.getElementById("saveSection").addEventListener("click", saveSection);
+
+    // Category management
+    document.getElementById("cancelAddCategory").addEventListener("click", () => {
+      document.getElementById("addCategoryModal").classList.add("hidden");
+    });
+
+    document.getElementById("saveNewCategory").addEventListener("click", saveNewCategory);
+
+    document.getElementById("cancelCategoryImage").addEventListener("click", () => {
+      document.getElementById("categoryImageModal").classList.add("hidden");
+    });
+
+    document.getElementById("saveCategoryImage").addEventListener("click", saveCategoryImage);
+
+    // Product search modal
+    document.getElementById("productSearchInput").addEventListener("input", (e) => {
+      renderProductSearchList(e.target.value);
+    });
+
+    document.getElementById("cancelProductSearch").addEventListener("click", () => {
+      document.getElementById("productSearchModal").classList.add("hidden");
+    });
+
+    document.getElementById("confirmProductSelection").addEventListener("click", confirmProductSelection);
+
+    // Footer management
+    document.getElementById("addSocialBtn").addEventListener("click", addSocialLink);
+    document.getElementById("addFooterLinkBtn").addEventListener("click", addFooterLink);
+    document.getElementById("closeFooterModal").addEventListener("click", () => {
+      document.getElementById("footerModal").classList.add("hidden");
+    });
+    document.getElementById("saveFooterSettings").addEventListener("click", saveFooterSettings);
+
+    // Footer link content modal
+    document.getElementById("cancelFooterLinkContent").addEventListener("click", () => {
+      document.getElementById("footerLinkContentModal").classList.add("hidden");
+    });
+    document.getElementById("saveFooterLinkContent").addEventListener("click", saveFooterLinkContent);
+
+    // Footer click for customization
+    document.getElementById("footer").addEventListener("click", openFooterModal);
+
+    // Event delegation for dynamic buttons
+    document.addEventListener("click", (e) => {
+      if (e.target.closest(".edit-slide")) {
+        const index = parseInt(e.target.closest(".edit-slide").dataset.slideIndex);
+        openSlideEditModal(index);
+      }
+      
+      if (e.target.closest(".delete-slide")) {
+        const index = parseInt(e.target.closest(".delete-slide").dataset.slideIndex);
+        deleteSlide(index);
+      }
+
+      if (e.target.closest(".upload-category-image")) {
+        const categoryId = e.target.closest(".upload-category-image").dataset.categoryId;
+        openCategoryImageModal(categoryId);
+      }
+
+      if (e.target.closest(".delete-category")) {
+        const categoryId = e.target.closest(".delete-category").dataset.categoryId;
+        deleteCategory(categoryId);
+      }
+
+      if (e.target.closest(".remove-social")) {
+        const index = parseInt(e.target.closest(".remove-social").dataset.index);
+        removeSocialLink(index);
+      }
+
+      if (e.target.closest(".edit-footer-link")) {
+        const index = parseInt(e.target.closest(".edit-footer-link").dataset.index);
+        editFooterLink(index);
+      }
+
+      if (e.target.closest(".remove-footer-link")) {
+        const index = parseInt(e.target.closest(".remove-footer-link").dataset.index);
+        removeFooterLink(index);
+      }
+
+      if (e.target.closest(".section-remove-btn")) {
+        const index = parseInt(e.target.closest(".section-remove-btn").dataset.sectionIndex);
+        removeSection(index);
+      }
+
+      if (e.target.closest(".remove-featured-product")) {
+        const btn = e.target.closest(".remove-featured-product");
+        const sectionId = btn.dataset.sectionId;
+        const productId = btn.dataset.productId;
+        removeFeaturedProduct(sectionId, productId);
+      }
+    });
+  } else {
+    // For non-owners, make footer non-clickable
+    document.getElementById("footer").style.cursor = "default";
+    document.getElementById("footer").classList.remove("hover:bg-gray-700");
+  }
+
+  // Footer link display modal
+  document.getElementById("closeFooterLinkDisplay").addEventListener("click", () => {
+    document.getElementById("footerLinkDisplayModal").classList.add("hidden");
+  });
+
+  // Initialize everything
+  initCarousel();
+  renderCategories();
+  renderSocialLinks();
+  renderFooterLinks();
+  loadProducts();
+
+const user = JSON.parse(localStorage.getItem("user") || "null");
+  const container = document.getElementById("shopAuthButtons");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const actualSeller = window.__SHOP_DATA__?.actualSeller || urlParams.get("seller");
+
+  if (user) {
+    const dashboard = document.createElement("a");
+
+    if (user.role && user.role.startsWith("seller")) {
+      // If seller is the shop owner → no param
+      if (user.username === actualSeller) {
+        dashboard.href = "dashboard.html";
+      } else {
+        // Seller visiting another seller's shop → link to their own dashboard
+        dashboard.href = `dashboard.html?seller=${encodeURIComponent(user.username)}`;
+      }
+    } else {
+      // Buyer → no param needed
+      dashboard.href = "buyer-dashboard.html";
+    }
+
+    dashboard.className =
+      "px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-all font-medium";
+    dashboard.textContent = "Dashboard";
+
+    const logout = document.createElement("button");
+    logout.className =
+      "px-4 py-2 rounded-lg border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50 transition-all font-medium";
+    logout.textContent = "Logout";
+    logout.onclick = () => {
+      localStorage.removeItem("user");
+      location.reload();
+    };
+
+    container.appendChild(dashboard);
+    container.appendChild(logout);
+  } else {
+    const sellerParam = actualSeller
+      ? `?seller=${encodeURIComponent(actualSeller)}`
+      : "";
+
+    const signup = document.createElement("a");
+    signup.href = `signup.html${sellerParam}`;
+    signup.className =
+      "px-4 py-2 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-all font-medium";
+    signup.textContent = "Sign Up";
+
+    const login = document.createElement("a");
+    login.href = `login.html${sellerParam}`;
+    login.className =
+      "px-4 py-2 rounded-lg border-2 border-indigo-600 text-indigo-600 hover:bg-indigo-50 transition-all font-medium";
+    login.textContent = "Log In";
+
+    container.appendChild(signup);
+    container.appendChild(login);
+  }
+})();
+</script>

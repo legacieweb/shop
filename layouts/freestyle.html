@@ -1,0 +1,950 @@
+<!-- Freestyle Advanced Layout with Page Builder -->
+<div id="layoutDefault" class="flex-grow flex flex-col min-h-screen">
+
+<style>
+:root {
+  --primary-color: #6366f1;
+  --secondary-color: #8b5cf6;
+  --accent-color: #ec4899;
+  --bg-primary: #0f0f23;
+  --bg-secondary: #1a1a2e;
+  --text-primary: #ffffff;
+  --text-secondary: #a1a1aa;
+  --border-color: #374151;
+  --glow-color: #00ffff;
+  --neon-pink: #ff0080;
+  --neon-blue: #0080ff;
+  --neon-green: #00ff80;
+}
+
+/* Advanced Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 5px var(--glow-color), 0 0 10px var(--glow-color), 0 0 15px var(--glow-color); }
+  50% { box-shadow: 0 0 10px var(--glow-color), 0 0 20px var(--glow-color), 0 0 30px var(--glow-color); }
+}
+
+@keyframes neon-border {
+  0%, 100% { border-color: var(--neon-pink); box-shadow: 0 0 10px var(--neon-pink); }
+  33% { border-color: var(--neon-blue); box-shadow: 0 0 10px var(--neon-blue); }
+  66% { border-color: var(--neon-green); box-shadow: 0 0 10px var(--neon-green); }
+}
+
+@keyframes matrix-rain {
+  0% { transform: translateY(-100vh); opacity: 1; }
+  100% { transform: translateY(100vh); opacity: 0; }
+}
+
+@keyframes hologram {
+  0%, 100% { opacity: 1; transform: skewX(0deg); }
+  25% { opacity: 0.8; transform: skewX(1deg); }
+  50% { opacity: 0.9; transform: skewX(-1deg); }
+  75% { opacity: 0.7; transform: skewX(0.5deg); }
+}
+
+@keyframes cyber-glitch {
+  0%, 100% { transform: translate(0); }
+  20% { transform: translate(-2px, 2px); }
+  40% { transform: translate(-2px, -2px); }
+  60% { transform: translate(2px, 2px); }
+  80% { transform: translate(2px, -2px); }
+}
+
+@keyframes particle-float {
+  0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+}
+
+/* Freestyle Styles */
+.freestyle-container {
+  background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.matrix-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.matrix-char {
+  position: absolute;
+  color: var(--glow-color);
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  animation: matrix-rain 3s linear infinite;
+  opacity: 0.3;
+}
+
+.floating-element {
+  animation: float 6s ease-in-out infinite;
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.neon-border {
+  border: 2px solid;
+  animation: neon-border 3s ease-in-out infinite;
+}
+
+.hologram-effect {
+  animation: hologram 4s ease-in-out infinite;
+}
+
+.cyber-glitch {
+  animation: cyber-glitch 0.3s ease-in-out infinite;
+}
+
+.particle {
+  position: fixed;
+  width: 4px;
+  height: 4px;
+  background: var(--glow-color);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 2;
+  animation: particle-float 8s linear infinite;
+}
+
+.glass-morphism {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+}
+
+.text-glow {
+  text-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor;
+}
+.text-glow-intense {
+  text-shadow: 0 0 12px var(--glow-color), 0 0 24px var(--glow-color), 0 0 48px var(--glow-color);
+}
+
+.hover-transform {
+  transition: all 0.3s ease;
+}
+
+.hover-transform:hover {
+  transform: scale(1.05) rotate(2deg);
+}
+
+/* Page Builder Styles */
+.page-builder-panel {
+  position: fixed;
+  right: -400px;
+  top: 0;
+  width: 400px;
+  height: 100vh;
+  background: rgba(15, 15, 35, 0.95);
+  backdrop-filter: blur(20px);
+  border-left: 2px solid var(--glow-color);
+  z-index: 1000;
+  transition: right 0.3s ease;
+  overflow-y: auto;
+}
+
+.page-builder-panel.open {
+  right: 0;
+}
+
+.page-nav {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 15, 35, 0.9);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glow-color);
+  border-radius: 50px;
+  padding: 10px 20px;
+  z-index: 999;
+}
+
+.custom-page {
+  display: none;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.custom-page.active {
+  display: block;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .page-builder-panel {
+    width: 100%;
+    right: -100%;
+  }
+}
+</style>
+
+<!-- Matrix Background Effect -->
+<div class="matrix-bg" id="matrixBg"></div>
+
+<!-- Floating Particles -->
+<div id="particleContainer"></div>
+
+<!-- Header with Advanced Effects -->
+<header id="headerSection" class="glass-morphism sticky top-0 z-50 neon-border">
+  <div class="max-w-7xl mx-auto px-4 py-6 flex items-center justify-between" id="boxHeader">
+    <div class="flex items-center gap-4">
+      <img id="shopLogo" src="https://placehold.co/60x60" class="w-16 h-16 rounded-full object-cover pulse-glow floating-element" />
+      <h1 id="shopTitle" class="text-4xl font-bold text-glow hologram-effect">Loading...</h1>
+    </div>
+    <div class="flex items-center gap-4">
+      <button id="pageBuilderToggle" class="glass-morphism px-4 py-2 rounded-lg text-glow hover-transform">
+        🎨 Page Builder
+      </button>
+      <div id="shopAuthButtons" class="flex items-center gap-2 text-sm"></div>
+    </div>
+  </div>
+</header>
+
+<!-- Main Content Area -->
+<main class="freestyle-container flex-grow relative z-10">
+  
+  <!-- Default Shop Page -->
+  <div id="defaultPage" class="custom-page active">
+    
+    <!-- Hero Section with Advanced Carousel -->
+    <section id="heroSection" class="relative h-screen overflow-hidden">
+      <div id="carousel" class="relative w-full h-full">
+        <div id="carouselSlides" class="flex transition-transform duration-1000 ease-in-out h-full">
+          <!-- Default slide -->
+          <div class="min-w-full h-full relative flex items-center justify-center bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+            <div class="text-center text-white z-10 floating-element">
+              <h2 class="text-6xl font-bold mb-6 text-glow cyber-glitch">Welcome to the Future</h2>
+              <p class="text-2xl mb-8 hologram-effect">Experience Next-Gen Shopping</p>
+              <button class="glass-morphism px-8 py-4 rounded-full text-xl hover-transform pulse-glow">
+                Explore Now
+              </button>
+            </div>
+            <div class="absolute inset-0 bg-black/30"></div>
+          </div>
+        </div>
+        
+        <!-- Advanced Carousel Navigation -->
+        <button id="prevSlide" class="absolute left-8 top-1/2 -translate-y-1/2 glass-morphism text-white p-4 rounded-full hover-transform pulse-glow">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </button>
+        <button id="nextSlide" class="absolute right-8 top-1/2 -translate-y-1/2 glass-morphism text-white p-4 rounded-full hover-transform pulse-glow">
+          <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <!-- Products Grid with Advanced Effects -->
+    <section id="productsSection" class="py-20 px-4">
+      <div class="max-w-7xl mx-auto">
+        <h2 class="text-5xl font-bold text-center mb-16 text-glow floating-element">Featured Products</h2>
+        <div id="productsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          <!-- Products will be loaded here -->
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="aboutSection" class="py-20 px-4 glass-morphism mx-4 rounded-3xl mb-20">
+      <div class="max-w-4xl mx-auto text-center">
+        <h2 class="text-4xl font-bold mb-8 text-glow">About Our Store</h2>
+        <p id="shopDescription" class="text-xl leading-relaxed hologram-effect">
+          Welcome to our futuristic shopping experience...
+        </p>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Custom Pages Container -->
+  <div id="customPagesContainer">
+    <!-- Custom pages will be dynamically added here -->
+  </div>
+
+</main>
+
+<!-- Page Navigation -->
+<nav class="page-nav">
+  <div class="flex items-center gap-4">
+    <button id="homePageBtn" class="px-4 py-2 rounded-full glass-morphism text-glow active">
+      🏠 Home
+    </button>
+    <div id="customPageNavs" class="flex items-center gap-2">
+      <!-- Custom page navigation buttons will be added here -->
+    </div>
+    <button id="addPageBtn" class="px-4 py-2 rounded-full glass-morphism text-glow hover-transform">
+      ➕ Add Page
+    </button>
+  </div>
+</nav>
+
+<!-- Page Builder Panel -->
+<div id="pageBuilderPanel" class="page-builder-panel">
+  <div class="p-6">
+    <div class="flex items-center justify-between mb-6">
+      <h3 class="text-2xl font-bold text-glow">Page Builder</h3>
+      <button id="closePageBuilder" class="text-2xl hover-transform">✖</button>
+    </div>
+
+    <!-- Page Management -->
+    <div class="mb-8">
+      <h4 class="text-lg font-semibold mb-4 text-glow">Pages</h4>
+      <div id="pagesList" class="space-y-2 mb-4">
+        <!-- Pages list will be populated here -->
+      </div>
+      <button id="createNewPage" class="w-full glass-morphism py-3 rounded-lg hover-transform">
+        Create New Page
+      </button>
+    </div>
+
+    <!-- Page Editor -->
+    <div id="pageEditor" class="hidden">
+      <h4 class="text-lg font-semibold mb-4 text-glow">Edit Page</h4>
+      
+      <div class="mb-4">
+        <label class="block text-sm font-medium mb-2">Page Name</label>
+        <input type="text" id="pageNameInput" class="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white">
+      </div>
+
+      <div class="mb-4">
+        <label class="block text-sm font-medium mb-2">Page Content</label>
+        <div class="mb-2 flex flex-wrap gap-2">
+          <button class="element-btn px-3 py-1 bg-blue-600 rounded text-sm" data-element="heading">📝 Heading</button>
+          <button class="element-btn px-3 py-1 bg-green-600 rounded text-sm" data-element="text">📄 Text</button>
+          <button class="element-btn px-3 py-1 bg-purple-600 rounded text-sm" data-element="image">🖼️ Image</button>
+          <button class="element-btn px-3 py-1 bg-red-600 rounded text-sm" data-element="button">🔘 Button</button>
+          <button class="element-btn px-3 py-1 bg-yellow-600 rounded text-sm" data-element="video">🎥 Video</button>
+          <button class="element-btn px-3 py-1 bg-indigo-600 rounded text-sm" data-element="embed">💻 Embed Code</button>
+        </div>
+        <textarea id="pageContentEditor" rows="15" class="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white font-mono text-sm" placeholder="Enter HTML content or use the buttons above to add elements..."></textarea>
+      </div>
+
+      <div class="flex gap-3">
+        <button id="savePageBtn" class="flex-1 bg-green-600 py-3 rounded-lg hover-transform">Save Page</button>
+        <button id="previewPageBtn" class="flex-1 bg-blue-600 py-3 rounded-lg hover-transform">Preview</button>
+        <button id="deletePageBtn" class="px-4 bg-red-600 py-3 rounded-lg hover-transform">🗑️</button>
+      </div>
+    </div>
+
+    <!-- Embed Code Section -->
+    <div class="mt-8">
+      <h4 class="text-lg font-semibold mb-4 text-glow">Embed Custom Code</h4>
+      <textarea id="customCodeEditor" rows="8" class="w-full p-3 rounded-lg bg-gray-800 border border-gray-600 text-white font-mono text-sm" placeholder="Enter custom HTML, CSS, or JavaScript..."></textarea>
+      <button id="applyCustomCode" class="w-full mt-3 bg-purple-600 py-3 rounded-lg hover-transform">Apply Custom Code</button>
+    </div>
+
+    <!-- Theme Customization -->
+    <div class="mt-8">
+      <h4 class="text-lg font-semibold mb-4 text-glow">Theme Colors</h4>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm mb-1">Primary Color</label>
+          <input type="color" id="primaryColorPicker" class="w-full h-10 rounded">
+        </div>
+        <div>
+          <label class="block text-sm mb-1">Accent Color</label>
+          <input type="color" id="accentColorPicker" class="w-full h-10 rounded">
+        </div>
+        <div>
+          <label class="block text-sm mb-1">Glow Color</label>
+          <input type="color" id="glowColorPicker" class="w-full h-10 rounded">
+        </div>
+        <div>
+          <label class="block text-sm mb-1">Background</label>
+          <input type="color" id="bgColorPicker" class="w-full h-10 rounded">
+        </div>
+      </div>
+      <button id="applyTheme" class="w-full mt-3 bg-indigo-600 py-3 rounded-lg hover-transform">Apply Theme</button>
+    </div>
+  </div>
+  
+  <!-- Loading Screen -->
+  <div id="loadingScreen" class="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900">
+    <div class="text-center">
+      <div class="text-8xl mb-8 animate-spin">🌟</div>
+      <h1 class="text-4xl font-bold text-glow-intense mb-4">Loading Future...</h1>
+      <div class="w-64 h-2 bg-gray-700 rounded-full overflow-hidden">
+        <div class="h-full bg-gradient-to-r from-cyan-400 to-purple-500 rounded-full animate-pulse" style="width: 100%; animation: loading 2s ease-in-out;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+@keyframes loading {
+  0% { width: 0%; }
+  100% { width: 100%; }
+}
+</style>
+
+<script>
+(function handleLoadingOverlay(){
+  const hide = () => {
+    const loadingScreen = document.getElementById('loadingScreen');
+    if (loadingScreen) {
+      loadingScreen.style.transition = 'opacity 1s ease';
+      loadingScreen.style.opacity = '0';
+      setTimeout(() => loadingScreen.remove(), 1000);
+    }
+  };
+  const started = Date.now();
+  const scheduleHide = () => {
+    const elapsed = Date.now() - started;
+    const delay = Math.max(0, 1200 - elapsed);
+    setTimeout(hide, delay);
+  };
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    scheduleHide();
+  } else {
+    window.addEventListener('DOMContentLoaded', scheduleHide);
+    window.addEventListener('load', scheduleHide);
+  }
+})();
+</script>
+
+<script>
+// Utility: sanitize HTML to prevent script execution/errors
+function sanitizeHTML(html) {
+  try {
+    const tpl = document.createElement('template');
+    tpl.innerHTML = String(html || '');
+    // Remove script tags
+    tpl.content.querySelectorAll('script').forEach(el => el.remove());
+    // Remove event handler attributes and javascript: URLs
+    tpl.content.querySelectorAll('*').forEach(el => {
+      [...el.attributes].forEach(attr => {
+        const name = attr.name || '';
+        const value = String(attr.value || '');
+        if (/^on/i.test(name)) el.removeAttribute(name);
+        if ((name === 'href' || name === 'src') && /^\s*javascript:/i.test(value)) {
+          el.removeAttribute(name);
+        }
+      });
+    });
+    return tpl.innerHTML;
+  } catch (_) {
+    return '';
+  }
+}
+// Freestyle Layout Advanced Features
+class FreestyleLayout {
+  constructor() {
+    this.currentPage = 'default';
+    this.customPages = JSON.parse(localStorage.getItem('freestylePages') || '{}');
+    this.currentEditingPage = null;
+    this.init();
+  }
+
+  init() {
+    this.createMatrixEffect();
+    this.createParticleEffect();
+    this.setupPageBuilder();
+    this.setupNavigation();
+    this.loadCustomPages();
+    this.setupCarousel();
+    this.setupThemeCustomization();
+    this.applyShopTheme();
+  }
+
+  // Enhanced Matrix Background Effect
+  createMatrixEffect() {
+    const matrixBg = document.getElementById('matrixBg');
+    if (!matrixBg) return;
+    
+    const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン♦◆▲▼◄►';
+    const colors = ['#00ffff', '#ff0080', '#0080ff', '#00ff80', '#8000ff'];
+    
+    const createMatrixChar = () => {
+      try {
+        const char = document.createElement('div');
+        char.className = 'matrix-char';
+        char.textContent = chars[Math.floor(Math.random() * chars.length)];
+        char.style.left = Math.random() * 100 + '%';
+        char.style.color = colors[Math.floor(Math.random() * colors.length)];
+        char.style.animationDuration = (Math.random() * 4 + 3) + 's';
+        char.style.fontSize = (Math.random() * 8 + 10) + 'px';
+        matrixBg.appendChild(char);
+        
+        setTimeout(() => {
+          if (char && char.parentNode) {
+            char.remove();
+          }
+        }, 7000);
+      } catch (error) {
+        console.warn('Matrix effect error:', error);
+      }
+    };
+
+    // Create initial matrix chars
+    for (let i = 0; i < 20; i++) {
+      setTimeout(createMatrixChar, i * 50);
+    }
+    
+    // Continue creating chars
+    this.matrixInterval = setInterval(createMatrixChar, 150);
+  }
+
+  // Enhanced Floating Particles Effect
+  createParticleEffect() {
+    const container = document.getElementById('particleContainer');
+    if (!container) return;
+    
+    const colors = ['#00ffff', '#ff0080', '#0080ff', '#00ff80', '#8000ff', '#ffd700'];
+    
+    const createParticle = () => {
+      try {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.background = `radial-gradient(circle, ${colors[Math.floor(Math.random() * colors.length)]} 0%, transparent 70%)`;
+        particle.style.animationDuration = (Math.random() * 6 + 6) + 's';
+        particle.style.animationDelay = Math.random() * 3 + 's';
+        particle.style.width = (Math.random() * 4 + 2) + 'px';
+        particle.style.height = particle.style.width;
+        container.appendChild(particle);
+        
+        setTimeout(() => {
+          if (particle && particle.parentNode) {
+            particle.remove();
+          }
+        }, 15000);
+      } catch (error) {
+        console.warn('Particle effect error:', error);
+      }
+    };
+
+    // Create initial particles
+    for (let i = 0; i < 10; i++) {
+      setTimeout(createParticle, i * 100);
+    }
+    
+    this.particleInterval = setInterval(createParticle, 800);
+  }
+
+  // Page Builder Setup
+  setupPageBuilder() {
+    const toggle = document.getElementById('pageBuilderToggle');
+    const panel = document.getElementById('pageBuilderPanel');
+    const close = document.getElementById('closePageBuilder');
+    const createBtn = document.getElementById('createNewPage');
+    const saveBtn = document.getElementById('savePageBtn');
+    const previewBtn = document.getElementById('previewPageBtn');
+    const deleteBtn = document.getElementById('deletePageBtn');
+    const applyCodeBtn = document.getElementById('applyCustomCode');
+
+    toggle?.addEventListener('click', () => panel.classList.add('open'));
+    close?.addEventListener('click', () => panel.classList.remove('open'));
+    
+    createBtn?.addEventListener('click', () => this.createNewPage());
+    saveBtn?.addEventListener('click', () => this.savePage());
+    previewBtn?.addEventListener('click', () => this.previewPage());
+    deleteBtn?.addEventListener('click', () => this.deletePage());
+    applyCodeBtn?.addEventListener('click', () => this.applyCustomCode());
+
+    // Element buttons
+    document.querySelectorAll('.element-btn').forEach(btn => {
+      btn.addEventListener('click', () => this.addElement(btn.dataset.element));
+    });
+
+    this.updatePagesList();
+  }
+
+  // Navigation Setup
+  setupNavigation() {
+    const homeBtn = document.getElementById('homePageBtn');
+    const addPageBtn = document.getElementById('addPageBtn');
+
+    homeBtn.addEventListener('click', () => this.navigateToPage('default'));
+    addPageBtn.addEventListener('click', () => {
+      document.getElementById('pageBuilderPanel').classList.add('open');
+      this.createNewPage();
+    });
+  }
+
+  // Create New Page
+  createNewPage() {
+    const pageName = prompt('Enter page name:');
+    if (!pageName) return;
+
+    const pageId = 'page_' + Date.now();
+    this.customPages[pageId] = {
+      name: pageName,
+      content: '<div class="min-h-screen p-8 text-center"><h1 class="text-4xl font-bold text-glow mb-8">' + pageName + '</h1><p class="text-xl">Start building your page...</p></div>'
+    };
+
+    this.savePages();
+    this.updatePagesList();
+    this.loadCustomPages();
+    this.editPage(pageId);
+  }
+
+  // Edit Page
+  editPage(pageId) {
+    this.currentEditingPage = pageId;
+    const page = this.customPages[pageId];
+    
+    document.getElementById('pageNameInput').value = page.name;
+    document.getElementById('pageContentEditor').value = page.content;
+    document.getElementById('pageEditor').classList.remove('hidden');
+  }
+
+  // Save Page
+  savePage() {
+    if (!this.currentEditingPage) return;
+
+    const name = document.getElementById('pageNameInput').value;
+    const content = document.getElementById('pageContentEditor').value;
+
+    this.customPages[this.currentEditingPage].name = name;
+    this.customPages[this.currentEditingPage].content = content;
+
+    this.savePages();
+    this.updatePagesList();
+    this.loadCustomPages();
+    
+    alert('Page saved successfully!');
+  }
+
+  // Preview Page
+  previewPage() {
+    if (!this.currentEditingPage) return;
+    
+    const content = document.getElementById('pageContentEditor').value;
+    const previewWindow = window.open('', '_blank');
+    previewWindow.document.write(`
+      <html>
+        <head>
+          <title>Page Preview</title>
+          <script src="https://cdn.tailwindcss.com"></script>
+          <style>
+            body { background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%); color: white; }
+            .text-glow { text-shadow: 0 0 10px currentColor, 0 0 20px currentColor, 0 0 30px currentColor; }
+          </style>
+        </head>
+        <body>${content}</body>
+      </html>
+    `);
+  }
+
+  // Delete Page
+  deletePage() {
+    if (!this.currentEditingPage) return;
+    
+    if (confirm('Are you sure you want to delete this page?')) {
+      delete this.customPages[this.currentEditingPage];
+      this.savePages();
+      this.updatePagesList();
+      this.loadCustomPages();
+      document.getElementById('pageEditor').classList.add('hidden');
+      this.currentEditingPage = null;
+    }
+  }
+
+  // Add Element to Editor
+  addElement(elementType) {
+    const editor = document.getElementById('pageContentEditor');
+    let elementHTML = '';
+
+    switch(elementType) {
+      case 'heading':
+        elementHTML = '<h2 class="text-3xl font-bold text-glow mb-4">Your Heading</h2>\n';
+        break;
+      case 'text':
+        elementHTML = '<p class="text-lg mb-4">Your text content goes here...</p>\n';
+        break;
+      case 'image':
+        elementHTML = '<img src="https://placehold.co/600x400" alt="Image" class="w-full max-w-md mx-auto rounded-lg mb-4 hover-transform" />\n';
+        break;
+      case 'button':
+        elementHTML = '<button class="glass-morphism px-6 py-3 rounded-lg text-glow hover-transform">Click Me</button>\n';
+        break;
+      case 'video':
+        elementHTML = '<video controls class="w-full max-w-2xl mx-auto rounded-lg mb-4">\n  <source src="your-video.mp4" type="video/mp4">\n</video>\n';
+        break;
+      case 'embed':
+        elementHTML = '<!-- Embed your custom code here -->\n<div class="custom-embed">\n  \n</div>\n';
+        break;
+    }
+
+    editor.value += elementHTML;
+    editor.focus();
+  }
+
+  // Apply Custom Code
+  applyCustomCode() {
+    const code = document.getElementById('customCodeEditor').value;
+    if (!code) return;
+
+    // Create a temporary container to safely inject code
+    const tempDiv = document.createElement('div');
+    const safe = sanitizeHTML(code);
+    tempDiv.innerHTML = safe;
+    
+    // Append to current page
+    const currentPageElement = document.querySelector('.custom-page.active');
+    if (currentPageElement) {
+      try {
+        currentPageElement.appendChild(tempDiv);
+      } catch (e) {
+        console.warn('Custom code append error:', e);
+        alert('Failed to apply custom code due to invalid markup.');
+        return;
+      }
+    }
+
+    alert('Custom code applied!');
+  }
+
+  // Navigate to Page
+  navigateToPage(pageId) {
+    // Hide all pages
+    document.querySelectorAll('.custom-page').forEach(page => {
+      page.classList.remove('active');
+    });
+
+    // Show target page
+    if (pageId === 'default') {
+      document.getElementById('defaultPage').classList.add('active');
+    } else {
+      const targetPage = document.getElementById(pageId);
+      if (targetPage) {
+        targetPage.classList.add('active');
+      }
+    }
+
+    // Update navigation
+    document.querySelectorAll('.page-nav button').forEach(btn => {
+      btn.classList.remove('active');
+    });
+    
+    if (pageId === 'default') {
+      document.getElementById('homePageBtn').classList.add('active');
+    } else {
+      document.querySelector(`[data-page="${pageId}"]`)?.classList.add('active');
+    }
+
+    this.currentPage = pageId;
+  }
+
+  // Load Custom Pages
+  loadCustomPages() {
+    const container = document.getElementById('customPagesContainer');
+    const navContainer = document.getElementById('customPageNavs');
+    
+    // Clear existing pages and nav
+    container.innerHTML = '';
+    navContainer.innerHTML = '';
+
+    // Create pages and navigation
+    Object.entries(this.customPages).forEach(([pageId, page]) => {
+      // Create page element
+      const pageElement = document.createElement('div');
+      pageElement.id = pageId;
+      pageElement.className = 'custom-page';
+      const safeHTML = sanitizeHTML(page.content);
+      pageElement.innerHTML = safeHTML;
+      try {
+        container.appendChild(pageElement);
+      } catch (err) {
+        console.warn('Failed to append page content:', err);
+      }
+
+      // Create navigation button
+      const navBtn = document.createElement('button');
+      navBtn.className = 'px-4 py-2 rounded-full glass-morphism text-glow hover-transform';
+      navBtn.textContent = page.name;
+      navBtn.dataset.page = pageId;
+      navBtn.addEventListener('click', () => this.navigateToPage(pageId));
+      navContainer.appendChild(navBtn);
+    });
+  }
+
+  // Update Pages List in Builder
+  updatePagesList() {
+    const list = document.getElementById('pagesList');
+    list.innerHTML = '';
+
+    Object.entries(this.customPages).forEach(([pageId, page]) => {
+      const item = document.createElement('div');
+      item.className = 'flex items-center justify-between p-3 glass-morphism rounded-lg';
+      item.innerHTML = `
+        <span>${page.name}</span>
+        <button class="text-blue-400 hover:text-blue-300" onclick="freestyleLayout.editPage('${pageId}')">Edit</button>
+      `;
+      list.appendChild(item);
+    });
+  }
+
+  // Save Pages to LocalStorage
+  savePages() {
+    localStorage.setItem('freestylePages', JSON.stringify(this.customPages));
+  }
+
+  // Setup Carousel
+  setupCarousel() {
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('#carouselSlides > div');
+    const totalSlides = slides.length;
+
+    if (totalSlides === 0) return;
+
+    const nextSlide = () => {
+      currentSlide = (currentSlide + 1) % totalSlides;
+      updateCarousel();
+    };
+
+    const prevSlide = () => {
+      currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+      updateCarousel();
+    };
+
+    const updateCarousel = () => {
+      const slidesContainer = document.getElementById('carouselSlides');
+      if (slidesContainer) {
+        slidesContainer.style.transform = `translateX(-${currentSlide * 100}%)`;
+      }
+    };
+
+    const nextBtn = document.getElementById('nextSlide');
+    const prevBtn = document.getElementById('prevSlide');
+    nextBtn?.addEventListener('click', nextSlide);
+    prevBtn?.addEventListener('click', prevSlide);
+
+    // Auto-advance slides
+    if (totalSlides > 1) setInterval(nextSlide, 5000);
+  }
+
+  // Theme Customization
+  setupThemeCustomization() {
+    const applyBtn = document.getElementById('applyTheme');
+    
+    applyBtn.addEventListener('click', () => {
+      const primary = document.getElementById('primaryColorPicker').value;
+      const accent = document.getElementById('accentColorPicker').value;
+      const glow = document.getElementById('glowColorPicker').value;
+      const bg = document.getElementById('bgColorPicker').value;
+
+      document.documentElement.style.setProperty('--primary-color', primary);
+      document.documentElement.style.setProperty('--accent-color', accent);
+      document.documentElement.style.setProperty('--glow-color', glow);
+      document.documentElement.style.setProperty('--bg-primary', bg);
+
+      alert('Theme applied successfully!');
+    });
+  }
+
+  // Apply theme/data from host app
+  applyShopTheme() {
+    try {
+      const data = window.__SHOP_DATA__ || {};
+      const theme = data.theme || {};
+      const API = data.API || '';
+      const resolveImage = (img) => {
+        if (!img || typeof img !== 'string') return '';
+        let val = img.trim().replace(/\\\\/g, '/').replace(/\\/g, '/');
+        if (val.startsWith('http') || val.startsWith('//') || val.startsWith('data:')) return val;
+        const lower = val.toLowerCase();
+        const pos = lower.lastIndexOf('uploads/');
+        if (pos !== -1) {
+          const clean = val.slice(pos + 'uploads/'.length).replace(/^\/+/g, '');
+          return (API ? API : '') + '/uploads/' + clean;
+        }
+        if (val.startsWith('/uploads/') || val.startsWith('uploads/')) {
+          const clean = val.replace(/^\/?uploads\//, '');
+          return (API ? API : '') + '/uploads/' + clean;
+        }
+        return (API ? API : '') + '/uploads/' + val.replace(/^\/+/g, '');
+      };
+      const set = (id, fn) => { const el = document.getElementById(id); if (el) fn(el); };
+      set('shopTitle', el => { el.textContent = theme.title || data.sellerParam || 'My Store'; });
+      set('shopDescription', el => { el.textContent = theme.bio || 'Welcome to our futuristic shopping experience...'; });
+      set('shopLogo', el => {
+        const src = resolveImage(theme.logo) || el.src;
+        el.src = src;
+        el.onerror = () => { el.src = 'https://placehold.co/60x60?text=Logo'; };
+      });
+      const builderBtn = document.getElementById('pageBuilderToggle');
+      if (builderBtn && !(data && data.isOwner)) builderBtn.classList.add('hidden');
+    } catch (e) {
+      console.warn('Theme apply error:', e);
+    }
+  }
+}
+
+// Initialize Freestyle Layout
+const freestyleLayout = new FreestyleLayout();
+
+// Minimal auth buttons rendering for header
+(function renderAuthButtons(){
+  try {
+    const container = document.getElementById('shopAuthButtons');
+    if (!container) return;
+    const user = JSON.parse(localStorage.getItem('user') || 'null');
+    container.innerHTML = '';
+    if (user) {
+      const seller = (window.__SHOP_DATA__ && window.__SHOP_DATA__.actualSeller) || user.username;
+      const dash = document.createElement('a');
+      dash.href = (user.role && user.role.startsWith('seller'))
+        ? `dashboard.html?seller=${encodeURIComponent(seller)}`
+        : `buyer-dashboard.html?seller=${encodeURIComponent(seller)}`;
+      dash.className = 'glass-morphism px-4 py-2 rounded-lg hover-transform';
+      dash.textContent = 'Dashboard';
+      const out = document.createElement('button');
+      out.className = 'glass-morphism px-4 py-2 rounded-lg hover-transform';
+      out.textContent = 'Logout';
+      out.onclick = () => { localStorage.removeItem('user'); location.reload(); };
+      container.appendChild(dash);
+      container.appendChild(out);
+    } else {
+      const signup = document.createElement('a');
+      signup.href = 'signup.html';
+      signup.className = 'glass-morphism px-4 py-2 rounded-lg hover-transform';
+      signup.textContent = 'Sign Up';
+      const login = document.createElement('a');
+      login.href = 'login.html';
+      login.className = 'glass-morphism px-4 py-2 rounded-lg hover-transform';
+      login.textContent = 'Log In';
+      container.appendChild(signup);
+      container.appendChild(login);
+    }
+  } catch (e) {}
+})();
+
+// Product loading and other shop functionality
+window.loadProducts = function() {
+  // This will be called by the main shop system
+  const grid = document.getElementById('productsGrid');
+  if (!grid) return;
+
+  // Add some sample products with advanced styling
+  grid.innerHTML = `
+    <div class="glass-morphism p-6 rounded-2xl hover-transform neon-border">
+      <img src="https://placehold.co/300x300" class="w-full h-48 object-cover rounded-lg mb-4 floating-element" />
+      <h3 class="text-xl font-bold mb-2 text-glow">Sample Product</h3>
+      <p class="text-gray-300 mb-4">Amazing product description...</p>
+      <button class="w-full glass-morphism py-3 rounded-lg hover-transform pulse-glow">Add to Cart</button>
+    </div>
+  `.repeat(8);
+};
+
+// Call loadProducts initially
+loadProducts();
+</script>
+

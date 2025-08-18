@@ -1,0 +1,1734 @@
+<!-- Elegant Layout -->
+<div id="layoutDefault" class="flex-grow flex flex-col min-h-screen">
+<!-- Customizable Header -->
+<header id="headerSection" class="bg-white shadow-xl sticky top-0 z-50 border-b border-slate-200 backdrop-blur-md bg-white/95">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4" id="boxHeader">
+    <div class="flex items-center justify-between">
+      <!-- Logo Section -->
+      <div class="flex items-center gap-3 sm:gap-6">
+        <div class="relative">
+          <img id="shopLogo" src="https://placehold.co/60x60/1e293b/f8fafc?text=L"
+               class="w-10 h-10 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl object-cover shadow-lg ring-2 ring-slate-200 transition-transform hover:scale-105" />
+          <div class="absolute -bottom-1 -right-1 w-3 h-3 sm:w-4 sm:h-4 bg-emerald-500 rounded-full border-2 border-white"></div>
+        </div>
+        <div class="flex flex-col">
+          <span id="shopTitle" class="text-lg sm:text-2xl font-bold text-slate-800 luxury-serif tracking-wide">Luxury Boutique</span>
+          <span id="shopSubtitle" class="text-xs sm:text-sm text-slate-500 luxury-sans font-medium hidden sm:block">Premium Collection</span>
+        </div>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <button id="mobileMenuBtn" class="md:hidden p-2 rounded-xl hover:bg-slate-100 transition-colors">
+        <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+
+      <!-- Desktop Action Buttons + Category Links -->
+      <div class="hidden md:flex items-center gap-4">
+        <!-- Category Links -->
+        <a href="#" class="text-slate-700 hover:text-slate-900 font-medium luxury-sans transition-colors">Collections</a>
+        <a href="#" class="text-slate-700 hover:text-slate-900 font-medium luxury-sans transition-colors">About</a>
+        <a href="#" class="text-slate-700 hover:text-slate-900 font-medium luxury-sans transition-colors">Contact</a>
+
+        <!-- Icons -->
+        <button class="p-2 rounded-xl hover:bg-slate-100 transition-colors">
+          <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+          </svg>
+        </button>
+        <button class="p-2 rounded-xl hover:bg-slate-100 transition-colors relative">
+          <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+          </svg>
+          <span class="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 text-white text-xs rounded-full flex items-center justify-center">2</span>
+        </button>
+        <button class="p-2 rounded-xl hover:bg-slate-100 transition-colors relative">
+          <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6 0v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"/>
+          </svg>
+          <span class="absolute -top-1 -right-1 w-4 h-4 bg-blue-500 text-white text-xs rounded-full flex items-center justify-center">3</span>
+        </button>
+
+        <!-- Auth Buttons -->
+        <div id="shopAuthButtons" class="flex items-center gap-3 ml-4 border-l border-slate-200 pl-4"></div>
+      </div>
+    </div>
+
+    <!-- Enhanced Mobile Menu -->
+    <div id="mobileMenu" class="hidden md:hidden mt-4 pb-4 border-t border-slate-200 pt-4 overflow-hidden transition-all duration-300 ease-in-out" style="max-height: 0px;">
+      <nav class="flex flex-col gap-4">
+        <!-- Navigation Links -->
+        <a href="#" class="nav-link text-slate-700 hover:text-slate-900 font-medium luxury-sans transition-colors py-2">Collections</a>
+        <a href="#" class="nav-link text-slate-700 hover:text-slate-900 font-medium luxury-sans transition-colors py-2">About</a>
+        <a href="#" class="nav-link text-slate-700 hover:text-slate-900 font-medium luxury-sans transition-colors py-2">Contact</a>
+        
+        <!-- Action Icons Row -->
+        <div class="flex items-center justify-between gap-4 mt-4 pt-4 border-t border-slate-200">
+          <button class="flex flex-col items-center gap-1 p-3 rounded-xl hover:bg-slate-100 transition-colors">
+            <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+            </svg>
+            <span class="text-xs text-slate-600">Search</span>
+          </button>
+          <button class="flex flex-col items-center gap-1 p-3 rounded-xl hover:bg-slate-100 transition-colors relative">
+            <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+            </svg>
+            <span class="absolute -top-1 -right-1 w-4 h-4 bg-rose-500 text-white text-xs rounded-full flex items-center justify-center">2</span>
+            <span class="text-xs text-slate-600">Wishlist</span>
+          </button>
+          <button class="flex flex-col items-center gap-1 p-3 rounded-xl hover:bg-slate-100 transition-colors relative">
+            <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6 0v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"/>
+            </svg>
+            <span class="absolute -top-1 -right-1 w-4 h-4 bg-blue-500 text-white text-xs rounded-full flex items-center justify-center">3</span>
+            <span class="text-xs text-slate-600">Cart</span>
+          </button>
+        </div>
+        
+        <!-- Mobile Auth Buttons -->
+        <div id="mobileAuthButtons" class="mt-4 pt-4 border-t border-slate-200 flex flex-col gap-2"></div>
+      </nav>
+    </div>
+  </div>
+</header>
+  <!-- Hero Section -->
+  <section id="heroSection" class="relative overflow-hidden bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white">
+    <div id="heroOverlay" class="absolute inset-0 bg-gradient-to-r from-black/50 via-transparent to-black/30"></div>
+    <img id="heroImage" class="absolute inset-0 w-full h-full object-cover opacity-60"
+         src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920&h=800&fit=crop" />
+    
+    <!-- Floating Elements -->
+    <div class="absolute top-10 sm:top-20 left-4 sm:left-10 w-12 h-12 sm:w-20 sm:h-20 bg-white/10 rounded-full blur-xl animate-pulse"></div>
+    <div class="absolute bottom-16 sm:bottom-32 right-8 sm:right-16 w-20 h-20 sm:w-32 sm:h-32 bg-blue-500/20 rounded-full blur-2xl animate-bounce slow-bounce"></div>
+    
+    <div class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-16 sm:py-32 text-center">
+      <div class="space-y-4 sm:space-y-6">
+        <h1 id="shopName" class="text-3xl sm:text-5xl lg:text-7xl font-light luxury-serif text-white hero-glow">
+          Exquisite Collection
+        </h1>
+        <p id="shopBio" class="text-base sm:text-xl text-slate-300 max-w-2xl mx-auto luxury-sans font-light leading-relaxed px-4">
+          Discover timeless elegance and contemporary luxury in our carefully curated selection of premium products.
+        </p>
+        <div class="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 pt-6 sm:pt-8 px-4">
+          <button class="luxury-btn-primary w-full sm:w-auto">
+            Explore Collection
+            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </button>
+          <button class="luxury-btn-secondary w-full sm:w-auto">
+            Watch Story
+            <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1.5a2.5 2.5 0 010 5H9m3.5-5H14m-5 0H6.5a2.5 2.5 0 010-5H9v5z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+      <button id="uploadHeroBtn" class="hidden mt-6 sm:mt-8 luxury-btn-upload">
+        📸 Upload Hero Image
+      </button>
+    </div>
+  </section>
+
+  <!-- Category Sections Container -->
+  <div id="categorySectionsContainer" class="bg-white">
+    <!-- Categories will be dynamically generated here -->
+  </div>
+
+  <!-- Product Not Found -->
+  <section id="productNotFound" class="max-w-2xl mx-auto px-6 py-32 text-center hidden">
+    <div class="space-y-6">
+      <div class="w-24 h-24 mx-auto bg-slate-100 rounded-2xl flex items-center justify-center">
+        <svg class="w-12 h-12 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+        </svg>
+      </div>
+      <h2 class="text-3xl font-bold text-slate-800 luxury-serif">No Products Available</h2>
+      <p class="text-slate-600 luxury-sans">This boutique hasn't added any products yet. Check back soon for amazing finds!</p>
+      <a href="index.html" class="luxury-btn-primary inline-flex items-center">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        Back to Marketplace
+      </a>
+    </div>
+  </section>
+
+  <!-- Cyber Style Footer -->
+  <footer id="footer" class="bg-gradient-to-r from-gray-950 via-gray-900 to-gray-800 text-white py-12 mt-auto transition-all duration-300 hover:brightness-110 cursor-pointer">
+    <div class="max-w-7xl mx-auto px-4">
+      <div class="flex flex-col md:flex-row items-center justify-between">
+        
+        <!-- Logo & Tagline -->
+        <div class="flex items-center gap-4 mb-6 md:mb-0">
+          <img id="footerLogo" src="https://placehold.co/80x80" class="w-20 h-20 rounded-full shadow-lg border-4 border-cyan-400/30 glow-border customizable-element" />
+          <div>
+            <h4 id="footerTitle" class="text-2xl font-bold text-cyan-200 glow-text customizable-element">Store Name</h4>
+            <p id="footerDescription" class="text-gray-400 customizable-element">Quality products, excellent service</p>
+          </div>
+        </div>
+
+        <!-- Social Links Section -->
+        <div id="socialLinksSection" class="flex flex-col items-center hidden">
+          <h5 class="text-lg font-semibold mb-4 text-cyan-300 glow-text">Follow Us</h5>
+          <div id="socialLinks" class="flex gap-4">
+            <!-- Social links will be loaded here -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Footer Navigation Links -->
+      <div id="footerLinksSection" class="border-t border-gray-700 mt-10 pt-6">
+        <div id="footerLinks" class="flex flex-wrap justify-center gap-6 mb-6 text-sm text-gray-300">
+          <!-- Footer links will be loaded here -->
+        </div>
+      </div>
+
+      <!-- Bottom Text -->
+      <div class="text-center mt-4">
+        <p class="text-gray-500 text-sm">
+          © <span id="year">2024</span> <span id="footerStoreName" class="text-cyan-300 glow-text customizable-element">Store Name</span>. All rights reserved.
+        </p>
+        <div class="mt-2 text-xs">
+          <a href="https://iyonicorp.com" target="_blank" rel="noopener noreferrer" class="flame-text-glow text-cyan-400 hover:text-cyan-300 transition-all duration-200 customizable-element" id="footerCredit">
+            Powered by iyonicorp
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- Customization Modal -->
+<div id="customModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-3xl shadow-2xl w-full max-w-lg p-8 space-y-6">
+    <h3 class="text-2xl font-bold text-slate-800 luxury-serif">Customize Your Boutique</h3>
+    <div class="space-y-4" id="modalContent"></div>
+    <div class="flex gap-4 pt-6">
+      <button id="cancelBtn" class="luxury-btn-secondary flex-1">Cancel</button>
+      <button id="applyBtn" class="luxury-btn-primary flex-1">Apply Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Footer Customization Modal -->
+<div id="footerModal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
+    <div class="p-6 border-b bg-gradient-to-r from-gray-800 to-gray-600 text-white">
+      <h3 class="text-2xl font-bold">Customize Footer</h3>
+    </div>
+    
+    <div class="p-6 overflow-y-auto max-h-[70vh]">
+      <!-- Social Links Section -->
+      <div class="mb-8">
+        <div class="flex items-center justify-between mb-4">
+          <h4 class="text-lg font-semibold">Social Links</h4>
+          <button id="addSocialBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all">
+            + Add Social Link
+          </button>
+        </div>
+        <div id="socialLinksList" class="space-y-3">
+          <!-- Social links will be populated here -->
+        </div>
+      </div>
+
+      <!-- Footer Links Section -->
+      <div>
+        <div class="flex items-center justify-between mb-4">
+          <h4 class="text-lg font-semibold">Footer Links</h4>
+          <button id="addFooterLinkBtn" class="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-all">
+            + Add Footer Link
+          </button>
+        </div>
+        <div id="footerLinksList" class="space-y-3">
+          <!-- Footer links will be populated here -->
+        </div>
+      </div>
+    </div>
+    
+    <div class="p-6 border-t bg-gray-50 flex justify-end gap-4">
+      <button id="closeFooterModal" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-all">
+        Close
+      </button>
+      <button id="saveFooterSettings" class="px-6 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition-all">
+        Save Changes
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Footer Link Content Modal -->
+<div id="footerLinkContentModal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden">
+    <div class="p-6 border-b bg-gradient-to-r from-emerald-600 to-teal-600 text-white">
+      <h3 class="text-xl font-bold" id="footerLinkContentTitle">Edit Footer Link</h3>
+    </div>
+    
+    <div class="p-6 overflow-y-auto max-h-[70vh]">
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-semibold mb-2">Link Title</label>
+          <input type="text" id="footerLinkTitle" placeholder="e.g., Privacy Policy, Terms & Conditions" class="w-full px-3 py-2 border rounded-lg">
+        </div>
+        
+        <div>
+          <label class="block text-sm font-semibold mb-2">Content</label>
+          <textarea id="footerLinkContent" placeholder="Enter the content for this link..." class="w-full px-3 py-2 border rounded-lg h-64"></textarea>
+        </div>
+      </div>
+    </div>
+    
+    <div class="p-6 border-t bg-gray-50 flex justify-end gap-4">
+      <button id="cancelFooterLinkContent" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-all">
+        Cancel
+      </button>
+      <button id="saveFooterLinkContent" class="px-6 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all">
+        Save
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Footer Link Display Modal -->
+<div id="footerLinkDisplayModal" class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden">
+    <div class="p-6 border-b bg-gradient-to-r from-gray-700 to-gray-500 text-white">
+      <h3 class="text-xl font-bold" id="footerLinkDisplayTitle">Footer Link</h3>
+    </div>
+    
+    <div class="p-6 overflow-y-auto max-h-[70vh]">
+      <div id="footerLinkDisplayContent" class="prose max-w-none">
+        <!-- Content will be loaded here -->
+      </div>
+    </div>
+    
+    <div class="p-6 border-t bg-gray-50 flex justify-end">
+      <button id="closeFooterLinkDisplay" class="px-6 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400 transition-all">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Custom Fonts */
+  .luxury-serif {
+    font-family: 'Cormorant Garamond', serif;
+  }
+  
+  .luxury-sans {
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* Animations */
+  .slow-bounce {
+    animation: bounce 3s infinite;
+  }
+
+  .hero-glow {
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+  }
+
+  /* Custom Buttons */
+  .luxury-btn-primary {
+    @apply bg-gradient-to-r from-slate-800 to-slate-900 hover:from-slate-700 hover:to-slate-800 text-white px-8 py-4 rounded-2xl font-medium luxury-sans transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center;
+  }
+
+  .luxury-btn-secondary {
+    @apply bg-white/10 hover:bg-white/20 text-white border border-white/30 px-8 py-4 rounded-2xl font-medium luxury-sans transition-all duration-300 backdrop-blur-sm flex items-center justify-center;
+  }
+
+  .luxury-btn-upload {
+    @apply bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-medium luxury-sans transition-all duration-300 shadow-lg;
+  }
+
+  .luxury-footer-link {
+    @apply text-slate-500 hover:text-slate-300 luxury-sans font-medium transition-colors text-sm;
+  }
+
+  /* Cyberpunk Footer Glow Styles */
+  .glow-border {
+    box-shadow: 0 0 6px #0ff, 0 0 12px #0ff;
+  }
+
+  .glow-text {
+    text-shadow: 0 0 4px #0ff, 0 0 8px #0ff;
+  }
+
+  .flame-text-glow {
+    text-shadow: 0 0 4px #39f, 0 0 10px #0ff, 0 0 15px #0ff;
+    font-weight: 600;
+    display: inline-block;
+    animation: flameGlowShift 3s ease-in-out infinite alternate;
+    transition: text-shadow 0.3s ease;
+  }
+
+  .flame-text-glow:hover {
+    text-decoration: underline;
+  }
+
+  @keyframes flameGlowShift {
+    0% {
+      color: #000;
+      text-shadow:
+        0 0 2px #757575,
+        0 0 4px #838383,
+        0 0 6px #a1a1a1,
+        0 0 8px #b1b1b1;
+    }
+    50% {
+      color: #c0c0c0;
+      text-shadow:
+        0 0 4px #c0c0c0,
+        0 0 8px #cecece,
+        0 0 10px #c2c2c2,
+        0 0 12px #e0e0e0;
+    }
+    100% {
+      color: #d1cece;
+      text-shadow:
+        0 0 6px #dbdbdb,
+        0 0 12px #f7f4f3,
+        0 0 18px #f7f5f2,
+        0 0 24px #ffffff;
+    }
+  }
+
+  .footer-link {
+    color: #d1d5db;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .footer-link:hover {
+    background-color: rgba(255,255,255,0.1);
+    color: white;
+  }
+
+  /* Navigation Links */
+  .nav-link {
+    position: relative;
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #1e293b, #475569);
+    transition: width 0.3s ease;
+  }
+
+  .nav-link:hover::after {
+    width: 100%;
+  }
+
+  /* Product Card Styles */
+  .luxury-product-card {
+    @apply bg-white rounded-2xl sm:rounded-3xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden group border border-slate-100;
+    transform: translateY(0);
+  }
+
+  .luxury-product-card:hover {
+    transform: translateY(-4px) scale(1.01);
+  }
+
+  @media (min-width: 640px) {
+    .luxury-product-card:hover {
+      transform: translateY(-8px) scale(1.02);
+    }
+  }
+
+  .luxury-product-image {
+    @apply w-full h-48 sm:h-64 lg:h-80 object-cover transition-transform duration-700 group-hover:scale-110;
+  }
+
+  .luxury-product-content {
+    @apply p-4 sm:p-6 lg:p-8 space-y-3 sm:space-y-4;
+  }
+
+  .luxury-product-title {
+    @apply text-lg sm:text-xl font-semibold text-slate-800 luxury-serif group-hover:text-slate-900 transition-colors;
+  }
+
+  .luxury-product-price {
+    @apply text-xl sm:text-2xl font-bold text-slate-900 luxury-sans;
+  }
+
+  .luxury-product-description {
+    @apply text-slate-600 luxury-sans leading-relaxed text-sm sm:text-base;
+  }
+
+  .luxury-view-btn {
+    @apply absolute top-4 right-4 sm:top-6 sm:right-6 w-10 h-10 sm:w-12 sm:h-12 bg-white/90 hover:bg-white backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg transition-all duration-300 opacity-0 group-hover:opacity-100 transform translate-y-2 group-hover:translate-y-0;
+  }
+
+  .luxury-view-btn:hover {
+    transform: scale(1.1) translateY(0);
+  }
+
+  /* Category Hero Styles */
+  .luxury-category-hero {
+    @apply relative py-16 sm:py-20 lg:py-24 overflow-hidden bg-gradient-to-br from-slate-100 to-slate-200;
+  }
+
+  .luxury-category-title {
+    @apply text-3xl sm:text-4xl lg:text-5xl font-light luxury-serif text-slate-800 mb-4;
+  }
+
+  .luxury-category-subtitle {
+    @apply text-lg sm:text-xl text-slate-600 luxury-sans font-light;
+  }
+
+  /* Cool Animations */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+  }
+
+  @keyframes glow {
+    0%, 100% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.3); }
+    50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.6); }
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+
+  .float-animation {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  .glow-animation {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  .shimmer-effect {
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+
+  /* Mobile Optimizations */
+  @media (max-width: 640px) {
+    .luxury-btn-primary, .luxury-btn-secondary {
+      @apply px-6 py-3 text-sm;
+    }
+    
+    .luxury-product-card {
+      @apply rounded-xl;
+    }
+    
+    .hero-glow {
+      text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    }
+  }
+
+  /* Pagination Styles */
+  .luxury-pagination-btn {
+    @apply bg-white border border-slate-200 hover:border-slate-300 text-slate-700 hover:text-slate-900 px-6 py-3 rounded-xl luxury-sans font-medium transition-all duration-300 shadow-sm hover:shadow-md;
+  }
+
+  .luxury-pagination-btn:disabled {
+    @apply opacity-50 cursor-not-allowed hover:shadow-sm;
+  }
+
+  /* Form Inputs */
+  .luxury-input {
+    @apply w-full px-4 py-3 border border-slate-200 rounded-xl focus:border-slate-400 focus:outline-none focus:ring-4 focus:ring-slate-100 transition-all duration-200 luxury-sans;
+  }
+
+  .luxury-color-input {
+    @apply w-full h-12 border border-slate-200 rounded-xl focus:border-slate-400 focus:outline-none focus:ring-4 focus:ring-slate-100 transition-all duration-200;
+  }
+
+  /* Upload Progress */
+  .upload-progress {
+    @apply bg-slate-100 rounded-full h-2 overflow-hidden;
+  }
+
+  .upload-progress-bar {
+    @apply bg-gradient-to-r from-blue-500 to-blue-600 h-full transition-all duration-300 rounded-full;
+  }
+
+  /* Customization Borders */
+  .customizable-element {
+    @apply cursor-pointer transition-all duration-300;
+  }
+
+  .customizable-element.active {
+    @apply ring-4 ring-blue-500/50 ring-offset-2;
+  }
+</style>
+
+<script>
+// Initialize the shop
+(async function () {
+  // Get shop data from global context or use defaults
+  const { sellerParam, isOwner, API, theme } = window.__SHOP_DATA__ || {
+    sellerParam: 'demo-seller',
+    isOwner: true,
+    API: 'http://localhost:3000',
+    theme: {
+      logo: 'https://placehold.co/60x60/1e293b/f8fafc?text=L',
+      title: 'Luxury Boutique',
+      subtitle: 'Premium Collection',
+      name: 'Exquisite Collection',
+      bio: 'Discover timeless elegance and contemporary luxury in our carefully curated selection of premium products.',
+      heroImage: 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1920&h=800&fit=crop',
+      headerBg: '#ffffff',
+      footerBg: '#0f172a',
+      footerText: '© 2024 Luxury Boutique. All rights reserved.',
+      footerTitle: 'Luxury Boutique',
+      footerDescription: 'Crafting exceptional experiences through premium products and unparalleled service since 2024.',
+      footerLinksTitle: 'Quick Links',
+      footerSocialTitle: 'Connect',
+      footerCredit: 'Powered by iyonicorp',
+      categoryHeroes: {},
+      socialLinks: [],
+      footerLinks: []
+    }
+  };
+
+  // Initialize footer data
+  let socialLinks = Array.isArray(theme.socialLinks) ? theme.socialLinks : [];
+  let footerLinks = Array.isArray(theme.footerLinks) ? theme.footerLinks : [];
+  let currentEditingFooterLinkIndex = null;
+
+  // Ensure categoryHeroes is initialized
+  if (!theme.categoryHeroes) {
+    theme.categoryHeroes = {};
+  }
+
+  // Helper functions
+  const set = (id, fn) => { 
+    const el = document.getElementById(id); 
+    if (el) fn(el); 
+  };
+
+  const resolveImage = (img) => {
+    if (!img || typeof img !== 'string') return '';
+    let val = img.trim().replace(/\\\\/g, '/').replace(/\\/g, '/');
+    // Absolute URLs or data URIs
+    if (/^(https?:)?\/\//i.test(val) || val.startsWith('data:')) return val;
+    // Strip any leading host part accidentally embedded
+    const uploadsIdx = val.toLowerCase().lastIndexOf('/uploads/');
+    const uploadsIdx2 = uploadsIdx === -1 ? val.toLowerCase().lastIndexOf('uploads/') : uploadsIdx;
+    if (uploadsIdx2 !== -1) {
+      const clean = val.slice(uploadsIdx2 + (val.toLowerCase().startsWith('/uploads/') ? 9 : (val.toLowerCase().indexOf('uploads/') >= 0 ? val.toLowerCase().indexOf('uploads/') + 8 : 0)));
+      return `${API}/uploads/${clean.replace(/^\/+/, '')}`;
+    }
+    // Starts with uploads path (with or without slash)
+    if (/^\/?uploads\//i.test(val)) {
+      const clean = val.replace(/^\/?uploads\//i, '');
+      return `${API}/uploads/${clean}`;
+    }
+    // Raw filename
+    return `${API}/uploads/${val.replace(/^\/+/, '')}`;
+  };
+
+  function getCurrencySymbol(code = 'USD') {
+    const symbols = {
+      USD: "$", EUR: "€", GBP: "£", NGN: "₦", INR: "₹", KES: "KSh", ZAR: "R"
+    };
+    return symbols[code] || code;
+  }
+
+  // Set current year
+  set("year", el => el.textContent = new Date().getFullYear());
+
+  // Apply theme
+  set("shopLogo", el => {
+    el.src = resolveImage(theme.logo);
+    el.onerror = () => el.src = "https://placehold.co/60x60/1e293b/f8fafc?text=L";
+  });
+
+  set("shopTitle", el => el.textContent = theme.title || sellerParam);
+  set("shopSubtitle", el => el.textContent = theme.subtitle || "Premium Collection");
+  set("shopName", el => el.textContent = theme.name || "Exquisite Collection");
+  set("shopBio", el => el.textContent = theme.bio || "Discover luxury products");
+  set("heroImage", el => el.src = resolveImage(theme.heroImage));
+  set("headerSection", el => el.style.backgroundColor = theme.headerBg || "");
+  set("footer", el => el.style.backgroundColor = theme.footerBg || "");
+  set("footerText", el => el.textContent = theme.footerText || `© ${new Date().getFullYear()} Luxury Boutique. All rights reserved.`);
+  set("footerTitle", el => el.textContent = theme.footerTitle || "Luxury Boutique");
+  set("footerDescription", el => el.textContent = theme.footerDescription || "Crafting exceptional experiences through premium products and unparalleled service since 2024.");
+  set("footerLinksTitle", el => el.textContent = theme.footerLinksTitle || "Quick Links");
+  set("footerSocialTitle", el => el.textContent = theme.footerSocialTitle || "Connect");
+  set("footerCredit", el => el.textContent = theme.footerCredit || "Powered by iyonicorp");
+  set("footerStoreName", el => el.textContent = theme.title || theme.name || sellerParam);
+
+  // 🔄 Fetch products from products.json
+  let products = [];
+  let storeCurrency = "USD";
+  
+  try {
+    const res = await fetch(`${API}/find?collection=products`);
+    if (res.ok) {
+      const allProducts = await res.json();
+      // Filter products by seller if sellerParam is provided
+      if (sellerParam && sellerParam !== 'demo-seller') {
+        products = allProducts.filter(p => p.seller === sellerParam);
+      } else {
+        products = allProducts;
+      }
+    } else {
+      throw new Error('Failed to fetch products from API');
+    }
+  } catch (error) {
+    console.warn('Could not fetch products from API, trying direct file:', error);
+    // Try direct file fetch as fallback
+    try {
+      const res = await fetch('/products.json');
+      if (res.ok) {
+        const allProducts = await res.json();
+        if (sellerParam && sellerParam !== 'demo-seller') {
+          products = allProducts.filter(p => p.seller === sellerParam);
+        } else {
+          products = allProducts;
+        }
+      } else {
+        throw new Error('Failed to fetch products.json');
+      }
+    } catch (fileError) {
+      console.warn('Could not fetch products.json, using demo products:', fileError);
+      // Fallback to demo products
+      products = [
+        {
+          id: 1,
+          name: "Premium Leather Handbag",
+          price: 299.99,
+          category: "Accessories",
+          image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400&h=400&fit=crop",
+          description: "Handcrafted Italian leather handbag with exquisite detailing.",
+          seller: sellerParam
+        },
+        {
+          id: 2,
+          name: "Silk Evening Dress",
+          price: 499.99,
+          category: "Fashion",
+          image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&h=400&fit=crop",
+          description: "Elegant silk evening dress perfect for special occasions.",
+          seller: sellerParam
+        },
+        {
+          id: 3,
+          name: "Gold Watch Collection",
+          price: 1299.99,
+          category: "Jewelry",
+          image: "https://images.unsplash.com/photo-1524592094714-0f0654e20314?w=400&h=400&fit=crop",
+          description: "Luxurious gold timepiece with Swiss movement.",
+          seller: sellerParam
+        }
+      ];
+    }
+  }
+
+  // Get seller info and currency
+  try {
+    const sellerRes = await fetch(`${API}/find?collection=users&username=${sellerParam}`);
+    if (sellerRes.ok) {
+      const users = await sellerRes.json();
+      const seller = users.find(u => u.username === sellerParam);
+      if (seller && seller.shopSettings && seller.shopSettings.storeCurrency) {
+        storeCurrency = seller.shopSettings.storeCurrency;
+      }
+    }
+  } catch (error) {
+    console.warn('Could not fetch seller info, using default currency');
+  }
+
+  // Group products by category
+  const productsByCategory = {};
+  products.forEach(product => {
+    const category = product.category || 'Uncategorized';
+    if (!productsByCategory[category]) {
+      productsByCategory[category] = [];
+    }
+    productsByCategory[category].push(product);
+  });
+
+  const categories = Object.keys(productsByCategory);
+  const container = document.getElementById("categorySectionsContainer");
+  const notFound = document.getElementById("productNotFound");
+
+  container.innerHTML = "";
+
+  if (categories.length > 0 && products.length > 0) {
+    notFound?.classList.add("hidden");
+
+    // Create sections for each category
+    categories.forEach((category, index) => {
+      const categoryProducts = productsByCategory[category];
+      const categoryId = `category_${category.replace(/\s+/g, '_').toLowerCase()}`;
+      
+      // Get category hero data
+      const categoryHero = (theme.categoryHeroes && theme.categoryHeroes[category]) || {
+        title: category,
+        subtitle: `Discover our ${category.toLowerCase()} collection`,
+        backgroundImage: '',
+        backgroundColor: `linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)`
+      };
+
+      // Create category hero section
+      const heroSection = document.createElement("section");
+      heroSection.id = `categoryHero_${categoryId}`;
+      heroSection.className = "luxury-category-hero customizable-element";
+      heroSection.style.background = categoryHero.backgroundColor;
+      
+      if (categoryHero.backgroundImage) {
+        heroSection.style.backgroundImage = `url(${resolveImage(categoryHero.backgroundImage)})`;
+        heroSection.style.backgroundSize = 'cover';
+        heroSection.style.backgroundPosition = 'center';
+      }
+
+      heroSection.innerHTML = `
+        <div class="absolute inset-0 bg-gradient-to-r from-white/80 to-transparent"></div>
+        <div class="relative z-10 max-w-6xl mx-auto px-6 text-center">
+          <h2 class="category-hero-title luxury-category-title customizable-element">${categoryHero.title}</h2>
+          <p class="category-hero-subtitle luxury-category-subtitle customizable-element">${categoryHero.subtitle}</p>
+          <div class="w-24 h-1 bg-gradient-to-r from-slate-400 to-slate-600 mx-auto mt-6 rounded-full"></div>
+          <button class="upload-category-hero-btn hidden mt-8 luxury-btn-upload">
+            📸 Upload Background Image
+          </button>
+        </div>
+      `;
+
+      container.appendChild(heroSection);
+
+      // Create product grid section
+      const gridSection = document.createElement("main");
+      gridSection.className = "max-w-7xl mx-auto px-6 py-16";
+      
+      const gridContainer = document.createElement("div");
+      gridContainer.id = `productGrid_${categoryId}`;
+      gridContainer.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 min-h-[400px]";
+      
+      // Pagination state
+      const productsPerPage = 6;
+      let currentPage = 1;
+      const totalPages = Math.ceil(categoryProducts.length / productsPerPage);
+
+      function renderProducts(page = 1) {
+        gridContainer.innerHTML = "";
+        const startIndex = (page - 1) * productsPerPage;
+        const endIndex = startIndex + productsPerPage;
+        const pageProducts = categoryProducts.slice(startIndex, endIndex);
+
+        pageProducts.forEach(product => {
+          const imageSrc = resolveImage(product.image);
+          const card = document.createElement("a");
+          card.href = `product-detail.html?id=${product.id}`;
+          card.className = "luxury-product-card block";
+
+          card.innerHTML = `
+            <div class="relative overflow-hidden">
+              ${product.image ? `
+                <img src="${imageSrc}" alt="${product.name}" class="luxury-product-image" />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              ` : `
+                <div class="luxury-product-image bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
+                  <div class="text-6xl text-slate-400">
+                    <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                    </svg>
+                  </div>
+                </div>
+              `}
+              <button class="luxury-view-btn" aria-label="View ${product.name}" title="View ${product.name}">
+                <svg class="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                </svg>
+              </button>
+            </div>
+            <div class="luxury-product-content">
+              <h4 class="luxury-product-title" title="${product.name}">${product.name}</h4>
+              <p class="luxury-product-description text-sm line-clamp-2">${product.description || 'Premium quality product with exceptional craftsmanship.'}</p>
+              <div class="flex items-center justify-between mt-4">
+                <span class="luxury-product-price">${getCurrencySymbol(storeCurrency)}${product.price.toFixed(2)}</span>
+                <div class="flex items-center gap-1 text-yellow-400">
+                  ${Array(5).fill().map((_, i) => `
+                    <svg class="w-4 h-4 ${i < 4 ? 'fill-current' : 'fill-slate-200'}" viewBox="0 0 20 20">
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                  `).join('')}
+                  <span class="text-xs text-slate-500 ml-1">(4.8)</span>
+                </div>
+              </div>
+            </div>
+          `;
+
+          gridContainer.appendChild(card);
+        });
+      }
+
+      // Create pagination if needed
+      if (totalPages > 1) {
+        const paginationContainer = document.createElement("div");
+        paginationContainer.className = "flex justify-center items-center gap-4 mt-12";
+        
+        function updatePagination() {
+          paginationContainer.innerHTML = `
+            <button class="luxury-pagination-btn ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}"
+                    ${currentPage === 1 ? 'disabled' : ''}
+                    onclick="changePage_${categoryId}(${currentPage - 1})">
+              <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+              </svg>
+              Previous
+            </button>
+            <div class="flex items-center gap-2">
+              ${Array.from({length: totalPages}, (_, i) => i + 1).map(page => `
+                <button class="w-10 h-10 rounded-lg ${page === currentPage ? 'bg-slate-800 text-white' : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'} transition-colors"
+                        onclick="changePage_${categoryId}(${page})">
+                  ${page}
+                </button>
+              `).join('')}
+            </div>
+            <button class="luxury-pagination-btn ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}"
+                    ${currentPage === totalPages ? 'disabled' : ''}
+                    onclick="changePage_${categoryId}(${currentPage + 1})">
+              Next
+              <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+              </svg>
+            </button>
+          `;
+        }
+
+        window[`changePage_${categoryId}`] = function(page) {
+          if (page >= 1 && page <= totalPages) {
+            currentPage = page;
+            renderProducts(currentPage);
+            updatePagination();
+            // Smooth scroll to top of category
+            heroSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        };
+
+        gridSection.appendChild(gridContainer);
+        gridSection.appendChild(paginationContainer);
+        updatePagination();
+      } else {
+        gridSection.appendChild(gridContainer);
+      }
+
+      container.appendChild(gridSection);
+      renderProducts(1);
+    });
+
+  } else {
+    notFound?.classList.remove("hidden");
+  }
+
+  // Customization functionality
+  if (!isOwner) {
+    // Still render footer components for non-owners
+    renderSocialLinks();
+    renderFooterLinks();
+    return;
+  }
+
+  // Add customize button
+  const customizeBtn = document.createElement("button");
+  customizeBtn.textContent = "✨ Customize Boutique";
+  customizeBtn.className = "fixed top-4 right-4 z-50 bg-slate-800 hover:bg-slate-700 text-white px-6 py-3 rounded-2xl shadow-lg transition-all duration-300 luxury-sans font-medium";
+  customizeBtn.id = "customizeBtn";
+  document.body.appendChild(customizeBtn);
+
+  const customizableElements = {
+    "shopLogo": { label: "Shop Logo", type: "image", key: "logo" },
+    "shopTitle": { label: "Shop Title", type: "text-edit", key: "title" },
+    "shopSubtitle": { label: "Shop Subtitle", type: "text-edit", key: "subtitle" },
+    "boxHeader": { label: "Header Background", type: "background", key: "headerBg" },
+    "heroImage": { label: "Hero Banner Image", type: "image", key: "heroImage" },
+    "shopName": { label: "Hero Title", type: "text-edit", key: "name" },
+    "shopBio": { label: "Hero Description", type: "text-edit", key: "bio" },
+    "footer": { label: "Footer Background", type: "background", key: "footerBg" },
+    "footerText": { label: "Footer Copyright", type: "text-edit", key: "footerText" },
+    "footerTitle": { label: "Footer Brand Title", type: "text-edit", key: "footerTitle" },
+    "footerDescription": { label: "Footer Description", type: "text-edit", key: "footerDescription" },
+    "footerLinksTitle": { label: "Footer Links Title", type: "text-edit", key: "footerLinksTitle" },
+    "footerSocialTitle": { label: "Footer Social Title", type: "text-edit", key: "footerSocialTitle" },
+    "footerCredit": { label: "Footer Credit", type: "text-edit", key: "footerCredit" }
+  };
+
+  let isCustomizing = false;
+  
+  customizeBtn.addEventListener("click", () => {
+    isCustomizing = !isCustomizing;
+    customizeBtn.textContent = isCustomizing ? "❌ Exit Customization" : "✨ Customize Boutique";
+    document.getElementById("uploadHeroBtn")?.classList.toggle("hidden", !isCustomizing);
+    
+    if (isCustomizing) {
+      // Add customization to main elements
+      Object.keys(customizableElements).forEach(id => {
+        const el = document.getElementById(id);
+        if (el && !el.dataset.bound) {
+          el.dataset.bound = "true";
+          el.classList.add("customizable-element");
+          el.addEventListener("click", openModal);
+        }
+      });
+      
+      // Add customization to category heroes
+      document.querySelectorAll('.luxury-category-hero').forEach(heroEl => {
+        if (!heroEl.dataset.bound) {
+          heroEl.dataset.bound = "true";
+          heroEl.classList.add("customizable-element");
+          heroEl.addEventListener("click", openCategoryModal);
+          
+          const uploadBtn = heroEl.querySelector('.upload-category-hero-btn');
+          if (uploadBtn) {
+            uploadBtn.classList.remove('hidden');
+            uploadBtn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              openCategoryModal({ currentTarget: heroEl, stopPropagation: () => {} });
+            });
+          }
+        }
+      });
+      
+      // Show active states
+      document.querySelectorAll('.customizable-element').forEach(el => {
+        el.classList.add('active');
+      });
+    } else {
+      removeHighlights();
+    }
+  });
+
+  document.getElementById("uploadHeroBtn")?.addEventListener("click", () => {
+    if (!isCustomizing) return;
+    openModal({ currentTarget: { id: "heroImage" }, stopPropagation: () => {} });
+  });
+
+  function openModal(e) {
+    e.stopPropagation();
+    const id = e.currentTarget.id;
+    const config = customizableElements[id];
+    if (!config) return;
+
+    const modal = document.getElementById("customModal");
+    const content = document.getElementById("modalContent");
+    modal.classList.remove("hidden");
+    content.innerHTML = `<label class="text-lg font-semibold block mb-4 text-slate-800 luxury-serif">${config.label}</label>`;
+
+    if (config.type === "image") {
+      content.innerHTML += `
+        <div class="space-y-4">
+          <input type="text" id="customInputURL" placeholder="Enter image URL" class="luxury-input" />
+          <div class="text-center text-slate-500 luxury-sans text-sm">or</div>
+          <input type="file" id="customInputFile" accept="image/*" class="luxury-input" />
+          <div id="uploadProgress" class="hidden">
+            <div class="upload-progress">
+              <div id="progressBar" class="upload-progress-bar" style="width: 0%"></div>
+            </div>
+            <p class="text-sm text-slate-600 mt-2 luxury-sans">Uploading image...</p>
+          </div>
+        </div>
+      `;
+    } else if (config.type === "text-edit") {
+      const el = document.getElementById(id);
+      const currentColor = el.getAttribute('data-custom-color') || el.style.color || '#000000';
+      content.innerHTML += `
+        <div class="space-y-4">
+          <input type="text" id="customTextValue" value="${el.textContent}" class="luxury-input" placeholder="Enter text" />
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-2 luxury-sans">Text Color</label>
+            <input type="color" id="customInputColor" value="${currentColor}" class="luxury-color-input" />
+          </div>
+        </div>
+      `;
+    } else if (config.type === "background") {
+      content.innerHTML += `
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-2 luxury-sans">Background Color</label>
+          <input type="color" id="customInputBg" class="luxury-color-input" />
+        </div>
+      `;
+    }
+
+    document.getElementById("applyBtn").onclick = () => applyChange(id, config);
+    document.getElementById("cancelBtn").onclick = () => modal.classList.add("hidden");
+  }
+
+  function openCategoryModal(e) {
+    e.stopPropagation();
+    const heroEl = e.currentTarget;
+    const categoryId = heroEl.id.replace('categoryHero_', '');
+    const titleEl = heroEl.querySelector('.category-hero-title');
+    const subtitleEl = heroEl.querySelector('.category-hero-subtitle');
+    
+    const categoryName = categoryId.replace('category_', '').replace(/_/g, ' ');
+    const currentCategoryHero = theme.categoryHeroes[categoryName] || {};
+
+    const modal = document.getElementById("customModal");
+    const content = document.getElementById("modalContent");
+    modal.classList.remove("hidden");
+    content.innerHTML = `
+      <label class="text-lg font-semibold block mb-4 text-slate-800 luxury-serif">Customize ${categoryName} Section</label>
+      
+      <div class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-2 luxury-sans">Section Title</label>
+          <input type="text" id="categoryTitle" value="${titleEl.textContent}" class="luxury-input" />
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-2 luxury-sans">Section Subtitle</label>
+          <input type="text" id="categorySubtitle" value="${subtitleEl.textContent}" class="luxury-input" />
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-2 luxury-sans">Background Image</label>
+          <input type="text" id="categoryBgURL" placeholder="Enter image URL" class="luxury-input mb-2" />
+          <input type="file" id="categoryBgFile" accept="image/*" class="luxury-input" />
+          <div id="categoryUploadProgress" class="hidden mt-2">
+            <div class="upload-progress">
+              <div id="categoryProgressBar" class="upload-progress-bar" style="width: 0%"></div>
+            </div>
+            <p class="text-sm text-slate-600 mt-1 luxury-sans">Uploading image...</p>
+          </div>
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-slate-700 mb-2 luxury-sans">Background Color</label>
+          <input type="color" id="categoryBgColor" value="#f1f5f9" class="luxury-color-input" />
+        </div>
+      </div>
+    `;
+
+    document.getElementById("applyBtn").onclick = () => applyCategoryChange(categoryName, heroEl);
+    document.getElementById("cancelBtn").onclick = () => modal.classList.add("hidden");
+  }
+
+  async function applyCategoryChange(categoryName, heroEl) {
+    const title = document.getElementById("categoryTitle").value;
+    const subtitle = document.getElementById("categorySubtitle").value;
+    const bgUrl = document.getElementById("categoryBgURL").value.trim();
+    const bgColor = document.getElementById("categoryBgColor").value;
+    const fileInput = document.getElementById("categoryBgFile");
+    
+    let backgroundImage = bgUrl;
+    
+    const progressDiv = document.getElementById("categoryUploadProgress");
+    const progressBar = document.getElementById("categoryProgressBar");
+    
+    if (!bgUrl && fileInput?.files?.[0]) {
+      const file = fileInput.files[0];
+      
+      if (progressDiv) {
+        progressDiv.classList.remove("hidden");
+        progressBar.style.width = "20%";
+      }
+
+      try {
+        // Simulate upload (replace with actual upload logic)
+        backgroundImage = await new Promise(resolve => {
+          const reader = new FileReader();
+          reader.onloadend = () => {
+            progressBar.style.width = "100%";
+            setTimeout(() => {
+              if (progressDiv) progressDiv.classList.add("hidden");
+              resolve(reader.result);
+            }, 500);
+          };
+          reader.readAsDataURL(file);
+        });
+      } catch (error) {
+        console.error("Category upload error:", error);
+        if (progressDiv) progressDiv.classList.add("hidden");
+        alert("Upload failed. Please try again.");
+        return;
+      }
+    }
+
+    // Update theme data
+    if (!theme.categoryHeroes) theme.categoryHeroes = {};
+    theme.categoryHeroes[categoryName] = {
+      title,
+      subtitle,
+      backgroundImage,
+      backgroundColor: bgColor
+    };
+
+    // Update DOM
+    const titleEl = heroEl.querySelector('.category-hero-title');
+    const subtitleEl = heroEl.querySelector('.category-hero-subtitle');
+    
+    if (titleEl) titleEl.textContent = title;
+    if (subtitleEl) subtitleEl.textContent = subtitle;
+    
+    if (backgroundImage) {
+      heroEl.style.backgroundImage = `url(${backgroundImage})`;
+      heroEl.style.backgroundSize = 'cover';
+      heroEl.style.backgroundPosition = 'center';
+    } else {
+      heroEl.style.background = `linear-gradient(135deg, ${bgColor} 0%, ${bgColor}88 100%)`;
+    }
+
+    // Simulate API save
+    console.log("Saving category theme:", theme.categoryHeroes[categoryName]);
+
+    document.getElementById("customModal").classList.add("hidden");
+  }
+
+  async function applyChange(id, config) {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    if (config.type === "image") {
+      const url = document.getElementById("customInputURL").value.trim();
+      const fileInput = document.getElementById("customInputFile");
+      let image = url;
+
+      const progressDiv = document.getElementById("uploadProgress");
+      const progressBar = document.getElementById("progressBar");
+      
+      if (!url && fileInput?.files?.[0]) {
+        const file = fileInput.files[0];
+        
+        if (progressDiv) {
+          progressDiv.classList.remove("hidden");
+          progressBar.style.width = "20%";
+        }
+
+        try {
+          // Use proper server upload for hero image
+          if (id === "heroImage") {
+            const formData = new FormData();
+            formData.append('heroImage', file);
+            formData.append('username', sellerParam);
+            formData.append('imageType', 'heroImage');
+
+            const uploadResponse = await fetch(`${API}/upload-hero-image`, {
+              method: 'POST',
+              body: formData
+            });
+
+            if (uploadResponse.ok) {
+              const result = await uploadResponse.json();
+              image = result.imageUrl;
+              progressBar.style.width = "100%";
+            } else {
+              throw new Error('Upload failed');
+            }
+          } else {
+            // For other images, convert to data URL for now
+            image = await new Promise(resolve => {
+              const reader = new FileReader();
+              reader.onloadend = () => {
+                progressBar.style.width = "100%";
+                resolve(reader.result);
+              };
+              reader.readAsDataURL(file);
+            });
+          }
+          
+          setTimeout(() => {
+            if (progressDiv) progressDiv.classList.add("hidden");
+          }, 500);
+        } catch (error) {
+          console.error("Upload error:", error);
+          if (progressDiv) progressDiv.classList.add("hidden");
+          alert("Upload failed. Please try again.");
+          return;
+        }
+      }
+      
+      el.src = resolveImage(image);
+      theme[config.key] = image;
+
+    } else if (config.type === "text-edit") {
+      const color = document.getElementById("customInputColor").value;
+      const text = document.getElementById("customTextValue").value;
+      el.textContent = text;
+      if (color) {
+        el.style.color = color;
+        // Store color in a data attribute to persist it
+        el.setAttribute('data-custom-color', color);
+      }
+      theme[config.key] = text;
+      theme[`${config.key}Color`] = color;
+
+    } else if (config.type === "background") {
+      const bg = document.getElementById("customInputBg").value;
+      el.style.backgroundColor = bg;
+      theme[config.key] = bg;
+    }
+
+    // Save to server
+    try {
+      await fetch(`${API}/update`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          collection: "users",
+          query: { username: sellerParam },
+          updates: {
+            customTheme: theme,
+            theme: theme,
+            shopSettings: {
+              ...theme,
+              socialLinks: socialLinks,
+              footerLinks: footerLinks
+            }
+          }
+        })
+      });
+      console.log("✅ Theme saved successfully");
+    } catch (error) {
+      console.error("❌ Failed to save theme:", error);
+      alert("Failed to save changes. Please try again.");
+    }
+
+    document.getElementById("customModal").classList.add("hidden");
+  }
+
+  function removeHighlights() {
+    document.querySelectorAll('.customizable-element').forEach(el => {
+      el.classList.remove('active');
+      el.removeEventListener("click", openModal);
+      el.removeEventListener("click", openCategoryModal);
+      el.removeAttribute("data-bound");
+    });
+    
+    document.querySelectorAll('.upload-category-hero-btn').forEach(btn => {
+      btn.classList.add('hidden');
+    });
+    
+    document.getElementById("uploadHeroBtn")?.classList.add("hidden");
+  }
+
+  // Mobile menu functionality
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  
+  if (mobileMenuBtn && mobileMenu) {
+    mobileMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isHidden = mobileMenu.classList.contains('hidden');
+      if (isHidden) {
+        mobileMenu.classList.remove('hidden');
+        mobileMenu.style.maxHeight = mobileMenu.scrollHeight + 'px';
+        mobileMenuBtn.innerHTML = `
+          <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        `;
+      } else {
+        mobileMenu.style.maxHeight = '0px';
+        setTimeout(() => {
+          mobileMenu.classList.add('hidden');
+        }, 300);
+        mobileMenuBtn.innerHTML = `
+          <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        `;
+      }
+    });
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+        if (!mobileMenu.classList.contains('hidden')) {
+          mobileMenu.style.maxHeight = '0px';
+          setTimeout(() => {
+            mobileMenu.classList.add('hidden');
+          }, 300);
+          mobileMenuBtn.innerHTML = `
+            <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+            </svg>
+          `;
+        }
+      }
+    });
+  }
+
+  // Always render auth buttons and footer components
+  renderAuthButtons();
+  renderMobileAuthButtons();
+  renderSocialLinks();
+  renderFooterLinks();
+  
+  // Add footer click handler for owners
+  if (isOwner) {
+    document.getElementById("footer").addEventListener("click", openFooterModal);
+  }
+})();
+
+// === Utility Functions ===
+function renderAuthButtons() {
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+  const container = document.getElementById("shopAuthButtons");
+  if (!container) return;
+  container.innerHTML = "";
+  if (user) {
+    const dashboard = document.createElement("a");
+    dashboard.href = "dashboard.html";
+    dashboard.className = "luxury-btn-primary text-sm px-4 py-2";
+    dashboard.textContent = "Dashboard";
+    const logout = document.createElement("button");
+    logout.className = "luxury-btn-secondary text-sm px-4 py-2";
+    logout.textContent = "Logout";
+    logout.onclick = () => {
+      localStorage.removeItem("user");
+      location.reload();
+    };
+    container.appendChild(dashboard);
+    container.appendChild(logout);
+  } else {
+    const signup = document.createElement("a");
+    signup.href = "signup.html";
+    signup.className = "luxury-btn-primary text-sm px-4 py-2";
+    signup.textContent = "Sign Up";
+    const login = document.createElement("a");
+    login.href = "login.html";
+    login.className = "luxury-btn-secondary text-sm px-4 py-2";
+    login.textContent = "Log In";
+    container.appendChild(signup);
+    container.appendChild(login);
+  }
+}
+
+function renderMobileAuthButtons() {
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+  const container = document.getElementById("mobileAuthButtons");
+  if (!container) return;
+  container.innerHTML = "";
+  if (user) {
+    const dashboard = document.createElement("a");
+    dashboard.href = "dashboard.html";
+    dashboard.className = "luxury-btn-primary text-sm px-4 py-2 w-full";
+    dashboard.textContent = "Dashboard";
+    const logout = document.createElement("button");
+    logout.className = "luxury-btn-secondary text-sm px-4 py-2 w-full mt-2";
+    logout.textContent = "Logout";
+    logout.onclick = () => {
+      localStorage.removeItem("user");
+      location.reload();
+    };
+    container.appendChild(dashboard);
+    container.appendChild(logout);
+  } else {
+    const signup = document.createElement("a");
+    signup.href = "signup.html";
+    signup.className = "luxury-btn-primary text-sm px-4 py-2 w-full";
+    signup.textContent = "Sign Up";
+    const login = document.createElement("a");
+    login.href = "login.html";
+    login.className = "luxury-btn-secondary text-sm px-4 py-2 w-full mt-2";
+    login.textContent = "Log In";
+    container.appendChild(signup);
+    container.appendChild(login);
+  }
+}
+// Social links management
+function renderSocialLinks() {
+  const container = document.getElementById("socialLinks");
+  const section = document.getElementById("socialLinksSection");
+  
+  if (socialLinks.length === 0) {
+    section.classList.add("hidden");
+    return;
+  }
+
+  section.classList.remove("hidden");
+  container.innerHTML = '';
+
+  socialLinks.forEach(link => {
+    const linkEl = document.createElement("a");
+    linkEl.href = link.url;
+    linkEl.target = "_blank";
+    linkEl.rel = "noopener noreferrer";
+    linkEl.className = "bg-white/10 hover:bg-white/20 p-3 rounded-full transition-all transform hover:scale-110";
+    linkEl.innerHTML = getSocialIcon(link.platform);
+    container.appendChild(linkEl);
+  });
+}
+
+function getSocialIcon(platform) {
+  const icons = {
+    facebook: '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>',
+    twitter: '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z"/></svg>',
+    instagram: '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 6.62 5.367 11.987 11.988 11.987 6.62 0 11.987-5.367 11.987-11.987C24.014 5.367 18.637.001 12.017.001zM8.449 16.988c-1.297 0-2.448-.49-3.323-1.297C4.198 14.97 3.708 13.819 3.708 12.522s.49-2.448 1.418-3.323c.928-.875 2.079-1.365 3.323-1.365s2.395.49 3.323 1.365c.928.875 1.418 2.026 1.418 3.323s-.49 2.448-1.418 3.169c-.928.721-2.026 1.297-3.323 1.297z"/></svg>',
+    linkedin: '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>',
+    youtube: '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>',
+    tiktok: '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg>'
+  };
+  return icons[platform] || '<svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.374 0 0 5.373 0 12s5.374 12 12 12 12-5.373 12-12S18.626 0 12 0zm5.568 8.16c-.169 1.858-.896 3.49-2.068 4.663-1.197 1.172-2.858 1.899-4.717 2.068-1.858.169-3.49-.896-4.663-2.068C4.947 11.651 4.22 9.99 4.051 8.131 3.882 6.273 4.947 4.612 6.12 3.44 7.292 2.268 8.954 1.541 10.812 1.372c1.858-.169 3.49.896 4.663 2.068 1.172 1.197 1.899 2.858 2.068 4.717z"/></svg>';
+}
+
+// Footer links management
+function renderFooterLinks() {
+  const container = document.getElementById("footerLinks");
+  container.innerHTML = '';
+
+  footerLinks.forEach(link => {
+    const linkEl = document.createElement("button");
+    linkEl.className = "footer-link";
+    linkEl.textContent = link.title;
+    linkEl.addEventListener('click', () => showFooterLinkContent(link));
+    container.appendChild(linkEl);
+  });
+}
+
+function showFooterLinkContent(link) {
+  document.getElementById("footerLinkDisplayTitle").textContent = link.title;
+  document.getElementById("footerLinkDisplayContent").innerHTML = link.content.replace(/\n/g, '<br>');
+  document.getElementById("footerLinkDisplayModal").classList.remove("hidden");
+}
+
+// Footer management functions
+function openFooterModal() {
+  if (!isOwner) return;
+  document.getElementById("footerModal").classList.remove("hidden");
+  renderSocialLinksList();
+  renderFooterLinksList();
+}
+
+function renderSocialLinksList() {
+  const list = document.getElementById("socialLinksList");
+  list.innerHTML = '';
+
+  socialLinks.forEach((link, index) => {
+    const linkItem = document.createElement("div");
+    linkItem.className = "flex items-center gap-3 p-3 bg-gray-50 rounded-lg";
+    linkItem.innerHTML = `
+      <select class="social-platform px-3 py-1 border rounded" data-index="${index}">
+        <option value="facebook" ${link.platform === 'facebook' ? 'selected' : ''}>Facebook</option>
+        <option value="twitter" ${link.platform === 'twitter' ? 'selected' : ''}>Twitter</option>
+        <option value="instagram" ${link.platform === 'instagram' ? 'selected' : ''}>Instagram</option>
+        <option value="linkedin" ${link.platform === 'linkedin' ? 'selected' : ''}>LinkedIn</option>
+        <option value="youtube" ${link.platform === 'youtube' ? 'selected' : ''}>YouTube</option>
+        <option value="tiktok" ${link.platform === 'tiktok' ? 'selected' : ''}>TikTok</option>
+      </select>
+      <input type="url" class="social-url flex-1 px-3 py-1 border rounded"
+             placeholder="Enter URL" value="${link.url}" data-index="${index}" />
+      <button class="remove-social bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600" data-index="${index}">
+        Remove
+      </button>
+    `;
+    list.appendChild(linkItem);
+  });
+}
+
+function renderFooterLinksList() {
+  const list = document.getElementById("footerLinksList");
+  list.innerHTML = '';
+
+  footerLinks.forEach((link, index) => {
+    const linkItem = document.createElement("div");
+    linkItem.className = "flex items-center gap-3 p-3 bg-gray-50 rounded-lg";
+    linkItem.innerHTML = `
+      <div class="flex-1">
+        <p class="font-semibold">${link.title}</p>
+        <p class="text-sm text-gray-600">${link.content.substring(0, 100)}${link.content.length > 100 ? '...' : ''}</p>
+      </div>
+      <div class="flex gap-2">
+        <button class="edit-footer-link bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600" data-index="${index}">
+          Edit
+        </button>
+        <button class="remove-footer-link bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600" data-index="${index}">
+          Remove
+        </button>
+      </div>
+    `;
+    list.appendChild(linkItem);
+  });
+}
+
+function addSocialLink() {
+  socialLinks.push({
+    platform: 'facebook',
+    url: ''
+  });
+  renderSocialLinksList();
+}
+
+function addFooterLink() {
+  currentEditingFooterLinkIndex = footerLinks.length;
+  document.getElementById("footerLinkContentTitle").textContent = "Add New Footer Link";
+  document.getElementById("footerLinkTitle").value = "";
+  document.getElementById("footerLinkContent").value = "";
+  document.getElementById("footerLinkContentModal").classList.remove("hidden");
+}
+
+function editFooterLink(index) {
+  currentEditingFooterLinkIndex = index;
+  const link = footerLinks[index];
+  document.getElementById("footerLinkContentTitle").textContent = "Edit Footer Link";
+  document.getElementById("footerLinkTitle").value = link.title;
+  document.getElementById("footerLinkContent").value = link.content;
+  document.getElementById("footerLinkContentModal").classList.remove("hidden");
+}
+
+function saveFooterLinkContent() {
+  const title = document.getElementById("footerLinkTitle").value.trim();
+  const content = document.getElementById("footerLinkContent").value.trim();
+
+  if (!title || !content) {
+    alert("Please fill in both title and content");
+    return;
+  }
+
+  const linkData = { title, content };
+
+  if (currentEditingFooterLinkIndex < footerLinks.length) {
+    footerLinks[currentEditingFooterLinkIndex] = linkData;
+  } else {
+    footerLinks.push(linkData);
+  }
+
+  renderFooterLinksList();
+  renderFooterLinks();
+  document.getElementById("footerLinkContentModal").classList.add("hidden");
+  currentEditingFooterLinkIndex = null;
+}
+
+function removeSocialLink(index) {
+  socialLinks.splice(index, 1);
+  renderSocialLinksList();
+  renderSocialLinks();
+}
+
+function removeFooterLink(index) {
+  footerLinks.splice(index, 1);
+  renderFooterLinksList();
+  renderFooterLinks();
+}
+
+async function saveFooterSettings() {
+  // Update socialLinks array with current form values
+  document.querySelectorAll('.social-platform').forEach(select => {
+    const index = parseInt(select.dataset.index);
+    if (socialLinks[index]) {
+      socialLinks[index].platform = select.value;
+    }
+  });
+
+  document.querySelectorAll('.social-url').forEach(input => {
+    const index = parseInt(input.dataset.index);
+    if (socialLinks[index]) {
+      socialLinks[index].url = input.value.trim();
+    }
+  });
+
+  // Remove empty links
+  socialLinks = socialLinks.filter(link => link.url);
+
+  // Update theme
+  theme.socialLinks = socialLinks;
+  theme.footerLinks = footerLinks;
+
+  // Save to server
+  try {
+    await fetch(`${API}/update`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        collection: "users",
+        query: { username: sellerParam },
+        updates: {
+          customTheme: theme,
+          theme: theme,
+          shopSettings: {
+            ...theme,
+            socialLinks: socialLinks,
+            footerLinks: footerLinks
+          }
+        }
+      })
+    });
+    console.log("✅ Footer settings saved successfully");
+  } catch (error) {
+    console.error("❌ Failed to save footer settings:", error);
+    alert("Failed to save changes. Please try again.");
+  }
+
+  renderSocialLinks();
+  renderFooterLinks();
+  document.getElementById("footerModal").classList.add("hidden");
+}
+
+// Event listeners for footer management
+document.getElementById("addSocialBtn")?.addEventListener("click", addSocialLink);
+document.getElementById("addFooterLinkBtn")?.addEventListener("click", addFooterLink);
+document.getElementById("closeFooterModal")?.addEventListener("click", () => {
+  document.getElementById("footerModal").classList.add("hidden");
+});
+document.getElementById("saveFooterSettings")?.addEventListener("click", saveFooterSettings);
+
+// Footer link content modal
+document.getElementById("cancelFooterLinkContent")?.addEventListener("click", () => {
+  document.getElementById("footerLinkContentModal").classList.add("hidden");
+});
+document.getElementById("saveFooterLinkContent")?.addEventListener("click", saveFooterLinkContent);
+
+// Footer link display modal
+document.getElementById("closeFooterLinkDisplay")?.addEventListener("click", () => {
+  document.getElementById("footerLinkDisplayModal").classList.add("hidden");
+});
+
+// Event delegation for dynamic buttons
+document.addEventListener("click", (e) => {
+  if (e.target.closest(".remove-social")) {
+    const index = parseInt(e.target.closest(".remove-social").dataset.index);
+    removeSocialLink(index);
+  }
+
+  if (e.target.closest(".edit-footer-link")) {
+    const index = parseInt(e.target.closest(".edit-footer-link").dataset.index);
+    editFooterLink(index);
+  }
+
+  if (e.target.closest(".remove-footer-link")) {
+    const index = parseInt(e.target.closest(".remove-footer-link").dataset.index);
+    removeFooterLink(index);
+  }
+});
+
+// Smooth scrolling for navigation
+document.addEventListener('DOMContentLoaded', () => {
+  // Add smooth scroll behavior
+  document.documentElement.style.scrollBehavior = 'smooth';
+  
+  // Add intersection observer for scroll animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '1';
+        entry.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, observerOptions);
+  
+  // Observe product cards for scroll animations
+  setTimeout(() => {
+    document.querySelectorAll('.luxury-product-card').forEach((card, index) => {
+      card.style.opacity = '0';
+      card.style.transform = 'translateY(30px)';
+      card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+      observer.observe(card);
+    });
+  }, 100);
+});
+</script>
