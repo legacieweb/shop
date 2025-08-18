@@ -55,19 +55,7 @@ const upload = multer({ storage });
 // -------------------------------
 // 🔐 Middleware
 // -------------------------------
-// Enhanced CORS configuration to allow iyonicorp.com
-app.use(cors({
-  origin: [
-    'https://iyonicorp.com',
-    'https://www.iyonicorp.com',
-    'https://941d7aefcce8.ngrok-free.app',
-    'http://localhost:3000',
-    'http://127.0.0.1:3000'
-  ],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'ngrok-skip-browser-warning']
-}));
+app.use(cors());
 app.use(express.json({ limit: "500mb" }));
 
 // ✅ Serve static files under /public (CSS, JS, images, uploads)
@@ -95,29 +83,6 @@ app.get("/admin-panel", (req, res) => {
   res.sendFile(path.join(__dirname, "admin-panel.html"));
 });
 
-// ✅ Serve layout files for preview functionality
-app.get("/layouts/:layoutName", (req, res) => {
-  const layoutName = req.params.layoutName;
-  const layoutPath = path.join(__dirname, "layouts", `${layoutName}.html`);
-  
-  // Check if layout file exists
-  if (fs.existsSync(layoutPath)) {
-    res.sendFile(layoutPath);
-  } else {
-    res.status(404).json({ success: false, message: "Layout not found" });
-  }
-});
-
-// ✅ Serve preview page
-app.get("/preview", (req, res) => {
-  res.sendFile(path.join(__dirname, "preview", "index.html"));
-});
-
-// ✅ Serve seller registration page
-app.get("/seller", (req, res) => {
-  res.sendFile(path.join(__dirname, "seller", "index.html"));
-});
-
 // -------------------------------
 // 🛠️ Helper: Subscription Limits
 // -------------------------------
@@ -135,31 +100,16 @@ function getSubscriptionLimits(plan) {
 // -------------------------------
 // 🗄️ Database Connection
 // -------------------------------
-let mongoConnected = false;
-if (process.env.MONGO_URI && process.env.MONGO_URI.includes('tcp.in.ngrok.io')) {
-  console.log('⚠️ MongoDB ngrok tunnel detected - skipping connection for now');
-  mongoConnected = false;
-} else {
-  try {
-    mongoose.connect(process.env.MONGO_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
-    const db = mongoose.connection;
-    db.on('error', (err) => {
-      console.error('MongoDB connection error:', err);
-      mongoConnected = false;
-    });
-    db.once('open', () => {
-      console.log('✅ Connected to MongoDB database with Mongoose');
-      mongoConnected = true;
-    });
-  } catch (err) {
-    console.error('Failed to connect to MongoDB:', err);
-    mongoConnected = false;
-  }
-}
+const db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+db.once('open', () => {
+  console.log('✅ Connected to MongoDB database with Mongoose');
+});
 
 // -------------------------------
 // ✅ API ROUTES (Must come BEFORE static catch-all)
@@ -818,7 +768,7 @@ app.post("/place-order", async (req, res) => {
     const currency = order?.shopSettings?.storeCurrency || "USD";
     const symbol = getCurrencySymbol(currency);
 
-    const buyerDashboardUrl = `https://941d7aefcce8.ngrok-free.app/dashboard?email=${encodeURIComponent(order.buyer.email)}`;
+    const buyerDashboardUrl = `https://api.iyonicorp.com/dashboard.html?email=${encodeURIComponent(order.buyer.email)}`;
 
     // 📧 Email to Buyer
     await emailService.sendMail({
@@ -905,7 +855,7 @@ app.patch("/order-status", async (req, res) => {
       Declined: "❌ Your order was declined."
     };
 
-    const dashboardLink = `https://941d7aefcce8.ngrok-free.app/dashboard?email=${encodeURIComponent(buyerEmail)}`;
+    const dashboardLink = `https://api.iyonicorp.com/dashboard.html?email=${encodeURIComponent(buyerEmail)}`;
 
     if (buyerEmail) {
       await emailService.sendMail({
@@ -1246,13 +1196,13 @@ app.post("/signup", async (req, res) => {
     const savedUser = await user.save();
 
     let shopName = "Iyonicorp";
-    let shopUrl = `https://941d7aefcce8.ngrok-free.app`;
+    let shopUrl = `https://api.iyonicorp.com`;
 
     if (sellerUsername) {
       const seller = await User.findOne({ username: sellerUsername, role: "seller" });
       if (seller) {
         shopName = seller.customTheme?.name || seller.username;
-        shopUrl = `https://941d7aefcce8.ngrok-free.app/shop?seller=${encodeURIComponent(sellerUsername)}`;
+        shopUrl = `https://api.iyonicorp.com/shop.html?seller=${encodeURIComponent(sellerUsername)}`;
       }
     }
 
