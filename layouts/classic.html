@@ -210,7 +210,7 @@
     products.forEach(p => {
       const imageSrc = resolveImage(p.image);
       const card = document.createElement("a");
-      card.href = `product-detail.html?id=${p.id}`;
+      card.href = `../detail?id=${p.id}`;
       card.className = `
         bg-white
         rounded-xl

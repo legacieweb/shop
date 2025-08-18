@@ -21,7 +21,11 @@
     }
 
     try {
-      const layoutRes = await fetch(`${API}/layouts/${theme.layout}`);
+      const layoutRes = await fetch(`${API}/layouts/${theme.layout}`, {
+        headers: {
+          'ngrok-skip-browser-warning': 'true'
+        }
+      });
       const layoutHTML = await layoutRes.text();
 
       // Inject layout
@@ -51,18 +55,62 @@
         theme
       };
 
-      // Reattach scripts
-      scripts.forEach(script => {
-        const newScript = document.createElement("script");
-        if (script.src) {
-          newScript.src = script.src;
-        } else {
-          newScript.textContent = script.textContent;
+      // Reattach scripts with improved error handling
+      scripts.forEach((script, index) => {
+        try {
+          const newScript = document.createElement("script");
+          
+          if (script.src) {
+            // External script - just copy the src
+            newScript.src = script.src;
+          } else {
+            // Inline script - handle carefully
+            const scriptContent = script.textContent || script.innerHTML || '';
+            if (scriptContent.trim()) {
+              // Create script with proper text content instead of innerHTML
+              newScript.appendChild(document.createTextNode(scriptContent));
+            }
+          }
+          
+          // Copy attributes safely, excluding problematic ones
+          if (script.attributes) {
+            Array.from(script.attributes).forEach(attr => {
+              try {
+                if (attr.name !== 'src' && attr.name !== 'innerHTML' && attr.name !== 'textContent') {
+                  newScript.setAttribute(attr.name, attr.value);
+                }
+              } catch (attrError) {
+                console.warn(`Failed to set attribute ${attr.name}:`, attrError);
+              }
+            });
+          }
+          
+          // Append to head instead of body for better compatibility
+          document.head.appendChild(newScript);
+        } catch (scriptError) {
+          console.warn(`Failed to reattach script ${index}:`, scriptError);
+          // Try alternative method for problematic scripts
+          try {
+            const fallbackScript = document.createElement("script");
+            if (script.src) {
+              fallbackScript.src = script.src;
+            } else {
+              const scriptText = script.outerHTML || script.textContent || '';
+              if (scriptText.includes('<script')) {
+                // Extract just the script content
+                const match = scriptText.match(/<script[^>]*>([\s\S]*?)<\/script>/i);
+                if (match && match[1]) {
+                  fallbackScript.text = match[1];
+                }
+              } else {
+                fallbackScript.text = scriptText;
+              }
+            }
+            document.head.appendChild(fallbackScript);
+          } catch (fallbackError) {
+            console.warn(`Fallback script attachment failed for ${index}:`, fallbackError);
+          }
         }
-        for (const attr of script.attributes) {
-          newScript.setAttribute(attr.name, attr.value);
-        }
-        document.body.appendChild(newScript);
       });
 
     } catch (err) {

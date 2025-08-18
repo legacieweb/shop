@@ -542,7 +542,11 @@ async function getUserPlan() {
     }
 
     // Refresh from backend for accuracy
-    const res = await fetch(`${API}/api/subscription-info?username=${encodeURIComponent(sellerParam)}`);
+    const res = await fetch(`${API}/api/subscription-info?username=${encodeURIComponent(sellerParam)}`, {
+      headers: {
+        'ngrok-skip-browser-warning': 'true'
+      }
+    });
     if (res.ok) {
       const payload = await res.json();
       if (payload && payload.success && payload.user?.plan) {
@@ -860,11 +864,14 @@ async function applyTheme(index) {
   const layoutName = selectedTheme.layout;
 
   try {
-    // Fetch the selected layout HTML (JSON response with { data: { html } })
-    const layoutRes = await fetch(`${API}/layouts/${layoutName}`);
+    // Fetch the selected layout HTML directly
+    const layoutRes = await fetch(`${API}/layouts/${layoutName}`, {
+      headers: {
+        'ngrok-skip-browser-warning': 'true'
+      }
+    });
     if (!layoutRes.ok) throw new Error("Failed to fetch layout");
-    const layoutJson = await layoutRes.json();
-    const layoutHTML = layoutJson?.data?.html || "";
+    const layoutHTML = await layoutRes.text();
 
     if (!layoutHTML) throw new Error("Empty layout HTML");
 
