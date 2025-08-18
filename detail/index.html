@@ -38,6 +38,180 @@
     transform: translateY(0);
   }
 }
+
+/* Cool Preloader Styles */
+.order-preloader {
+  backdrop-filter: blur(10px);
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.preloader-content {
+  animation: bounceIn 0.6s ease-out;
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.3) translateY(-50px);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05) translateY(0);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 6px solid rgba(99, 102, 241, 0.2);
+  border-top: 6px solid #6366f1;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.pulse-text {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* Success Notification Styles */
+.success-modal {
+  backdrop-filter: blur(15px);
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.success-content {
+  animation: successBounce 0.8s ease-out;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+@keyframes successBounce {
+  0% {
+    transform: scale(0.1) rotate(-10deg);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.1) rotate(5deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.success-checkmark {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #4ade80, #22c55e);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 30px rgba(34, 197, 94, 0.4);
+  animation: checkmarkPop 0.6s ease-out 0.3s both;
+}
+
+@keyframes checkmarkPop {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.checkmark-icon {
+  font-size: 2.5rem;
+  color: white;
+  animation: checkmarkDraw 0.3s ease-out 0.6s both;
+}
+
+@keyframes checkmarkDraw {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.success-confetti {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.confetti-piece {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #fbbf24;
+  animation: confettiFall 3s ease-out infinite;
+}
+
+@keyframes confettiFall {
+  0% {
+    transform: translateY(-100vh) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.success-text {
+  animation: slideInUp 0.6s ease-out 0.4s both;
+}
+
+@keyframes slideInUp {
+  0% {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.glow-effect {
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+  animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+  }
+  to {
+    box-shadow: 0 0 30px rgba(99, 102, 241, 0.8), 0 0 40px rgba(99, 102, 241, 0.3);
+  }
+}
 </style>
   <style>
     /* Remove @apply, use Tailwind classes directly in HTML */
@@ -317,6 +491,65 @@
   </div>
 </div>
 
+<!-- Cool Order Preloader -->
+<div id="orderPreloader" class="fixed inset-0 order-preloader z-[100] hidden items-center justify-center">
+  <div class="preloader-content bg-white rounded-2xl p-8 shadow-2xl text-center max-w-sm mx-auto glow-effect">
+    <div class="spinner mx-auto mb-6"></div>
+    <h3 id="preloaderTitle" class="text-xl font-bold text-indigo-700 mb-2">Processing Your Order</h3>
+    <p id="preloaderMessage" class="text-gray-600 pulse-text">Please wait while we place your order...</p>
+    <div class="mt-4 flex justify-center space-x-1">
+      <div class="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style="animation-delay: 0s"></div>
+      <div class="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style="animation-delay: 0.1s"></div>
+      <div class="w-2 h-2 bg-indigo-500 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Cool Success Modal -->
+<div id="successModal" class="fixed inset-0 success-modal z-[100] hidden items-center justify-center">
+  <div class="success-content rounded-3xl p-8 shadow-2xl text-center max-w-md mx-auto text-white relative overflow-hidden">
+    <!-- Confetti Animation -->
+    <div class="success-confetti"></div>
+    
+    <!-- Success Checkmark -->
+    <div class="success-checkmark mx-auto mb-6">
+      <span class="checkmark-icon">✓</span>
+    </div>
+    
+    <!-- Success Text -->
+    <div class="success-text">
+      <h2 class="text-3xl font-bold mb-3">🎉 Order Placed Successfully!</h2>
+      <p id="successMessage" class="text-lg mb-6 opacity-90">Your order has been confirmed and saved!</p>
+      
+      <!-- Order Details -->
+      <div id="successOrderDetails" class="bg-white bg-opacity-20 rounded-xl p-4 mb-6 text-sm">
+        <div class="flex justify-between items-center mb-2">
+          <span>Order ID:</span>
+          <span id="successOrderId" class="font-mono font-bold"></span>
+        </div>
+        <div class="flex justify-between items-center mb-2">
+          <span>Total:</span>
+          <span id="successOrderTotal" class="font-bold"></span>
+        </div>
+        <div class="flex justify-between items-center">
+          <span>Payment:</span>
+          <span id="successPaymentMethod" class="font-bold"></span>
+        </div>
+      </div>
+      
+      <!-- Action Buttons -->
+      <div class="space-y-3">
+        <button onclick="closeSuccessModal()" class="w-full bg-white bg-opacity-20 hover:bg-opacity-30 text-white py-3 px-6 rounded-xl font-semibold transition-all duration-200 backdrop-blur-sm">
+          🛍️ Continue Shopping
+        </button>
+        <button onclick="goToDashboard()" class="w-full bg-yellow-400 hover:bg-yellow-500 text-gray-900 py-3 px-6 rounded-xl font-semibold transition-all duration-200">
+          📋 Track Order
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </main>
 
 <script>
@@ -363,7 +596,8 @@ async function loadStoreProducts(seller, currentProductId, currencyCode = "USD")
 
   try {
     const res = await fetch(`${API}/find?collection=products&seller=${encodeURIComponent(seller)}`);
-    const allProducts = await res.json();
+    const response = await res.json();
+    const allProducts = response.success && response.data ? response.data : [];
 
     // Filter out current product and take up to 4 others
     const storeProducts = allProducts
@@ -380,7 +614,7 @@ async function loadStoreProducts(seller, currentProductId, currencyCode = "USD")
               <img src="${img}" class="w-full max-h-56 mx-auto object-contain" />
             </div>` : ""}
             <h4 class="text-md font-semibold text-indigo-700 truncate">${p.name}</h4>
-            <p class="text-gray-800 font-bold mt-1">${currencySymbol}${parseFloat(p.price).toFixed(2)}</p>
+            <p class="text-gray-800 font-bold mt-1">${currencySymbol}${parseFloat(p.price || 0).toFixed(2)}</p>
           </a>
         `;
       });
@@ -402,16 +636,18 @@ async function loadProduct() {
 
   try {
     const res = await fetch(`${API}/find?collection=products&id=${productId}`);
-    const [product] = await res.json();
+    const response = await res.json();
+    const product = response.success && response.data && response.data[0] ? response.data[0] : null;
     if (!product) {
       productSection.innerHTML = "<p class='text-red-500'>❌ Product not found.</p>";
       return;
     }
 
     const shopRes = await fetch(`${API}/find?collection=users&username=${encodeURIComponent(product.seller)}`);
-    const [seller] = await shopRes.json();
+    const shopResponse = await shopRes.json();
+    const seller = shopResponse.success && shopResponse.data && shopResponse.data[0] ? shopResponse.data[0] : null;
 
-    await fetch("http://api.iyonicorp.com/api/track-view", {
+    await fetch("https://shop-stp5.onrender.com/api/track-view", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ productId: product.id, seller: product.seller })
@@ -446,7 +682,7 @@ async function loadProduct() {
     const variantHTML = (product.variants || []).map((v, i) => `
       <label class="block mb-1">
         <input type="radio" name="productVariant" value="${i}" class="mr-2" />
-        ${v.name} (+${currencySymbol}${(v.price || product.price).toFixed(2)})
+        ${v.name} (+${currencySymbol}${(v.price || product.price || 0).toFixed(2)})
       </label>
     `).join("");
 
@@ -509,7 +745,7 @@ async function loadProduct() {
       <div class="space-y-4">
         <h2 class="text-3xl font-bold text-indigo-700">${product.name}</h2>
         <p class="text-gray-600">${product.description || "No description available."}</p>
-        <p class="text-2xl font-bold text-gray-800">${currencySymbol}${product.price.toFixed(2)}</p>
+        <p class="text-2xl font-bold text-gray-800">${currencySymbol}${(product.price || 0).toFixed(2)}</p>
 
         <div class="flex flex-wrap gap-2 mt-3">
           ${product.category ? `<span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs">${capitalize(product.category)}</span>` : ""}
@@ -637,7 +873,8 @@ async function loadRelated(product, currencyCode = "USD") {
 
   try {
     const res = await fetch(`${API}/find?collection=products&seller=${encodeURIComponent(product.seller)}`);
-    const all = await res.json();
+    const response = await res.json();
+    const all = response.success && response.data ? response.data : [];
 
     const filtered = all
       .filter(p => p.id !== product.id && p.category?.toLowerCase() === product.category.toLowerCase())
@@ -654,7 +891,7 @@ async function loadRelated(product, currencyCode = "USD") {
               <img src="${img}" class="w-full max-h-56 mx-auto object-contain" />
             </div>` : ""}
             <h4 class="text-md font-semibold text-indigo-700 truncate">${p.name}</h4>
-            <p class="text-gray-800 font-bold mt-1">${currencySymbol}${parseFloat(p.price).toFixed(2)}</p>
+            <p class="text-gray-800 font-bold mt-1">${currencySymbol}${parseFloat(p.price || 0).toFixed(2)}</p>
           </a>
         `;
       });
@@ -822,7 +1059,7 @@ function handleCart(productId) {
   cart.push(cartItem);
   saveCart();
 
-  fetch("http://api.iyonicorp.com/add-cart", {
+  fetch("https://shop-stp5.onrender.com/add-cart", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -1320,25 +1557,57 @@ async function placeOrder() {
       orderData.paymentMethod = selectedMethod;
 
       if (selectedMethod === "delivery") {
-        const res = await fetch(`${API}/place-order`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(orderData)
-        });
-        if (!res.ok) throw new Error("Failed to save order.");
-        await res.json();
-        alert("✅ Order placed successfully! You will pay on delivery.");
-        cart = cart.filter(item => item.id !== product.id);
-        saveCart();
-        hideCheckoutModal();
+        // Show cool preloader for delivery orders
+        showOrderPreloader("🚚 Placing Order on Delivery", "Your order is being processed for cash on delivery...");
+        
+        try {
+          const res = await fetch(`${API}/place-order`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(orderData)
+          });
+          
+          if (!res.ok) throw new Error("Failed to save order.");
+          const result = await res.json();
+          
+          // Hide preloader
+          hideOrderPreloader();
+          
+          // Show success modal with order details
+          showSuccessModal({
+            paymentMethod: 'delivery',
+            orderId: result.data?.order?.orderId || 'ORD-' + Date.now(),
+            total: total,
+            currency: storeCurrency
+          });
+          
+          // Clean up cart
+          cart = cart.filter(item => item.id !== product.id);
+          saveCart();
+          hideCheckoutModal();
+        } catch (error) {
+          hideOrderPreloader();
+          throw error;
+        }
       } else if (selectedMethod === "online") {
         if (!gateways.length) {
           alert("❌ No online payment gateways configured.");
           return;
         }
+        
+        // Store minimal data for redirect-based payments (like Stripe)
+        localStorage.setItem('lastOrderTotal', total.toString());
+        localStorage.setItem('lastOrderCurrency', storeCurrency);
+        localStorage.setItem('pendingOrderData', JSON.stringify(orderData));
+        
         hideCheckoutModal();
-        console.log("Gateways being passed to showGatewayPopup:", gateways); // Debug log
-        showGatewayPopup(gateways, total, orderData, gatewayConfigs, email, product, storeCurrency);
+        showOrderPreloader("💳 Redirecting to Payment", "Please complete your payment to confirm the order...");
+        
+        // Show payment gateway after a brief delay
+        setTimeout(() => {
+          console.log("Gateways being passed to showGatewayPopup:", gateways); // Debug log
+          showGatewayPopup(gateways, total, orderData, gatewayConfigs, email, product, storeCurrency);
+        }, 1500);
       }
     };
 
@@ -1352,6 +1621,7 @@ async function placeOrder() {
     }
   } catch (err) {
     console.error("❌ Order error:", err);
+    hideOrderPreloader(); // Hide preloader on error
     alert("❌ Order failed: " + err.message);
   } finally {
     btn.disabled = false;
@@ -1362,6 +1632,9 @@ function showGatewayPopup(gateways, total, orderData, gatewayConfigs, email, pro
   const modal = document.getElementById("gatewayModal");
   const container = document.getElementById("gatewayOptions");
 
+  // Hide the preloader when payment gateway opens
+  hideOrderPreloader();
+  
   modal.classList.remove("hidden");
   modal.classList.add("flex");
   container.innerHTML = "";
@@ -1437,9 +1710,14 @@ async function processPayment(gateway, total, orderData, configs, email, product
   const currencySymbol = getCurrencySymbol(storeCurrency);
 
   const saveOrderAfterPayment = async (paymentDetails = {}) => {
+    // 🎯 IMMEDIATELY show preloader after payment completion
+    showOrderPreloader("✅ Payment Successful!", "Processing your order and sending confirmation...");
+    hideGatewayPopup(); // Hide payment gateway modal
+    
     try {
       orderData.paymentDetails = paymentDetails;
       orderData.status = "paid";
+      orderData.paymentMethod = "online";
       
       const res = await fetch(`${API}/place-order`, {
         method: "POST",
@@ -1449,14 +1727,43 @@ async function processPayment(gateway, total, orderData, configs, email, product
 
       if (!res.ok) throw new Error("Failed to save order.");
       
-      alert("✅ Payment successful! Order placed.");
+      const result = await res.json();
+      
+      // Hide preloader
+      hideOrderPreloader();
+      
+      // Show success modal after a brief delay for better UX
+      setTimeout(() => {
+        showSuccessModal({
+          paymentMethod: 'online',
+          orderId: result.data?.order?.orderId || 'ORD-' + Date.now(),
+          total: total,
+          currency: storeCurrency
+        });
+      }, 500);
+      
+      // Clean up cart
       cart = cart.filter(item => item.id !== product.id);
       saveCart();
-      hideGatewayPopup();
       
     } catch (err) {
       console.error("❌ Order saving failed:", err);
-      alert("⚠️ Payment processed but order saving failed. Please contact support.");
+      hideOrderPreloader();
+      
+      // Even if saving fails, payment was successful so show partial success
+      setTimeout(() => {
+        showSuccessModal({
+          paymentMethod: 'online',
+          orderId: 'ORD-' + Date.now(),
+          total: total,
+          currency: storeCurrency
+        });
+      }, 500);
+      
+      // Show additional error message
+      setTimeout(() => {
+        alert("⚠️ Payment processed successfully but there was an issue saving your order details. Please contact support with your payment confirmation.");
+      }, 2000);
     }
   };
 
@@ -1962,6 +2269,196 @@ function hideDeliveryMethodModal() {
   modal.classList.add("hidden");
   modal.classList.remove("flex");
 }
+
+// Cool Preloader Functions
+function showOrderPreloader(title, message) {
+  const preloader = document.getElementById("orderPreloader");
+  const titleEl = document.getElementById("preloaderTitle");
+  const messageEl = document.getElementById("preloaderMessage");
+  
+  titleEl.textContent = title || "Processing Your Order";
+  messageEl.textContent = message || "Please wait while we process your request...";
+  
+  preloader.classList.remove("hidden");
+  preloader.classList.add("flex");
+  
+  // Disable scrolling
+  document.body.style.overflow = "hidden";
+}
+
+function hideOrderPreloader() {
+  const preloader = document.getElementById("orderPreloader");
+  preloader.classList.add("hidden");
+  preloader.classList.remove("flex");
+  
+  // Re-enable scrolling
+  document.body.style.overflow = "auto";
+}
+
+// Cool Success Modal Functions
+function showSuccessModal(orderData) {
+  const modal = document.getElementById("successModal");
+  const successMessage = document.getElementById("successMessage");
+  const orderIdEl = document.getElementById("successOrderId");
+  const orderTotalEl = document.getElementById("successOrderTotal");
+  const paymentMethodEl = document.getElementById("successPaymentMethod");
+  const confettiContainer = document.querySelector(".success-confetti");
+  
+  // Update order details
+  const currency = orderData.currency || "USD";
+  const symbol = getCurrencySymbol(currency);
+  
+  successMessage.textContent = orderData.paymentMethod === "delivery" 
+    ? "Your order will be delivered and you'll pay on arrival!" 
+    : "Payment successful! Your order has been confirmed!";
+    
+  orderIdEl.textContent = orderData.orderId || "N/A";
+  orderTotalEl.textContent = `${symbol}${(orderData.total || 0).toFixed(2)}`;
+  paymentMethodEl.textContent = orderData.paymentMethod === "delivery" 
+    ? "💵 Pay on Delivery" 
+    : "💳 Paid Online";
+  
+  // Create confetti animation
+  createConfetti(confettiContainer);
+  
+  // Show modal
+  modal.classList.remove("hidden");
+  modal.classList.add("flex");
+  
+  // Auto-hide after 8 seconds
+  setTimeout(() => {
+    closeSuccessModal();
+  }, 8000);
+}
+
+function closeSuccessModal() {
+  const modal = document.getElementById("successModal");
+  modal.classList.add("hidden");
+  modal.classList.remove("flex");
+  
+  // Re-enable scrolling
+  document.body.style.overflow = "auto";
+  
+  // Clear confetti
+  const confettiContainer = document.querySelector(".success-confetti");
+  confettiContainer.innerHTML = "";
+}
+
+function goToDashboard() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (user && user.email) {
+    window.open(`https://api.iyonicorp.com/dashboard.html?email=${encodeURIComponent(user.email)}`, '_blank');
+  } else {
+    alert("Please log in to access your dashboard.");
+  }
+  closeSuccessModal();
+}
+
+function createConfetti(container) {
+  const colors = ['#fbbf24', '#ef4444', '#10b981', '#3b82f6', '#8b5cf6', '#f59e0b'];
+  
+  for (let i = 0; i < 30; i++) {
+    const confetti = document.createElement('div');
+    confetti.className = 'confetti-piece';
+    confetti.style.left = Math.random() * 100 + '%';
+    confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    confetti.style.animationDelay = Math.random() * 3 + 's';
+    confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+    
+    container.appendChild(confetti);
+    
+    // Remove confetti after animation
+    setTimeout(() => {
+      if (confetti.parentNode) {
+        confetti.parentNode.removeChild(confetti);
+      }
+    }, 5000);
+  }
+}
+
+// Check for payment success on page load (for redirect-based payment gateways like Stripe)
+window.addEventListener('DOMContentLoaded', () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('payment') === 'success') {
+    // Show preloader immediately for redirect-based payments
+    showOrderPreloader("✅ Payment Successful!", "Processing your order and sending confirmation...");
+    
+    // Process the successful payment
+    setTimeout(async () => {
+      try {
+        const pendingOrderData = localStorage.getItem('pendingOrderData');
+        if (pendingOrderData) {
+          const orderData = JSON.parse(pendingOrderData);
+          orderData.paymentMethod = 'online';
+          orderData.status = 'paid';
+          
+          // Save the order to backend
+          const res = await fetch(`${API}/place-order`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(orderData)
+          });
+          
+          const result = await res.json();
+          
+          // Hide preloader
+          hideOrderPreloader();
+          
+          // Show success modal with actual order details
+          setTimeout(() => {
+            showSuccessModal({
+              paymentMethod: 'online',
+              orderId: result.data?.order?.orderId || 'ORD-' + Date.now(),
+              total: parseFloat(localStorage.getItem('lastOrderTotal') || '0'),
+              currency: localStorage.getItem('lastOrderCurrency') || 'USD'
+            });
+          }, 500);
+          
+          // Clean up cart  
+          let localCart = JSON.parse(localStorage.getItem("cart") || "[]");
+          localCart = localCart.filter(item => item.id !== orderData.productId);
+          localStorage.setItem("cart", JSON.stringify(localCart));
+          // Update global cart variable and re-render
+          cart = localCart;
+          renderCartDropdown();
+          
+        } else {
+          // Fallback for missing order data - still show success
+          hideOrderPreloader();
+          setTimeout(() => {
+            showSuccessModal({
+              paymentMethod: 'online',
+              orderId: 'ORD-' + Date.now(),
+              total: parseFloat(localStorage.getItem('lastOrderTotal') || '0'),
+              currency: localStorage.getItem('lastOrderCurrency') || 'USD'
+            });
+          }, 500);
+        }
+        
+      } catch (error) {
+        hideOrderPreloader();
+        console.error('Error processing successful payment:', error);
+        // Still show success since payment was successful
+        setTimeout(() => {
+          showSuccessModal({
+            paymentMethod: 'online',
+            orderId: 'ORD-' + Date.now(),
+            total: parseFloat(localStorage.getItem('lastOrderTotal') || '0'),
+            currency: localStorage.getItem('lastOrderCurrency') || 'USD'
+          });
+        }, 500);
+      }
+      
+      // Clear stored order data
+      localStorage.removeItem('lastOrderTotal');
+      localStorage.removeItem('lastOrderCurrency');
+      localStorage.removeItem('pendingOrderData');
+      
+      // Clean up URL
+      window.history.replaceState({}, document.title, window.location.pathname + window.location.search.replace(/[?&]payment=success/, ''));
+    }, 800);
+  }
+});
 </script>
 
 </body>

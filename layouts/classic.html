@@ -38,13 +38,13 @@
   <section id="productNotFound" class="max-w-2xl mx-auto px-6 py-20 text-center hidden">
     <h2 class="text-3xl font-bold text-yellow-500 mb-4">🛒 No Products Available</h2>
     <p class="text-gray-600 mb-4">This shop hasn't added any products yet. Check back later!</p>
-    <a href="index.html" class="inline-block bg-indigo-600 text-white px-6 py-3 rounded hover:bg-indigo-700 transition">← Back to Marketplace</a>
+    <a href="https://iyonicorp.com" class="inline-block bg-indigo-600 text-white px-6 py-3 rounded hover:bg-indigo-700 transition">← Back to Marketplace</a>
   </section>
 
   <!-- Footer -->
 <footer id="footer" class="bg-white border-t py-6 text-center text-sm mt-auto">
   <span id="footerText" class="border-2 border-transparent">
-    © <span id="year"></span> ShopRight Seller Store. All rights reserved.
+    © <span id="year"></span>  Seller Store. All rights reserved.
   </span>
   <div class="mt-2 text-xs">
     <a href="https://iyonicorp.com"
@@ -418,9 +418,9 @@
     const actualSeller = window.__SHOP_DATA__?.actualSeller || user.username;
 
     if (user.role && user.role.startsWith("seller")) {
-      dashboard.href = `dashboard.html?seller=${encodeURIComponent(actualSeller)}`;
+      dashboard.href = `../dashboard?seller=${encodeURIComponent(actualSeller)}`;
     } else {
-      dashboard.href = `buyer-dashboard.html?seller=${encodeURIComponent(actualSeller)}`;
+      dashboard.href = `../buyer?seller=${encodeURIComponent(actualSeller)}`;
     }
 
     dashboard.className = "px-3 py-1 rounded bg-indigo-600 text-white hover:bg-indigo-700 transition";
@@ -440,12 +440,12 @@
     const sellerParam = new URLSearchParams(window.location.search).get("seller");
 
     const signup = document.createElement("a");
-    signup.href = sellerParam ? `signup.html?seller=${sellerParam}` : "signup.html";
+    signup.href = sellerParam ? `../signup?seller=${sellerParam}` : "../signup";
     signup.className = "px-3 py-1 rounded bg-indigo-600 text-white hover:bg-indigo-700 transition";
     signup.textContent = "Sign Up";
 
     const login = document.createElement("a");
-    login.href = sellerParam ? `login.html?seller=${sellerParam}` : "login.html";
+    login.href = sellerParam ? `../login?seller=${sellerParam}` : "../login";
     login.className = "px-3 py-1 rounded border border-indigo-600 text-indigo-600 hover:bg-indigo-50 transition";
     login.textContent = "Log In";
 
