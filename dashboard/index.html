@@ -1679,11 +1679,22 @@ function showGeneralSettingsWithUpgrade(feature, requiredPlan) {
 // Original add product button handler (will be overridden by checkProductLimits)
 document.getElementById("addProductBtn").addEventListener("click", () => {
   document.getElementById("productModal").classList.remove("hidden");
+  // Clear and initialize media container
+  const mediaContainer = document.getElementById("mediaContainer");
+  if (mediaContainer) {
+    mediaContainer.innerHTML = "";
+    addMediaField(); // Add one initial media field
+  }
 });
 
 function closeModal() {
   document.getElementById("productModal").classList.add("hidden");
   document.querySelectorAll("#productModal input, #productModal select").forEach(i => i.value = "");
+  // Clear media container
+  const mediaContainer = document.getElementById("mediaContainer");
+  if (mediaContainer) {
+    mediaContainer.innerHTML = "";
+  }
 }
 
 // Fill category options
@@ -2253,10 +2264,15 @@ async function saveProductChanges() {
     });
 
     const result = await uploadRes.json();
-    updated.image = result?.mainImageURL || newMainURL || currentProduct.image;
-
-    if (Array.isArray(result.mediaURLs)) {
-      updated.gallery.push(...result.mediaURLs);
+    console.log("Upload result:", result);
+    
+    if (result.success && result.data) {
+      updated.image = result.data.mainImageURL || newMainURL || currentProduct.image;
+      if (Array.isArray(result.data.mediaURLs)) {
+        updated.gallery.push(...result.data.mediaURLs);
+      }
+    } else {
+      updated.image = newMainURL || currentProduct.image;
     }
   } else {
     updated.image = newMainURL || currentProduct.image;
@@ -2271,17 +2287,27 @@ async function saveProductChanges() {
   };
 
   try {
+    console.log("Update payload:", payload);
     const res = await fetch(`${API}/update`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
-    if (!res.ok) throw new Error("Update failed");
+    
+    if (!res.ok) {
+      const errorText = await res.text();
+      console.error("Update failed with status:", res.status, "Response:", errorText);
+      throw new Error(`Update failed with status ${res.status}: ${errorText}`);
+    }
+    
+    const result = await res.json();
+    console.log("Update result:", result);
     closeManageModal();
     loadProducts();
+    alert("✅ Product updated successfully!");
   } catch (err) {
-    console.error(err);
-    alert("Failed to update product.");
+    console.error("Full error:", err);
+    alert(`❌ Failed to update product: ${err.message}`);
   }
 }
 
@@ -4868,9 +4894,4 @@ document.addEventListener("DOMContentLoaded", () => {
 }
 
 // Add event listener for logout button (add this in your DOMContentLoaded section)
-document.getElementById("logoutBtn").addEventListener("click", logout);
-</script>
-
-
-</body>
-</html>
+document.getElementById("logoutBtn").a
