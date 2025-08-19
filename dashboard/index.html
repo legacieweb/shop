@@ -69,6 +69,24 @@
 
     <!-- Main Content -->
     <main class="flex-1 overflow-x-hidden px-4 sm:px-6 lg:px-8 pt-6">
+<!-- Success Popup Modal -->
+<div id="successPopup" class="hidden fixed inset-0 bg-black/40 z-[60] flex items-center justify-center">
+  <div class="bg-white rounded-lg shadow-2xl p-8 max-w-md mx-4 transform transition-all duration-300 scale-95">
+    <div class="text-center">
+      <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
+        <svg class="h-8 w-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+        </svg>
+      </div>
+      <h3 id="successPopupTitle" class="text-xl font-bold text-gray-900 mb-2">Success!</h3>
+      <p id="successPopupMessage" class="text-gray-600 mb-6">Operation completed successfully.</p>
+      <button id="closeSuccessPopup" class="w-full bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 font-semibold transition-colors">
+        Awesome! 🎉
+      </button>
+    </div>
+  </div>
+</div>
+
 <!-- Manage Product Modal -->
 <div id="manageProductModal" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
   <div class="bg-white w-full max-w-2xl rounded-lg shadow-lg p-6 space-y-4 overflow-y-auto max-h-[90vh]">
@@ -76,7 +94,10 @@
     <div id="manageProductContent" class="space-y-4"></div>
     <div class="flex justify-end gap-2 pt-2">
       <button id="closeManageModalBtn" class="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300">Close</button>
-      <button id="saveChangesBtn" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Save</button>
+      <button id="saveChangesBtn" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+        <span class="btn-text">Save</span>
+        <span class="btn-loading hidden">Saving...</span>
+      </button>
     </div>
   </div>
 </div>
@@ -96,6 +117,13 @@
     <button onclick="document.getElementById('upgradeBtn').click()" class="bg-indigo-600 text-white px-8 py-3 rounded-lg hover:bg-indigo-700 font-semibold transition-all transform hover:scale-105">
       🚀 Upgrade to Basic Plan
     </button>
+  </div>
+
+  <!-- Analytics Preloader -->
+  <div id="analyticsPreloader" class="hidden text-center py-20">
+    <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-indigo-600 mx-auto mb-4"></div>
+    <p class="text-lg font-semibold text-indigo-600">Refreshing Analytics Data...</p>
+    <p class="text-sm text-gray-500 mt-2">Please wait while we fetch your latest seller data</p>
   </div>
 
   <!-- Analytics Content (Hidden for free users) -->
@@ -608,11 +636,8 @@
       </div>
       <div>
         <label class="text-sm text-gray-600">Email</label>
-        <input type="email" id="accountEmail" class="w-full border px-3 py-2 rounded mt-1" />
+        <input type="email" id="accountEmail" class="w-full border px-3 py-2 rounded mt-1 bg-gray-100" readonly />
       </div>
-    </div>
-    <div class="mt-4 text-right">
-      <button id="updateAccountBtn" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm">Save Changes</button>
     </div>
   </div>
 
@@ -702,7 +727,10 @@
       </div>
     </div>
     <div class="mt-4 text-right">
-      <button id="changePasswordBtn" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm">Update Password</button>
+      <button id="changePasswordBtn" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm">
+        <span class="btn-text">Update Password</span>
+        <span class="btn-loading hidden">Updating...</span>
+      </button>
     </div>
   </div>
 <!-- Seller Store Settings -->
@@ -866,7 +894,10 @@
 
   <!-- Save Button -->
   <div class="mt-6 text-right">
-    <button id="saveStoreSettingsBtn" onclick="saveStoreSettings()" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm">💾 Save Store Settings</button>
+    <button id="saveStoreSettingsBtn" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm">
+      <span class="btn-text">💾 Save Store Settings</span>
+      <span class="btn-loading hidden">Saving...</span>
+    </button>
   </div>
 </div>
 
@@ -1019,7 +1050,10 @@
     <!-- Controls -->
     <div class="flex justify-end gap-2 pt-2">
       <button id="closeProductModalBtn" class="bg-gray-200 px-4 py-2 rounded hover:bg-gray-300">Cancel</button>
-      <button id="saveProductBtn" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Save</button>
+      <button id="saveProductBtn" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+        <span class="btn-text">Save</span>
+        <span class="btn-loading hidden">Saving...</span>
+      </button>
     </div>
   </div>
 </div>
@@ -1603,10 +1637,19 @@ function setupSidebarHandlers() {
     // Always show content for authorized users
     const analyticsContent = document.getElementById("analyticsContent");
     const analyticsUpgradePrompt = document.getElementById("analyticsUpgradePrompt");
+    const analyticsPreloader = document.getElementById("analyticsPreloader");
     
-    analyticsContent.classList.remove("hidden");
+    // Show preloader first
+    analyticsContent.classList.add("hidden");
     analyticsUpgradePrompt.classList.add("hidden");
-    loadAnalytics(); // Load analytics data
+    analyticsPreloader.classList.remove("hidden");
+    
+    // Load analytics data with delay for better UX
+    setTimeout(() => {
+      analyticsContent.classList.remove("hidden");
+      analyticsPreloader.classList.add("hidden");
+      loadAnalytics(); // Load analytics data
+    }, 2000); // 2 second delay to show the preloader
   });
   
   // Coupons link handler
@@ -1722,17 +1765,9 @@ function addMediaField() {
   container.appendChild(wrapper);
 }
 
-// Flag to prevent double clicking
-let isSavingProduct = false;
-
 async function saveProduct() {
-  if (isSavingProduct) return;
-  isSavingProduct = true;
-  
-  const saveBtn = document.getElementById('saveProductBtn');
-  const originalText = saveBtn.textContent;
-  saveBtn.textContent = 'Saving...';
-  saveBtn.disabled = true;
+  // Set loading state
+  setButtonLoading('saveProductBtn', true);
   
   const name = productName.value.trim();
   const description = productDesc.value.trim();
@@ -1744,20 +1779,14 @@ async function saveProduct() {
 
   // Validate base fields
   if (!name || !description || isNaN(price)) {
-    showPopup("Fill all required fields: name, description, and price.", 'error');
-    saveBtn.textContent = originalText;
-    saveBtn.disabled = false;
-    isSavingProduct = false;
-    return;
+    setButtonLoading('saveProductBtn', false);
+    return alert("❗ Fill all required fields: name, description, and price.");
   }
 
   // Validate main tag
   if (!mainTag) {
-    showPopup("Please select a main tag.", 'error');
-    saveBtn.textContent = originalText;
-    saveBtn.disabled = false;
-    isSavingProduct = false;
-    return;
+    setButtonLoading('saveProductBtn', false);
+    return alert("❗ Please select a main tag.");
   }
 
   // Collect selected sub-tags
@@ -1771,11 +1800,8 @@ async function saveProduct() {
   if (category === "apparel") {
     const validMain = ["men clothing", "women clothing", "kids clothing", "others"];
     if (!validMain.includes(mainTag.toLowerCase())) {
-      showPopup("For 'apparel', choose a valid main tag: 'men clothing', 'women clothing', 'kids clothing', or 'others'.", 'error');
-      saveBtn.textContent = originalText;
-      saveBtn.disabled = false;
-      isSavingProduct = false;
-      return;
+      setButtonLoading('saveProductBtn', false);
+      return alert("❗ For 'apparel', choose a valid main tag: 'men clothing', 'women clothing', 'kids clothing', or 'others'.");
     }
   }
 
@@ -1806,11 +1832,8 @@ async function saveProduct() {
       if (Array.isArray(gURLs)) uploadedGallery.push(...gURLs);
     } catch (err) {
       console.error("Image upload failed:", err);
-      showPopup("Failed to upload images.", 'error');
-      saveBtn.textContent = originalText;
-      saveBtn.disabled = false;
-      isSavingProduct = false;
-      return;
+      setButtonLoading('saveProductBtn', false);
+      return alert("❌ Failed to upload images.");
     }
   }
 
@@ -1840,16 +1863,14 @@ async function saveProduct() {
     const result = await res.json();
     if (!result.success) throw new Error("Insert failed");
 
+    setButtonLoading('saveProductBtn', false);
     closeModal();
     loadProducts();
-    showPopup("Product added successfully!");
+    showSuccessPopup("Product Added! 🎉", "Your product has been successfully added to your store and is now live!");
   } catch (err) {
     console.error(err);
-    showPopup("Failed to save product.", 'error');
-  } finally {
-    saveBtn.textContent = originalText;
-    saveBtn.disabled = false;
-    isSavingProduct = false;
+    setButtonLoading('saveProductBtn', false);
+    alert("❌ Failed to save product.");
   }
 }
 // Function to check product limits and update add product button
@@ -1915,7 +1936,7 @@ async function loadProducts() {
       const card = document.createElement("div");
       card.className = "bg-white rounded-lg shadow p-4";
       card.innerHTML = `
-        ${imgSrc ? `<img src="${imgSrc}" class="w-full object-contain rounded mb-3" />` : ""}
+        ${imgSrc ? `<img src="${imgSrc}" class="w-20 h-20 object-cover rounded mb-3 mx-auto" />` : ""}
         <h4 class="text-lg font-semibold text-indigo-700">${p.name}</h4>
         <p class="mt-2">
           ${p.strikeThroughPrice ? `<span class="text-gray-500 line-through">${currentCurrencySymbol}${p.strikeThroughPrice}</span> ` : ""}
@@ -1994,12 +2015,21 @@ async function updateAccount() {
 }
 
 async function changePassword() {
+  // Set loading state
+  setButtonLoading('changePasswordBtn', true);
+  
   const current = document.getElementById("currentPassword").value;
   const newPass = document.getElementById("newPassword").value;
   const confirm = document.getElementById("confirmPassword").value;
 
-  if (!current || !newPass || !confirm) return alert("All password fields are required.");
-  if (newPass !== confirm) return alert("New passwords do not match.");
+  if (!current || !newPass || !confirm) {
+    setButtonLoading('changePasswordBtn', false);
+    return alert("All password fields are required.");
+  }
+  if (newPass !== confirm) {
+    setButtonLoading('changePasswordBtn', false);
+    return alert("New passwords do not match.");
+  }
 
   try {
     const res = await fetch(`${API}/change-password`, {
@@ -2008,10 +2038,19 @@ async function changePassword() {
       body: JSON.stringify({ username: user.username, current, newPass })
     });
     const result = await res.json();
+    setButtonLoading('changePasswordBtn', false);
+    
     if (!result.success) throw new Error("Password change failed");
-    alert("Password updated successfully.");
+    
+    // Clear form
+    document.getElementById("currentPassword").value = "";
+    document.getElementById("newPassword").value = "";
+    document.getElementById("confirmPassword").value = "";
+    
+    showSuccessPopup("Password Updated! 🔐", "Your password has been successfully changed. Keep it secure!");
   } catch (err) {
     console.error(err);
+    setButtonLoading('changePasswordBtn', false);
     alert("Could not change password.");
   }
 }
@@ -2235,18 +2274,11 @@ function addColorRow(name) {
   container.appendChild(div);
 }
 
-// Flag to prevent double clicking
-let isSavingChanges = false;
-
 async function saveProductChanges() {
   if (!currentProduct) return;
-  if (isSavingChanges) return;
   
-  isSavingChanges = true;
-  const saveBtn = document.getElementById('saveChangesBtn');
-  const originalText = saveBtn.textContent;
-  saveBtn.textContent = 'Saving...';
-  saveBtn.disabled = true;
+  // Set loading state
+  setButtonLoading('saveChangesBtn', true);
 
   const updated = {
     name: document.getElementById("editName")?.value.trim(),
@@ -2343,16 +2375,14 @@ async function saveProductChanges() {
     
     const result = await res.json();
     console.log("Update result:", result);
+    setButtonLoading('saveChangesBtn', false);
     closeManageModal();
     loadProducts();
-    showPopup("Product updated successfully!");
+    showSuccessPopup("Product Updated! ✨", "Your product changes have been saved and are now live in your store!");
   } catch (err) {
     console.error("Full error:", err);
-    showPopup(`Failed to update product: ${err.message}`, 'error');
-  } finally {
-    saveBtn.textContent = originalText;
-    saveBtn.disabled = false;
-    isSavingChanges = false;
+    setButtonLoading('saveChangesBtn', false);
+    alert(`❌ Failed to update product: ${err.message}`);
   }
 }
 
@@ -3051,8 +3081,9 @@ function closeBulkRestockModal() {
 // Event Listeners
 document.getElementById('closeManageModalBtn').addEventListener('click', closeManageModal);
 document.getElementById('saveChangesBtn').addEventListener('click', saveProductChanges);
-document.getElementById('updateAccountBtn').addEventListener('click', updateAccount);
+document.getElementById('updateAccountBtn')?.removeEventListener('click', updateAccount); // Remove old listener
 document.getElementById('changePasswordBtn').addEventListener('click', changePassword);
+document.getElementById('saveStoreSettingsBtn').addEventListener('click', saveStoreSettings);
 document.getElementById('addMediaFieldBtn').addEventListener('click', addMediaField);
 document.getElementById('productCategory').addEventListener('change', onCategoryChange);
 document.getElementById('closeProductModalBtn').addEventListener('click', closeModal);
@@ -3691,7 +3722,47 @@ function applyDefaultFee(country, value) {
   const inputs = document.querySelectorAll(`input[data-fee-country='${country}']`);
   inputs.forEach(input => input.value = parseFloat(value || 0).toFixed(2));
 }
+
+// Utility functions for button loading states and success popups
+function setButtonLoading(buttonId, isLoading = true) {
+  const button = document.getElementById(buttonId);
+  if (!button) return;
+  
+  const textSpan = button.querySelector('.btn-text');
+  const loadingSpan = button.querySelector('.btn-loading');
+  
+  if (isLoading) {
+    textSpan.classList.add('hidden');
+    loadingSpan.classList.remove('hidden');
+    button.disabled = true;
+  } else {
+    textSpan.classList.remove('hidden');
+    loadingSpan.classList.add('hidden');
+    button.disabled = false;
+  }
+}
+
+function showSuccessPopup(title, message) {
+  const popup = document.getElementById('successPopup');
+  const titleEl = document.getElementById('successPopupTitle');
+  const messageEl = document.getElementById('successPopupMessage');
+  
+  titleEl.textContent = title;
+  messageEl.textContent = message;
+  popup.classList.remove('hidden');
+}
+
+function closeSuccessPopup() {
+  document.getElementById('successPopup').classList.add('hidden');
+}
+
+// Add event listener for closing success popup
+document.getElementById('closeSuccessPopup').addEventListener('click', closeSuccessPopup);
+
 function saveStoreSettings() {
+  // Set loading state
+  setButtonLoading('saveStoreSettingsBtn', true);
+  
   const paymentMethod = document.getElementById("paymentMethod")?.value || "";
   const storeCurrency = document.getElementById("storeCurrency")?.value || "USD"; // 💱 Get selected currency
 
@@ -3747,6 +3818,7 @@ function saveStoreSettings() {
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   
   if (!user?.username || !paymentMethod || !paymentSystems.length || !deliveryRegions.length) {
+    setButtonLoading('saveStoreSettingsBtn', false);
     return alert("⚠️ Please complete all required fields and selections.");
   }
 
@@ -3780,11 +3852,16 @@ function saveStoreSettings() {
   })
     .then(res => res.json())
     .then(data => {
-      if (data.success) alert("✅ Store settings saved!");
-      else throw new Error(data.error || "Unknown error");
+      setButtonLoading('saveStoreSettingsBtn', false);
+      if (data.success) {
+        showSuccessPopup("Store Settings Saved! 🎉", "Your store settings have been successfully updated and are now live!");
+      } else {
+        throw new Error(data.error || "Unknown error");
+      }
     })
     .catch(err => {
       console.error("❌ Save error:", err);
+      setButtonLoading('saveStoreSettingsBtn', false);
       alert("❌ Failed to save store settings.");
     });
 }
@@ -4778,174 +4855,181 @@ async function loadAnalytics() {
         createRegionalChart('countries');
         updateRegionTable('countries');
       };
+
+      // Initialize with countries view
+      createRegionalChart('countries');
+      updateRegionTable('countries');
     }
-  
+
+    // Best time to sell chart
+    if (data.bestTimeToSell) {
+      bestTimeChart = new Chart(document.getElementById("bestTimeChart"), {
+        type: "bar",
+        data: {
+          labels: data.bestTimeToSell.labels,
+          datasets: [{
+            label: "Sales",
+            data: data.bestTimeToSell.sales,
+            backgroundColor: "#4f46e5"
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: { mode: 'index', intersect: false }
+          },
+          scales: {
+            y: { beginAtZero: true },
+            x: {
+              title: {
+                display: true,
+                text: "Time Slot",
+                color: "#4f46e5",
+                font: { weight: "bold" }
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Profit margin table
+// 13. Profit Margin Table
+const profitTable = document.getElementById("profitMarginsTable");
+if (profitTable && data.profitMargins) {
+  profitTable.innerHTML = data.profitMargins.map(p => {
+    const profitPerUnit = p.price - p.cost;
+    const revenue = p.sold * (p.price + p.cost);
+    const totalProfit = profitPerUnit * p.sold;
+
+    return `
+      <tr>
+        <td class="px-4 py-2">${p.name}</td>
+        <td class="px-4 py-2">${currentCurrencySymbol}${p.price.toFixed(2)}</td>
+        <td class="px-4 py-2">${currentCurrencySymbol}${p.cost.toFixed(2)}</td>
+        <td class="px-4 py-2">${p.sold}</td>
+        <td class="px-4 py-2 font-medium text-blue-700">${currentCurrencySymbol}${revenue.toFixed(2)}</td>
+        <td class="px-4 py-2 ${profitPerUnit >= 0 ? 'text-green-600' : 'text-red-600'}">${currentCurrencySymbol}${profitPerUnit.toFixed(2)}</td>
+        <td class="px-4 py-2 ${totalProfit >= 0 ? 'text-green-600' : 'text-red-600'} font-semibold">${currentCurrencySymbol}${totalProfit.toFixed(2)}</td>
+      </tr>
+    `;
+  }).join("");
 }
 
-// Initialize analytics with preloader
-function initializeAnalytics() {
-  const preloader = document.getElementById('analyticsPreloader');
-  const content = document.getElementById('analyticsContent');
-  
-  if (preloader && content) {
-    setTimeout(() => {
-      preloader.style.display = 'none';
-      content.classList.remove('hidden');
-    }, 2000); // Show preloader for 2 seconds
-  }
-}
 
-// Show popup notification
-function showPopup(message, type = 'success') {
-  // Create popup element
-  const popup = document.createElement('div');
-  popup.className = `fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg transform transition-all duration-500 ${
-    type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
-  }`;
-  popup.innerHTML = `
-    <div class="flex items-center space-x-2">
-      <span>${type === 'success' ? '✅' : '❌'}</span>
-      <span>${message}</span>
-    </div>
-  `;
-  
-  document.body.appendChild(popup);
-  
-  // Animate in
-  setTimeout(() => popup.classList.add('translate-x-0'), 100);
-  
-  // Remove after 3 seconds
-  setTimeout(() => {
-    popup.classList.add('translate-x-full', 'opacity-0');
-    setTimeout(() => document.body.removeChild(popup), 500);
-  }, 3000);
-}
-
-// Enhanced button click handlers with single-click protection
-function setupEnhancedButtons() {
-  // Update password button
-  const changePasswordBtn = document.getElementById('changePasswordBtn');
-  if (changePasswordBtn) {
-    let isProcessing = false;
-    changePasswordBtn.addEventListener('click', async (e) => {
-      e.preventDefault();
-      if (isProcessing) return;
-      isProcessing = true;
-      
-      const originalText = changePasswordBtn.textContent;
-      changePasswordBtn.textContent = 'Updating...';
-      changePasswordBtn.disabled = true;
-      
-      setTimeout(() => {
-        showPopup('Password updated successfully!');
-        changePasswordBtn.textContent = originalText;
-        changePasswordBtn.disabled = false;
-        isProcessing = false;
-        
-        // Clear password fields
-        document.getElementById('currentPassword').value = '';
-        document.getElementById('newPassword').value = '';
-        document.getElementById('confirmPassword').value = '';
-      }, 2000);
-    });
-  }
-
-  // Save store settings button
-  const saveStoreSettingsBtn = document.getElementById('saveStoreSettingsBtn');
-  if (saveStoreSettingsBtn) {
-    let isProcessing = false;
-    const originalOnClick = saveStoreSettingsBtn.onclick;
+  } catch (err) {
+    console.error("❌ Failed to load analytics:", err);
     
-    saveStoreSettingsBtn.onclick = async function(e) {
-      e.preventDefault();
-      if (isProcessing) return;
-      isProcessing = true;
+    // Show detailed error to user
+    const errorMessage = `
+      ❌ Analytics Error: ${err.message}
       
-      const originalText = this.textContent;
-      this.textContent = '💾 Saving...';
-      this.disabled = true;
-      
-      // Execute original function if it exists
-      if (originalOnClick) {
-        await originalOnClick.call(this, e);
-      }
-      
-      setTimeout(() => {
-        showPopup('Store settings saved successfully! 🎉');
-        this.textContent = originalText;
-        this.disabled = false;
-        isProcessing = false;
-      }, 2000);
-    };
-  }
-
-  // Apply range button in analytics
-  const applyRangeBtn = document.getElementById('applyRange');
-  if (applyRangeBtn) {
-    let isProcessing = false;
-    applyRangeBtn.addEventListener('click', async (e) => {
-      if (isProcessing) return;
-      isProcessing = true;
-      
-      const originalText = applyRangeBtn.textContent;
-      applyRangeBtn.textContent = 'Loading...';
-      applyRangeBtn.disabled = true;
-      
-      setTimeout(() => {
-        applyRangeBtn.textContent = originalText;
-        applyRangeBtn.disabled = false;
-        isProcessing = false;
-      }, 1500);
-    });
-  }
-
-  // Add product button
-  const addProductBtn = document.getElementById('addProductBtn');
-  if (addProductBtn) {
-    let isProcessing = false;
-    const originalClick = addProductBtn.onclick;
+      Debug Info:
+      - Check browser console for detailed logs
+      - Make sure you're logged in as the correct seller
+      - Verify the seller has orders/products in the database
+    `;
     
-    addProductBtn.addEventListener('click', async (e) => {
-      if (isProcessing) return;
-      if (addProductBtn.textContent.includes('Upgrade')) {
-        // Don't process upgrade buttons
+    alert(errorMessage);
+    
+    // Also display error in the UI
+    const storeName = document.getElementById("storeName");
+    if (storeName) {
+      storeName.innerText = "Error loading analytics";
+    }
+    
+    // Set earnings to show error state
+    const earnings = document.getElementById("earnings");
+    if (earnings) {
+      earnings.innerText = "Error";
+    }
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("timeRange")?.addEventListener("change", loadAnalytics);
+  document.getElementById("applyRange")?.addEventListener("click", loadAnalytics);
+  loadAnalytics();
+});
+</script>
+
+<script>
+  const sidebar = document.getElementById("sidebar");
+  const hamburgerBtn = document.getElementById("hamburgerBtn");
+
+  // Toggle sidebar on hamburger click
+  hamburgerBtn.addEventListener("click", () => {
+    sidebar.classList.remove("hidden"); // Ensure visible before animating
+    sidebar.classList.toggle("-translate-x-full");
+    sidebar.classList.toggle("translate-x-0");
+  });
+
+  // Handle link clicks (updated to work with subscription restrictions)
+  document.querySelectorAll(".sidebar-link").forEach(link => {
+    link.addEventListener("click", (e) => {
+      const target = link.dataset.section;
+      
+      // Skip if this is analytics, coupons, or inventory - they have their own handlers
+      if (target === 'analytics' || target === 'coupons' || target === 'inventory') {
         return;
       }
-      
-      isProcessing = true;
-      const originalText = addProductBtn.textContent;
-      addProductBtn.textContent = 'Opening...';
-      addProductBtn.disabled = true;
-      
-      setTimeout(() => {
-        addProductBtn.textContent = originalText;
-        addProductBtn.disabled = false;
-        isProcessing = false;
-      }, 1000);
+
+      // Show selected section
+      document.querySelectorAll(".section").forEach(sec => sec.classList.add("hidden"));
+      document.querySelector(`#section-${target}`)?.classList.remove("hidden");
+
+      // Update link styles
+      document.querySelectorAll(".sidebar-link").forEach(l => l.classList.remove("bg-indigo-50", "font-semibold"));
+      link.classList.add("bg-indigo-50", "font-semibold");
+
+      // Auto-hide sidebar on small screens
+      if (window.innerWidth < 768) {
+        sidebar.classList.add("-translate-x-full");
+        sidebar.classList.remove("translate-x-0");
+      }
     });
+  });
+  function logout() {
+  if (confirm("Are you sure you want to logout?")) {
+    // Get current seller username before clearing data
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    const sellerUsername = user.username;
+    
+    // Clear all localStorage data
+    localStorage.removeItem("user");
+    localStorage.removeItem("seller");
+    localStorage.removeItem("sellerSettings");
+    localStorage.removeItem("autoLogin");
+    
+    // Clear any other seller-related data if needed
+    localStorage.clear(); // This will clear everything, or be more specific if needed
+    
+    // Redirect to login page with seller parameter
+    alert("✅ Logged out successfully!");
+    if (sellerUsername) {
+      window.location.href = `../login?seller=${encodeURIComponent(sellerUsername)}`;
+    } else {
+      window.location.href = "../login";
+    }
   }
 }
 
-// Initialize everything when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
-  setupEnhancedButtons();
-  
-  // Initialize analytics when analytics section is shown
-  const analyticsLink = document.getElementById('analyticsLink');
-  if (analyticsLink) {
-    analyticsLink.addEventListener('click', function() {
-      setTimeout(initializeAnalytics, 100);
-    });
-  }
-  
-  // Initialize analytics if it's the default section
-  const analyticsSection = document.getElementById('section-analytics');
-  if (analyticsSection && !analyticsSection.classList.contains('hidden')) {
-    initializeAnalytics();
-  }
-});
+// Add event listener for logout button (add this in your DOMContentLoaded section)
+document.getElementById("logoutBtn").addEventListener("click", logout);
 
 </script>
 
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6JSC6HT7EC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6JSC6HT7EC');
+</script>
 </body>
 </html>
+
+
