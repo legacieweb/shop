@@ -261,8 +261,11 @@
 
   <script>
     const API = "https://shop-stp5.onrender.com";
-    const actualSeller = new URLSearchParams(location.search).get("seller");
-    const theme = JSON.parse(localStorage.getItem("previewTheme") || "{}");
+    const urlParams = new URLSearchParams(location.search);
+    const actualSeller = urlParams.get("seller");
+    const urlLayout = (urlParams.get("layout") || "").toLowerCase();
+    const stored = JSON.parse(localStorage.getItem("previewTheme") || "{}");
+    const theme = urlLayout ? { ...stored, layout: urlLayout } : stored;
 
     // Add preview mode class to body
     document.body.classList.add('preview-mode');
@@ -479,10 +482,11 @@
             elegant: '../layouts/elegant.html',
             freestyle: '../layouts/freestyle.html'
           };
-          const localUrl = map[(theme.layout || '').toLowerCase()];
+          const desired = (theme.layout || '').toLowerCase();
+          const localUrl = map[desired];
           if (localUrl) {
             try {
-              const res = await fetch(localUrl, { mode: 'cors' });
+              const res = await fetch(localUrl, { cache: 'no-store' });
               if (res.ok) {
                 layoutHTML = await res.text();
               }
