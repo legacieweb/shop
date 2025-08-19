@@ -87,6 +87,62 @@
   </div>
 </div>
 
+<!-- Delete Confirmation Popup -->
+<div id="deleteConfirmPopup" class="hidden fixed inset-0 bg-black/40 z-[60] flex items-center justify-center">
+  <div class="bg-white rounded-lg shadow-2xl p-8 max-w-md mx-4 transform transition-all duration-300 scale-95">
+    <div class="text-center">
+      <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red-100 mb-4">
+        <svg class="h-8 w-8 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 mb-2">Delete Product?</h3>
+      <p id="deleteProductName" class="text-gray-600 mb-6">Are you sure you want to permanently delete this product? This action cannot be undone.</p>
+      <div class="flex gap-3">
+        <button id="cancelDeleteBtn" class="flex-1 bg-gray-200 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-300 font-semibold transition-colors">
+          Cancel
+        </button>
+        <button id="confirmDeleteBtn" class="flex-1 bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 font-semibold transition-colors">
+          <span class="btn-text">Delete</span>
+          <span class="btn-loading hidden">Deleting...</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Logout Confirmation Popup -->
+<div id="logoutConfirmPopup" class="hidden fixed inset-0 bg-black/40 z-[60] flex items-center justify-center">
+  <div class="bg-white rounded-lg shadow-2xl p-8 max-w-md mx-4 transform transition-all duration-300 scale-95">
+    <div class="text-center">
+      <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-yellow-100 mb-4">
+        <svg class="h-8 w-8 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg>
+      </div>
+      <h3 class="text-xl font-bold text-gray-900 mb-2">Sign Out?</h3>
+      <p class="text-gray-600 mb-6">Are you sure you want to sign out of your seller dashboard?</p>
+      <div class="flex gap-3">
+        <button id="cancelLogoutBtn" class="flex-1 bg-gray-200 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-300 font-semibold transition-colors">
+          Stay Signed In
+        </button>
+        <button id="confirmLogoutBtn" class="flex-1 bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 font-semibold transition-colors">
+          Sign Out
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Logout Preloader -->
+<div id="logoutPreloader" class="hidden fixed inset-0 bg-black/60 z-[70] flex items-center justify-center">
+  <div class="bg-white rounded-lg shadow-2xl p-8 max-w-md mx-4 text-center">
+    <div class="animate-spin rounded-full h-16 w-16 border-b-2 border-red-600 mx-auto mb-4"></div>
+    <h3 class="text-xl font-bold text-gray-900 mb-2">Logging Out...</h3>
+    <p class="text-gray-600">Please wait while we securely sign you out</p>
+  </div>
+</div>
+
 <!-- Manage Product Modal -->
 <div id="manageProductModal" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
   <div class="bg-white w-full max-w-2xl rounded-lg shadow-lg p-6 space-y-4 overflow-y-auto max-h-[90vh]">
@@ -922,6 +978,25 @@
         <h3 class="text-lg font-semibold text-gray-700">📋 Your Products</h3>
         <button id="addProductBtn" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm">+ Add Product</button>
       </div>
+
+      <!-- Search Products -->
+      <div class="mb-6">
+        <div class="relative max-w-md">
+          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <input
+            type="text"
+            id="productSearchInput"
+            placeholder="Search products by name, category, or tags..."
+            class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+          />
+        </div>
+        <div id="searchResultsCount" class="mt-2 text-sm text-gray-600 hidden"></div>
+      </div>
+
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="productList"></div>
     </section>
 
@@ -1639,17 +1714,18 @@ function setupSidebarHandlers() {
     const analyticsUpgradePrompt = document.getElementById("analyticsUpgradePrompt");
     const analyticsPreloader = document.getElementById("analyticsPreloader");
     
-    // Show preloader first
-    analyticsContent.classList.add("hidden");
+    // Show content immediately (generic data may be visible)
+    analyticsContent.classList.remove("hidden");
     analyticsUpgradePrompt.classList.add("hidden");
+    
+    // Show preloader when loading seller's specific data
     analyticsPreloader.classList.remove("hidden");
     
-    // Load analytics data with delay for better UX
-    setTimeout(() => {
-      analyticsContent.classList.remove("hidden");
+    // Load actual seller analytics data
+    loadAnalytics().finally(() => {
+      // Hide preloader after seller data is loaded
       analyticsPreloader.classList.add("hidden");
-      loadAnalytics(); // Load analytics data
-    }, 2000); // 2 second delay to show the preloader
+    });
   });
   
   // Coupons link handler
@@ -1912,53 +1988,94 @@ function getRequiredPlanForFeature(feature, requiredValue) {
   return "Premium";
 }
 
+// Global variable to store all products for search
+let allProducts = [];
+
 // Load products
 async function loadProducts() {
   try {
     const res = await fetch(`${API}/find?collection=products&seller=${encodeURIComponent(seller)}`);
     const result = await res.json();
-    const products = result.data || [];
-    let earnings = 0;
-    const list = document.getElementById("productList");
-    list.innerHTML = "";
-
-    const categoriesSet = new Set();
-
-    products.forEach(p => {
-      earnings += parseFloat(p.price || 0);
-      categoriesSet.add(p.category);
-
-      // ✅ Fix image URL
-      const imgSrc = p.image
-        ? (p.image.startsWith("http") ? p.image : `${API}${p.image}`)
-        : "";
-
-      const card = document.createElement("div");
-      card.className = "bg-white rounded-lg shadow p-4";
-      card.innerHTML = `
-        ${imgSrc ? `<img src="${imgSrc}" class="w-20 h-20 object-cover rounded mb-3 mx-auto" />` : ""}
-        <h4 class="text-lg font-semibold text-indigo-700">${p.name}</h4>
-        <p class="mt-2">
-          ${p.strikeThroughPrice ? `<span class="text-gray-500 line-through">${currentCurrencySymbol}${p.strikeThroughPrice}</span> ` : ""}
-          <span class="text-indigo-900 font-bold">${currentCurrencySymbol}${p.price}</span>
-        </p>
-        <p class="text-xs text-gray-400 mt-1">Category: ${p.category || "N/A"}</p>
-        <p class="text-xs text-gray-400">Tags: ${(p.tags || []).join(", ")}</p>
-        <button data-product='${escapeHTML(JSON.stringify(p))}' class="manage-product-btn mt-3 text-sm text-indigo-600 underline">🛠 Manage Product</button>
-      `;
-      list.appendChild(card);
-    });
-
-    // Update analytics and product dashboard values
-    document.getElementById("earnings").textContent = `$${earnings.toFixed(2)}`;
-    document.getElementById("productCount").textContent = products.length;
-    document.getElementById("categoryCount").textContent = categoriesSet.size;
+    allProducts = result.data || [];
+    
+    displayProducts(allProducts);
     
     // Check product limits after loading
     checkProductLimits();
   } catch (err) {
     console.error("Failed to load products", err);
   }
+}
+
+// Display products (used for both initial load and search results)
+function displayProducts(products) {
+  let earnings = 0;
+  const list = document.getElementById("productList");
+  list.innerHTML = "";
+
+  const categoriesSet = new Set();
+
+  products.forEach(p => {
+    earnings += parseFloat(p.price || 0);
+    categoriesSet.add(p.category);
+
+    // ✅ Fix image URL
+    const imgSrc = p.image
+      ? (p.image.startsWith("http") ? p.image : `${API}${p.image}`)
+      : "";
+
+    const card = document.createElement("div");
+    card.className = "bg-white rounded-lg shadow p-4 product-card";
+    card.innerHTML = `
+      ${imgSrc ? `<img src="${imgSrc}" class="w-full object-contain rounded mb-3" />` : ""}
+      <h4 class="text-lg font-semibold text-indigo-700">${p.name}</h4>
+      <p class="mt-2">
+        ${p.strikeThroughPrice ? `<span class="text-gray-500 line-through">${currentCurrencySymbol}${p.strikeThroughPrice}</span> ` : ""}
+        <span class="text-indigo-900 font-bold">${currentCurrencySymbol}${p.price}</span>
+      </p>
+      <p class="text-xs text-gray-400 mt-1">Category: ${p.category || "N/A"}</p>
+      <p class="text-xs text-gray-400">Tags: ${(p.tags || []).join(", ")}</p>
+      <button data-product='${escapeHTML(JSON.stringify(p))}' class="manage-product-btn mt-3 text-sm text-indigo-600 underline">🛠 Manage Product</button>
+    `;
+    list.appendChild(card);
+  });
+
+  // Update analytics and product dashboard values
+  document.getElementById("earnings").textContent = `$${earnings.toFixed(2)}`;
+  document.getElementById("productCount").textContent = allProducts.length; // Show total count
+  document.getElementById("categoryCount").textContent = new Set(allProducts.map(p => p.category)).size; // Show total categories
+  
+  // Update search results count
+  const searchResultsCount = document.getElementById("searchResultsCount");
+  if (products.length !== allProducts.length) {
+    searchResultsCount.classList.remove("hidden");
+    searchResultsCount.textContent = `Showing ${products.length} of ${allProducts.length} products`;
+  } else {
+    searchResultsCount.classList.add("hidden");
+  }
+}
+
+// Search functionality
+function searchProducts(query) {
+  if (!query.trim()) {
+    displayProducts(allProducts);
+    return;
+  }
+  
+  const searchTerm = query.toLowerCase();
+  const filteredProducts = allProducts.filter(product => {
+    const name = (product.name || "").toLowerCase();
+    const category = (product.category || "").toLowerCase();
+    const tags = (product.tags || []).join(" ").toLowerCase();
+    const description = (product.description || "").toLowerCase();
+    
+    return name.includes(searchTerm) || 
+           category.includes(searchTerm) || 
+           tags.includes(searchTerm) ||
+           description.includes(searchTerm);
+  });
+  
+  displayProducts(filteredProducts);
 }
 loadProducts();
 
@@ -2398,29 +2515,54 @@ window.removeGalleryImage = function(url) {
   saveProductChanges();
 }
 
-window.deleteProduct = async function(id) {
-  if (!confirm("Are you sure you want to delete this product?")) return;
+// Global variable for delete confirmation
+let productToDelete = null;
 
+window.deleteProduct = function(id) {
+  // Find the product to show its name in the confirmation
+  const product = allProducts.find(p => p.id === id);
+  const productName = product ? product.name : "this product";
+  
+  // Show confirmation popup
+  document.getElementById("deleteProductName").textContent = `Are you sure you want to permanently delete "${productName}"? This action cannot be undone.`;
+  document.getElementById("deleteConfirmPopup").classList.remove("hidden");
+  productToDelete = id;
+}
+
+async function confirmDeleteProduct() {
+  if (!productToDelete) return;
+  
+  // Set loading state
+  setButtonLoading('confirmDeleteBtn', true);
+  
   try {
     const res = await fetch(`${API}/delete`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         collection: "products",
-        query: { id }
+        query: { id: productToDelete }
       })
     });
 
     const result = await res.json();
     if (!result.success) throw new Error("Delete failed");
 
-    alert("✅ Product deleted.");
+    setButtonLoading('confirmDeleteBtn', false);
+    closeDeleteConfirmPopup();
     closeManageModal();
     loadProducts();
+    showSuccessPopup("Product Deleted! 🗑️", "The product has been permanently removed from your store.");
   } catch (err) {
     console.error("Failed to delete product:", err);
+    setButtonLoading('confirmDeleteBtn', false);
     alert("❌ Failed to delete product.");
   }
+}
+
+function closeDeleteConfirmPopup() {
+  document.getElementById("deleteConfirmPopup").classList.add("hidden");
+  productToDelete = null;
 }
 
 async function loadSales() {
@@ -3089,6 +3231,11 @@ document.getElementById('productCategory').addEventListener('change', onCategory
 document.getElementById('closeProductModalBtn').addEventListener('click', closeModal);
 document.getElementById('saveProductBtn').addEventListener('click', saveProduct);
 
+// Product search event listener
+document.getElementById('productSearchInput').addEventListener('input', function(e) {
+  searchProducts(e.target.value);
+});
+
 // Coupon Event Listeners
 document.getElementById('addCouponBtn').addEventListener('click', () => {
   document.getElementById('couponModal').classList.remove('hidden');
@@ -3217,13 +3364,13 @@ const GATEWAY_FIELDS = {
       label: "Paystack Public Key (ShopRight)",
       key: "paystackPublicKey",
       readonly: true,
-      value: "pk_test_232531a5c927ef2cc67ed1b85af3f26e3b8ed2f2"
+      value: "••••••••••••••••••••••••••••••••"
     },
     {
       label: "Paystack Secret Key (ShopRight)",
       key: "paystackSecretKey",
       readonly: true,
-      value: "sk_test_a832c30ce0a082daae0ba4d91032098f0b7fc9c6"
+      value: "••••••••••••••••••••••••••••••••"
     }
   ],
 
@@ -3758,6 +3905,55 @@ function closeSuccessPopup() {
 
 // Add event listener for closing success popup
 document.getElementById('closeSuccessPopup').addEventListener('click', closeSuccessPopup);
+
+// Logout functions
+function showLogoutConfirm() {
+  document.getElementById('logoutConfirmPopup').classList.remove('hidden');
+}
+
+function cancelLogout() {
+  document.getElementById('logoutConfirmPopup').classList.add('hidden');
+}
+
+async function confirmLogout() {
+  // Hide confirmation popup
+  document.getElementById('logoutConfirmPopup').classList.add('hidden');
+  
+  // Show logout preloader
+  document.getElementById('logoutPreloader').classList.remove('hidden');
+  
+  // Simulate logout process with delay
+  setTimeout(() => {
+    // Get current seller username before clearing data
+    const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+    const sellerUsername = currentUser.username || seller;
+
+    // Clear all session data
+    localStorage.removeItem("user");
+    localStorage.removeItem("seller");
+    localStorage.removeItem("sellerSettings");
+    localStorage.removeItem("autoLogin");
+
+    // Clear everything to be safe
+    localStorage.clear();
+
+    // Redirect to login with seller parameter
+    if (sellerUsername) {
+      window.location.href = `../login?seller=${encodeURIComponent(sellerUsername)}`;
+    } else {
+      window.location.href = "../login";
+    }
+  }, 2000); // 2 second delay
+}
+
+// Delete confirmation event listeners
+document.getElementById('cancelDeleteBtn').addEventListener('click', closeDeleteConfirmPopup);
+document.getElementById('confirmDeleteBtn').addEventListener('click', confirmDeleteProduct);
+
+// Logout event listeners
+document.getElementById('logoutBtn').addEventListener('click', showLogoutConfirm);
+document.getElementById('cancelLogoutBtn').addEventListener('click', cancelLogout);
+document.getElementById('confirmLogoutBtn').addEventListener('click', confirmLogout);
 
 function saveStoreSettings() {
   // Set loading state
@@ -4574,7 +4770,6 @@ async function loadAnalytics() {
         }
       }
     });
-    // Interactive Regional Chart with State Drill-down
     regionChart?.destroy();
     
     if (data.salesByRegion && data.salesByRegion.length > 0) {
