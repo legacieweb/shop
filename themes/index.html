@@ -6,129 +6,82 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Lora:wght@400;500;600;700&display=swap');
-    
-    body { 
-      font-family: 'Lora', serif; 
-      background: #f8f6f0;
-      color: #2c2c2c;
-    }
-    
-    .classic-header {
-      font-family: 'Crimson Text', serif;
-    }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
     
     .theme-card {
       transform: translateY(0);
-      transition: all 0.4s ease-in-out;
-      border: 2px solid #d4af37;
-      background: #ffffff;
-      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15);
+      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.95);
     }
     
     .theme-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 12px 30px rgba(212, 175, 55, 0.25);
-      border-color: #b8941f;
-    }
-    
-    .theme-card.restricted {
-      border-color: #8b7355;
-      background: #faf9f6;
-      position: relative;
-    }
-    
-    .theme-card.restricted::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background: repeating-linear-gradient(
-        45deg,
-        transparent,
-        transparent 10px,
-        rgba(139, 115, 85, 0.1) 10px,
-        rgba(139, 115, 85, 0.1) 20px
-      );
-      pointer-events: none;
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 35px 80px -20px rgba(0, 0, 0, 0.15);
+      border-color: rgba(99, 102, 241, 0.3);
     }
     
     .theme-image {
-      transition: all 0.4s ease-in-out;
-      border-bottom: 3px solid #d4af37;
+      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     }
     
     .theme-card:hover .theme-image {
-      transform: scale(1.02);
+      transform: scale(1.05);
     }
     
-    .classic-gradient {
-      background: linear-gradient(135deg, #8b7355 0%, #d4af37 100%);
-    }
-    
-    .classic-button {
-      background: #d4af37;
-      color: #2c2c2c;
-      border: 2px solid #b8941f;
-      transition: all 0.3s ease;
-    }
-    
-    .classic-button:hover {
-      background: #b8941f;
-      color: #ffffff;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
-    }
-    
-    .classic-button.disabled {
-      background: #8b7355;
-      color: #c0c0c0;
-      border-color: #6b5a47;
-      cursor: not-allowed;
-    }
-    
-    .classic-button.disabled:hover {
-      transform: none;
-      box-shadow: none;
-      background: #8b7355;
+    .gradient-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
     
     .premium-badge {
-      background: linear-gradient(135deg, #8b7355 0%, #d4af37 100%);
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      animation: gentle-pulse 3s infinite;
+    }
+    
+    @keyframes gentle-pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.9; transform: scale(1.05); }
+    }
+    
+    .pro-glow {
+      box-shadow: 0 0 40px rgba(139, 92, 246, 0.3);
     }
     
     .modal-backdrop {
-      background: rgba(44, 44, 44, 0.85);
-      backdrop-filter: blur(10px);
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(15px);
     }
     
     .filter-chip {
-      transition: all 0.3s ease;
-      background: #ffffff;
-      border: 2px solid #d4af37;
-      color: #2c2c2c;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
     }
-    
-    .filter-chip:hover {
-      background: #f8f6f0;
-      border-color: #b8941f;
-      transform: translateY(-2px);
+
+    .filter-chip::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .filter-chip:hover::before {
+      left: 100%;
     }
 
     .filter-chip.active {
-      background: #d4af37;
-      color: #2c2c2c;
-      border-color: #b8941f;
-      font-weight: 600;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
     }
 
     .theme-tag {
       animation: fadeInUp 0.3s ease-out;
-      background: #f8f6f0;
-      border: 2px solid #d4af37;
-      color: #2c2c2c;
     }
 
     @keyframes fadeInUp {
@@ -142,140 +95,119 @@
       }
     }
 
-    .classic-text {
-      color: #8b7355;
-      font-family: 'Crimson Text', serif;
+    .gradient-text {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
-    .classic-card {
-      background: #ffffff;
-      border: 2px solid #d4af37;
-      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15);
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .premium-gradient {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    }
+
+    .elegant-shadow {
+      box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.1);
     }
 
     .theme-name-overlay {
-      background: linear-gradient(to top, rgba(44, 44, 44, 0.9) 0%, rgba(44, 44, 44, 0.6) 50%, transparent 100%);
+      background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
     }
 
-    .restriction-overlay {
-      background: rgba(139, 115, 85, 0.9);
-      backdrop-filter: blur(3px);
-    }
-
-    .classic-border {
-      border: 3px solid #d4af37;
-      border-style: double;
-    }
-
-    .ornamental-divider {
-      border-top: 3px double #d4af37;
-      position: relative;
-    }
-
-    .ornamental-divider::before {
-      content: '❦';
-      position: absolute;
-      top: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #f8f6f0;
-      color: #d4af37;
-      padding: 0 15px;
-      font-size: 20px;
+    .restriction-badge {
+      backdrop-filter: blur(10px);
+      background: rgba(0, 0, 0, 0.7);
     }
   </style>
 </head>
-<body>
+<body class="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 text-gray-800 min-h-screen">
 
-<!-- Classic Header -->
-<header class="classic-card">
+<!-- Non-sticky Header -->
+<header class="glass-effect shadow-lg">
   <div class="max-w-7xl mx-auto px-6 py-8">
     <div class="flex items-center justify-between">
       <div class="flex items-center space-x-4">
         <div>
-          <h1 class="text-5xl font-bold classic-header classic-text">Theme Gallery</h1>
+          <h1 class="text-4xl font-bold gradient-text">Choose Your Theme</h1>
+          <p class="text-gray-600 mt-2 text-lg">Transform your store with stunning designs</p>
         </div>
       </div>
-      <a href="#" id="backToShop" class="flex items-center space-x-3 classic-button px-6 py-3 rounded-lg font-semibold">
+      <a href="#" id="backToShop" class="flex items-center space-x-3 text-indigo-600 hover:text-indigo-800 transition-all duration-300 font-semibold hover:scale-105 bg-white px-6 py-3 rounded-xl shadow-md hover:shadow-lg">
         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
           <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/>
         </svg>
-        <span>Dashboard</span>
+        <span>Back to Dashboard</span>
       </a>
     </div>
   </div>
 </header>
 
 <!-- Premium Status Banner -->
-<div id="premiumBanner" class="hidden classic-gradient text-white text-center py-4 font-semibold classic-header text-lg">
-  ✦ Premium Member - Access to All Premium Themes ✦
+<div id="premiumBanner" class="hidden premium-gradient text-white text-center py-4 font-semibold">
+  Premium Member - Unlock All Themes & Features
 </div>
 
 <!-- Main Content -->
 <main class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
 
-  <!-- Filter Section -->
-  <div class="classic-card rounded-lg p-8 mb-10">
-    <h3 class="text-2xl font-bold classic-header classic-text mb-6 text-center">Refine Your Selection</h3>
-    
-    <!-- Filter Buttons -->
-    <div class="mb-8 flex flex-wrap justify-center gap-4">
-      <button data-toggle="planFilters" class="classic-button px-6 py-3 rounded-lg font-semibold">
-        Filter by Plan
-      </button>
-      <button data-toggle="featureFilters" class="classic-button px-6 py-3 rounded-lg font-semibold">
-        Filter by Features
-      </button>
-      <button data-toggle="businessFilters" class="classic-button px-6 py-3 rounded-lg font-semibold">
-        Filter by Business Type
-      </button>
-    </div>
+  <!-- Filter Buttons -->
+  <div class="mb-10 flex flex-wrap gap-4">
+    <button data-toggle="planFilters" class="bg-white border border-gray-200 px-6 py-3 rounded-xl font-semibold text-sm hover:bg-gray-50 shadow-lg hover:shadow-xl transition-all duration-300">
+      Filter by Plan
+    </button>
+    <button data-toggle="featureFilters" class="bg-white border border-gray-200 px-6 py-3 rounded-xl font-semibold text-sm hover:bg-gray-50 shadow-lg hover:shadow-xl transition-all duration-300">
+      Filter by Features
+    </button>
+    <button data-toggle="businessFilters" class="bg-white border border-gray-200 px-6 py-3 rounded-xl font-semibold text-sm hover:bg-gray-50 shadow-lg hover:shadow-xl transition-all duration-300">
+      Filter by Business Type
+    </button>
+  </div>
 
-    <!-- Collapsible Filter Sections -->
-    <div id="planFilters" class="hidden mb-6">
-      <div class="ornamental-divider mb-6"></div>
-      <div class="flex flex-wrap justify-center gap-3">
-        <button class="tier-filter-btn active filter-chip px-6 py-3 rounded-lg font-semibold" data-tier="all">All Themes</button>
-        <button class="tier-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold" data-tier="free">Free</button>
-        <button class="tier-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold" data-tier="basic">Basic</button>
-        <button class="tier-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold" data-tier="pro">Pro</button>
-      </div>
+  <!-- Collapsible Filter Sections -->
+  <div id="planFilters" class="hidden mb-8">
+    <div class="flex flex-wrap gap-3">
+      <button class="tier-filter-btn active px-6 py-3 rounded-xl font-semibold text-sm bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg" data-tier="all">All Themes</button>
+      <button class="tier-filter-btn px-6 py-3 rounded-xl font-semibold text-sm bg-white text-gray-700 border border-gray-200 hover:border-emerald-300 shadow-md hover:shadow-lg transition-all duration-300" data-tier="free">Free</button>
+      <button class="tier-filter-btn px-6 py-3 rounded-xl font-semibold text-sm bg-white text-gray-700 border border-gray-200 hover:border-amber-300 shadow-md hover:shadow-lg transition-all duration-300" data-tier="basic">Basic</button>
+      <button class="tier-filter-btn px-6 py-3 rounded-xl font-semibold text-sm bg-white text-gray-700 border border-gray-200 hover:border-purple-300 shadow-md hover:shadow-lg transition-all duration-300" data-tier="pro">Pro</button>
     </div>
+  </div>
 
-    <div id="featureFilters" class="hidden mb-6">
-      <div class="ornamental-divider mb-6"></div>
-      <div class="flex flex-wrap justify-center gap-3">
-        <button class="feature-filter-btn active filter-chip px-6 py-3 rounded-lg font-semibold" data-feature="all">All Features</button>
-        <button class="feature-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold" data-feature="animated">Animated Layouts</button>
-        <button class="feature-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold" data-feature="social">Social Media Ready</button>
-        <button class="feature-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold" data-feature="responsive">Mobile Optimized</button>
-        <button class="feature-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold" data-feature="interactive">Interactive Elements</button>
-        <button class="feature-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold" data-feature="dark">Dark Theme Support</button>
-      </div>
+  <div id="featureFilters" class="hidden mb-8">
+    <div class="flex flex-wrap gap-3">
+      <button class="feature-filter-btn active px-6 py-3 rounded-xl font-semibold text-sm bg-gradient-to-r from-blue-500 to-cyan-600 text-white shadow-lg" data-feature="all">All Features</button>
+      <button class="feature-filter-btn px-6 py-3 rounded-xl font-semibold text-sm bg-white text-gray-700 border hover:border-blue-300 shadow-md hover:shadow-lg transition-all duration-300" data-feature="animated">Animated Layouts</button>
+      <button class="feature-filter-btn px-6 py-3 rounded-xl font-semibold text-sm bg-white text-gray-700 border hover:border-pink-300 shadow-md hover:shadow-lg transition-all duration-300" data-feature="social">Social Media Ready</button>
+      <button class="feature-filter-btn px-6 py-3 rounded-xl font-semibold text-sm bg-white text-gray-700 border hover:border-green-300 shadow-md hover:shadow-lg transition-all duration-300" data-feature="responsive">Mobile Optimized</button>
+      <button class="feature-filter-btn px-6 py-3 rounded-xl font-semibold text-sm bg-white text-gray-700 border hover:border-indigo-300 shadow-md hover:shadow-lg transition-all duration-300" data-feature="interactive">Interactive Elements</button>
+      <button class="feature-filter-btn px-6 py-3 rounded-xl font-semibold text-sm bg-white text-gray-700 border hover:border-purple-300 shadow-md hover:shadow-lg transition-all duration-300" data-feature="dark">Dark Theme Support</button>
     </div>
+  </div>
 
-    <div id="businessFilters" class="hidden mb-6">
-      <div class="ornamental-divider mb-6"></div>
-      <div class="flex flex-wrap justify-center gap-3">
-        <button class="bestfor-filter-btn active filter-chip px-6 py-3 rounded-lg font-semibold" data-bestfor="all">All Business Types</button>
-        <button class="bestfor-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold" data-bestfor="Fashion brands">Fashion Brands</button>
-        <button class="bestfor-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold" data-bestfor="Tech products">Tech Products</button>
-        <button class="bestfor-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold" data-bestfor="Luxury brands">Luxury Brands</button>
-        <button class="bestfor-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold" data-bestfor="Eco-products">Eco-Friendly</button>
-        <button class="bestfor-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold" data-bestfor="Handmade goods">Handmade Goods</button>
-        <button class="bestfor-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold" data-bestfor="Professional services">Professional Services</button>
-      </div>
+  <div id="businessFilters" class="hidden mb-8">
+    <div class="flex flex-wrap gap-3">
+      <button class="bestfor-filter-btn active px-6 py-3 rounded-xl font-semibold text-sm bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg" data-bestfor="all">All Business Types</button>
+      <button class="bestfor-filter-btn px-6 py-3 rounded-xl font-semibold text-sm bg-white text-gray-700 border hover:border-rose-300 shadow-md hover:shadow-lg transition-all duration-300" data-bestfor="Fashion brands">Fashion Brands</button>
+      <button class="bestfor-filter-btn px-6 py-3 rounded-xl font-semibold text-sm bg-white text-gray-700 border hover:border-blue-300 shadow-md hover:shadow-lg transition-all duration-300" data-bestfor="Tech products">Tech Products</button>
+      <button class="bestfor-filter-btn px-6 py-3 rounded-xl font-semibold text-sm bg-white text-gray-700 border hover:border-amber-300 shadow-md hover:shadow-lg transition-all duration-300" data-bestfor="Luxury brands">Luxury Brands</button>
+      <button class="bestfor-filter-btn px-6 py-3 rounded-xl font-semibold text-sm bg-white text-gray-700 border hover:border-green-300 shadow-md hover:shadow-lg transition-all duration-300" data-bestfor="Eco-products">Eco-Friendly</button>
+      <button class="bestfor-filter-btn px-6 py-3 rounded-xl font-semibold text-sm bg-white text-gray-700 border hover:border-orange-300 shadow-md hover:shadow-lg transition-all duration-300" data-bestfor="Handmade goods">Handmade Goods</button>
+      <button class="bestfor-filter-btn px-6 py-3 rounded-xl font-semibold text-sm bg-white text-gray-700 border hover:border-gray-400 shadow-md hover:shadow-lg transition-all duration-300" data-bestfor="Professional services">Professional Services</button>
     </div>
   </div>
 
   <!-- Active Filters Display -->
   <div id="activeFilters" class="mb-10 hidden">
-    <div class="classic-card rounded-lg p-6">
-      <div class="flex items-center flex-wrap gap-3 justify-center">
-        <span class="font-semibold classic-text classic-header text-lg">Active Filters:</span>
-        <div id="activeFilterTags" class="flex flex-wrap gap-2"></div>
-        <button id="clearFilters" class="text-red-600 hover:text-red-800 font-semibold underline ml-3">Clear All</button>
-      </div>
+    <div class="flex items-center flex-wrap gap-3">
+      <span class="text-sm font-semibold text-gray-600">Active filters:</span>
+      <div id="activeFilterTags" class="flex flex-wrap gap-2"></div>
+      <button id="clearFilters" class="text-sm text-indigo-600 hover:text-indigo-800 font-semibold underline ml-3">Clear all</button>
     </div>
   </div>
 
@@ -284,14 +216,12 @@
 
   <!-- No Results Message -->
   <div id="noResults" class="hidden text-center py-20">
-    <div class="classic-card rounded-lg p-12">
-      <div class="text-8xl mb-6">🔍</div>
-      <h3 class="text-3xl font-bold classic-header classic-text mb-4">No Themes Found</h3>
-      <p class="text-gray-600 mb-8 text-lg">Please adjust your filters to discover more distinguished themes</p>
-      <button id="resetFilters" class="classic-button px-8 py-4 rounded-lg font-semibold text-lg">
-        Reset All Filters
-      </button>
-    </div>
+    <div class="text-8xl mb-6">🔍</div>
+    <h3 class="text-3xl font-bold text-gray-600 mb-4">No themes found</h3>
+    <p class="text-gray-500 mb-8 text-lg">Try adjusting your filters to discover more beautiful themes</p>
+    <button id="resetFilters" class="bg-indigo-500 hover:bg-indigo-600 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+      Reset All Filters
+    </button>
   </div>
 
 </main>
@@ -309,9 +239,9 @@
 <!-- Enhanced Theme Modal -->
 <div id="themeModal" class="fixed inset-0 z-50 hidden modal-backdrop">
   <div class="flex items-center justify-center min-h-screen p-4">
-    <div class="classic-card rounded-lg shadow-2xl max-w-7xl w-full max-h-[90vh] overflow-auto">
+    <div class="glass-effect rounded-3xl shadow-2xl max-w-7xl w-full max-h-[90vh] overflow-auto">
       <div class="p-10">
-        <button class="mb-8 flex items-center space-x-3 classic-button px-4 py-2 rounded-lg font-semibold" onclick="closeModal()">
+        <button class="mb-8 flex items-center space-x-3 text-indigo-600 hover:text-indigo-800 transition-colors duration-200 font-semibold hover:scale-105 bg-white px-4 py-2 rounded-lg shadow-md" onclick="closeModal()">
           <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/>
           </svg>
@@ -648,7 +578,8 @@ function getTierAccess(userPlan) {
 
 function filterThemes() {
   const accessibleTiers = getTierAccess(currentUserPlan);
-  let filteredThemes = themes;
+  // Restrict catalog to Classic, Elegant, Vintage
+  let filteredThemes = themes.filter(t => ['classic','elegant','vintage'].includes((t.theme?.layout || '').toLowerCase()));
 
   // Always restrict to accessible tiers by subscription
   filteredThemes = filteredThemes.filter(t => accessibleTiers.includes(t.tier));
@@ -875,12 +806,12 @@ function openModal(index) {
         <span class="w-3 h-3 bg-green-500 rounded-full"></span>
         <span>Preview Gallery</span>
       </h4>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
         ${t.screenshots.map((img, idx) => `
-          <div class="relative group overflow-hidden rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-500">
-            <img src="${img}" class="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110" />
+          <div class="relative group overflow-hidden rounded-2xl sm:rounded-3xl shadow-xl sm:shadow-2xl hover:shadow-2xl sm:hover:shadow-3xl transition-all duration-500">
+            <img src="${img}" class="w-full h-48 sm:h-56 md:h-64 object-cover transition-transform duration-700 group-hover:scale-110" />
             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div class="absolute bottom-6 left-6 text-white font-bold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+            <div class="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 text-white font-bold text-base sm:text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500">
               Preview ${idx + 1}
             </div>
           </div>
@@ -889,7 +820,7 @@ function openModal(index) {
     </div>
 
     <div class="flex flex-col sm:flex-row gap-6 pt-10 border-t-2 border-gray-200">
-      <button onclick="previewTheme(${index})" class="flex-1 bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white py-5 px-8 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-4 shadow-xl hover:shadow-2xl">
+      <button onclick="previewTheme(${index})" class="w-full sm:flex-1 bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white py-4 sm:py-5 px-6 sm:px-8 rounded-xl sm:rounded-2xl font-semibold sm:font-bold text-base sm:text-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-3 sm:space-x-4 shadow-lg sm:shadow-xl hover:shadow-xl sm:hover:shadow-2xl">
         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
           <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
           <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
@@ -898,7 +829,7 @@ function openModal(index) {
       </button>
       
       ${canAccess
-        ? `<button onclick="applyTheme(${index})" class="flex-1 premium-gradient hover:shadow-2xl text-white py-5 px-8 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-4 shadow-xl">
+        ? `<button onclick="applyTheme(${index})" class="w-full sm:flex-1 premium-gradient hover:shadow-2xl text-white py-4 sm:py-5 px-6 sm:px-8 rounded-xl sm:rounded-2xl font-semibold sm:font-bold text-base sm:text-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-3 sm:space-x-4 shadow-lg sm:shadow-xl">
              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
              </svg>
@@ -926,8 +857,7 @@ function closeModal() {
 function previewTheme(index) {
   const selectedTheme = themes[index].theme;
   localStorage.setItem("previewTheme", JSON.stringify(selectedTheme));
-  const url = `../preview?seller=${encodeURIComponent(sellerParam)}&layout=${encodeURIComponent(selectedTheme.layout)}&nonce=${Date.now()}`;
-  window.open(url, "_blank");
+  window.open("../preview?seller=" + sellerParam, "_blank");
 }
 
 async function applyTheme(index) {
@@ -935,23 +865,42 @@ async function applyTheme(index) {
   const layoutName = selectedTheme.layout;
 
   try {
+    // Guard: disable button and show preloader
+    const applyBtn = document.querySelector(`button[onclick="applyTheme(${index})"]`);
+    if (applyBtn?.dataset.loading === '1') return; // prevent double click
+    if (applyBtn) {
+      applyBtn.dataset.loading = '1';
+      applyBtn.disabled = true;
+      applyBtn.classList.add('opacity-70','cursor-not-allowed');
+    }
+
+    // Preloader overlay
+    const loader = document.createElement('div');
+    loader.id = 'applyThemeLoader';
+    loader.className = 'fixed inset-0 z-[70] flex items-center justify-center modal-backdrop';
+    loader.innerHTML = `
+      <div class="glass-effect rounded-3xl p-10 sm:p-12 text-center max-w-md mx-4 shadow-2xl">
+        <div class="w-16 h-16 mx-auto mb-6 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+        <h3 class="text-2xl font-semibold text-gray-800 mb-2">Applying Theme…</h3>
+        <p class="text-gray-600 text-sm">Please wait while we update your store layout</p>
+      </div>`;
+    document.body.appendChild(loader);
+
     // Fetch the selected layout HTML directly
     const layoutRes = await fetch(`${API}/layouts/${layoutName}`, {
-      headers: {
-        'ngrok-skip-browser-warning': 'true'
-      }
+      headers: { 'ngrok-skip-browser-warning': 'true' }
     });
-    if (!layoutRes.ok) throw new Error("Failed to fetch layout");
+    if (!layoutRes.ok) throw new Error('Failed to fetch layout');
     const layoutHTML = await layoutRes.text();
 
-    if (!layoutHTML) throw new Error("Empty layout HTML");
+    if (!layoutHTML) throw new Error('Empty layout HTML');
 
     // Save theme + layout HTML on the user
     const updateRes = await fetch(`${API}/update`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        collection: "users",
+        collection: 'users',
         query: { username: sellerParam },
         updates: {
           customTheme: selectedTheme,
@@ -962,9 +911,12 @@ async function applyTheme(index) {
       })
     });
 
+    // Remove loader
+    document.getElementById('applyThemeLoader')?.remove();
+
     if (updateRes.ok) {
-      const successDiv = document.createElement("div");
-      successDiv.className = "fixed inset-0 z-[60] flex items-center justify-center modal-backdrop";
+      const successDiv = document.createElement('div');
+      successDiv.className = 'fixed inset-0 z-[60] flex items-center justify-center modal-backdrop';
       successDiv.innerHTML = `
         <div class="glass-effect rounded-3xl p-12 text-center max-w-lg mx-4 transform scale-0 transition-all duration-500 shadow-2xl">
           <div class="text-7xl mb-8">🎉</div>
@@ -978,16 +930,23 @@ async function applyTheme(index) {
               Return to Dashboard
             </button>
           </div>
-        </div>
-      `;
+        </div>`;
       document.body.appendChild(successDiv);
-      setTimeout(() => successDiv.firstElementChild.style.transform = "scale(1)", 100);
+      setTimeout(() => successDiv.firstElementChild.style.transform = 'scale(1)', 100);
     } else {
-      alert("Failed to apply theme. Please try again.");
+      alert('Failed to apply theme. Please try again.');
     }
   } catch (err) {
-    console.error("Error applying theme:", err);
-    alert("Something went wrong. Please try again.");
+    console.error('Error applying theme:', err);
+    alert('Something went wrong. Please try again.');
+  } finally {
+    const btn = document.querySelector(`button[onclick=\"applyTheme(${index})\"]`);
+    if (btn) {
+      btn.dataset.loading = '0';
+      btn.disabled = false;
+      btn.classList.remove('opacity-70','cursor-not-allowed');
+    }
+    document.getElementById('applyThemeLoader')?.remove();
   }
 }
 
@@ -1146,14 +1105,5 @@ function getRequiredPlanMessage(themeTier) {
 })();
 </script>
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-6JSC6HT7EC"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-6JSC6HT7EC');
-</script>
 </body>
 </html>
