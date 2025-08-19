@@ -21,6 +21,7 @@ const Cart = require("./models/Cart");
 const Wishlist = require("./models/Wishlist");
 const Coupon = require("./models/Coupon");
 const SubscriptionPlan = require("./models/SubscriptionPlan");
+const Image = require("./models/Image");
 
 // Import email service
 const emailService = require("./email");
@@ -42,6 +43,7 @@ if (!fs.existsSync(uploadsFolder)) {
 // -------------------------------
 // 📦 Multer Upload Setup
 // -------------------------------
+// Default disk storage (still used for non-product image uploads like hero/category if desired)
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadsFolder),
   filename: (req, file, cb) => {
@@ -52,15 +54,32 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
+// Separate memory storage for product image persistence into MongoDB
+const memoryUpload = multer({ storage: multer.memoryStorage() });
+
 // -------------------------------
 // 🔐 Middleware
 // -------------------------------
 app.use(cors());
 app.use(express.json({ limit: "500mb" }));
 
-// ✅ Serve static files under /public (CSS, JS, images, uploads)
+// ✅ Serve static files under /public (CSS, JS) and legacy uploads
 app.use("/uploads", express.static(path.join(__dirname, "public", "uploads")));
 app.use(express.static(path.join(__dirname, "public")));
+
+// Serve images stored in MongoDB by ID
+app.get('/images/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const img = await Image.findById(id);
+    if (!img) return res.status(404).send('Not found');
+    res.set('Content-Type', img.contentType || 'application/octet-stream');
+    return res.send(img.data);
+  } catch (e) {
+    console.error('Fetch image error:', e);
+    return res.status(400).send('Invalid image id');
+  }
+});
 
 // ✅ Serve dashboard, themes, and shop HTML files
 app.get("/dashboard", (req, res) => {
@@ -454,26 +473,57 @@ app.post("/check-seller", async (req, res) => {
 });
 
 // -------------------------------
-// 🖼️ Upload Files
+// 🖼️ Upload Files (Products) -> Persist images in MongoDB
 // -------------------------------
-app.post("/upload-files", upload.fields([
-  { name: "main" },
-  { name: "media_0" }, { name: "media_1" }, { name: "media_2" },
-  { name: "media_3" }, { name: "media_4" }
-]), (req, res) => {
-  const files = req.files;
-  const main = files["main"]?.[0];
-  const media = Object.values(files)
-    .filter(arr => arr[0]?.fieldname.startsWith("media_"))
-    .flatMap(arr => arr);
+app.post("/upload-files", memoryUpload.fields([
+  { name: "main", maxCount: 1 },
+  { name: "media_0", maxCount: 1 },
+  { name: "media_1", maxCount: 1 },
+  { name: "media_2", maxCount: 1 },
+  { name: "media_3", maxCount: 1 },
+  { name: "media_4", maxCount: 1 },
+]), async (req, res) => {
+  try {
+    const files = req.files || {};
+    const main = files.main?.[0] || null;
+    const media = Object.keys(files)
+      .filter(k => k.startsWith("media_"))
+      .flatMap(k => files[k] || []);
 
-  res.json({
-    success: true,
-    data: {
-      mainImageURL: main ? `/uploads/${main.filename}` : "",
-      mediaURLs: media.map(f => `/uploads/${f.filename}`)
+    // Helper to save a single file buffer to Mongo and return URL
+    const saveToMongo = async (f) => {
+      const doc = await Image.create({
+        filename: f.originalname,
+        contentType: f.mimetype,
+        data: f.buffer,
+        metadata: { fieldname: f.fieldname, size: f.size },
+      });
+      return `/images/${doc._id.toString()}`;
+    };
+
+    const mainImageURL = main ? await saveToMongo(main) : "";
+    const mediaURLs = [];
+    for (const f of media) {
+      mediaURLs.push(await saveToMongo(f));
     }
-  });
+
+    // Optionally: persist to Product if productId is provided
+    if (req.body?.productId) {
+      await Product.updateOne(
+        { id: req.body.productId },
+        {
+          image: mainImageURL || undefined,
+          $push: { gallery: { $each: mediaURLs } },
+          updatedAt: new Date(),
+        }
+      );
+    }
+
+    return res.json({ success: true, data: { mainImageURL, mediaURLs } });
+  } catch (err) {
+    console.error("Image upload (Mongo) error:", err);
+    return res.status(500).json({ success: false, message: "Server error during image upload" });
+  }
 });
 
 // -------------------------------
@@ -2778,51 +2828,7 @@ app.post("/auth/reset-password", async (req, res) => {
 
 
 
-// -------------------------------
-// 🖼️ Upload Files
-// -------------------------------
-app.post("/upload-files", upload.fields([
-  { name: "main", maxCount: 1 },
-  { name: "media_0", maxCount: 1 },
-  { name: "media_1", maxCount: 1 },
-  { name: "media_2", maxCount: 1 },
-  { name: "media_3", maxCount: 1 },
-  { name: "media_4", maxCount: 1 }
-]), async (req, res) => {
-  try {
-    const files = req.files;
-    const main = files["main"]?.[0];
-    const media = Object.keys(files)
-      .filter(k => k.startsWith("media_"))
-      .flatMap(k => files[k]);
-
-    // Save file URLs for persistence
-    const mainImageURL = main ? `/uploads/${main.filename}` : "";
-    const mediaURLs = media.map(f => `/uploads/${f.filename}`);
-
-    // Optionally: persist image URLs to Product if productId is provided
-    if (req.body.productId) {
-      await Product.updateOne(
-        { id: req.body.productId },
-        {
-          image: mainImageURL,
-          images: mediaURLs.length ? mediaURLs : undefined
-        }
-      );
-    }
-
-    res.json({
-      success: true,
-      data: {
-        mainImageURL,
-        mediaURLs
-      }
-    });
-  } catch (err) {
-    console.error("Image upload error:", err);
-    res.status(500).json({ success: false, message: "Server error during image upload" });
-  }
-});
+// (Removed older disk-based /upload-files route in favor of Mongo-backed route defined above)
 
 
 
