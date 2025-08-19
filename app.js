@@ -2773,6 +2773,65 @@ app.post("/auth/reset-password", async (req, res) => {
   }
 });
 
+
+
+
+
+
+// -------------------------------
+// 🖼️ Upload Files
+// -------------------------------
+app.post("/upload-files", upload.fields([
+  { name: "main", maxCount: 1 },
+  { name: "media_0", maxCount: 1 },
+  { name: "media_1", maxCount: 1 },
+  { name: "media_2", maxCount: 1 },
+  { name: "media_3", maxCount: 1 },
+  { name: "media_4", maxCount: 1 }
+]), async (req, res) => {
+  try {
+    const files = req.files;
+    const main = files["main"]?.[0];
+    const media = Object.keys(files)
+      .filter(k => k.startsWith("media_"))
+      .flatMap(k => files[k]);
+
+    // Save file URLs for persistence
+    const mainImageURL = main ? `/uploads/${main.filename}` : "";
+    const mediaURLs = media.map(f => `/uploads/${f.filename}`);
+
+    // Optionally: persist image URLs to Product if productId is provided
+    if (req.body.productId) {
+      await Product.updateOne(
+        { id: req.body.productId },
+        {
+          image: mainImageURL,
+          images: mediaURLs.length ? mediaURLs : undefined
+        }
+      );
+    }
+
+    res.json({
+      success: true,
+      data: {
+        mainImageURL,
+        mediaURLs
+      }
+    });
+  } catch (err) {
+    console.error("Image upload error:", err);
+    res.status(500).json({ success: false, message: "Server error during image upload" });
+  }
+});
+
+
+
+
+
+
+
+
+
 // ✅ Coupon Management API Endpoints
 
 // Get coupons for a seller
