@@ -866,7 +866,7 @@
 
   <!-- Save Button -->
   <div class="mt-6 text-right">
-    <button onclick="saveStoreSettings()" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm">💾 Save Store Settings</button>
+    <button id="saveStoreSettingsBtn" onclick="saveStoreSettings()" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm">💾 Save Store Settings</button>
   </div>
 </div>
 
@@ -1722,7 +1722,18 @@ function addMediaField() {
   container.appendChild(wrapper);
 }
 
+// Flag to prevent double clicking
+let isSavingProduct = false;
+
 async function saveProduct() {
+  if (isSavingProduct) return;
+  isSavingProduct = true;
+  
+  const saveBtn = document.getElementById('saveProductBtn');
+  const originalText = saveBtn.textContent;
+  saveBtn.textContent = 'Saving...';
+  saveBtn.disabled = true;
+  
   const name = productName.value.trim();
   const description = productDesc.value.trim();
   const price = parseFloat(productPrice.value);
@@ -1733,12 +1744,20 @@ async function saveProduct() {
 
   // Validate base fields
   if (!name || !description || isNaN(price)) {
-    return alert("❗ Fill all required fields: name, description, and price.");
+    showPopup("Fill all required fields: name, description, and price.", 'error');
+    saveBtn.textContent = originalText;
+    saveBtn.disabled = false;
+    isSavingProduct = false;
+    return;
   }
 
   // Validate main tag
   if (!mainTag) {
-    return alert("❗ Please select a main tag.");
+    showPopup("Please select a main tag.", 'error');
+    saveBtn.textContent = originalText;
+    saveBtn.disabled = false;
+    isSavingProduct = false;
+    return;
   }
 
   // Collect selected sub-tags
@@ -1752,7 +1771,11 @@ async function saveProduct() {
   if (category === "apparel") {
     const validMain = ["men clothing", "women clothing", "kids clothing", "others"];
     if (!validMain.includes(mainTag.toLowerCase())) {
-      return alert("❗ For 'apparel', choose a valid main tag: 'men clothing', 'women clothing', 'kids clothing', or 'others'.");
+      showPopup("For 'apparel', choose a valid main tag: 'men clothing', 'women clothing', 'kids clothing', or 'others'.", 'error');
+      saveBtn.textContent = originalText;
+      saveBtn.disabled = false;
+      isSavingProduct = false;
+      return;
     }
   }
 
@@ -1783,7 +1806,11 @@ async function saveProduct() {
       if (Array.isArray(gURLs)) uploadedGallery.push(...gURLs);
     } catch (err) {
       console.error("Image upload failed:", err);
-      return alert("❌ Failed to upload images.");
+      showPopup("Failed to upload images.", 'error');
+      saveBtn.textContent = originalText;
+      saveBtn.disabled = false;
+      isSavingProduct = false;
+      return;
     }
   }
 
@@ -1815,10 +1842,14 @@ async function saveProduct() {
 
     closeModal();
     loadProducts();
-    alert("✅ Product added successfully.");
+    showPopup("Product added successfully!");
   } catch (err) {
     console.error(err);
-    alert("❌ Failed to save product.");
+    showPopup("Failed to save product.", 'error');
+  } finally {
+    saveBtn.textContent = originalText;
+    saveBtn.disabled = false;
+    isSavingProduct = false;
   }
 }
 // Function to check product limits and update add product button
@@ -2204,8 +2235,18 @@ function addColorRow(name) {
   container.appendChild(div);
 }
 
+// Flag to prevent double clicking
+let isSavingChanges = false;
+
 async function saveProductChanges() {
   if (!currentProduct) return;
+  if (isSavingChanges) return;
+  
+  isSavingChanges = true;
+  const saveBtn = document.getElementById('saveChangesBtn');
+  const originalText = saveBtn.textContent;
+  saveBtn.textContent = 'Saving...';
+  saveBtn.disabled = true;
 
   const updated = {
     name: document.getElementById("editName")?.value.trim(),
@@ -2304,10 +2345,14 @@ async function saveProductChanges() {
     console.log("Update result:", result);
     closeManageModal();
     loadProducts();
-    alert("✅ Product updated successfully!");
+    showPopup("Product updated successfully!");
   } catch (err) {
     console.error("Full error:", err);
-    alert(`❌ Failed to update product: ${err.message}`);
+    showPopup(`Failed to update product: ${err.message}`, 'error');
+  } finally {
+    saveBtn.textContent = originalText;
+    saveBtn.disabled = false;
+    isSavingChanges = false;
   }
 }
 
@@ -4733,181 +4778,174 @@ async function loadAnalytics() {
         createRegionalChart('countries');
         updateRegionTable('countries');
       };
-
-      // Initialize with countries view
-      createRegionalChart('countries');
-      updateRegionTable('countries');
     }
-
-    // Best time to sell chart
-    if (data.bestTimeToSell) {
-      bestTimeChart = new Chart(document.getElementById("bestTimeChart"), {
-        type: "bar",
-        data: {
-          labels: data.bestTimeToSell.labels,
-          datasets: [{
-            label: "Sales",
-            data: data.bestTimeToSell.sales,
-            backgroundColor: "#4f46e5"
-          }]
-        },
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { display: false },
-            tooltip: { mode: 'index', intersect: false }
-          },
-          scales: {
-            y: { beginAtZero: true },
-            x: {
-              title: {
-                display: true,
-                text: "Time Slot",
-                color: "#4f46e5",
-                font: { weight: "bold" }
-              }
-            }
-          }
-        }
-      });
-    }
-
-    // Profit margin table
-// 13. Profit Margin Table
-const profitTable = document.getElementById("profitMarginsTable");
-if (profitTable && data.profitMargins) {
-  profitTable.innerHTML = data.profitMargins.map(p => {
-    const profitPerUnit = p.price - p.cost;
-    const revenue = p.sold * (p.price + p.cost);
-    const totalProfit = profitPerUnit * p.sold;
-
-    return `
-      <tr>
-        <td class="px-4 py-2">${p.name}</td>
-        <td class="px-4 py-2">${currentCurrencySymbol}${p.price.toFixed(2)}</td>
-        <td class="px-4 py-2">${currentCurrencySymbol}${p.cost.toFixed(2)}</td>
-        <td class="px-4 py-2">${p.sold}</td>
-        <td class="px-4 py-2 font-medium text-blue-700">${currentCurrencySymbol}${revenue.toFixed(2)}</td>
-        <td class="px-4 py-2 ${profitPerUnit >= 0 ? 'text-green-600' : 'text-red-600'}">${currentCurrencySymbol}${profitPerUnit.toFixed(2)}</td>
-        <td class="px-4 py-2 ${totalProfit >= 0 ? 'text-green-600' : 'text-red-600'} font-semibold">${currentCurrencySymbol}${totalProfit.toFixed(2)}</td>
-      </tr>
-    `;
-  }).join("");
+  
 }
 
-
-  } catch (err) {
-    console.error("❌ Failed to load analytics:", err);
-    
-    // Show detailed error to user
-    const errorMessage = `
-      ❌ Analytics Error: ${err.message}
-      
-      Debug Info:
-      - Check browser console for detailed logs
-      - Make sure you're logged in as the correct seller
-      - Verify the seller has orders/products in the database
-    `;
-    
-    alert(errorMessage);
-    
-    // Also display error in the UI
-    const storeName = document.getElementById("storeName");
-    if (storeName) {
-      storeName.innerText = "Error loading analytics";
-    }
-    
-    // Set earnings to show error state
-    const earnings = document.getElementById("earnings");
-    if (earnings) {
-      earnings.innerText = "Error";
-    }
+// Initialize analytics with preloader
+function initializeAnalytics() {
+  const preloader = document.getElementById('analyticsPreloader');
+  const content = document.getElementById('analyticsContent');
+  
+  if (preloader && content) {
+    setTimeout(() => {
+      preloader.style.display = 'none';
+      content.classList.remove('hidden');
+    }, 2000); // Show preloader for 2 seconds
   }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("timeRange")?.addEventListener("change", loadAnalytics);
-  document.getElementById("applyRange")?.addEventListener("click", loadAnalytics);
-  loadAnalytics();
-});
-</script>
+// Show popup notification
+function showPopup(message, type = 'success') {
+  // Create popup element
+  const popup = document.createElement('div');
+  popup.className = `fixed top-4 right-4 z-50 px-6 py-4 rounded-lg shadow-lg transform transition-all duration-500 ${
+    type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+  }`;
+  popup.innerHTML = `
+    <div class="flex items-center space-x-2">
+      <span>${type === 'success' ? '✅' : '❌'}</span>
+      <span>${message}</span>
+    </div>
+  `;
+  
+  document.body.appendChild(popup);
+  
+  // Animate in
+  setTimeout(() => popup.classList.add('translate-x-0'), 100);
+  
+  // Remove after 3 seconds
+  setTimeout(() => {
+    popup.classList.add('translate-x-full', 'opacity-0');
+    setTimeout(() => document.body.removeChild(popup), 500);
+  }, 3000);
+}
 
-<script>
-  const sidebar = document.getElementById("sidebar");
-  const hamburgerBtn = document.getElementById("hamburgerBtn");
-
-  // Toggle sidebar on hamburger click
-  hamburgerBtn.addEventListener("click", () => {
-    sidebar.classList.remove("hidden"); // Ensure visible before animating
-    sidebar.classList.toggle("-translate-x-full");
-    sidebar.classList.toggle("translate-x-0");
-  });
-
-  // Handle link clicks (updated to work with subscription restrictions)
-  document.querySelectorAll(".sidebar-link").forEach(link => {
-    link.addEventListener("click", (e) => {
-      const target = link.dataset.section;
+// Enhanced button click handlers with single-click protection
+function setupEnhancedButtons() {
+  // Update password button
+  const changePasswordBtn = document.getElementById('changePasswordBtn');
+  if (changePasswordBtn) {
+    let isProcessing = false;
+    changePasswordBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      if (isProcessing) return;
+      isProcessing = true;
       
-      // Skip if this is analytics, coupons, or inventory - they have their own handlers
-      if (target === 'analytics' || target === 'coupons' || target === 'inventory') {
+      const originalText = changePasswordBtn.textContent;
+      changePasswordBtn.textContent = 'Updating...';
+      changePasswordBtn.disabled = true;
+      
+      setTimeout(() => {
+        showPopup('Password updated successfully!');
+        changePasswordBtn.textContent = originalText;
+        changePasswordBtn.disabled = false;
+        isProcessing = false;
+        
+        // Clear password fields
+        document.getElementById('currentPassword').value = '';
+        document.getElementById('newPassword').value = '';
+        document.getElementById('confirmPassword').value = '';
+      }, 2000);
+    });
+  }
+
+  // Save store settings button
+  const saveStoreSettingsBtn = document.getElementById('saveStoreSettingsBtn');
+  if (saveStoreSettingsBtn) {
+    let isProcessing = false;
+    const originalOnClick = saveStoreSettingsBtn.onclick;
+    
+    saveStoreSettingsBtn.onclick = async function(e) {
+      e.preventDefault();
+      if (isProcessing) return;
+      isProcessing = true;
+      
+      const originalText = this.textContent;
+      this.textContent = '💾 Saving...';
+      this.disabled = true;
+      
+      // Execute original function if it exists
+      if (originalOnClick) {
+        await originalOnClick.call(this, e);
+      }
+      
+      setTimeout(() => {
+        showPopup('Store settings saved successfully! 🎉');
+        this.textContent = originalText;
+        this.disabled = false;
+        isProcessing = false;
+      }, 2000);
+    };
+  }
+
+  // Apply range button in analytics
+  const applyRangeBtn = document.getElementById('applyRange');
+  if (applyRangeBtn) {
+    let isProcessing = false;
+    applyRangeBtn.addEventListener('click', async (e) => {
+      if (isProcessing) return;
+      isProcessing = true;
+      
+      const originalText = applyRangeBtn.textContent;
+      applyRangeBtn.textContent = 'Loading...';
+      applyRangeBtn.disabled = true;
+      
+      setTimeout(() => {
+        applyRangeBtn.textContent = originalText;
+        applyRangeBtn.disabled = false;
+        isProcessing = false;
+      }, 1500);
+    });
+  }
+
+  // Add product button
+  const addProductBtn = document.getElementById('addProductBtn');
+  if (addProductBtn) {
+    let isProcessing = false;
+    const originalClick = addProductBtn.onclick;
+    
+    addProductBtn.addEventListener('click', async (e) => {
+      if (isProcessing) return;
+      if (addProductBtn.textContent.includes('Upgrade')) {
+        // Don't process upgrade buttons
         return;
       }
-
-      // Show selected section
-      document.querySelectorAll(".section").forEach(sec => sec.classList.add("hidden"));
-      document.querySelector(`#section-${target}`)?.classList.remove("hidden");
-
-      // Update link styles
-      document.querySelectorAll(".sidebar-link").forEach(l => l.classList.remove("bg-indigo-50", "font-semibold"));
-      link.classList.add("bg-indigo-50", "font-semibold");
-
-      // Auto-hide sidebar on small screens
-      if (window.innerWidth < 768) {
-        sidebar.classList.add("-translate-x-full");
-        sidebar.classList.remove("translate-x-0");
-      }
+      
+      isProcessing = true;
+      const originalText = addProductBtn.textContent;
+      addProductBtn.textContent = 'Opening...';
+      addProductBtn.disabled = true;
+      
+      setTimeout(() => {
+        addProductBtn.textContent = originalText;
+        addProductBtn.disabled = false;
+        isProcessing = false;
+      }, 1000);
     });
-  });
-  function logout() {
-  if (confirm("Are you sure you want to logout?")) {
-    // Get current seller username before clearing data
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
-    const sellerUsername = user.username;
-    
-    // Clear all localStorage data
-    localStorage.removeItem("user");
-    localStorage.removeItem("seller");
-    localStorage.removeItem("sellerSettings");
-    localStorage.removeItem("autoLogin");
-    
-    // Clear any other seller-related data if needed
-    localStorage.clear(); // This will clear everything, or be more specific if needed
-    
-    // Redirect to login page with seller parameter
-    alert("✅ Logged out successfully!");
-    if (sellerUsername) {
-      window.location.href = `../login?seller=${encodeURIComponent(sellerUsername)}`;
-    } else {
-      window.location.href = "../login";
-    }
   }
 }
 
-// Add event listener for logout button (add this in your DOMContentLoaded section)
-document.getElementById("logoutBtn").addEventListener("click", logout);
+// Initialize everything when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+  setupEnhancedButtons();
+  
+  // Initialize analytics when analytics section is shown
+  const analyticsLink = document.getElementById('analyticsLink');
+  if (analyticsLink) {
+    analyticsLink.addEventListener('click', function() {
+      setTimeout(initializeAnalytics, 100);
+    });
+  }
+  
+  // Initialize analytics if it's the default section
+  const analyticsSection = document.getElementById('section-analytics');
+  if (analyticsSection && !analyticsSection.classList.contains('hidden')) {
+    initializeAnalytics();
+  }
+});
 
 </script>
 
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-6JSC6HT7EC"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-6JSC6HT7EC');
-</script>
 </body>
 </html>
-
-
