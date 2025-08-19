@@ -239,26 +239,19 @@
         let val = img.trim().replace(/\\\\/g, '/').replace(/\\/g, '/');
         // Absolute URLs or data URIs
         if (/^(https?:)?\/\//i.test(val) || val.startsWith('data:')) return val;
-        // MongoDB images endpoint support: "/images/<id>" or bare ObjectId
-        if (/^\/?images\//i.test(val) || val.toLowerCase().includes('/images/')) {
-          const clean = val.split(/images\//i).pop();
-          return `${API}/images/${clean.replace(/^\/+/, '')}`;
-        }
-        if (/^[a-f0-9]{24}$/i.test(val)) {
-          return `${API}/images/${val}`;
-        }
-        // Legacy uploads
+        // Strip any leading host part accidentally embedded
         const uploadsIdx = val.toLowerCase().lastIndexOf('/uploads/');
         const uploadsIdx2 = uploadsIdx === -1 ? val.toLowerCase().lastIndexOf('uploads/') : uploadsIdx;
         if (uploadsIdx2 !== -1) {
           const clean = val.slice(uploadsIdx2 + (val.toLowerCase().startsWith('/uploads/') ? 9 : (val.toLowerCase().indexOf('uploads/') >= 0 ? val.toLowerCase().indexOf('uploads/') + 8 : 0)));
           return `${API}/uploads/${clean.replace(/^\/+/, '')}`;
         }
+        // Starts with uploads path (with or without slash)
         if (/^\/?uploads\//i.test(val)) {
           const clean = val.replace(/^\/?uploads\//i, '');
           return `${API}/uploads/${clean}`;
         }
-        // Fallback
+        // Raw filename
         return `${API}/uploads/${val.replace(/^\/+/, '')}`;
       }
 
@@ -767,6 +760,14 @@
 
     window.addEventListener("DOMContentLoaded", loadLayoutAndTheme);
   </script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6JSC6HT7EC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
+  gtag('config', 'G-6JSC6HT7EC');
+</script>
 </body>
 </html>

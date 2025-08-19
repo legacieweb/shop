@@ -6,82 +6,129 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-    body { font-family: 'Inter', sans-serif; }
+    @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&family=Lora:wght@400;500;600;700&display=swap');
+    
+    body { 
+      font-family: 'Lora', serif; 
+      background: #f8f6f0;
+      color: #2c2c2c;
+    }
+    
+    .classic-header {
+      font-family: 'Crimson Text', serif;
+    }
     
     .theme-card {
       transform: translateY(0);
-      transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-      background: rgba(255, 255, 255, 0.95);
+      transition: all 0.4s ease-in-out;
+      border: 2px solid #d4af37;
+      background: #ffffff;
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15);
     }
     
     .theme-card:hover {
-      transform: translateY(-8px) scale(1.02);
-      box-shadow: 0 35px 80px -20px rgba(0, 0, 0, 0.15);
-      border-color: rgba(99, 102, 241, 0.3);
+      transform: translateY(-5px);
+      box-shadow: 0 12px 30px rgba(212, 175, 55, 0.25);
+      border-color: #b8941f;
     }
     
-    .theme-image {
-      transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .theme-card:hover .theme-image {
-      transform: scale(1.05);
-    }
-    
-    .gradient-bg {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    }
-    
-    .premium-badge {
-      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-      animation: gentle-pulse 3s infinite;
-    }
-    
-    @keyframes gentle-pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.9; transform: scale(1.05); }
-    }
-    
-    .pro-glow {
-      box-shadow: 0 0 40px rgba(139, 92, 246, 0.3);
-    }
-    
-    .modal-backdrop {
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(15px);
-    }
-    
-    .filter-chip {
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    .theme-card.restricted {
+      border-color: #8b7355;
+      background: #faf9f6;
       position: relative;
-      overflow: hidden;
     }
-
-    .filter-chip::before {
+    
+    .theme-card.restricted::before {
       content: '';
       position: absolute;
       top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-      transition: left 0.5s;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 10px,
+        rgba(139, 115, 85, 0.1) 10px,
+        rgba(139, 115, 85, 0.1) 20px
+      );
+      pointer-events: none;
     }
-
-    .filter-chip:hover::before {
-      left: 100%;
+    
+    .theme-image {
+      transition: all 0.4s ease-in-out;
+      border-bottom: 3px solid #d4af37;
+    }
+    
+    .theme-card:hover .theme-image {
+      transform: scale(1.02);
+    }
+    
+    .classic-gradient {
+      background: linear-gradient(135deg, #8b7355 0%, #d4af37 100%);
+    }
+    
+    .classic-button {
+      background: #d4af37;
+      color: #2c2c2c;
+      border: 2px solid #b8941f;
+      transition: all 0.3s ease;
+    }
+    
+    .classic-button:hover {
+      background: #b8941f;
+      color: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
+    }
+    
+    .classic-button.disabled {
+      background: #8b7355;
+      color: #c0c0c0;
+      border-color: #6b5a47;
+      cursor: not-allowed;
+    }
+    
+    .classic-button.disabled:hover {
+      transform: none;
+      box-shadow: none;
+      background: #8b7355;
+    }
+    
+    .premium-badge {
+      background: linear-gradient(135deg, #8b7355 0%, #d4af37 100%);
+    }
+    
+    .modal-backdrop {
+      background: rgba(44, 44, 44, 0.85);
+      backdrop-filter: blur(10px);
+    }
+    
+    .filter-chip {
+      transition: all 0.3s ease;
+      background: #ffffff;
+      border: 2px solid #d4af37;
+      color: #2c2c2c;
+    }
+    
+    .filter-chip:hover {
+      background: #f8f6f0;
+      border-color: #b8941f;
+      transform: translateY(-2px);
     }
 
     .filter-chip.active {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+      background: #d4af37;
+      color: #2c2c2c;
+      border-color: #b8941f;
+      font-weight: 600;
     }
 
     .theme-tag {
       animation: fadeInUp 0.3s ease-out;
+      background: #f8f6f0;
+      border: 2px solid #d4af37;
+      color: #2c2c2c;
     }
 
     @keyframes fadeInUp {
@@ -95,119 +142,140 @@
       }
     }
 
-    .gradient-text {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+    .classic-text {
+      color: #8b7355;
+      font-family: 'Crimson Text', serif;
     }
 
-    .glass-effect {
-      background: rgba(255, 255, 255, 0.9);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .premium-gradient {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
-    }
-
-    .elegant-shadow {
-      box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.1);
+    .classic-card {
+      background: #ffffff;
+      border: 2px solid #d4af37;
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.15);
     }
 
     .theme-name-overlay {
-      background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 50%, transparent 100%);
+      background: linear-gradient(to top, rgba(44, 44, 44, 0.9) 0%, rgba(44, 44, 44, 0.6) 50%, transparent 100%);
     }
 
-    .restriction-badge {
-      backdrop-filter: blur(10px);
-      background: rgba(0, 0, 0, 0.7);
+    .restriction-overlay {
+      background: rgba(139, 115, 85, 0.9);
+      backdrop-filter: blur(3px);
+    }
+
+    .classic-border {
+      border: 3px solid #d4af37;
+      border-style: double;
+    }
+
+    .ornamental-divider {
+      border-top: 3px double #d4af37;
+      position: relative;
+    }
+
+    .ornamental-divider::before {
+      content: '❦';
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #f8f6f0;
+      color: #d4af37;
+      padding: 0 15px;
+      font-size: 20px;
     }
   </style>
 </head>
-<body class="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 text-gray-800 min-h-screen">
+<body>
 
-<!-- Non-sticky Header -->
-<header class="glass-effect shadow-lg">
+<!-- Classic Header -->
+<header class="classic-card">
   <div class="max-w-7xl mx-auto px-6 py-8">
     <div class="flex items-center justify-between">
       <div class="flex items-center space-x-4">
         <div>
-          <h1 class="text-4xl font-bold gradient-text">Choose Your Theme</h1>
-          <p class="text-gray-600 mt-2 text-lg">Transform your store with stunning designs</p>
+          <h1 class="text-5xl font-bold classic-header classic-text">Theme Gallery</h1>
         </div>
       </div>
-      <a href="#" id="backToShop" class="flex items-center space-x-3 text-indigo-600 hover:text-indigo-800 transition-all duration-300 font-semibold hover:scale-105 bg-white px-6 py-3 rounded-xl shadow-md hover:shadow-lg">
+      <a href="#" id="backToShop" class="flex items-center space-x-3 classic-button px-6 py-3 rounded-lg font-semibold">
         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
           <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/>
         </svg>
-        <span>Back to Dashboard</span>
+        <span>Dashboard</span>
       </a>
     </div>
   </div>
 </header>
 
 <!-- Premium Status Banner -->
-<div id="premiumBanner" class="hidden premium-gradient text-white text-center py-4 font-semibold">
-  Premium Member - Unlock All Themes & Features
+<div id="premiumBanner" class="hidden classic-gradient text-white text-center py-4 font-semibold classic-header text-lg">
+  ✦ Premium Member - Access to All Premium Themes ✦
 </div>
 
 <!-- Main Content -->
 <main class="max-w-7xl mx-auto px-4 sm:px-6 py-12">
 
-  <!-- Filter Buttons -->
-  <div class="mb-10 flex flex-wrap gap-4">
-    <button data-toggle="planFilters" class="bg-white border border-gray-200 px-6 py-3 rounded-xl font-semibold text-sm hover:bg-gray-50 shadow-lg hover:shadow-xl transition-all duration-300">
-      Filter by Plan
-    </button>
-    <button data-toggle="featureFilters" class="bg-white border border-gray-200 px-6 py-3 rounded-xl font-semibold text-sm hover:bg-gray-50 shadow-lg hover:shadow-xl transition-all duration-300">
-      Filter by Features
-    </button>
-    <button data-toggle="businessFilters" class="bg-white border border-gray-200 px-6 py-3 rounded-xl font-semibold text-sm hover:bg-gray-50 shadow-lg hover:shadow-xl transition-all duration-300">
-      Filter by Business Type
-    </button>
-  </div>
-
-  <!-- Collapsible Filter Sections -->
-  <div id="planFilters" class="hidden mb-8">
-    <div class="flex flex-wrap gap-3">
-      <button class="tier-filter-btn active px-6 py-3 rounded-xl font-semibold text-sm bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-lg" data-tier="all">All Themes</button>
-      <button class="tier-filter-btn px-6 py-3 rounded-xl font-semibold text-sm bg-white text-gray-700 border border-gray-200 hover:border-emerald-300 shadow-md hover:shadow-lg transition-all duration-300" data-tier="free">Free</button>
-      <button class="tier-filter-btn px-6 py-3 rounded-xl font-semibold text-sm bg-white text-gray-700 border border-gray-200 hover:border-amber-300 shadow-md hover:shadow-lg transition-all duration-300" data-tier="basic">Basic</button>
-      <button class="tier-filter-btn px-6 py-3 rounded-xl font-semibold text-sm bg-white text-gray-700 border border-gray-200 hover:border-purple-300 shadow-md hover:shadow-lg transition-all duration-300" data-tier="pro">Pro</button>
+  <!-- Filter Section -->
+  <div class="classic-card rounded-lg p-8 mb-10">
+    <h3 class="text-2xl font-bold classic-header classic-text mb-6 text-center">Refine Your Selection</h3>
+    
+    <!-- Filter Buttons -->
+    <div class="mb-8 flex flex-wrap justify-center gap-4">
+      <button data-toggle="planFilters" class="classic-button px-6 py-3 rounded-lg font-semibold">
+        Filter by Plan
+      </button>
+      <button data-toggle="featureFilters" class="classic-button px-6 py-3 rounded-lg font-semibold">
+        Filter by Features
+      </button>
+      <button data-toggle="businessFilters" class="classic-button px-6 py-3 rounded-lg font-semibold">
+        Filter by Business Type
+      </button>
     </div>
-  </div>
 
-  <div id="featureFilters" class="hidden mb-8">
-    <div class="flex flex-wrap gap-3">
-      <button class="feature-filter-btn active px-6 py-3 rounded-xl font-semibold text-sm bg-gradient-to-r from-blue-500 to-cyan-600 text-white shadow-lg" data-feature="all">All Features</button>
-      <button class="feature-filter-btn px-6 py-3 rounded-xl font-semibold text-sm bg-white text-gray-700 border hover:border-blue-300 shadow-md hover:shadow-lg transition-all duration-300" data-feature="animated">Animated Layouts</button>
-      <button class="feature-filter-btn px-6 py-3 rounded-xl font-semibold text-sm bg-white text-gray-700 border hover:border-pink-300 shadow-md hover:shadow-lg transition-all duration-300" data-feature="social">Social Media Ready</button>
-      <button class="feature-filter-btn px-6 py-3 rounded-xl font-semibold text-sm bg-white text-gray-700 border hover:border-green-300 shadow-md hover:shadow-lg transition-all duration-300" data-feature="responsive">Mobile Optimized</button>
-      <button class="feature-filter-btn px-6 py-3 rounded-xl font-semibold text-sm bg-white text-gray-700 border hover:border-indigo-300 shadow-md hover:shadow-lg transition-all duration-300" data-feature="interactive">Interactive Elements</button>
-      <button class="feature-filter-btn px-6 py-3 rounded-xl font-semibold text-sm bg-white text-gray-700 border hover:border-purple-300 shadow-md hover:shadow-lg transition-all duration-300" data-feature="dark">Dark Theme Support</button>
+    <!-- Collapsible Filter Sections -->
+    <div id="planFilters" class="hidden mb-6">
+      <div class="ornamental-divider mb-6"></div>
+      <div class="flex flex-wrap justify-center gap-3">
+        <button class="tier-filter-btn active filter-chip px-6 py-3 rounded-lg font-semibold" data-tier="all">All Themes</button>
+        <button class="tier-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold" data-tier="free">Free</button>
+        <button class="tier-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold" data-tier="basic">Basic</button>
+        <button class="tier-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold" data-tier="pro">Pro</button>
+      </div>
     </div>
-  </div>
 
-  <div id="businessFilters" class="hidden mb-8">
-    <div class="flex flex-wrap gap-3">
-      <button class="bestfor-filter-btn active px-6 py-3 rounded-xl font-semibold text-sm bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg" data-bestfor="all">All Business Types</button>
-      <button class="bestfor-filter-btn px-6 py-3 rounded-xl font-semibold text-sm bg-white text-gray-700 border hover:border-rose-300 shadow-md hover:shadow-lg transition-all duration-300" data-bestfor="Fashion brands">Fashion Brands</button>
-      <button class="bestfor-filter-btn px-6 py-3 rounded-xl font-semibold text-sm bg-white text-gray-700 border hover:border-blue-300 shadow-md hover:shadow-lg transition-all duration-300" data-bestfor="Tech products">Tech Products</button>
-      <button class="bestfor-filter-btn px-6 py-3 rounded-xl font-semibold text-sm bg-white text-gray-700 border hover:border-amber-300 shadow-md hover:shadow-lg transition-all duration-300" data-bestfor="Luxury brands">Luxury Brands</button>
-      <button class="bestfor-filter-btn px-6 py-3 rounded-xl font-semibold text-sm bg-white text-gray-700 border hover:border-green-300 shadow-md hover:shadow-lg transition-all duration-300" data-bestfor="Eco-products">Eco-Friendly</button>
-      <button class="bestfor-filter-btn px-6 py-3 rounded-xl font-semibold text-sm bg-white text-gray-700 border hover:border-orange-300 shadow-md hover:shadow-lg transition-all duration-300" data-bestfor="Handmade goods">Handmade Goods</button>
-      <button class="bestfor-filter-btn px-6 py-3 rounded-xl font-semibold text-sm bg-white text-gray-700 border hover:border-gray-400 shadow-md hover:shadow-lg transition-all duration-300" data-bestfor="Professional services">Professional Services</button>
+    <div id="featureFilters" class="hidden mb-6">
+      <div class="ornamental-divider mb-6"></div>
+      <div class="flex flex-wrap justify-center gap-3">
+        <button class="feature-filter-btn active filter-chip px-6 py-3 rounded-lg font-semibold" data-feature="all">All Features</button>
+        <button class="feature-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold" data-feature="animated">Animated Layouts</button>
+        <button class="feature-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold" data-feature="social">Social Media Ready</button>
+        <button class="feature-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold" data-feature="responsive">Mobile Optimized</button>
+        <button class="feature-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold" data-feature="interactive">Interactive Elements</button>
+        <button class="feature-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold" data-feature="dark">Dark Theme Support</button>
+      </div>
+    </div>
+
+    <div id="businessFilters" class="hidden mb-6">
+      <div class="ornamental-divider mb-6"></div>
+      <div class="flex flex-wrap justify-center gap-3">
+        <button class="bestfor-filter-btn active filter-chip px-6 py-3 rounded-lg font-semibold" data-bestfor="all">All Business Types</button>
+        <button class="bestfor-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold" data-bestfor="Fashion brands">Fashion Brands</button>
+        <button class="bestfor-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold" data-bestfor="Tech products">Tech Products</button>
+        <button class="bestfor-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold" data-bestfor="Luxury brands">Luxury Brands</button>
+        <button class="bestfor-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold" data-bestfor="Eco-products">Eco-Friendly</button>
+        <button class="bestfor-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold" data-bestfor="Handmade goods">Handmade Goods</button>
+        <button class="bestfor-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold" data-bestfor="Professional services">Professional Services</button>
+      </div>
     </div>
   </div>
 
   <!-- Active Filters Display -->
   <div id="activeFilters" class="mb-10 hidden">
-    <div class="flex items-center flex-wrap gap-3">
-      <span class="text-sm font-semibold text-gray-600">Active filters:</span>
-      <div id="activeFilterTags" class="flex flex-wrap gap-2"></div>
-      <button id="clearFilters" class="text-sm text-indigo-600 hover:text-indigo-800 font-semibold underline ml-3">Clear all</button>
+    <div class="classic-card rounded-lg p-6">
+      <div class="flex items-center flex-wrap gap-3 justify-center">
+        <span class="font-semibold classic-text classic-header text-lg">Active Filters:</span>
+        <div id="activeFilterTags" class="flex flex-wrap gap-2"></div>
+        <button id="clearFilters" class="text-red-600 hover:text-red-800 font-semibold underline ml-3">Clear All</button>
+      </div>
     </div>
   </div>
 
@@ -216,12 +284,14 @@
 
   <!-- No Results Message -->
   <div id="noResults" class="hidden text-center py-20">
-    <div class="text-8xl mb-6">🔍</div>
-    <h3 class="text-3xl font-bold text-gray-600 mb-4">No themes found</h3>
-    <p class="text-gray-500 mb-8 text-lg">Try adjusting your filters to discover more beautiful themes</p>
-    <button id="resetFilters" class="bg-indigo-500 hover:bg-indigo-600 text-white px-8 py-4 rounded-xl font-semibold transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
-      Reset All Filters
-    </button>
+    <div class="classic-card rounded-lg p-12">
+      <div class="text-8xl mb-6">🔍</div>
+      <h3 class="text-3xl font-bold classic-header classic-text mb-4">No Themes Found</h3>
+      <p class="text-gray-600 mb-8 text-lg">Please adjust your filters to discover more distinguished themes</p>
+      <button id="resetFilters" class="classic-button px-8 py-4 rounded-lg font-semibold text-lg">
+        Reset All Filters
+      </button>
+    </div>
   </div>
 
 </main>
@@ -239,9 +309,9 @@
 <!-- Enhanced Theme Modal -->
 <div id="themeModal" class="fixed inset-0 z-50 hidden modal-backdrop">
   <div class="flex items-center justify-center min-h-screen p-4">
-    <div class="glass-effect rounded-3xl shadow-2xl max-w-7xl w-full max-h-[90vh] overflow-auto">
+    <div class="classic-card rounded-lg shadow-2xl max-w-7xl w-full max-h-[90vh] overflow-auto">
       <div class="p-10">
-        <button class="mb-8 flex items-center space-x-3 text-indigo-600 hover:text-indigo-800 transition-colors duration-200 font-semibold hover:scale-105 bg-white px-4 py-2 rounded-lg shadow-md" onclick="closeModal()">
+        <button class="mb-8 flex items-center space-x-3 classic-button px-4 py-2 rounded-lg font-semibold" onclick="closeModal()">
           <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"/>
           </svg>
@@ -493,39 +563,6 @@ const themes = [
       logo: "https://placehold.co/40x40/065f46/ffffff?text=N",
       heroImage: "https://placehold.co/1920x600/065f46/d1fae5?text=Nature+Hero"
     }
-  },
-  {
-    name: "Freestyle Creative",
-    tier: "pro",
-    previewImage: "https://placehold.co/400x600/7c3aed/c4b5fd?text=Freestyle+Creative+Theme",
-    features: ["animated", "interactive", "responsive", "social"],
-    screenshots: [
-      "https://placehold.co/800x500/7c3aed/c4b5fd?text=Creative+Layout",
-      "https://placehold.co/800x500/8b5cf6/ddd6fe?text=Artistic+Design",
-      "https://placehold.co/800x500/a855f7/e9d5ff?text=Flexible+Grid"
-    ],
-    featureList: [
-      "Artistic and creative layout",
-      "Flexible grid system",
-      "Custom animation effects",
-      "Creative typography",
-      "Interactive elements",
-      "Portfolio-style showcase",
-      "Creative brand expression"
-    ],
-    description: "Unleash your creativity with this artistic and flexible theme designed for creative professionals and unique businesses.",
-    bestFor: ["Creative agencies", "Artists & designers", "Photography studios", "Freelancers"],
-    colorScheme: ["#7c3aed", "#8b5cf6", "#c4b5fd", "#ddd6fe"],
-    theme: {
-      layout: "freestyle",
-      title: "Freestyle Creative",
-      name: "Creative Space",
-      bio: "Where creativity flows.",
-      header: "Creative Works",
-      bgColor: "#faf5ff",
-      logo: "https://placehold.co/40x40/7c3aed/ffffff?text=F",
-      heroImage: "https://placehold.co/1920x600/7c3aed/c4b5fd?text=Freestyle+Hero"
-    }
   }
 ];
 
@@ -542,11 +579,7 @@ async function getUserPlan() {
     }
 
     // Refresh from backend for accuracy
-    const res = await fetch(`${API}/api/subscription-info?username=${encodeURIComponent(sellerParam)}`, {
-      headers: {
-        'ngrok-skip-browser-warning': 'true'
-      }
-    });
+    const res = await fetch(`${API}/api/subscription-info?username=${encodeURIComponent(sellerParam)}`);
     if (res.ok) {
       const payload = await res.json();
       if (payload && payload.success && payload.user?.plan) {
@@ -577,11 +610,7 @@ function getTierAccess(userPlan) {
 }
 
 function filterThemes() {
-  const accessibleTiers = getTierAccess(currentUserPlan);
   let filteredThemes = themes;
-
-  // Always restrict to accessible tiers by subscription
-  filteredThemes = filteredThemes.filter(t => accessibleTiers.includes(t.tier));
 
   // Filter by tier
   if (currentFilters.tier !== "all") {
@@ -614,10 +643,10 @@ function updateActiveFilters() {
     Object.entries(currentFilters).forEach(([type, value]) => {
       if (value !== "all") {
         const tag = document.createElement("span");
-        tag.className = "theme-tag inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-indigo-100 text-indigo-800 border border-indigo-200 shadow-md";
+        tag.className = "theme-tag inline-flex items-center px-4 py-2 rounded-lg font-semibold";
         tag.innerHTML = `
           ${value}
-          <button onclick="removeFilter('${type}')" class="ml-2 hover:text-indigo-600 transition-colors duration-200">
+          <button onclick="removeFilter('${type}')" class="ml-2 hover:text-red-600 transition-colors duration-200">
             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
               <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
             </svg>
@@ -652,21 +681,21 @@ function renderThemes() {
     let tierColor, tierIcon;
     switch(t.tier) {
       case "free":
-        tierColor = "bg-emerald-500 text-white";
+        tierColor = "bg-green-600 text-white";
         tierIcon = "FREE";
         break;
       case "basic":
-        tierColor = "bg-amber-500 text-white";
+        tierColor = "bg-amber-600 text-white";
         tierIcon = "BASIC";
         break;
       case "pro":
-        tierColor = "bg-purple-500 text-white";
+        tierColor = "bg-purple-600 text-white";
         tierIcon = "PRO";
         break;
     }
 
     const card = document.createElement("div");
-    card.className = `theme-card rounded-3xl shadow-xl overflow-hidden cursor-pointer ${!canAccess ? 'opacity-80' : ''} ${t.tier === 'pro' ? 'pro-glow' : ''} elegant-shadow`;
+    card.className = `theme-card rounded-lg overflow-hidden cursor-pointer ${!canAccess ? 'restricted' : ''}`;
     
     card.innerHTML = `
       <div class="relative group h-80">
@@ -675,35 +704,35 @@ function renderThemes() {
         <!-- Theme Name Overlay -->
         <div class="absolute bottom-0 left-0 right-0 theme-name-overlay">
           <div class="p-6">
-            <h3 class="text-2xl font-bold text-white mb-2">${t.name}</h3>
+            <h3 class="text-2xl font-bold text-white mb-2 classic-header">${t.name}</h3>
           </div>
         </div>
         
         <!-- Plan Badge -->
         <div class="absolute top-4 right-4">
-          <span class="${tierColor} px-4 py-2 rounded-full text-xs font-bold shadow-lg">
+          <span class="${tierColor} px-4 py-2 rounded-full text-xs font-bold shadow-lg classic-border">
             ${tierIcon}
           </span>
         </div>
         
         <!-- Restriction Overlay for locked themes -->
         ${!canAccess ? `
-          <div class="absolute inset-0 flex items-center justify-center restriction-badge">
+          <div class="absolute inset-0 flex items-center justify-center restriction-overlay">
             <div class="text-center text-white">
               <svg class="w-12 h-12 mx-auto mb-3 opacity-80" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
               </svg>
-              <div class="text-sm font-semibold mb-1">🔓 ${t.tier.toUpperCase()} Theme</div>
-              <div class="text-xs opacity-90">Requires ${t.tier} plan or higher</div>
+              <div class="text-sm font-semibold">Upgrade Required</div>
+              <div class="text-xs mt-1 opacity-80">Click to view details</div>
             </div>
           </div>
         ` : ''}
         
         <!-- Hover Overlay -->
-        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-500 flex items-center justify-center">
+        <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center">
           <div class="opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-4 group-hover:translate-y-0">
-            <button class="viewThemeBtn bg-white text-gray-900 px-8 py-3 rounded-xl font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105" data-index="${originalIndex}">
-              ${canAccess ? 'View Details' : 'View & Upgrade'}
+            <button class="viewThemeBtn classic-button px-8 py-3 rounded-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-105" data-index="${originalIndex}">
+              View Details
             </button>
           </div>
         </div>
@@ -724,75 +753,79 @@ function openModal(index) {
   let tierColor, tierIcon;
   switch(t.tier) {
     case "free":
-      tierColor = "bg-emerald-100 text-emerald-700 border-emerald-200";
+      tierColor = "bg-green-100 text-green-800 border-green-300";
       tierIcon = "FREE";
       break;
     case "basic":
-      tierColor = "bg-amber-100 text-amber-700 border-amber-200";
+      tierColor = "bg-amber-100 text-amber-800 border-amber-300";
       tierIcon = "BASIC";
       break;
     case "pro":
-      tierColor = "bg-purple-100 text-purple-700 border-purple-200";
+      tierColor = "bg-purple-100 text-purple-800 border-purple-300";
       tierIcon = "PRO";
       break;
   }
 
   const featureBadges = t.features.map(feature => {
     const featureLabels = {
-      animated: { label: "Animated Layouts", color: "bg-blue-50 text-blue-700 border-blue-200", icon: "🎬" },
-      social: { label: "Social Media Ready", color: "bg-pink-50 text-pink-700 border-pink-200", icon: "📱" },
-      responsive: { label: "Mobile Optimized", color: "bg-green-50 text-green-700 border-green-200", icon: "📱" },
-      interactive: { label: "Interactive Elements", color: "bg-indigo-50 text-indigo-700 border-indigo-200", icon: "✨" },
-      dark: { label: "Dark Theme Support", color: "bg-gray-50 text-gray-700 border-gray-200", icon: "🌙" }
+      animated: { label: "Animated Layouts", color: "bg-blue-50 text-blue-800 border-blue-300", icon: "🎬" },
+      social: { label: "Social Media Ready", color: "bg-pink-50 text-pink-800 border-pink-300", icon: "📱" },
+      responsive: { label: "Mobile Optimized", color: "bg-green-50 text-green-800 border-green-300", icon: "📱" },
+      interactive: { label: "Interactive Elements", color: "bg-indigo-50 text-indigo-800 border-indigo-300", icon: "✨" },
+      dark: { label: "Dark Theme Support", color: "bg-gray-50 text-gray-800 border-gray-300", icon: "🌙" }
     };
     
-    const featureInfo = featureLabels[feature] || { label: feature, color: "bg-gray-50 text-gray-700 border-gray-200", icon: "⚡" };
-    return `<span class="inline-flex items-center space-x-3 ${featureInfo.color} px-4 py-3 rounded-xl border-2 font-semibold text-sm shadow-md hover:shadow-lg transition-all duration-300"><span class="text-lg">${featureInfo.icon}</span><span>${featureInfo.label}</span></span>`;
+    const featureInfo = featureLabels[feature] || { label: feature, color: "bg-gray-50 text-gray-800 border-gray-300", icon: "⚡" };
+    return `<span class="inline-flex items-center space-x-3 ${featureInfo.color} px-4 py-3 rounded-lg border-2 font-semibold text-sm shadow-md hover:shadow-lg transition-all duration-300"><span class="text-lg">${featureInfo.icon}</span><span>${featureInfo.label}</span></span>`;
   }).join('');
 
   themeDetails.innerHTML = `
     <div class="flex items-start justify-between mb-12">
       <div class="flex-1">
-        <h2 class="text-5xl font-bold gradient-text mb-4">${t.name}</h2>
+        <h2 class="text-5xl font-bold classic-header classic-text mb-4">${t.name}</h2>
         <p class="text-gray-600 text-xl leading-relaxed max-w-4xl">${t.description}</p>
       </div>
-      <span class="${tierColor} px-6 py-4 rounded-2xl font-bold uppercase border-2 text-lg tracking-wide shadow-lg">
+      <span class="${tierColor} px-6 py-4 rounded-lg font-bold uppercase border-2 text-lg tracking-wide shadow-lg classic-border">
         ${tierIcon}
       </span>
     </div>
 
+    <div class="ornamental-divider mb-12"></div>
+
     <div class="grid lg:grid-cols-2 gap-12 mb-12">
       <div>
-        <h4 class="text-2xl font-bold mb-6 text-gray-800 flex items-center space-x-3">
-          <span class="w-3 h-3 bg-indigo-500 rounded-full"></span>
-          <span>Key Features</span>
+        <h4 class="text-2xl font-bold mb-6 classic-header classic-text flex items-center space-x-3">
+          <span class="w-3 h-3 bg-amber-600 rounded-full"></span>
+          <span>Distinguished Features</span>
         </h4>
         <div class="space-y-4">
-          ${t.featureList.map(f => `<div class="flex items-start space-x-4 p-4 bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl border shadow-md hover:shadow-lg transition-all duration-300"><div class="w-3 h-3 bg-indigo-500 rounded-full mt-2 flex-shrink-0"></div><span class="text-gray-700 font-medium text-lg">${f}</span></div>`).join('')}
+          ${t.featureList.map(f => `<div class="flex items-start space-x-4 p-4 classic-card rounded-lg hover:shadow-lg transition-all duration-300"><div class="w-3 h-3 bg-amber-600 rounded-full mt-2 flex-shrink-0"></div><span class="text-gray-700 font-medium text-lg">${f}</span></div>`).join('')}
         </div>
       </div>
       
       <div>
-        <h4 class="text-2xl font-bold mb-6 text-gray-800 flex items-center space-x-3">
-          <span class="w-3 h-3 bg-purple-500 rounded-full"></span>
-          <span>Perfect For</span>
+        <h4 class="text-2xl font-bold mb-6 classic-header classic-text flex items-center space-x-3">
+          <span class="w-3 h-3 bg-amber-600 rounded-full"></span>
+          <span>Ideal For</span>
         </h4>
         <div class="space-y-4 mb-8">
-          ${t.bestFor.map(item => `<div class="bg-gradient-to-r from-indigo-50 to-purple-50 border-2 border-indigo-200 rounded-2xl px-6 py-4 text-gray-800 font-bold text-center transform hover:scale-105 transition-transform duration-300 shadow-lg">${item}</div>`).join('')}
+          ${t.bestFor.map(item => `<div class="classic-card rounded-lg px-6 py-4 text-gray-800 font-bold text-center transform hover:scale-105 transition-transform duration-300 shadow-lg">${item}</div>`).join('')}
         </div>
         
         <div>
-          <h5 class="text-lg font-bold mb-4 text-gray-700 uppercase tracking-wide">Color Palette</h5>
+          <h5 class="text-lg font-bold mb-4 classic-text uppercase tracking-wide classic-header">Color Palette</h5>
           <div class="flex space-x-4">
-            ${t.colorScheme.map(color => `<div class="flex flex-col items-center group"><div class="w-16 h-16 rounded-2xl border-4 border-white shadow-xl group-hover:scale-110 transition-transform duration-300" style="background-color: ${color}"></div><span class="text-sm text-gray-500 mt-3 font-mono font-semibold">${color}</span></div>`).join('')}
+            ${t.colorScheme.map(color => `<div class="flex flex-col items-center group"><div class="w-16 h-16 rounded-lg classic-border shadow-xl group-hover:scale-110 transition-transform duration-300" style="background-color: ${color}"></div><span class="text-sm text-gray-500 mt-3 font-mono font-semibold">${color}</span></div>`).join('')}
           </div>
         </div>
       </div>
     </div>
 
+    <div class="ornamental-divider mb-12"></div>
+
     <div class="mb-12">
-      <h4 class="text-2xl font-bold mb-6 text-gray-800 flex items-center space-x-3">
-        <span class="w-3 h-3 bg-cyan-500 rounded-full"></span>
+      <h4 class="text-2xl font-bold mb-6 classic-header classic-text flex items-center space-x-3">
+        <span class="w-3 h-3 bg-amber-600 rounded-full"></span>
         <span>Feature Highlights</span>
       </h4>
       <div class="flex flex-wrap gap-4">
@@ -800,17 +833,19 @@ function openModal(index) {
       </div>
     </div>
 
+    <div class="ornamental-divider mb-12"></div>
+
     <div class="mb-12">
-      <h4 class="text-2xl font-bold mb-6 text-gray-800 flex items-center space-x-3">
-        <span class="w-3 h-3 bg-green-500 rounded-full"></span>
+      <h4 class="text-2xl font-bold mb-6 classic-header classic-text flex items-center space-x-3">
+        <span class="w-3 h-3 bg-amber-600 rounded-full"></span>
         <span>Preview Gallery</span>
       </h4>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
         ${t.screenshots.map((img, idx) => `
-          <div class="relative group overflow-hidden rounded-3xl shadow-2xl hover:shadow-3xl transition-all duration-500">
+          <div class="relative group overflow-hidden rounded-lg shadow-2xl hover:shadow-3xl transition-all duration-500 classic-border">
             <img src="${img}" class="w-full h-64 object-cover transition-transform duration-700 group-hover:scale-110" />
             <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            <div class="absolute bottom-6 left-6 text-white font-bold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+            <div class="absolute bottom-6 left-6 text-white font-bold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-500 classic-header">
               Preview ${idx + 1}
             </div>
           </div>
@@ -818,8 +853,10 @@ function openModal(index) {
       </div>
     </div>
 
-    <div class="flex flex-col sm:flex-row gap-6 pt-10 border-t-2 border-gray-200">
-      <button onclick="previewTheme(${index})" class="flex-1 bg-gradient-to-r from-blue-500 to-cyan-600 hover:from-blue-600 hover:to-cyan-700 text-white py-5 px-8 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-4 shadow-xl hover:shadow-2xl">
+    <div class="ornamental-divider pt-10 mb-10"></div>
+
+    <div class="flex flex-col sm:flex-row gap-6">
+      <button onclick="previewTheme(${index})" class="flex-1 classic-button py-5 px-8 rounded-lg font-bold text-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-4 shadow-xl hover:shadow-2xl">
         <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
           <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
           <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
@@ -828,20 +865,30 @@ function openModal(index) {
       </button>
       
       ${canAccess
-        ? `<button onclick="applyTheme(${index})" class="flex-1 premium-gradient hover:shadow-2xl text-white py-5 px-8 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-4 shadow-xl">
+        ? `<button onclick="applyTheme(${index})" class="flex-1 classic-gradient text-white py-5 px-8 rounded-lg font-bold text-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-4 shadow-xl hover:shadow-2xl">
              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
              </svg>
              <span>Apply Theme</span>
            </button>`
-        : `<button onclick="showUpgradeModal()" class="flex-1 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white py-5 px-8 rounded-2xl font-bold text-lg transition-all duration-300 transform hover:scale-105 flex items-center justify-center space-x-4 shadow-xl hover:shadow-2xl">
+        : `<button onclick="showUpgradeModal()" class="flex-1 classic-button disabled py-5 px-8 rounded-lg font-bold text-lg flex items-center justify-center space-x-4 shadow-xl">
              <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
              </svg>
-             <span>Upgrade to Apply</span>
+             <span>Upgrade Required</span>
            </button>`
       }
     </div>
+
+    ${!canAccess ? `
+      <div class="mt-8 p-6 classic-card rounded-lg bg-amber-50 border-amber-300">
+        <div class="text-center">
+          <h5 class="text-lg font-bold classic-header classic-text mb-3">Upgrade Your Plan</h5>
+          <p class="text-gray-700 mb-4">This premium theme requires a ${t.tier} plan or higher to apply to your store.</p>
+          <p class="text-sm text-gray-600">You can still preview this theme, but you'll need to upgrade to use it.</p>
+        </div>
+      </div>
+    ` : ''}
   `;
 
   themeModal.classList.remove("hidden");
@@ -855,7 +902,9 @@ function closeModal() {
 
 function previewTheme(index) {
   const selectedTheme = themes[index].theme;
-  localStorage.setItem("previewTheme", JSON.stringify(selectedTheme));
+  // Store the preview theme
+  const previewData = JSON.stringify(selectedTheme);
+  sessionStorage.setItem("previewTheme", previewData);
   window.open("../preview?seller=" + sellerParam, "_blank");
 }
 
@@ -864,14 +913,11 @@ async function applyTheme(index) {
   const layoutName = selectedTheme.layout;
 
   try {
-    // Fetch the selected layout HTML directly
-    const layoutRes = await fetch(`${API}/layouts/${layoutName}`, {
-      headers: {
-        'ngrok-skip-browser-warning': 'true'
-      }
-    });
+    // Fetch the selected layout HTML (JSON response with { data: { html } })
+    const layoutRes = await fetch(`${API}/layouts/${layoutName}`);
     if (!layoutRes.ok) throw new Error("Failed to fetch layout");
-    const layoutHTML = await layoutRes.text();
+    const layoutJson = await layoutRes.json();
+    const layoutHTML = layoutJson?.data?.html || "";
 
     if (!layoutHTML) throw new Error("Empty layout HTML");
 
@@ -895,15 +941,15 @@ async function applyTheme(index) {
       const successDiv = document.createElement("div");
       successDiv.className = "fixed inset-0 z-[60] flex items-center justify-center modal-backdrop";
       successDiv.innerHTML = `
-        <div class="glass-effect rounded-3xl p-12 text-center max-w-lg mx-4 transform scale-0 transition-all duration-500 shadow-2xl">
+        <div class="classic-card rounded-lg p-12 text-center max-w-lg mx-4 transform scale-0 transition-all duration-500 shadow-2xl">
           <div class="text-7xl mb-8">🎉</div>
-          <h3 class="text-4xl font-bold gradient-text mb-6">Theme Applied Successfully!</h3>
-          <p class="text-gray-600 mb-10 leading-relaxed text-lg">Your store has been transformed with this beautiful new theme. Ready to see the magic?</p>
+          <h3 class="text-4xl font-bold classic-header classic-text mb-6">Theme Applied Successfully!</h3>
+          <p class="text-gray-600 mb-10 leading-relaxed text-lg">Your distinguished store has been transformed with this exquisite theme.</p>
           <div class="flex flex-col gap-5">
-            <button onclick="this.parentElement.parentElement.parentElement.remove(); window.location.href='../shop?seller=${encodeURIComponent(sellerParam)}'" class="premium-gradient text-white px-10 py-5 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+            <button onclick="this.parentElement.parentElement.parentElement.remove(); window.location.href='../shop?seller=${encodeURIComponent(sellerParam)}'" class="classic-gradient text-white px-10 py-5 rounded-lg font-bold text-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
               View Your Store
             </button>
-            <button onclick="this.parentElement.parentElement.parentElement.remove(); window.location.href='../dashboard?seller=${encodeURIComponent(sellerParam)}'" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-10 py-5 rounded-2xl font-bold text-lg transition-all duration-300">
+            <button onclick="this.parentElement.parentElement.parentElement.remove(); window.location.href='../dashboard?seller=${encodeURIComponent(sellerParam)}'" class="classic-button px-10 py-5 rounded-lg font-bold text-lg transition-all duration-300">
               Return to Dashboard
             </button>
           </div>
@@ -924,16 +970,16 @@ function showUpgradeModal() {
   const upgradeDiv = document.createElement("div");
   upgradeDiv.className = "fixed inset-0 z-[60] flex items-center justify-center modal-backdrop";
   upgradeDiv.innerHTML = `
-    <div class="glass-effect rounded-3xl p-12 text-center max-w-lg mx-4 transform scale-0 transition-all duration-500 shadow-2xl">
-      <div class="text-6xl mb-8">🚀</div>
-      <h3 class="text-4xl font-bold gradient-text mb-6">Upgrade Required</h3>
-      <p class="text-gray-600 mb-10 leading-relaxed text-lg">Unlock premium themes and advanced features to take your store to the next level.</p>
+    <div class="classic-card rounded-lg p-12 text-center max-w-lg mx-4 transform scale-0 transition-all duration-500 shadow-2xl">
+      <div class="text-6xl mb-8">🔒</div>
+      <h3 class="text-4xl font-bold classic-header classic-text mb-6">Upgrade Required</h3>
+      <p class="text-gray-600 mb-10 leading-relaxed text-lg">Unlock premium themes and distinguished features to elevate your store's presence.</p>
       <div class="flex flex-col gap-5">
-        <button class="premium-gradient text-white px-10 py-5 rounded-2xl font-bold text-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
+        <button onclick="window.open('../dashboard?seller=${encodeURIComponent(sellerParam)}', '_self')" class="classic-gradient text-white px-10 py-5 rounded-lg font-bold text-lg hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
           Upgrade Now
         </button>
-        <button onclick="this.parentElement.parentElement.parentElement.remove()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-10 py-5 rounded-2xl font-bold text-lg transition-all duration-300">
-          Maybe Later
+        <button onclick="this.parentElement.parentElement.parentElement.remove()" class="classic-button px-10 py-5 rounded-lg font-bold text-lg transition-all duration-300">
+          Continue Browsing
         </button>
       </div>
     </div>
@@ -952,30 +998,24 @@ function updateFilterButtons() {
   // Update tier filter buttons
   document.querySelectorAll(".tier-filter-btn").forEach(btn => {
     const isActive = btn.dataset.tier === currentFilters.tier;
-    btn.className = `tier-filter-btn filter-chip px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
-      isActive 
-        ? 'bg-gradient-to-r from-indigo-500 to-purple-600 text-white shadow-xl transform scale-105' 
-        : 'bg-white text-gray-700 border-2 border-gray-200 hover:border-indigo-300 hover:shadow-lg'
+    btn.className = `tier-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${
+      isActive ? 'active' : ''
     }`;
   });
 
   // Update feature filter buttons
   document.querySelectorAll(".feature-filter-btn").forEach(btn => {
     const isActive = btn.dataset.feature === currentFilters.feature;
-    btn.className = `feature-filter-btn filter-chip px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
-      isActive 
-        ? 'bg-gradient-to-r from-blue-500 to-cyan-600 text-white shadow-xl transform scale-105' 
-        : 'bg-white text-gray-700 border border-gray-200 hover:border-blue-300 hover:shadow-lg'
+    btn.className = `feature-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${
+      isActive ? 'active' : ''
     }`;
   });
 
   // Update best for filter buttons
   document.querySelectorAll(".bestfor-filter-btn").forEach(btn => {
     const isActive = btn.dataset.bestfor === currentFilters.bestfor;
-    btn.className = `bestfor-filter-btn filter-chip px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
-      isActive 
-        ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-xl transform scale-105' 
-        : 'bg-white text-gray-700 border border-gray-200 hover:border-emerald-300 hover:shadow-lg'
+    btn.className = `bestfor-filter-btn filter-chip px-6 py-3 rounded-lg font-semibold transition-all duration-300 ${
+      isActive ? 'active' : ''
     }`;
   });
 }
@@ -1033,47 +1073,21 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-// Upgrade modal functionality
-function showUpgradeModal() {
-  const tierNames = {
-    "free": "Basic or Pro",
-    "basic": "Pro",
-    "pro": "You have access to all themes!"
-  };
-  
-  const upgradeMessage = currentUserPlan === "pro" 
-    ? "You already have access to all themes!" 
-    : `Upgrade to ${tierNames[currentUserPlan]} to unlock premium themes`;
-  
-  if (currentUserPlan === "pro") {
-    alert("🎉 You already have access to all themes!");
-    return;
-  }
-  
-  const upgradeConfirm = confirm(`🔓 ${upgradeMessage}\n\nWould you like to go to the seller registration page to upgrade your plan?`);
-  
-  if (upgradeConfirm) {
-    // Redirect to seller page for plan upgrade
-    window.open("../seller", "_blank");
-  }
-}
-
-// Enhanced plan-based theme access messaging
-function getRequiredPlanMessage(themeTier) {
-  const planMessages = {
-    "basic": "Upgrade to Basic plan or higher to unlock this theme",
-    "pro": "Upgrade to Pro plan to unlock this premium theme"
-  };
-  
-  return planMessages[themeTier] || "This theme requires a higher plan";
-}
-
+// Initialize the application
 (async function init() {
   await getUserPlan();
   updateFilterButtons();
   renderThemes();
 })();
 </script>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6JSC6HT7EC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
 
+  gtag('config', 'G-6JSC6HT7EC');
+</script>
 </body>
 </html>
