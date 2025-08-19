@@ -885,12 +885,24 @@ async function applyTheme(index) {
       </div>`;
     document.body.appendChild(loader);
 
-    // Fetch the selected layout HTML directly
+    // Fetch the selected layout HTML directly (handle JSON or raw HTML)
     const layoutRes = await fetch(`${API}/layouts/${layoutName}`, {
       headers: { 'ngrok-skip-browser-warning': 'true' }
     });
     if (!layoutRes.ok) throw new Error("Failed to fetch layout");
-    const layoutHTML = await layoutRes.text();
+
+    let layoutHTML = '';
+    try {
+      const json = await layoutRes.json();
+      layoutHTML = (json && json.data && json.data.html) ? json.data.html : '';
+    } catch (_) {
+      // If not JSON, try text
+      layoutHTML = await layoutRes.text();
+      // If the text is a quoted JSON string, decode it
+      if (layoutHTML && layoutHTML.trim().startsWith('"') && layoutHTML.trim().endsWith('"')) {
+        try { layoutHTML = JSON.parse(layoutHTML); } catch (_) {}
+      }
+    }
 
     if (!layoutHTML) throw new Error("Empty layout HTML");
 
