@@ -5212,6 +5212,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Add event listener for logout button (add this in your DOMContentLoaded section)
 document.getElementById("logoutBtn").addEventListener("click", logout);
+function closeDeleteConfirmPopup() {
+  document.getElementById("deleteConfirmPopup").classList.add("hidden");
+  productToDelete = null;
+}
 
 </script>
 
