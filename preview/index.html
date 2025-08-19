@@ -248,12 +248,12 @@
         <div class="loader-dot"></div>
         <div class="loader-dot"></div>
       </div>
-      <h2 class="text-2xl font-light text-slate-600 mb-2">Loading Preview</h2>
-      <p class="text-slate-400 text-sm mb-4">Preparing theme preview</p>
+      <h2 class="text-2xl font-light text-slate-600 mb-2" id="previewTitle">Loading Preview</h2>
+      <p class="text-slate-400 text-sm mb-4" id="previewSubtitle">Preparing theme preview</p>
       <div class="progress-bar">
         <div class="progress-fill"></div>
       </div>
-      <p class="text-xs text-slate-300 mt-4">Applying your custom theme settings</p>
+      <p class="text-xs text-slate-300 mt-4" id="previewDetails">Applying your custom theme settings</p>
     </div>
   </div>
 
@@ -264,11 +264,30 @@
     const urlParams = new URLSearchParams(location.search);
     const actualSeller = urlParams.get("seller");
     const urlLayout = (urlParams.get("layout") || "").toLowerCase();
-    const stored = JSON.parse(localStorage.getItem("previewTheme") || "{}");
+    
+    // Fix: Read from sessionStorage instead of localStorage to match themes/index.html
+    const stored = JSON.parse(sessionStorage.getItem("previewTheme") || "{}");
     const theme = urlLayout ? { ...stored, layout: urlLayout } : stored;
 
     // Add preview mode class to body
     document.body.classList.add('preview-mode');
+
+    // Update loader text based on theme
+    function updatePreviewLoader() {
+      const titleEl = document.getElementById('previewTitle');
+      const subtitleEl = document.getElementById('previewSubtitle');
+      const detailsEl = document.getElementById('previewDetails');
+      
+      if (theme && theme.layout) {
+        const themeName = theme.layout.charAt(0).toUpperCase() + theme.layout.slice(1);
+        titleEl.textContent = `Loading ${themeName} Preview`;
+        subtitleEl.textContent = `Preparing ${themeName.toLowerCase()} theme experience`;
+        detailsEl.textContent = `Crafting your ${themeName.toLowerCase()} storefront preview`;
+      }
+    }
+    
+    // Update the loader immediately
+    updatePreviewLoader();
 
     // Compatibility wrapper: normalize /find responses to arrays for legacy layout scripts
     // Also normalize product image URLs to absolute paths so layouts show images reliably

@@ -183,9 +183,175 @@
       padding: 0 15px;
       font-size: 20px;
     }
+
+    /* Theme Applying Loader */
+    .theme-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(44, 44, 44, 0.95) 0%, rgba(139, 115, 85, 0.95) 100%);
+      backdrop-filter: blur(20px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.8s ease, visibility 0.8s ease;
+    }
+
+    .theme-loader.hidden {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .theme-loader-content {
+      text-align: center;
+      color: white;
+      max-width: 500px;
+      padding: 60px 40px;
+      background: rgba(248, 246, 240, 0.1);
+      border: 2px solid rgba(212, 175, 55, 0.3);
+      border-radius: 30px;
+      backdrop-filter: blur(30px);
+    }
+
+    .theme-applying-animation {
+      width: 120px;
+      height: 120px;
+      margin: 0 auto 30px;
+      position: relative;
+    }
+
+    .theme-brush {
+      width: 100%;
+      height: 100%;
+      border: 4px solid rgba(212, 175, 55, 0.3);
+      border-radius: 50%;
+      position: relative;
+      animation: brushRotate 3s linear infinite;
+    }
+
+    .theme-brush::before {
+      content: '';
+      position: absolute;
+      top: -4px;
+      left: 50%;
+      width: 6px;
+      height: 40px;
+      background: linear-gradient(180deg, #d4af37 0%, #b8941f 100%);
+      border-radius: 3px;
+      transform-origin: bottom;
+      animation: brushStroke 3s linear infinite;
+    }
+
+    .theme-brush::after {
+      content: '🎨';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 40px;
+      animation: themeFloat 2s ease-in-out infinite;
+    }
+
+    @keyframes brushRotate {
+      0% { transform: rotate(0deg); border-color: rgba(212, 175, 55, 0.3); }
+      25% { border-color: rgba(212, 175, 55, 0.6); }
+      50% { transform: rotate(180deg); border-color: rgba(212, 175, 55, 0.8); }
+      75% { border-color: rgba(212, 175, 55, 0.6); }
+      100% { transform: rotate(360deg); border-color: rgba(212, 175, 55, 0.3); }
+    }
+
+    @keyframes brushStroke {
+      0%, 100% { transform: translateX(-50%) rotate(0deg) scale(1); }
+      25% { transform: translateX(-50%) rotate(-10deg) scale(1.1); }
+      50% { transform: translateX(-50%) rotate(10deg) scale(0.9); }
+      75% { transform: translateX(-50%) rotate(-5deg) scale(1.05); }
+    }
+
+    @keyframes themeFloat {
+      0%, 100% { transform: translate(-50%, -50%) scale(1); }
+      50% { transform: translate(-50%, -50%) scale(1.1); }
+    }
+
+    .theme-loader-dots {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin: 25px 0;
+    }
+
+    .theme-loader-dot {
+      width: 12px;
+      height: 12px;
+      background: #d4af37;
+      border-radius: 50%;
+      animation: themeLoaderDot 1.5s ease-in-out infinite;
+    }
+
+    .theme-loader-dot:nth-child(2) {
+      animation-delay: 0.3s;
+    }
+
+    .theme-loader-dot:nth-child(3) {
+      animation-delay: 0.6s;
+    }
+
+    @keyframes themeLoaderDot {
+      0%, 80%, 100% { transform: scale(0.8); opacity: 0.6; }
+      40% { transform: scale(1.2); opacity: 1; }
+    }
+
+    .theme-progress-bar {
+      width: 280px;
+      height: 3px;
+      background: rgba(212, 175, 55, 0.2);
+      border-radius: 2px;
+      overflow: hidden;
+      margin: 30px auto;
+      position: relative;
+    }
+
+    .theme-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #d4af37, #b8941f, #d4af37);
+      border-radius: 2px;
+      width: 0%;
+      animation: themeProgressFill 3s ease-in-out;
+    }
+
+    @keyframes themeProgressFill {
+      0% { width: 0%; }
+      20% { width: 25%; }
+      40% { width: 50%; }
+      60% { width: 75%; }
+      80% { width: 90%; }
+      100% { width: 100%; }
+    }
   </style>
 </head>
 <body>
+
+<!-- Theme Applying Loader -->
+<div id="themeLoader" class="theme-loader hidden">
+  <div class="theme-loader-content">
+    <div class="theme-applying-animation">
+      <div class="theme-brush"></div>
+    </div>
+    <h2 class="text-3xl font-bold classic-header mb-3">Applying Theme</h2>
+    <p class="text-lg opacity-90 mb-6">Transforming your store with exquisite design</p>
+    <div class="theme-loader-dots">
+      <div class="theme-loader-dot"></div>
+      <div class="theme-loader-dot"></div>
+      <div class="theme-loader-dot"></div>
+    </div>
+    <div class="theme-progress-bar">
+      <div class="theme-progress-fill"></div>
+    </div>
+    <p class="text-sm opacity-75 mt-4">Please wait while we craft your perfect storefront</p>
+  </div>
+</div>
 
 <!-- Classic Header -->
 <header class="classic-card">
@@ -912,7 +1078,16 @@ async function applyTheme(index) {
   const selectedTheme = themes[index].theme;
   const layoutName = selectedTheme.layout;
 
+  // Show the theme loader
+  const themeLoader = document.getElementById('themeLoader');
+  themeLoader.classList.remove('hidden');
+  document.body.style.overflow = 'hidden';
+
   try {
+    // Add a minimum loading time for better UX
+    const startTime = Date.now();
+    const minLoadTime = 3000; // 3 seconds
+
     // Fetch the selected layout HTML (JSON response with { data: { html } })
     const layoutRes = await fetch(`${API}/layouts/${layoutName}`);
     if (!layoutRes.ok) throw new Error("Failed to fetch layout");
@@ -937,6 +1112,17 @@ async function applyTheme(index) {
       })
     });
 
+    // Ensure minimum loading time for better visual experience
+    const elapsed = Date.now() - startTime;
+    const remainingTime = Math.max(0, minLoadTime - elapsed);
+    if (remainingTime > 0) {
+      await new Promise(resolve => setTimeout(resolve, remainingTime));
+    }
+
+    // Hide the theme loader
+    themeLoader.classList.add('hidden');
+    document.body.style.overflow = 'auto';
+
     if (updateRes.ok) {
       const successDiv = document.createElement("div");
       successDiv.className = "fixed inset-0 z-[60] flex items-center justify-center modal-backdrop";
@@ -958,9 +1144,15 @@ async function applyTheme(index) {
       document.body.appendChild(successDiv);
       setTimeout(() => successDiv.firstElementChild.style.transform = "scale(1)", 100);
     } else {
+      // Hide loader on failure
+      themeLoader.classList.add('hidden');
+      document.body.style.overflow = 'auto';
       alert("Failed to apply theme. Please try again.");
     }
   } catch (err) {
+    // Hide loader on error
+    themeLoader.classList.add('hidden');
+    document.body.style.overflow = 'auto';
     console.error("Error applying theme:", err);
     alert("Something went wrong. Please try again.");
   }
