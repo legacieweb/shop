@@ -271,8 +271,9 @@
     // Also normalize product image URLs to absolute paths so layouts show images reliably
     (function patchFindResponseShape(){
       const origFetch = window.fetch.bind(window);
+      const PREVIEW_SELLER = 'iyonicorp';
 
-      function normalizeUploadUrl(img){
+      function normalizeImageUrl(img){
         if (!img || typeof img !== 'string') return '';
         let val = img.trim().replace(/\\\\/g, '/').replace(/\\/g, '/');
         // Absolute URLs or data URIs
@@ -301,35 +302,59 @@
       }
 
       window.fetch = async function(...args){
-        const resp = await origFetch(...args);
         try {
-          const req = args[0];
-          const url = typeof req === 'string' ? req : (req && req.url) || '';
-          if (url.includes('/find')) {
-            const origJson = resp.json.bind(resp);
-            resp.json = async () => {
-              let data = await origJson();
-              // Normalize to array if API returned { data: [...] }
-              if (data && typeof data === 'object' && Array.isArray(data.data)) data = data.data;
+          let req = args[0];
+          let options = args[1];
+          let url = typeof req === 'string' ? req : (req && req.url) || '';
 
-              // Fix product image URLs if this is a product query
-              if (Array.isArray(data) && /collection=products/i.test(url)) {
-                data = data.map(p => {
-                  try {
-                    const fixed = { ...p };
-                    fixed.image = normalizeUploadUrl(p.image);
-                    if (Array.isArray(p.gallery)) {
-                      fixed.gallery = p.gallery.map(g => normalizeUploadUrl(g));
-                    }
-                    return fixed;
-                  } catch { return p; }
-                });
+          if (url.includes('/find')) {
+            // Force product queries to use Iyonicorp seller in preview
+            const u = new URL(url, location.origin);
+            const coll = (u.searchParams.get('collection') || '').toLowerCase();
+            if (coll === 'products') {
+              u.searchParams.set('seller', PREVIEW_SELLER);
+              if (typeof req === 'string') {
+                req = u.toString();
+              } else {
+                req = new Request(u.toString(), req);
               }
-              return data;
-            };
+              args[0] = req;
+            }
           }
-        } catch (_) {}
-        return resp;
+
+          const resp = await origFetch(...args);
+
+          // Response normalization
+          try {
+            const finalReq = args[0];
+            const finalUrl = typeof finalReq === 'string' ? finalReq : (finalReq && finalReq.url) || '';
+            if (finalUrl.includes('/find')) {
+              const origJson = resp.json.bind(resp);
+              resp.json = async () => {
+                let data = await origJson();
+                if (data && typeof data === 'object' && Array.isArray(data.data)) data = data.data;
+
+                if (Array.isArray(data) && /collection=products/i.test(finalUrl)) {
+                  data = data.map(p => {
+                    try {
+                      const fixed = { ...p };
+                      fixed.image = normalizeImageUrl(p.image);
+                      if (Array.isArray(p.gallery)) {
+                        fixed.gallery = p.gallery.map(g => normalizeImageUrl(g));
+                      }
+                      return fixed;
+                    } catch { return p; }
+                  });
+                }
+                return data;
+              };
+            }
+          } catch (_) {}
+
+          return resp;
+        } catch (e) {
+          return origFetch(...args);
+        }
       };
     })();
 

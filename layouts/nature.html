@@ -591,7 +591,7 @@
         pageProducts.forEach((p, productIndex) => {
           const imageSrc = resolveImage(p.image);
           const card = document.createElement("a");
-          card.href = `product-detail.html?id=${p.id}`;
+          card.href = `../detail?id=${p.id}`;
           card.className = "nature-product-card block organic-shape";
 
           // Add sustainability badges randomly for demo
@@ -1101,9 +1101,9 @@
     const actualSeller = window.__SHOP_DATA__?.actualSeller || user.username;
 
     if (user.role && user.role.startsWith("seller")) {
-      dashboard.href = `dashboard.html?seller=${encodeURIComponent(actualSeller)}`;
+      dashboard.href = `../dashboard?seller=${encodeURIComponent(actualSeller)}`;
     } else {
-      dashboard.href = `buyer-dashboard.html?seller=${encodeURIComponent(actualSeller)}`;
+      dashboard.href = `../buyer?seller=${encodeURIComponent(actualSeller)}`;
     }
     dashboard.className = "px-4 py-2 rounded-lg bg-emerald-800 hover:bg-emerald-900 text-white transition-all duration-300 nature-font font-semibold";
     dashboard.textContent = "Dashboard";
@@ -1120,12 +1120,12 @@
     container.appendChild(logout);
   } else {
     const signup = document.createElement("a");
-    signup.href = actualSeller ? `signup.html?seller=${actualSeller}` : "signup.html";
+    signup.href = actualSeller ? `../signup?seller=${actualSeller}` : "../signup";
     signup.className = "px-4 py-2 rounded-lg bg-emerald-800 hover:bg-emerald-900 text-white transition-all duration-300 nature-font font-semibold";
     signup.textContent = "Sign Up";
 
     const login = document.createElement("a");
-    login.href = actualSeller ? `login.html?seller=${actualSeller}` : "login.html";
+    login.href = actualSeller ? `../login?seller=${actualSeller}` : "../login";
     login.className = "px-4 py-2 rounded-lg border-2 border-emerald-800 text-emerald-800 hover:bg-emerald-100 transition-all duration-300 nature-font font-semibold";
     login.textContent = "Log In";
 
