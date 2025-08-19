@@ -978,25 +978,6 @@
         <h3 class="text-lg font-semibold text-gray-700">📋 Your Products</h3>
         <button id="addProductBtn" class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 text-sm">+ Add Product</button>
       </div>
-
-      <!-- Search Products -->
-      <div class="mb-6">
-        <div class="relative max-w-md">
-          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </div>
-          <input
-            type="text"
-            id="productSearchInput"
-            placeholder="Search products by name, category, or tags..."
-            class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
-          />
-        </div>
-        <div id="searchResultsCount" class="mt-2 text-sm text-gray-600 hidden"></div>
-      </div>
-
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="productList"></div>
     </section>
 
@@ -1714,18 +1695,17 @@ function setupSidebarHandlers() {
     const analyticsUpgradePrompt = document.getElementById("analyticsUpgradePrompt");
     const analyticsPreloader = document.getElementById("analyticsPreloader");
     
-    // Show content immediately (generic data may be visible)
-    analyticsContent.classList.remove("hidden");
+    // Show preloader first
+    analyticsContent.classList.add("hidden");
     analyticsUpgradePrompt.classList.add("hidden");
-    
-    // Show preloader when loading seller's specific data
     analyticsPreloader.classList.remove("hidden");
     
-    // Load actual seller analytics data
-    loadAnalytics().finally(() => {
-      // Hide preloader after seller data is loaded
+    // Load analytics data with delay for better UX
+    setTimeout(() => {
+      analyticsContent.classList.remove("hidden");
       analyticsPreloader.classList.add("hidden");
-    });
+      loadAnalytics(); // Load analytics data
+    }, 2000); // 2 second delay to show the preloader
   });
   
   // Coupons link handler
@@ -1988,94 +1968,57 @@ function getRequiredPlanForFeature(feature, requiredValue) {
   return "Premium";
 }
 
-// Global variable to store all products for search
-let allProducts = [];
-
 // Load products
 async function loadProducts() {
   try {
     const res = await fetch(`${API}/find?collection=products&seller=${encodeURIComponent(seller)}`);
     const result = await res.json();
-    allProducts = result.data || [];
+    const products = result.data || [];
     
-    displayProducts(allProducts);
+    // Store products globally for delete confirmation
+    allProducts = products;
+    
+    let earnings = 0;
+    const list = document.getElementById("productList");
+    list.innerHTML = "";
+
+    const categoriesSet = new Set();
+
+    products.forEach(p => {
+      earnings += parseFloat(p.price || 0);
+      categoriesSet.add(p.category);
+
+      // ✅ Fix image URL
+      const imgSrc = p.image
+        ? (p.image.startsWith("http") ? p.image : `${API}${p.image}`)
+        : "";
+
+      const card = document.createElement("div");
+      card.className = "bg-white rounded-lg shadow p-4";
+      card.innerHTML = `
+        ${imgSrc ? `<img src="${imgSrc}" class="w-20 h-20 object-cover rounded mb-3 mx-auto" />` : ""}
+        <h4 class="text-lg font-semibold text-indigo-700">${p.name}</h4>
+        <p class="mt-2">
+          ${p.strikeThroughPrice ? `<span class="text-gray-500 line-through">${currentCurrencySymbol}${p.strikeThroughPrice}</span> ` : ""}
+          <span class="text-indigo-900 font-bold">${currentCurrencySymbol}${p.price}</span>
+        </p>
+        <p class="text-xs text-gray-400 mt-1">Category: ${p.category || "N/A"}</p>
+        <p class="text-xs text-gray-400">Tags: ${(p.tags || []).join(", ")}</p>
+        <button data-product='${escapeHTML(JSON.stringify(p))}' class="manage-product-btn mt-3 text-sm text-indigo-600 underline">🛠 Manage Product</button>
+      `;
+      list.appendChild(card);
+    });
+
+    // Update analytics and product dashboard values
+    document.getElementById("earnings").textContent = `$${earnings.toFixed(2)}`;
+    document.getElementById("productCount").textContent = products.length;
+    document.getElementById("categoryCount").textContent = categoriesSet.size;
     
     // Check product limits after loading
     checkProductLimits();
   } catch (err) {
     console.error("Failed to load products", err);
   }
-}
-
-// Display products (used for both initial load and search results)
-function displayProducts(products) {
-  let earnings = 0;
-  const list = document.getElementById("productList");
-  list.innerHTML = "";
-
-  const categoriesSet = new Set();
-
-  products.forEach(p => {
-    earnings += parseFloat(p.price || 0);
-    categoriesSet.add(p.category);
-
-    // ✅ Fix image URL
-    const imgSrc = p.image
-      ? (p.image.startsWith("http") ? p.image : `${API}${p.image}`)
-      : "";
-
-    const card = document.createElement("div");
-    card.className = "bg-white rounded-lg shadow p-4 product-card";
-    card.innerHTML = `
-      ${imgSrc ? `<img src="${imgSrc}" class="w-full object-contain rounded mb-3" />` : ""}
-      <h4 class="text-lg font-semibold text-indigo-700">${p.name}</h4>
-      <p class="mt-2">
-        ${p.strikeThroughPrice ? `<span class="text-gray-500 line-through">${currentCurrencySymbol}${p.strikeThroughPrice}</span> ` : ""}
-        <span class="text-indigo-900 font-bold">${currentCurrencySymbol}${p.price}</span>
-      </p>
-      <p class="text-xs text-gray-400 mt-1">Category: ${p.category || "N/A"}</p>
-      <p class="text-xs text-gray-400">Tags: ${(p.tags || []).join(", ")}</p>
-      <button data-product='${escapeHTML(JSON.stringify(p))}' class="manage-product-btn mt-3 text-sm text-indigo-600 underline">🛠 Manage Product</button>
-    `;
-    list.appendChild(card);
-  });
-
-  // Update analytics and product dashboard values
-  document.getElementById("earnings").textContent = `$${earnings.toFixed(2)}`;
-  document.getElementById("productCount").textContent = allProducts.length; // Show total count
-  document.getElementById("categoryCount").textContent = new Set(allProducts.map(p => p.category)).size; // Show total categories
-  
-  // Update search results count
-  const searchResultsCount = document.getElementById("searchResultsCount");
-  if (products.length !== allProducts.length) {
-    searchResultsCount.classList.remove("hidden");
-    searchResultsCount.textContent = `Showing ${products.length} of ${allProducts.length} products`;
-  } else {
-    searchResultsCount.classList.add("hidden");
-  }
-}
-
-// Search functionality
-function searchProducts(query) {
-  if (!query.trim()) {
-    displayProducts(allProducts);
-    return;
-  }
-  
-  const searchTerm = query.toLowerCase();
-  const filteredProducts = allProducts.filter(product => {
-    const name = (product.name || "").toLowerCase();
-    const category = (product.category || "").toLowerCase();
-    const tags = (product.tags || []).join(" ").toLowerCase();
-    const description = (product.description || "").toLowerCase();
-    
-    return name.includes(searchTerm) || 
-           category.includes(searchTerm) || 
-           tags.includes(searchTerm) ||
-           description.includes(searchTerm);
-  });
-  
-  displayProducts(filteredProducts);
 }
 loadProducts();
 
@@ -2517,6 +2460,7 @@ window.removeGalleryImage = function(url) {
 
 // Global variable for delete confirmation
 let productToDelete = null;
+let allProducts = [];
 
 window.deleteProduct = function(id) {
   // Find the product to show its name in the confirmation
@@ -3231,11 +3175,6 @@ document.getElementById('productCategory').addEventListener('change', onCategory
 document.getElementById('closeProductModalBtn').addEventListener('click', closeModal);
 document.getElementById('saveProductBtn').addEventListener('click', saveProduct);
 
-// Product search event listener
-document.getElementById('productSearchInput').addEventListener('input', function(e) {
-  searchProducts(e.target.value);
-});
-
 // Coupon Event Listeners
 document.getElementById('addCouponBtn').addEventListener('click', () => {
   document.getElementById('couponModal').classList.remove('hidden');
@@ -3364,13 +3303,13 @@ const GATEWAY_FIELDS = {
       label: "Paystack Public Key (ShopRight)",
       key: "paystackPublicKey",
       readonly: true,
-      value: "••••••••••••••••••••••••••••••••"
+      value: "pk_test_232531a5c927ef2cc67ed1b85af3f26e3b8ed2f2"
     },
     {
       label: "Paystack Secret Key (ShopRight)",
       key: "paystackSecretKey",
       readonly: true,
-      value: "••••••••••••••••••••••••••••••••"
+      value: "sk_test_a832c30ce0a082daae0ba4d91032098f0b7fc9c6"
     }
   ],
 
@@ -3903,8 +3842,40 @@ function closeSuccessPopup() {
   document.getElementById('successPopup').classList.add('hidden');
 }
 
-// Add event listener for closing success popup
-document.getElementById('closeSuccessPopup').addEventListener('click', closeSuccessPopup);
+// Utility function to show success popup
+function showSuccessPopup(title, message) {
+  const popup = document.getElementById('successPopup');
+  const titleEl = document.getElementById('successPopupTitle');
+  const messageEl = document.getElementById('successPopupMessage');
+  
+  titleEl.textContent = title;
+  messageEl.textContent = message;
+  popup.classList.remove('hidden');
+}
+
+// Utility function to set button loading state
+function setButtonLoading(buttonId, isLoading) {
+  const button = document.getElementById(buttonId);
+  if (!button) return;
+  
+  const btnText = button.querySelector('.btn-text');
+  const btnLoading = button.querySelector('.btn-loading');
+  
+  if (btnText && btnLoading) {
+    if (isLoading) {
+      btnText.classList.add('hidden');
+      btnLoading.classList.remove('hidden');
+      button.disabled = true;
+    } else {
+      btnText.classList.remove('hidden');
+      btnLoading.classList.add('hidden');
+      button.disabled = false;
+    }
+  } else {
+    // Fallback for buttons without loading spans
+    button.disabled = isLoading;
+  }
+}
 
 // Logout functions
 function showLogoutConfirm() {
@@ -3946,14 +3917,42 @@ async function confirmLogout() {
   }, 2000); // 2 second delay
 }
 
-// Delete confirmation event listeners
-document.getElementById('cancelDeleteBtn').addEventListener('click', closeDeleteConfirmPopup);
-document.getElementById('confirmDeleteBtn').addEventListener('click', confirmDeleteProduct);
+// Safe event listener attachment
+function attachEventListeners() {
+  // Success popup
+  const closeSuccessBtn = document.getElementById('closeSuccessPopup');
+  if (closeSuccessBtn) {
+    closeSuccessBtn.addEventListener('click', closeSuccessPopup);
+  }
+  
+  // Delete confirmation popup
+  const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+  const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+  if (cancelDeleteBtn) {
+    cancelDeleteBtn.addEventListener('click', closeDeleteConfirmPopup);
+  }
+  if (confirmDeleteBtn) {
+    confirmDeleteBtn.addEventListener('click', confirmDeleteProduct);
+  }
+  
+  // Logout functionality
+  const logoutBtn = document.getElementById('logoutBtn');
+  const cancelLogoutBtn = document.getElementById('cancelLogoutBtn');
+  const confirmLogoutBtn = document.getElementById('confirmLogoutBtn');
+  
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', showLogoutConfirm);
+  }
+  if (cancelLogoutBtn) {
+    cancelLogoutBtn.addEventListener('click', cancelLogout);
+  }
+  if (confirmLogoutBtn) {
+    confirmLogoutBtn.addEventListener('click', confirmLogout);
+  }
+}
 
-// Logout event listeners
-document.getElementById('logoutBtn').addEventListener('click', showLogoutConfirm);
-document.getElementById('cancelLogoutBtn').addEventListener('click', cancelLogout);
-document.getElementById('confirmLogoutBtn').addEventListener('click', confirmLogout);
+// Call the function to attach listeners
+attachEventListeners();
 
 function saveStoreSettings() {
   // Set loading state
@@ -4770,7 +4769,7 @@ async function loadAnalytics() {
         }
       }
     });
-    regionChart?.destroy();
+       regionChart?.destroy();
     
     if (data.salesByRegion && data.salesByRegion.length > 0) {
       // Comprehensive state data for all major countries
@@ -5212,10 +5211,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Add event listener for logout button (add this in your DOMContentLoaded section)
 document.getElementById("logoutBtn").addEventListener("click", logout);
-function closeDeleteConfirmPopup() {
-  document.getElementById("deleteConfirmPopup").classList.add("hidden");
-  productToDelete = null;
-}
 
 </script>
 
