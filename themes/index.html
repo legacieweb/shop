@@ -856,8 +856,7 @@ function closeModal() {
 function previewTheme(index) {
   const selectedTheme = themes[index].theme;
   localStorage.setItem("previewTheme", JSON.stringify(selectedTheme));
-  const url = `../preview?seller=${encodeURIComponent(sellerParam)}&layout=${encodeURIComponent(selectedTheme.layout)}&nonce=${Date.now()}`;
-  window.open(url, "_blank");
+  window.open("../preview?seller=" + sellerParam, "_blank");
 }
 
 async function applyTheme(index) {
@@ -865,44 +864,14 @@ async function applyTheme(index) {
   const layoutName = selectedTheme.layout;
 
   try {
-    // Guard: prevent double-clicks and show preloader overlay
-    const applyBtn = document.querySelector(`button[onclick="applyTheme(${index})"]`);
-    if (applyBtn?.dataset.loading === '1') return;
-    if (applyBtn) {
-      applyBtn.dataset.loading = '1';
-      applyBtn.disabled = true;
-      applyBtn.classList.add('opacity-70','cursor-not-allowed');
-    }
-
-    const loader = document.createElement('div');
-    loader.id = 'applyThemeLoader';
-    loader.className = 'fixed inset-0 z-[70] flex items-center justify-center modal-backdrop';
-    loader.innerHTML = `
-      <div class="glass-effect rounded-3xl p-10 sm:p-12 text-center max-w-md mx-4 shadow-2xl">
-        <div class="w-16 h-16 mx-auto mb-6 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
-        <h3 class="text-2xl font-semibold text-gray-800 mb-2">Applying Theme…</h3>
-        <p class="text-gray-600 text-sm">Please wait while we update your store layout</p>
-      </div>`;
-    document.body.appendChild(loader);
-
-    // Fetch the selected layout HTML directly (handle JSON or raw HTML)
+    // Fetch the selected layout HTML directly
     const layoutRes = await fetch(`${API}/layouts/${layoutName}`, {
-      headers: { 'ngrok-skip-browser-warning': 'true' }
+      headers: {
+        'ngrok-skip-browser-warning': 'true'
+      }
     });
     if (!layoutRes.ok) throw new Error("Failed to fetch layout");
-
-    let layoutHTML = '';
-    try {
-      const json = await layoutRes.json();
-      layoutHTML = (json && json.data && json.data.html) ? json.data.html : '';
-    } catch (_) {
-      // If not JSON, try text
-      layoutHTML = await layoutRes.text();
-      // If the text is a quoted JSON string, decode it
-      if (layoutHTML && layoutHTML.trim().startsWith('"') && layoutHTML.trim().endsWith('"')) {
-        try { layoutHTML = JSON.parse(layoutHTML); } catch (_) {}
-      }
-    }
+    const layoutHTML = await layoutRes.text();
 
     if (!layoutHTML) throw new Error("Empty layout HTML");
 
@@ -921,9 +890,6 @@ async function applyTheme(index) {
         }
       })
     });
-
-    // Remove loader
-    document.getElementById('applyThemeLoader')?.remove();
 
     if (updateRes.ok) {
       const successDiv = document.createElement("div");
@@ -951,14 +917,6 @@ async function applyTheme(index) {
   } catch (err) {
     console.error("Error applying theme:", err);
     alert("Something went wrong. Please try again.");
-  } finally {
-    const btn = document.querySelector(`button[onclick=\"applyTheme(${index})\"]`);
-    if (btn) {
-      btn.dataset.loading = '0';
-      btn.disabled = false;
-      btn.classList.remove('opacity-70','cursor-not-allowed');
-    }
-    document.getElementById('applyThemeLoader')?.remove();
   }
 }
 
