@@ -451,17 +451,49 @@
           return;
         }
 
-        // Fetch layout HTML
-        const layoutRes = await fetch(`${API}/layouts/${theme.layout}`);
-        if (!layoutRes.ok) {
-          throw new Error(`Failed to fetch layout: ${layoutRes.status}`);
+        // Fetch layout HTML with graceful fallbacks
+        let layoutHTML = "";
+        try {
+          const layoutRes = await fetch(`${API}/layouts/${theme.layout}`, {
+            headers: { 'ngrok-skip-browser-warning': 'true' }
+          });
+          if (layoutRes.ok) {
+            const layoutJSON = await layoutRes.json();
+            layoutHTML = layoutJSON?.data?.html || "";
+          } else {
+            console.warn("Remote layout fetch failed status:", layoutRes.status);
+          }
+        } catch (e) {
+          console.warn("Remote layout fetch failed, trying local fallback:", e);
         }
-        
-        const layoutJSON = await layoutRes.json();
-        const layoutHTML = layoutJSON?.data?.html || "";
+
+        // Fallback 1: try local static file when remote is blocked by CORS
+        if (!layoutHTML) {
+          const map = {
+            classic: '../layouts/classic.html',
+            minimalist: '../layouts/minimalist.html',
+            modern: '../layouts/modern.html',
+            vintage: '../layouts/vintage.html',
+            nature: '../layouts/nature.html',
+            cyber: '../layouts/cyber.html',
+            elegant: '../layouts/elegant.html',
+            freestyle: '../layouts/freestyle.html'
+          };
+          const localUrl = map[(theme.layout || '').toLowerCase()];
+          if (localUrl) {
+            try {
+              const res = await fetch(localUrl, { mode: 'cors' });
+              if (res.ok) {
+                layoutHTML = await res.text();
+              }
+            } catch (e2) {
+              console.warn("Local layout fetch also failed:", e2);
+            }
+          }
+        }
 
         if (!layoutHTML) {
-          throw new Error("Layout HTML not found in response");
+          throw new Error("Unable to load layout HTML from remote or local fallback");
         }
 
         // Ensure minimum load time
