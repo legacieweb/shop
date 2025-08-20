@@ -1440,7 +1440,7 @@ async function applyCheckoutCoupon() {
     const subtotal = unitPrice * qty;
     
     // Validate coupon with server
-    const res = await fetch(`${API}/api/validate-coupon`, {
+    const res = await fetch(`${API}/validate-coupon`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -1451,7 +1451,8 @@ async function applyCheckoutCoupon() {
       })
     });
     
-    const data = await res.json();
+    const result = await res.json();
+    const data = result.data || result; // support both {success,data} and direct payload
     
     if (!data.valid) {
       messageEl.innerHTML = `<span class="text-red-500">${data.error || "Invalid coupon code."}</span>`;
@@ -2220,7 +2221,7 @@ async function applyCoupon() {
     const subtotal = unitPrice * qty;
     
     // Validate coupon with server
-    const res = await fetch(`${API}/api/validate-coupon`, {
+    const res = await fetch(`${API}/validate-coupon`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -2231,7 +2232,8 @@ async function applyCoupon() {
       })
     });
     
-    const data = await res.json();
+    const result = await res.json();
+    const data = result.data || result; // support both {success,data} and direct payload
     
     if (!data.valid) {
       messageEl.innerHTML = `<span class="text-red-500">${data.error || "Invalid coupon code."}</span>`;
