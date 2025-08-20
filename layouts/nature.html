@@ -15,18 +15,24 @@
       
       <!-- Mobile Hamburger Menu -->
       <div class="md:hidden">
-        <button id="mobileMenuBtn" class="p-2 rounded-lg bg-emerald-800 text-white hover:bg-emerald-900 transition-all duration-300">
+        <button id="hamburgerBtn" class="p-2 text-emerald-800 hover:bg-emerald-100 rounded-lg transition-colors">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
           </svg>
         </button>
+        
+        <!-- Mobile Dropdown Menu -->
+        <div id="mobileMenu" class="hidden absolute top-full right-4 mt-2 w-48 bg-white rounded-lg shadow-xl border-2 border-emerald-200 z-50">
+          <div class="p-4 space-y-3">
+            <div id="mobileAuthButtons" class="flex flex-col gap-2"></div>
+            <div id="mobileCustomizeBtn" class="hidden">
+              <button class="w-full text-left px-3 py-2 text-emerald-800 hover:bg-emerald-50 rounded-lg transition-colors nature-font font-semibold">
+                Customize Green Shop
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-    
-    <!-- Mobile Dropdown Menu -->
-    <div id="mobileMenu" class="hidden md:hidden bg-emerald-100 border-t-2 border-emerald-800 px-4 py-4">
-      <div id="mobileAuthButtons" class="flex flex-col gap-2 text-sm mb-4"></div>
-      <div id="mobileCustomizeBtn" class="hidden"></div>
     </div>
   </header>
 
@@ -38,7 +44,7 @@
       <h1 id="shopName" class="text-4xl md:text-6xl font-extrabold mb-4 border-2 border-transparent nature-title text-shadow-nature">Loading Store...</h1>
       <p id="shopBio" class="text-lg md:text-xl border-2 border-transparent nature-subtitle mb-6">Please wait while we load the store.</p>
       <div class="nature-leaf-ornament mx-auto mb-4"></div>
-      <button id="uploadHeroBtn" class="hidden mt-6 inline-block bg-emerald-800 hover:bg-emerald-900 text-white font-bold px-8 py-3 rounded-lg shadow-lg transition-all duration-300 nature-button">
+      <button id="uploadHeroBtn" class="hidden mt-6 inline-block bg-emerald-800 hover:bg-emerald-900 text-white font-bold px-6 md:px-8 py-3 rounded-lg shadow-lg transition-all duration-300 nature-button">
         Upload Hero Image
       </button>
     </div>
@@ -120,27 +126,6 @@
     border-radius: 15px;
   }
   
-  .nature-leaf-ornament::before,
-  .nature-leaf-ornament::after {
-    content: '';
-    position: absolute;
-    top: -5px;
-    width: 20px;
-    height: 20px;
-    background: #059669;
-    border-radius: 50% 0;
-  }
-  
-  .nature-leaf-ornament::before {
-    left: -25px;
-    transform: rotate(-45deg);
-  }
-  
-  .nature-leaf-ornament::after {
-    right: -25px;
-    transform: rotate(135deg);
-  }
-  
   .nature-divider {
     width: 150px;
     height: 3px;
@@ -149,54 +134,12 @@
     border-radius: 2px;
   }
   
-  .nature-divider::before,
-  .nature-divider::after {
-    content: '';
-    position: absolute;
-    top: -8px;
-    width: 15px;
-    height: 15px;
-    background: #10b981;
-    border-radius: 50% 0;
-  }
-  
-  .nature-divider::before {
-    left: -20px;
-    transform: rotate(-45deg);
-  }
-  
-  .nature-divider::after {
-    right: -20px;
-    transform: rotate(135deg);
-  }
-  
   .nature-leaf-ornament-footer {
     width: 200px;
     height: 35px;
     background: linear-gradient(90deg, transparent, #059669, #047857, #059669, transparent);
     position: relative;
     border-radius: 18px;
-  }
-  
-  .nature-leaf-ornament-footer::before,
-  .nature-leaf-ornament-footer::after {
-    content: '';
-    position: absolute;
-    top: -8px;
-    width: 25px;
-    height: 25px;
-    background: #059669;
-    border-radius: 50% 0;
-  }
-  
-  .nature-leaf-ornament-footer::before {
-    left: -35px;
-    transform: rotate(-45deg);
-  }
-  
-  .nature-leaf-ornament-footer::after {
-    right: -35px;
-    transform: rotate(135deg);
   }
   
   .nature-pattern {
@@ -270,58 +213,35 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-decoration: none;
-    color: inherit;
-    transition: all 0.3s ease;
+    transition: all 0.4s ease;
   }
   
   .nature-product-image-container {
-    background: linear-gradient(145deg, #d1fae5, #a7f3d0, #ecfdf5);
+    background: linear-gradient(145deg, #d1fae5, #a7f3d0);
     border: 3px solid #059669;
-    border-radius: 50%;
-    width: 240px;
-    height: 240px;
+    border-radius: 20px;
     box-shadow: 
-      0 10px 30px rgba(5, 150, 105, 0.25),
-      inset 0 2px 0 rgba(255, 255, 255, 0.4),
-      0 0 0 0 rgba(5, 150, 105, 0.3);
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      0 8px 25px rgba(5, 150, 105, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    transition: all 0.4s ease;
     position: relative;
     overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 1.5rem;
-    animation: floatBubble 6s ease-in-out infinite;
+    width: 100%;
+    aspect-ratio: 1;
   }
   
   .nature-product-image-container::before {
     content: '';
     position: absolute;
-    top: -3px;
-    left: -3px;
-    right: -3px;
-    bottom: -3px;
-    background: linear-gradient(45deg, #059669, #10b981, #34d399, #6ee7b7, #10b981, #059669);
-    background-size: 300% 300%;
-    border-radius: 50%;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    background: linear-gradient(45deg, #059669, #10b981, #34d399, #10b981, #059669);
+    border-radius: 23px;
     z-index: -1;
     opacity: 0;
-    transition: all 0.5s ease;
-    animation: gradientShift 4s ease-in-out infinite;
-  }
-  
-  .nature-product-image-container::after {
-    content: '';
-    position: absolute;
-    top: 15%;
-    left: 15%;
-    width: 30px;
-    height: 30px;
-    background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.2) 50%, transparent 70%);
-    border-radius: 50%;
-    opacity: 0.7;
-    animation: shimmer 3s ease-in-out infinite;
+    transition: opacity 0.4s ease;
   }
   
   .nature-product-card:hover .nature-product-image-container::before {
@@ -329,23 +249,14 @@
   }
   
   .nature-product-card:hover .nature-product-image-container {
-    transform: translateY(-12px) scale(1.08) rotate(2deg);
+    transform: translateY(-8px) scale(1.02);
     box-shadow: 
-      0 20px 50px rgba(5, 150, 105, 0.4),
-      inset 0 3px 0 rgba(255, 255, 255, 0.5),
-      0 0 30px rgba(5, 150, 105, 0.3);
-    animation: hoverPulse 0.6s ease-in-out;
-  }
-  
-  .nature-product-card:hover {
-    transform: translateY(-5px);
+      0 15px 35px rgba(5, 150, 105, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4);
   }
   
   .nature-product-image {
-    width: 100%;
-    height: 100%;
-    object-cover: cover;
-    border-radius: 50%;
+    border-radius: 17px;
     filter: saturate(1.2) brightness(1.05);
     transition: filter 0.3s ease;
   }
@@ -355,8 +266,9 @@
   }
   
   .nature-product-info {
+    margin-top: 16px;
     text-align: center;
-    max-width: 200px;
+    width: 100%;
   }
   
   .nature-product-title {
@@ -364,8 +276,7 @@
     font-weight: 600;
     color: #047857;
     text-shadow: 1px 1px 2px rgba(4, 120, 87, 0.1);
-    margin-bottom: 0.5rem;
-    font-size: 1.1rem;
+    margin-bottom: 8px;
   }
   
   .nature-product-price {
@@ -387,9 +298,6 @@
     justify-content: center;
     transition: all 0.3s ease;
     box-shadow: 0 4px 12px rgba(4, 120, 87, 0.3);
-    position: absolute;
-    bottom: 10px;
-    right: 10px;
   }
   
   .nature-view-btn:hover {
@@ -440,6 +348,21 @@
     z-index: 10;
   }
   
+  /* Organic shapes */
+  .organic-shape {
+    border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    animation: morphing 6s ease-in-out infinite;
+  }
+  
+  @keyframes morphing {
+    0%, 100% {
+      border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+    }
+    50% {
+      border-radius: 30% 60% 70% 40% / 50% 60% 30% 60%;
+    }
+  }
+  
   /* Carbon footprint indicator */
   .carbon-neutral {
     background: linear-gradient(135deg, #059669, #10b981);
@@ -448,51 +371,17 @@
     border-radius: 12px;
     font-size: 0.7rem;
     font-weight: 500;
-    margin-top: 0.5rem;
-    display: inline-block;
-  }
-  
-  /* Responsive Modal Styles */
-  #customModal {
-    max-height: 90vh;
-    overflow-y: auto;
-    width: min(480px, 90vw);
-  }
-  
-  @media (max-width: 640px) {
-    #customModal {
-      top: 1rem;
-      width: calc(100vw - 2rem);
-      max-height: calc(100vh - 2rem);
-      padding: 1.5rem;
-    }
-    
-    .nature-product-image-container {
-      width: 150px;
-      height: 150px;
-    }
-    
-    .nature-product-info {
-      max-width: 150px;
-    }
-    
-    .nature-product-title {
-      font-size: 1rem;
-    }
-    
-    .nature-product-price {
-      font-size: 1.1rem;
-    }
+    margin-left: 8px;
   }
 </style>
 
-<!-- Responsive Modal -->
-<div id="customModal" class="hidden fixed top-24 left-1/2 -translate-x-1/2 z-50 bg-gradient-to-br from-emerald-50 to-green-50 p-8 shadow-2xl rounded-3xl w-[480px] max-w-full space-y-6 border-4 border-emerald-800">
-  <h3 class="text-2xl font-bold text-emerald-900 nature-font">Customize Your Green Shop</h3>
-  <div class="space-y-4 max-h-60 overflow-y-auto" id="modalContent"></div>
-  <div class="flex flex-col sm:flex-row justify-between gap-4 pt-6">
-    <button id="cancelBtn" class="bg-emerald-200 hover:bg-emerald-300 text-emerald-900 px-6 py-3 rounded-lg font-semibold transition-all duration-300 w-full sm:w-1/2 nature-font">Cancel</button>
-    <button id="applyBtn" class="bg-emerald-800 hover:bg-emerald-900 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 w-full sm:w-1/2 nature-font">Apply Changes</button>
+<!-- Modal -->
+<div id="customModal" class="hidden fixed inset-4 md:top-24 md:left-1/2 md:-translate-x-1/2 z-50 bg-gradient-to-br from-emerald-50 to-green-50 p-4 md:p-8 shadow-2xl rounded-3xl md:w-[480px] md:max-w-full space-y-6 border-4 border-emerald-800 overflow-y-auto max-h-screen">
+  <h3 class="text-xl md:text-2xl font-bold text-emerald-900 nature-font">Customize Your Green Shop</h3>
+  <div class="space-y-4" id="modalContent"></div>
+  <div class="flex flex-col md:flex-row justify-between gap-4 pt-6">
+    <button id="cancelBtn" class="bg-emerald-200 hover:bg-emerald-300 text-emerald-900 px-6 py-3 rounded-lg font-semibold transition-all duration-300 w-full md:w-1/2 nature-font">Cancel</button>
+    <button id="applyBtn" class="bg-emerald-800 hover:bg-emerald-900 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 w-full md:w-1/2 nature-font">Apply Changes</button>
   </div>
 </div>
 
@@ -507,12 +396,19 @@
   if (yearSpan) yearSpan.textContent = new Date().getFullYear();
 
   // Mobile menu functionality
-  const mobileMenuBtn = document.getElementById("mobileMenuBtn");
+  const hamburgerBtn = document.getElementById("hamburgerBtn");
   const mobileMenu = document.getElementById("mobileMenu");
   
-  if (mobileMenuBtn && mobileMenu) {
-    mobileMenuBtn.addEventListener("click", () => {
+  if (hamburgerBtn && mobileMenu) {
+    hamburgerBtn.addEventListener("click", () => {
       mobileMenu.classList.toggle("hidden");
+    });
+    
+    // Close mobile menu when clicking outside
+    document.addEventListener("click", (e) => {
+      if (!hamburgerBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+        mobileMenu.classList.add("hidden");
+      }
     });
   }
 
@@ -548,7 +444,7 @@
   // Apply theme to DOM
   set("shopLogo", el => {
     el.src = resolveImage(theme.logo);
-    el.onerror = () => el.src = "https://placehold.co/50x50?text=S";
+    el.onerror = () => el.src = "https://placehold.co/50x50?text=🌱";
   });
 
   set("shopTitle", el => {
@@ -684,40 +580,43 @@
           const imageSrc = resolveImage(p.image);
           const card = document.createElement("a");
           card.href = `../detail?id=${p.id}`;
-          card.className = "nature-product-card";
+          card.className = "nature-product-card block";
 
           // Add sustainability badges randomly for demo
           const sustainabilityFeatures = ['Organic', 'Fair Trade', 'Carbon Neutral', 'Recyclable', 'Biodegradable'];
           const randomFeature = sustainabilityFeatures[productIndex % sustainabilityFeatures.length];
 
           card.innerHTML = `
-            <div class="nature-product-image-container">
-              <div class="sustainability-badge">
-                ${randomFeature}
-              </div>
-              ${p.image ? `
-                <img src="${imageSrc}" alt="${p.name}" class="nature-product-image" />
-              ` : `
-                <div class="nature-product-image bg-gradient-to-br from-emerald-200 to-green-200 flex items-center justify-center text-4xl text-emerald-800">
-                  S
+            <div class="nature-product-image-container organic-shape">
+              <div class="relative w-full h-full overflow-hidden">
+                <div class="sustainability-badge">
+                  ${randomFeature}
                 </div>
-              `}
-              <button
-                class="nature-view-btn"
-                aria-label="View ${p.name}"
-                title="View ${p.name}"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
-              </button>
+                ${p.image ? `
+                  <img src="${imageSrc}" alt="${p.name}" class="nature-product-image w-full h-full object-cover" />
+                  <div class="absolute inset-0 bg-gradient-to-t from-emerald-900/30 via-transparent to-transparent"></div>
+                ` : `
+                  <div class="nature-product-image w-full h-full bg-gradient-to-br from-emerald-200 to-green-200 flex items-center justify-center">
+                    <span class="text-4xl text-emerald-800">🌿</span>
+                  </div>
+                `}
+                <button
+                  class="nature-view-btn absolute bottom-4 right-4"
+                  aria-label="View ${p.name}"
+                  title="View ${p.name}"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                </button>
+              </div>
             </div>
             <div class="nature-product-info">
-              <h4 class="nature-product-title truncate" title="${p.name}">
+              <h4 class="nature-product-title text-xl mb-2 truncate" title="${p.name}">
                 ${p.name}
               </h4>
-              <div class="flex flex-col items-center">
+              <div class="flex items-center justify-center gap-2">
                 <p class="nature-product-price">${getCurrencySymbol(storeCurrency)}${p.price.toFixed(2)}</p>
                 <span class="carbon-neutral">Carbon Neutral</span>
               </div>
@@ -788,32 +687,16 @@
 
   const btn = document.createElement("button");
   btn.textContent = "Customize Green Shop";
-  btn.className = "fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-emerald-800 hover:bg-emerald-900 text-white px-8 py-3 rounded-full shadow-lg transition-all duration-300 nature-font font-bold";
+  btn.className = "fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-emerald-800 hover:bg-emerald-900 text-white px-6 md:px-8 py-3 rounded-full shadow-lg transition-all duration-300 nature-font font-bold hidden md:block";
   btn.id = "customizeBtn";
   document.body.appendChild(btn);
 
-  // Add customize button to mobile menu when owner
+  // Mobile customize button
   const mobileCustomizeContainer = document.getElementById("mobileCustomizeBtn");
   if (mobileCustomizeContainer) {
-    const mobileCustomizeBtn = document.createElement("button");
-    mobileCustomizeBtn.textContent = "Customize Green Shop";
-    mobileCustomizeBtn.className = "w-full bg-emerald-800 hover:bg-emerald-900 text-white px-4 py-2 rounded-lg transition-all duration-300 nature-font font-semibold";
-    mobileCustomizeBtn.id = "mobileCustomizeBtnEl";
-    mobileCustomizeContainer.appendChild(mobileCustomizeBtn);
+    const mobileCustomizeBtn = mobileCustomizeContainer.querySelector("button");
+    mobileCustomizeBtn.id = "mobileCustomizeBtn";
     mobileCustomizeContainer.classList.remove("hidden");
-    
-    // Sync both buttons
-    const syncCustomizeButtons = () => {
-      const isCustomizing = btn.textContent.includes("Close");
-      btn.textContent = isCustomizing ? "Close Customization" : "Customize Green Shop";
-      mobileCustomizeBtn.textContent = isCustomizing ? "Close Customization" : "Customize Green Shop";
-    };
-    
-    mobileCustomizeBtn.addEventListener("click", () => {
-      btn.click();
-      syncCustomizeButtons();
-      mobileMenu.classList.add("hidden"); // Close mobile menu after clicking
-    });
   }
 
   const customizableElements = {
@@ -828,14 +711,13 @@
   };
 
   let isCustomizing = false;
-  btn.addEventListener("click", () => {
+  
+  function toggleCustomization() {
     isCustomizing = !isCustomizing;
     btn.textContent = isCustomizing ? "Close Customization" : "Customize Green Shop";
-    
-    // Update mobile button if it exists
-    const mobileCustomizeBtn = document.getElementById("mobileCustomizeBtnEl");
-    if (mobileCustomizeBtn) {
-      mobileCustomizeBtn.textContent = isCustomizing ? "Close Customization" : "Customize Green Shop";
+    const mobileBtn = document.getElementById("mobileCustomizeBtn");
+    if (mobileBtn) {
+      mobileBtn.textContent = isCustomizing ? "Close Customization" : "Customize Green Shop";
     }
     
     document.getElementById("uploadHeroBtn")?.classList.toggle("hidden", !isCustomizing);
@@ -872,7 +754,20 @@
     } else {
       removeHighlights();
     }
-  });
+    
+    // Close mobile menu after clicking
+    const mobileMenu = document.getElementById("mobileMenu");
+    if (mobileMenu) {
+      mobileMenu.classList.add("hidden");
+    }
+  }
+  
+  btn.addEventListener("click", toggleCustomization);
+  
+  const mobileBtn = document.getElementById("mobileCustomizeBtn");
+  if (mobileBtn) {
+    mobileBtn.addEventListener("click", toggleCustomization);
+  }
 
   document.getElementById("uploadHeroBtn")?.addEventListener("click", () => {
     if (!isCustomizing) return;
@@ -888,12 +783,12 @@
     const modal = document.getElementById("customModal");
     const content = document.getElementById("modalContent");
     modal.classList.remove("hidden");
-    content.innerHTML = `<label class="text-lg font-semibold block mb-2 text-emerald-900 nature-font">${config.label}</label>`;
+    content.innerHTML = `<label class="text-lg md:text-xl font-semibold block mb-2 text-emerald-900 nature-font">${config.label}</label>`;
 
     if (config.type === "image") {
       content.innerHTML += `
-        <input type="text" id="customInputURL" placeholder="Image URL or filename" class="w-full px-4 py-3 border-2 border-emerald-300 rounded-lg mb-3 focus:border-emerald-600 focus:outline-none" />
-        <input type="file" id="customInputFile" accept="image/*" class="w-full px-4 py-3 border-2 border-emerald-300 rounded-lg focus:border-emerald-600 focus:outline-none" />
+        <input type="text" id="customInputURL" placeholder="Image URL or filename" class="w-full px-4 py-3 border-2 border-emerald-300 rounded-lg mb-3 focus:border-emerald-600 focus:outline-none text-sm md:text-base" />
+        <input type="file" id="customInputFile" accept="image/*" class="w-full px-4 py-3 border-2 border-emerald-300 rounded-lg focus:border-emerald-600 focus:outline-none text-sm md:text-base" />
         <div id="uploadProgress" class="hidden mt-2">
           <div class="bg-emerald-200 rounded-full h-2">
             <div id="progressBar" class="bg-emerald-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
@@ -904,7 +799,7 @@
     } else if (config.type === "text-edit") {
       const el = document.getElementById(id);
       content.innerHTML += `
-        <input type="text" id="customTextValue" value="${el.textContent}" class="w-full px-4 py-3 border-2 border-emerald-300 rounded-lg mb-3 focus:border-emerald-600 focus:outline-none" />
+        <input type="text" id="customTextValue" value="${el.textContent}" class="w-full px-4 py-3 border-2 border-emerald-300 rounded-lg mb-3 focus:border-emerald-600 focus:outline-none text-sm md:text-base" />
         <input type="color" id="customInputColor" class="w-full h-12 border-2 border-emerald-300 rounded-lg focus:border-emerald-600 focus:outline-none" />
       `;
     } else if (config.type === "background") {
@@ -931,23 +826,23 @@
     const content = document.getElementById("modalContent");
     modal.classList.remove("hidden");
     content.innerHTML = `
-      <label class="text-lg font-semibold block mb-2 text-emerald-900 nature-font">Customize Category: ${categoryName}</label>
+      <label class="text-lg md:text-xl font-semibold block mb-2 text-emerald-900 nature-font">Customize Category: ${categoryName}</label>
       
       <div class="space-y-4">
         <div>
           <label class="text-sm font-semibold block mb-1 text-emerald-800">Category Title</label>
-          <input type="text" id="categoryTitle" value="${titleEl.textContent.trim()}" class="w-full px-4 py-3 border-2 border-emerald-300 rounded-lg focus:border-emerald-600 focus:outline-none" />
+          <input type="text" id="categoryTitle" value="${titleEl.textContent.trim()}" class="w-full px-4 py-3 border-2 border-emerald-300 rounded-lg focus:border-emerald-600 focus:outline-none text-sm md:text-base" />
         </div>
         
         <div>
           <label class="text-sm font-semibold block mb-1 text-emerald-800">Category Subtitle</label>
-          <input type="text" id="categorySubtitle" value="${subtitleEl.textContent}" class="w-full px-4 py-3 border-2 border-emerald-300 rounded-lg focus:border-emerald-600 focus:outline-none" />
+          <input type="text" id="categorySubtitle" value="${subtitleEl.textContent}" class="w-full px-4 py-3 border-2 border-emerald-300 rounded-lg focus:border-emerald-600 focus:outline-none text-sm md:text-base" />
         </div>
         
         <div>
           <label class="text-sm font-semibold block mb-1 text-emerald-800">Background Image</label>
-          <input type="text" id="categoryBgURL" placeholder="Image URL or filename" class="w-full px-4 py-3 border-2 border-emerald-300 rounded-lg mb-3 focus:border-emerald-600 focus:outline-none" />
-          <input type="file" id="categoryBgFile" accept="image/*" class="w-full px-4 py-3 border-2 border-emerald-300 rounded-lg focus:border-emerald-600 focus:outline-none" />
+          <input type="text" id="categoryBgURL" placeholder="Image URL or filename" class="w-full px-4 py-3 border-2 border-emerald-300 rounded-lg mb-3 focus:border-emerald-600 focus:outline-none text-sm md:text-base" />
+          <input type="file" id="categoryBgFile" accept="image/*" class="w-full px-4 py-3 border-2 border-emerald-300 rounded-lg focus:border-emerald-600 focus:outline-none text-sm md:text-base" />
           <div id="categoryUploadProgress" class="hidden mt-2">
             <div class="bg-emerald-200 rounded-full h-2">
               <div id="categoryProgressBar" class="bg-emerald-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
@@ -1223,8 +1118,16 @@
 
   function createAuthButtons(container, isMobile = false) {
     const buttonClass = isMobile 
-      ? "w-full px-4 py-2 rounded-lg transition-all duration-300 nature-font font-semibold text-center"
+      ? "w-full text-left px-3 py-2 text-emerald-800 hover:bg-emerald-50 rounded-lg transition-colors nature-font font-semibold"
       : "px-4 py-2 rounded-lg transition-all duration-300 nature-font font-semibold";
+      
+    const primaryClass = isMobile 
+      ? buttonClass 
+      : buttonClass + " bg-emerald-800 hover:bg-emerald-900 text-white";
+      
+    const secondaryClass = isMobile 
+      ? buttonClass 
+      : buttonClass + " border-2 border-emerald-800 text-emerald-800 hover:bg-emerald-100";
 
     if (user) {
       const dashboard = document.createElement("a");
@@ -1235,11 +1138,11 @@
       } else {
         dashboard.href = `../buyer?seller=${encodeURIComponent(actualSeller)}`;
       }
-      dashboard.className = `${buttonClass} bg-emerald-800 hover:bg-emerald-900 text-white`;
+      dashboard.className = primaryClass;
       dashboard.textContent = "Dashboard";
 
       const logout = document.createElement("button");
-      logout.className = `${buttonClass} border-2 border-emerald-800 text-emerald-800 hover:bg-emerald-100`;
+      logout.className = secondaryClass;
       logout.textContent = "Logout";
       logout.onclick = () => {
         localStorage.removeItem("user");
@@ -1251,12 +1154,12 @@
     } else {
       const signup = document.createElement("a");
       signup.href = actualSeller ? `../signup?seller=${actualSeller}` : "../signup";
-      signup.className = `${buttonClass} bg-emerald-800 hover:bg-emerald-900 text-white`;
+      signup.className = primaryClass;
       signup.textContent = "Sign Up";
 
       const login = document.createElement("a");
       login.href = actualSeller ? `../login?seller=${actualSeller}` : "../login";
-      login.className = `${buttonClass} border-2 border-emerald-800 text-emerald-800 hover:bg-emerald-100`;
+      login.className = secondaryClass;
       login.textContent = "Log In";
 
       container.appendChild(signup);
@@ -1264,8 +1167,8 @@
     }
   }
 
-  // Create buttons for both desktop and mobile
   createAuthButtons(desktopContainer, false);
   createAuthButtons(mobileContainer, true);
 })();
+
 </script>

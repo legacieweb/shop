@@ -922,13 +922,21 @@
         <h3 class="text-lg font-semibold text-gray-700">📋 Your Products</h3>
         <div class="flex flex-col sm:flex-row gap-2">
           <div class="relative">
-            <input type="text" id="productSearchInput" placeholder="Search products, tags..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 w-full sm:w-64" />
-            <svg class="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
+            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <svg class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </div>
+            <input
+              type="text"
+              id="productSearchInput"
+              placeholder="Search products by name, category, or tags..."
+              class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500"
+            />
           </div>
           <button id="addProductBtn" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 text-sm font-medium">+ Add Product</button>
         </div>
+        <div id="searchResultsCount" class="mt-2 text-sm text-gray-600 hidden"></div>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="productList"></div>
     </section>
@@ -1985,34 +1993,47 @@ function displayProducts(products) {
 
   // Update analytics and product dashboard values using allProducts for accurate counts
   document.getElementById("earnings").textContent = `${currentCurrencySymbol}${earnings.toFixed(2)}`;
-  document.getElementById("productCount").textContent = allProducts.length;
-  document.getElementById("categoryCount").textContent = categoriesSet.size;
+  document.getElementById("productCount").textContent = allProducts.length; // Show total count
+  document.getElementById("categoryCount").textContent = new Set(allProducts.map(p => p.category)).size; // Show total categories
+  
+  // Update search results count
+  const searchResultsCount = document.getElementById("searchResultsCount");
+  if (products.length !== allProducts.length) {
+    searchResultsCount.classList.remove("hidden");
+    searchResultsCount.textContent = `Showing ${products.length} of ${allProducts.length} products`;
+  } else {
+    searchResultsCount.classList.add("hidden");
+  }
 }
 
-// Search products function
+// Search functionality - exact same as blank.html
 function searchProducts(query) {
   if (!query.trim()) {
     displayProducts(allProducts);
     return;
   }
-
-  const searchTerms = query.toLowerCase().split(' ').filter(term => term.length > 0);
   
+  const searchTerm = query.toLowerCase();
   const filteredProducts = allProducts.filter(product => {
-    const searchableText = [
-      product.name || '',
-      product.description || '',
-      product.category || '',
-      ...(product.tags || [])
-    ].join(' ').toLowerCase();
-
-    // Check if all search terms are found in the searchable text
-    return searchTerms.every(term => searchableText.includes(term));
+    const name = (product.name || "").toLowerCase();
+    const category = (product.category || "").toLowerCase();
+    const tags = (product.tags || []).join(" ").toLowerCase();
+    const description = (product.description || "").toLowerCase();
+    
+    return name.includes(searchTerm) || 
+           category.includes(searchTerm) || 
+           tags.includes(searchTerm) ||
+           description.includes(searchTerm);
   });
-
+  
   displayProducts(filteredProducts);
 }
 loadProducts();
+
+// Product search event listener - exact same as blank.html
+document.getElementById('productSearchInput').addEventListener('input', function(e) {
+  searchProducts(e.target.value);
+});
 
 // Initialize subscription-based UI
 initializeSubscriptionUI();
@@ -4626,6 +4647,7 @@ async function loadAnalytics() {
         }
       }
     });
+    // Interactive Regional Chart with State Drill-down
     // Interactive Regional Chart with State Drill-down
     regionChart?.destroy();
     
