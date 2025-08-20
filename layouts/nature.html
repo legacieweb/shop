@@ -1111,7 +1111,7 @@
   desktopContainer.innerHTML = "";
   mobileContainer.innerHTML = "";
 
-  // Get the real seller (not the preview one)
+  // Get the real seller (used for guests visiting a shop)
   const actualSeller =
     (window.__SHOP_DATA__ && window.__SHOP_DATA__.actualSeller) ||
     new URLSearchParams(window.location.search).get("seller");
@@ -1131,13 +1131,14 @@
 
     if (user) {
       const dashboard = document.createElement("a");
-      const actualSeller = window.__SHOP_DATA__?.actualSeller || user.username;
 
+      // Always send user to their own dashboard/buyer page
       if (user.role && user.role.startsWith("seller")) {
-        dashboard.href = `../dashboard?seller=${encodeURIComponent(actualSeller)}`;
+        dashboard.href = `../dashboard?seller=${encodeURIComponent(user.username)}`;
       } else {
-        dashboard.href = `../buyer?seller=${encodeURIComponent(actualSeller)}`;
+        dashboard.href = `../buyer?seller=${encodeURIComponent(user.username)}`;
       }
+
       dashboard.className = primaryClass;
       dashboard.textContent = "Dashboard";
 

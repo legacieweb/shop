@@ -2106,20 +2106,19 @@ function renderSectionProducts(container, products, section) {
   loadProducts();
   renderSocialLinks();
   renderFooterLinks();
-
-  const user = JSON.parse(localStorage.getItem("user") || "null");
+const user = JSON.parse(localStorage.getItem("user") || "null");
 const container = document.getElementById("shopAuthButtons");
 
 if (container) {
   container.innerHTML = "";
 
   const baseBtn = "px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-all text-left w-full";
+
   if (user) {
     const dashboard = document.createElement("a");
-    const actualSeller = window.__SHOP_DATA__?.actualSeller || user.username;
     dashboard.href = user.role?.startsWith("seller")
-      ? `../dashboard?seller=${encodeURIComponent(actualSeller)}`
-      : `../buyer?seller=${encodeURIComponent(actualSeller)}`;
+      ? `../dashboard?seller=${encodeURIComponent(user.username)}`
+      : `../buyer?seller=${encodeURIComponent(user.username)}`;
     dashboard.className = baseBtn;
     dashboard.textContent = "Dashboard";
 
@@ -2134,13 +2133,19 @@ if (container) {
     container.appendChild(dashboard);
     container.appendChild(logout);
   } else {
+    const sellerParam = new URLSearchParams(window.location.search).get("seller");
+
     const signup = document.createElement("a");
-    signup.href = sellerParam ? `../signup?seller=${encodeURIComponent(sellerParam)}` : "../signup";
+    signup.href = sellerParam
+      ? `../signup?seller=${encodeURIComponent(sellerParam)}`
+      : "../signup";
     signup.className = baseBtn;
     signup.textContent = "Sign Up";
 
     const login = document.createElement("a");
-    login.href = sellerParam ? `../login?seller=${encodeURIComponent(sellerParam)}` : "../login";
+    login.href = sellerParam
+      ? `../login?seller=${encodeURIComponent(sellerParam)}`
+      : "../login";
     login.className = baseBtn;
     login.textContent = "Log In";
 
@@ -2148,6 +2153,7 @@ if (container) {
     container.appendChild(login);
   }
 }
+
 
 // Toggle dropdown
 const toggleBtn = document.getElementById("authToggleBtn");

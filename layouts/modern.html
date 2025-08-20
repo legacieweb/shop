@@ -729,10 +729,9 @@
         container.innerHTML = "";
 
         if (user) {
-            const actualSeller = window.__SHOP_DATA__?.actualSeller || user.username;
             const dashboardLink = user.role?.startsWith("seller")
-                ? `../dashboard?seller=${encodeURIComponent(actualSeller)}`
-                : `../buyer?seller=${encodeURIComponent(actualSeller)}`;
+                ? `../dashboard?seller=${encodeURIComponent(user.username)}`
+                : `../buyer?seller=${encodeURIComponent(user.username)}`;
 
             const dashboard = document.createElement("a");
             dashboard.href = dashboardLink;
@@ -777,4 +776,5 @@ document.getElementById("authMenuBtn")?.addEventListener("click", () => {
     const dropdown = document.getElementById("authDropdown");
     dropdown.classList.toggle("hidden");
 });
+
   </script>
