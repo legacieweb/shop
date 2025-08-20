@@ -1587,6 +1587,22 @@ async function placeOrder() {
           // Hide preloader
           hideOrderPreloader();
           
+          // If a coupon was applied, increment its usage
+          if (window.appliedCoupon?.id) {
+            try {
+              await fetch(`${API}/apply-coupon`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  couponId: window.appliedCoupon.id,
+                  discountAmount: window.appliedCoupon.discountAmount || 0
+                })
+              });
+            } catch (e) {
+              console.warn("Failed to increment coupon usage (delivery order)", e);
+            }
+          }
+
           // Show success modal with order details
           showSuccessModal({
             paymentMethod: 'delivery',
@@ -1745,6 +1761,22 @@ async function processPayment(gateway, total, orderData, configs, email, product
       
       // Hide preloader
       hideOrderPreloader();
+
+      // If a coupon was applied, increment its usage
+      if (window.appliedCoupon?.id) {
+        try {
+          await fetch(`${API}/apply-coupon`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              couponId: window.appliedCoupon.id,
+              discountAmount: window.appliedCoupon.discountAmount || 0
+            })
+          });
+        } catch (e) {
+          console.warn("Failed to increment coupon usage (online order)", e);
+        }
+      }
       
       // Show success modal after a brief delay for better UX
       setTimeout(() => {

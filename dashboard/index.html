@@ -1669,6 +1669,12 @@ function setupSidebarHandlers() {
       analyticsContent.classList.remove("hidden");
       analyticsPreloader.classList.add("hidden");
     });
+
+    // Auto-hide sidebar on small screens
+    if (window.innerWidth < 768) {
+      sidebar.classList.add("-translate-x-full");
+      sidebar.classList.remove("translate-x-0");
+    }
   });
   
   // Coupons link handler
@@ -1695,6 +1701,12 @@ function setupSidebarHandlers() {
     couponsContent.classList.remove("hidden");
     couponsUpgradePrompt.classList.add("hidden");
     loadCoupons(); // Load coupons data
+
+    // Auto-hide sidebar on small screens
+    if (window.innerWidth < 768) {
+      sidebar.classList.add("-translate-x-full");
+      sidebar.classList.remove("translate-x-0");
+    }
   });
   
   // Inventory link handler
@@ -1721,6 +1733,12 @@ function setupSidebarHandlers() {
     inventoryContent.classList.remove("hidden");
     inventoryUpgradePrompt.classList.add("hidden");
     loadInventory(); // Load inventory data
+
+    // Auto-hide sidebar on small screens
+    if (window.innerWidth < 768) {
+      sidebar.classList.add("-translate-x-full");
+      sidebar.classList.remove("translate-x-0");
+    }
   });
 }
 
@@ -4446,7 +4464,15 @@ async function loadAnalytics() {
       topTable.innerHTML += `
         <tr>
           <td class="py-3 px-4 flex items-center gap-3">
-            <img src="${p.image || 'https://via.placeholder.com/40'}" class="w-10 h-10 rounded object-cover shadow-sm">
+            <img src="${(() => {
+                const src = p.image || (p.media && p.media[0]) || (p.gallery && p.gallery[0]) || '';
+                if (!src) return 'https://via.placeholder.com/40';
+                if (/^[a-f0-9]{24}$/i.test(src)) return `${location.origin}/images/${src}`; // Mongo Image ID
+                if (src.startsWith('images/')) return `${location.origin}/${src}`; // Prebuilt images path
+                if (/^https?:\/\//.test(src)) return src; // Absolute URL
+                return `${location.origin}/uploads/${src.replace(/^\/+/, '')}`; // Local uploads served at /uploads
+              })()}" 
+              class="w-10 h-10 rounded object-cover shadow-sm" onerror="this.src='https://via.placeholder.com/40'">
             <span>${p.name}</span>
           </td>
           <td class="py-3 px-4">${p.sold}</td>
@@ -4649,7 +4675,7 @@ async function loadAnalytics() {
     });
     // Interactive Regional Chart with State Drill-down
     // Interactive Regional Chart with State Drill-down
-    regionChart?.destroy();
+       regionChart?.destroy();
     
     if (data.salesByRegion && data.salesByRegion.length > 0) {
       // Comprehensive state data for all major countries
