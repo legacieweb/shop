@@ -272,38 +272,56 @@
     align-items: center;
     text-decoration: none;
     color: inherit;
+    transition: all 0.3s ease;
   }
   
   .nature-product-image-container {
-    background: linear-gradient(145deg, #d1fae5, #a7f3d0);
+    background: linear-gradient(145deg, #d1fae5, #a7f3d0, #ecfdf5);
     border: 3px solid #059669;
     border-radius: 50%;
-    width: 200px;
-    height: 200px;
+    width: 240px;
+    height: 240px;
     box-shadow: 
-      0 8px 25px rgba(5, 150, 105, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.3);
-    transition: all 0.4s ease;
+      0 10px 30px rgba(5, 150, 105, 0.25),
+      inset 0 2px 0 rgba(255, 255, 255, 0.4),
+      0 0 0 0 rgba(5, 150, 105, 0.3);
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 1rem;
+    margin-bottom: 1.5rem;
+    animation: floatBubble 6s ease-in-out infinite;
   }
   
   .nature-product-image-container::before {
     content: '';
     position: absolute;
-    top: -2px;
-    left: -2px;
-    right: -2px;
-    bottom: -2px;
-    background: linear-gradient(45deg, #059669, #10b981, #34d399, #10b981, #059669);
+    top: -3px;
+    left: -3px;
+    right: -3px;
+    bottom: -3px;
+    background: linear-gradient(45deg, #059669, #10b981, #34d399, #6ee7b7, #10b981, #059669);
+    background-size: 300% 300%;
     border-radius: 50%;
     z-index: -1;
     opacity: 0;
-    transition: opacity 0.4s ease;
+    transition: all 0.5s ease;
+    animation: gradientShift 4s ease-in-out infinite;
+  }
+  
+  .nature-product-image-container::after {
+    content: '';
+    position: absolute;
+    top: 15%;
+    left: 15%;
+    width: 30px;
+    height: 30px;
+    background: radial-gradient(circle, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.2) 50%, transparent 70%);
+    border-radius: 50%;
+    opacity: 0.7;
+    animation: shimmer 3s ease-in-out infinite;
   }
   
   .nature-product-card:hover .nature-product-image-container::before {
@@ -311,10 +329,16 @@
   }
   
   .nature-product-card:hover .nature-product-image-container {
-    transform: translateY(-8px) scale(1.05);
+    transform: translateY(-12px) scale(1.08) rotate(2deg);
     box-shadow: 
-      0 15px 35px rgba(5, 150, 105, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      0 20px 50px rgba(5, 150, 105, 0.4),
+      inset 0 3px 0 rgba(255, 255, 255, 0.5),
+      0 0 30px rgba(5, 150, 105, 0.3);
+    animation: hoverPulse 0.6s ease-in-out;
+  }
+  
+  .nature-product-card:hover {
+    transform: translateY(-5px);
   }
   
   .nature-product-image {
