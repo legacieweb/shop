@@ -415,19 +415,21 @@
 
   if (user) {
     const dashboard = document.createElement("a");
-    const actualSeller = window.__SHOP_DATA__?.actualSeller || user.username;
 
+    // Always use the logged-in user's username for their own dashboard
     if (user.role && user.role.startsWith("seller")) {
-      dashboard.href = `../dashboard?seller=${encodeURIComponent(actualSeller)}`;
+      dashboard.href = `../dashboard?seller=${encodeURIComponent(user.username)}`;
     } else {
-      dashboard.href = `../buyer?seller=${encodeURIComponent(actualSeller)}`;
+      dashboard.href = `../buyer?seller=${encodeURIComponent(user.username)}`;
     }
 
-    dashboard.className = "px-3 py-1 rounded bg-indigo-600 text-white hover:bg-indigo-700 transition";
+    dashboard.className =
+      "px-3 py-1 rounded bg-indigo-600 text-white hover:bg-indigo-700 transition";
     dashboard.textContent = "Dashboard";
 
     const logout = document.createElement("button");
-    logout.className = "px-3 py-1 rounded border border-indigo-600 text-indigo-600 hover:bg-indigo-50 transition";
+    logout.className =
+      "px-3 py-1 rounded border border-indigo-600 text-indigo-600 hover:bg-indigo-50 transition";
     logout.textContent = "Logout";
     logout.onclick = () => {
       localStorage.removeItem("user");
@@ -441,12 +443,14 @@
 
     const signup = document.createElement("a");
     signup.href = sellerParam ? `../signup?seller=${sellerParam}` : "../signup";
-    signup.className = "px-3 py-1 rounded bg-indigo-600 text-white hover:bg-indigo-700 transition";
+    signup.className =
+      "px-3 py-1 rounded bg-indigo-600 text-white hover:bg-indigo-700 transition";
     signup.textContent = "Sign Up";
 
     const login = document.createElement("a");
     login.href = sellerParam ? `../login?seller=${sellerParam}` : "../login";
-    login.className = "px-3 py-1 rounded border border-indigo-600 text-indigo-600 hover:bg-indigo-50 transition";
+    login.className =
+      "px-3 py-1 rounded border border-indigo-600 text-indigo-600 hover:bg-indigo-50 transition";
     login.textContent = "Log In";
 
     container.appendChild(signup);
