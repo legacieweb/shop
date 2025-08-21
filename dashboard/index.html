@@ -2556,24 +2556,16 @@ async function loadSales() {
       totalEarnings += parseFloat(o.total || 0);
 
       const statusColors = {
-        // Frontend statuses (lowercase)
+        // Frontend statuses
         pending: "text-yellow-700 bg-yellow-100 border-yellow-200",
         confirmed: "text-blue-700 bg-blue-100 border-blue-200", 
         ready: "text-indigo-700 bg-indigo-100 border-indigo-200",
         delivered: "text-green-700 bg-green-100 border-green-200",
         cancelled: "text-red-700 bg-red-100 border-red-200",
         declined: "text-gray-700 bg-gray-100 border-gray-200",
-        // Backend statuses (may come back from server)
+        // Backend statuses (in case they come back from server)
         processing: "text-blue-700 bg-blue-100 border-blue-200",
-        shipped: "text-indigo-700 bg-indigo-100 border-indigo-200",
-        // Capitalized versions (legacy support)
-        "PENDING": "text-yellow-700 bg-yellow-100 border-yellow-200",
-        "CONFIRMED": "text-blue-700 bg-blue-100 border-blue-200", 
-        "PROCESSING": "text-blue-700 bg-blue-100 border-blue-200",
-        "SHIPPED": "text-indigo-700 bg-indigo-100 border-indigo-200",
-        "DELIVERED": "text-green-700 bg-green-100 border-green-200",
-        "CANCELLED": "text-red-700 bg-red-100 border-red-200",
-        "DECLINED": "text-gray-700 bg-gray-100 border-gray-200"
+        shipped: "text-indigo-700 bg-indigo-100 border-indigo-200"
       };
       const statusClass = statusColors[o.status?.toLowerCase()] || "text-gray-700";
       const productImage = productMap[o.productId]?.image || 'https://placehold.co/80';
@@ -2773,8 +2765,6 @@ window.updateOrderStatus = async function(orderId, status) {
     
     const backendStatus = statusMapping[status.toLowerCase()] || 'Pending';
     
-    console.log(`🔄 Sending status update: Order ${orderId} -> ${backendStatus}`);
-    
     // Use the correct /order-status endpoint
     const res = await fetch(`${API}/order-status`, {
       method: "PATCH",
@@ -2786,16 +2776,8 @@ window.updateOrderStatus = async function(orderId, status) {
     });
 
     const result = await res.json();
-    console.log(`📥 Server response:`, result);
-    
     if (!res.ok || !result.success) {
-      // Log detailed error information
-      console.error(`❌ Status update failed:`, {
-        status: res.status,
-        statusText: res.statusText,
-        result: result
-      });
-      throw new Error(result?.message || result?.error || `HTTP ${res.status}: Status update failed`);
+      throw new Error(result?.message || result?.error || "Status update failed");
     }
     
     // ✨ Show cool notification
