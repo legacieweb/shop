@@ -219,6 +219,35 @@ app.post("/insert", async (req, res) => {
         if (!data.id) {
           data.id = `prod_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
         }
+        // Normalize any image paths that might already be absolute server paths
+        if (typeof data.image === 'string') {
+          // Accept '/images/<id>', 'images/<id>', '/uploads/<file>', 'uploads/<file>' as-is
+          if (data.image.startsWith('http')) {
+            // leave absolute URLs
+          } else if (data.image.startsWith('/images/') || data.image.startsWith('images/')) {
+            data.image = data.image.startsWith('/') ? data.image : '/' + data.image;
+          } else if (data.image.startsWith('/uploads/') || data.image.startsWith('uploads/')) {
+            data.image = data.image.startsWith('/') ? data.image : '/' + data.image;
+          }
+        }
+        if (Array.isArray(data.gallery)) {
+          data.gallery = data.gallery.map(x => {
+            if (typeof x !== 'string') return x;
+            if (x.startsWith('http')) return x;
+            if (x.startsWith('/images/') || x.startsWith('images/')) return x.startsWith('/') ? x : '/' + x;
+            if (x.startsWith('/uploads/') || x.startsWith('uploads/')) return x.startsWith('/') ? x : '/' + x;
+            return x;
+          });
+        }
+        if (Array.isArray(data.media)) {
+          data.media = data.media.map(x => {
+            if (typeof x !== 'string') return x;
+            if (x.startsWith('http')) return x;
+            if (x.startsWith('/images/') || x.startsWith('images/')) return x.startsWith('/') ? x : '/' + x;
+            if (x.startsWith('/uploads/') || x.startsWith('uploads/')) return x.startsWith('/') ? x : '/' + x;
+            return x;
+          });
+        }
         result = await Product.create(data);
         break;
       case "orders":
@@ -375,6 +404,30 @@ app.post("/update", async (req, res) => {
         result = await User.updateMany(query, updates);
         break;
       case "products":
+        // Normalize image fields if present in updates
+        if (updates && updates.$set) {
+          const s = updates.$set;
+          if (typeof s.image === 'string') {
+            if (!s.image.startsWith('http')) {
+              if (s.image.startsWith('/images/') || s.image.startsWith('images/')) s.image = s.image.startsWith('/') ? s.image : '/' + s.image;
+              else if (s.image.startsWith('/uploads/') || s.image.startsWith('uploads/')) s.image = s.image.startsWith('/') ? s.image : '/' + s.image;
+            }
+          }
+          if (Array.isArray(s.gallery)) {
+            s.gallery = s.gallery.map(x => (typeof x === 'string' && !x.startsWith('http'))
+              ? (x.startsWith('/images/') || x.startsWith('images/') || x.startsWith('/uploads/') || x.startsWith('uploads/'))
+                ? (x.startsWith('/') ? x : '/' + x)
+                : x
+              : x);
+          }
+          if (Array.isArray(s.media)) {
+            s.media = s.media.map(x => (typeof x === 'string' && !x.startsWith('http'))
+              ? (x.startsWith('/images/') || x.startsWith('images/') || x.startsWith('/uploads/') || x.startsWith('uploads/'))
+                ? (x.startsWith('/') ? x : '/' + x)
+                : x
+              : x);
+          }
+        }
         result = await Product.updateMany(query, updates);
         break;
       case "orders":
@@ -509,13 +562,15 @@ app.post("/upload-files", memoryUpload.fields([
 
     // Optionally: persist to Product if productId is provided
     if (req.body?.productId) {
+      const updates = { $set: { updatedAt: new Date() } };
+      if (mainImageURL) updates.$set.image = mainImageURL;
+      if (mediaURLs.length > 0) {
+        updates.$push = { gallery: { $each: mediaURLs } };
+        updates.$set.media = mediaURLs; // also persist in media array
+      }
       await Product.updateOne(
         { id: req.body.productId },
-        {
-          image: mainImageURL || undefined,
-          $push: { gallery: { $each: mediaURLs } },
-          updatedAt: new Date(),
-        }
+        updates
       );
     }
 
