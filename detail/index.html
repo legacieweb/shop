@@ -228,12 +228,10 @@
     <!-- 🏬 Shop Logo & Name -->
     <div id="shopHeader" class="flex items-center gap-3 flex-shrink-0">
       <!-- Dynamically Filled by JS -->
-      <!-- Example fallback: -->
-      <!-- <img src="logo.png" class="w-8 h-8 rounded-full" alt="Shop Logo" /> -->
-      <!-- <span class="text-lg font-bold text-indigo-700">ShopName</span> -->
     </div>
 
-    <div class="flex items-center gap-4">
+    <!-- Desktop actions -->
+    <div class="hidden md:flex items-center gap-4">
 
 <!-- 🛒 Cart Dropdown -->
 <div class="relative">
@@ -306,6 +304,20 @@
         </div>
       </div>
 
+      <!-- Mobile hamburger -->
+      <button id="mobileMenuBtn" class="md:hidden px-3 py-2 border rounded text-gray-700" aria-label="Open menu">☰</button>
+      
+      <!-- Mobile dropdown -->
+      <div id="mobileMenu" class="absolute right-4 top-[64px] bg-white border rounded-lg shadow-xl p-3 w-64 hidden md:hidden">
+        <div class="mb-2 text-xs font-semibold text-gray-500">Menu</div>
+        <a id="mobileVisitStore" href="#" class="block px-3 py-2 rounded hover:bg-gray-100">🏬 Visit Store</a>
+        <a href="products.html" class="block px-3 py-2 rounded hover:bg-gray-100">↩️ Return to Marketplace</a>
+        <button onclick="showSizeGuide()" class="w-full text-left px-3 py-2 rounded hover:bg-gray-100">📏 Size Guide</button>
+        <div class="mt-2 border-t pt-2">
+          <button onclick="proceedToCheckout(0)" class="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700">✅ Checkout</button>
+        </div>
+      </div>
+
     </div>
   </div>
 </header>
@@ -337,18 +349,29 @@
   <section class="max-w-7xl mx-auto px-4 py-12 hidden" id="storeSection">
     <h3 class="text-xl font-semibold mb-4">More From This Store</h3>
     <div id="storeGrid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
-  <!-- Size Guide Modal -->
-  <div id="sizeGuideModal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50 hidden">
-    <div class="bg-white w-full max-w-xl max-h-[80vh] overflow-auto rounded-2xl shadow-2xl p-8 transform scale-95 opacity-0 transition-all duration-300 ease-out relative">
-      <button onclick="hideSizeGuide()" class="absolute top-4 right-4 text-gray-400 hover:text-red-500 text-2xl focus:outline-none transition">
-        <span aria-label="Close">&times;</span>
-      </button>
-      <div class="flex items-center gap-3 mb-6">
-        <span class="inline-block bg-indigo-100 text-indigo-700 rounded-full px-3 py-1 text-base font-bold">📏</span>
-        <h3 class="text-2xl font-bold text-indigo-700">Size Guide</h3>
+  <!-- Size Guide Drawer (right side) -->
+  <div id="sizeGuideModal" class="fixed inset-0 bg-black/60 z-50 hidden">
+    <!-- click outside to close -->
+    <div class="absolute inset-0" onclick="hideSizeGuide()"></div>
+    <aside id="sizeGuidePanel" class="absolute right-0 top-0 h-full w-full sm:w-[560px] bg-white shadow-2xl p-6 sm:p-8 transform translate-x-full transition-transform duration-300">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-xl sm:text-2xl font-extrabold text-gray-900">TOPS & DRESSES SIZE GUIDE</h3>
+        <button onclick="hideSizeGuide()" class="text-gray-500 hover:text-gray-700 text-2xl leading-none">&times;</button>
       </div>
-      <div id="sizeGuideContent" class="text-base text-gray-700 whitespace-pre-line bg-gray-50 rounded-lg p-6 shadow-inner overflow-auto font-mono"></div>
-    </div>
+
+      <!-- Unit toggle -->
+      <div class="mb-5">
+        <div class="inline-flex bg-gray-100 rounded-full p-1">
+          <button id="tabIn" class="px-3 py-1.5 text-sm font-medium rounded-full bg-white shadow" onclick="setSizeGuideUnit('in')">in.</button>
+          <button id="tabCm" class="px-3 py-1.5 text-sm font-medium rounded-full text-gray-600" onclick="setSizeGuideUnit('cm')">cm</button>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div id="sizeGuideTable" class="overflow-auto">
+        <!-- injected by JS -->
+      </div>
+    </aside>
   </div>
 
 <!-- Checkout Modal -->
@@ -649,6 +672,10 @@ async function loadProduct() {
     const shopResponse = await shopRes.json();
     const seller = shopResponse.success && shopResponse.data && shopResponse.data[0] ? shopResponse.data[0] : null;
 
+    // Fill mobile visit store link
+    const mobileVisit = document.getElementById('mobileVisitStore');
+    if (mobileVisit) mobileVisit.href = `../shop?seller=${encodeURIComponent(product.seller)}`;
+
     await fetch("https://shop-stp5.onrender.com/api/track-view", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -941,6 +968,28 @@ function toggleCartDropdown() {
   document.getElementById("cartDropdown").classList.toggle("hidden");
 }
 
+// Mobile menu toggle
+(function(){
+  const btn = document.getElementById('mobileMenuBtn');
+  const menu = document.getElementById('mobileMenu');
+  if(!btn || !menu) return;
+  btn.addEventListener('click', ()=>{
+    menu.classList.toggle('hidden');
+  });
+  // close on outside click
+  document.addEventListener('click', (e)=>{
+    if(!menu.classList.contains('hidden')){
+      const withinMenu = menu.contains(e.target);
+      const onBtn = btn.contains(e.target);
+      if(!withinMenu && !onBtn){ menu.classList.add('hidden'); }
+    }
+  });
+  // close on escape
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape'){ menu.classList.add('hidden'); }
+  });
+})();
+
 function renderCartDropdown() {
   const container = document.getElementById("cartItems");
   container.innerHTML = "";
@@ -1144,74 +1193,81 @@ function toggleReturnMenu() {
     menu.classList.add("opacity-100", "translate-x-0", "pointer-events-auto");
   }
 }
-function showSizeGuide() {
-  const modal = document.getElementById("sizeGuideModal");
-  const content = document.getElementById("sizeGuideContent");
-
-  const tags = (window.currentProduct?.tags || []).map(t => t.toLowerCase());
-  const category = (window.currentProduct?.category || "").toLowerCase();
-
-  const topsTags = ['dress', 'tops', 'sweaters'];
-  const bottomsTags = ['skirts', 'bottoms', 'leggings', 'pants'];
-
-  let chart = "Size guide not available for this product.";
-
-  if (topsTags.some(t => tags.includes(t))) {
-    chart = `Tops & Dresses Size Guide
-
-in.      cm
-Size    Bust     Waist    Hips     US/CAN
-XS      32-33    24-25    35-36    0/1
-S       34-35    26-27    37-38    3/5
-M       36-37    28-29    39-40    7/9
-L       38.5-40  30.5-32  41.5-43  11/13
-XL      41 1/2   33 1/2   44 1/2   15
-1X      44-45.5  37-38.5  47-48.5  14/16
-2X      47-49    40-42    50-52    18/20
-3X      51-53    44-46    54-56    22/24`;
-  } else if (bottomsTags.some(t => tags.includes(t))) {
-    chart = `Jeans & Bottoms Size Guide
-
-in.      cm
-Size    Waist    Hips     US/CAN
-XS      24-25    35-36    0/1
-S       26-27    37-38    3/5
-M       28-29    39-40    7/9
-L       30.5-32  41.5-43  11/13
-XL      33 1/2   44 1/2   15
-1X      37-38.5  47-48.5  14/16
-2X      40-42    50-52    18/20
-3X      44-46    54-56    22/24`;
-  } else if (category.includes("shoes")) {
-    chart = `Shoes Size Guide
-
-Size    US/CAN   UK   EU       AUS
-5       5        3    35-36    5
-5.5     5.5      3.5  36       5.5
-6       6        4    36-37    6
-6.5     6.5      4.5  37       6.5
-7       7        5    37-38    7
-7.5     7.5      5.5  38       7.5
-8       8        6    38-39    8
-8.5     8.5      6.5  39       8.5
-9       9        7    39-40    9
-10      10       7.5  40-41    10
-11      11       8    41-42    11`;
-  }
-
-  content.textContent = chart;
-  modal.classList.remove("hidden");
-  setTimeout(() => {
-    modal.firstElementChild.classList.remove("scale-95", "opacity-0");
-    modal.firstElementChild.classList.add("scale-100", "opacity-100");
-  }, 10);
+// --- Size Guide Drawer Logic ---
+let sizeGuideUnit = 'in';
+function setSizeGuideUnit(unit){
+  sizeGuideUnit = unit;
+  document.getElementById('tabIn').classList.toggle('bg-white', unit==='in');
+  document.getElementById('tabIn').classList.toggle('text-gray-900', unit==='in');
+  document.getElementById('tabIn').classList.toggle('text-gray-600', unit!=='in');
+  document.getElementById('tabCm').classList.toggle('bg-white', unit==='cm');
+  document.getElementById('tabCm').classList.toggle('text-gray-900', unit==='cm');
+  document.getElementById('tabCm').classList.toggle('text-gray-600', unit!=='cm');
+  renderSizeGuideTable();
 }
 
-function hideSizeGuide() {
-  const modal = document.getElementById("sizeGuideModal");
-  modal.firstElementChild.classList.remove("scale-100", "opacity-100");
-  modal.firstElementChild.classList.add("scale-95", "opacity-0");
-  setTimeout(() => modal.classList.add("hidden"), 300);
+function showSizeGuide(){
+  const modal = document.getElementById('sizeGuideModal');
+  const panel = document.getElementById('sizeGuidePanel');
+  modal.classList.remove('hidden');
+  requestAnimationFrame(()=>{ panel.classList.remove('translate-x-full'); });
+  renderSizeGuideTable();
+}
+
+function hideSizeGuide(){
+  const modal = document.getElementById('sizeGuideModal');
+  const panel = document.getElementById('sizeGuidePanel');
+  panel.classList.add('translate-x-full');
+  setTimeout(()=>{ modal.classList.add('hidden'); }, 250);
+}
+
+function toCm(val){
+  return Math.round(val * 2.54 * 10) / 10;
+}
+
+function renderSizeGuideTable(){
+  const tableWrap = document.getElementById('sizeGuideTable');
+  const rows = Array.isArray(window.currentProduct?.sizeGuideTable) ? window.currentProduct.sizeGuideTable : [
+    { size:'XS', bust:'32-33', waist:'24-25', hips:'35-36', us:'0/1' },
+    { size:'S',  bust:'34-35', waist:'26-27', hips:'37-38', us:'3/5' },
+    { size:'M',  bust:'36-37', waist:'28-29', hips:'39-40', us:'7/9' },
+    { size:'L',  bust:'38.5-40', waist:'30.5-32', hips:'41.5-43', us:'11/13' },
+    { size:'XL', bust:'41.5', waist:'33-34', hips:'44-45', us:'15' },
+    { size:'1X', bust:'44-45.5', waist:'37-38.5', hips:'47-48.5', us:'14/16' },
+    { size:'2X', bust:'47-49', waist:'40-42', hips:'50-52', us:'18/20' },
+    { size:'3X', bust:'51-53', waist:'44-46', hips:'54-56', us:'22/24' },
+  ];
+
+  function convertRange(text){
+    if(sizeGuideUnit==='in') return text;
+    return text.replace(/\d+(?:\.\d+)?/g, (m)=> toCm(parseFloat(m)).toString());
+  }
+
+  const header = `
+    <div class="mb-3 text-sm text-gray-600">Sizes may vary by style. This is a general guide.</div>
+    <table class="w-full text-sm border-separate border-spacing-0">
+      <thead>
+        <tr class="bg-gray-100 text-gray-700">
+          <th class="text-left py-2 px-3 font-semibold">Size</th>
+          <th class="text-left py-2 px-3 font-semibold">Bust</th>
+          <th class="text-left py-2 px-3 font-semibold">Waist</th>
+          <th class="text-left py-2 px-3 font-semibold">Hips</th>
+          <th class="text-left py-2 px-3 font-semibold">US/CAN</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+  const body = rows.map(r => `
+    <tr class="border-b">
+      <td class="py-2 px-3">${r.size}</td>
+      <td class="py-2 px-3">${convertRange(r.bust)}</td>
+      <td class="py-2 px-3">${convertRange(r.waist)}</td>
+      <td class="py-2 px-3">${convertRange(r.hips)}</td>
+      <td class="py-2 px-3">${r.us || ''}</td>
+    </tr>
+  `).join('');
+  const footer = '</tbody></table>';
+  tableWrap.innerHTML = header + body + footer;
 }
 
 
