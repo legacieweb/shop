@@ -1755,5 +1755,69 @@ document.addEventListener('DOMContentLoaded', () => {
       observer.observe(card);
     });
   }, 100);
+
+  // Initialize auth buttons
+  renderAuthButtons();
+  renderMobileAuthButtons();
+
+  // Mobile menu functionality
+  const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+  const mobileMenu = document.getElementById('mobileMenu');
+  
+  if (mobileMenuBtn && mobileMenu) {
+    mobileMenuBtn.addEventListener('click', function() {
+      const isHidden = mobileMenu.classList.contains('hidden');
+      
+      if (isHidden) {
+        // Show menu
+        mobileMenu.classList.remove('hidden');
+        mobileMenu.style.maxHeight = '0px';
+        // Force reflow
+        mobileMenu.offsetHeight;
+        // Animate to full height
+        mobileMenu.style.maxHeight = '500px';
+        
+        // Update button icon to X
+        mobileMenuBtn.innerHTML = `
+          <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+          </svg>
+        `;
+      } else {
+        // Hide menu
+        mobileMenu.style.maxHeight = '0px';
+        
+        // Wait for animation to complete before hiding
+        setTimeout(() => {
+          mobileMenu.classList.add('hidden');
+        }, 300);
+        
+        // Update button icon back to hamburger
+        mobileMenuBtn.innerHTML = `
+          <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        `;
+      }
+    });
+
+    // Close mobile menu when clicking on nav links
+    mobileMenu.addEventListener('click', function(e) {
+      if (e.target.classList.contains('nav-link')) {
+        // Trigger close animation
+        mobileMenu.style.maxHeight = '0px';
+        setTimeout(() => {
+          mobileMenu.classList.add('hidden');
+        }, 300);
+        
+        // Reset button icon
+        mobileMenuBtn.innerHTML = `
+          <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        `;
+      }
+    });
+  }
 });
 </script>
