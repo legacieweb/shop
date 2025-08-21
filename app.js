@@ -3070,6 +3070,69 @@ app.post("/admin/update", async (req, res) => {
   }
 });
 
+// PATCH endpoint for order status updates (used by seller dashboard)
+app.patch("/order-status", async (req, res) => {
+  try {
+    const { id, status } = req.body;
+    
+    if (!id || !status) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Missing order ID or status",
+        error: "Missing order ID or status"
+      });
+    }
+
+    // Define valid status values
+    const validStatuses = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled', 'declined'];
+    
+    if (!validStatuses.includes(status.toLowerCase())) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Invalid status value",
+        error: "Invalid status value",
+        validStatuses: validStatuses
+      });
+    }
+
+    // Try to find and update the order by different possible ID fields
+    let updated = await Order.updateOne({ orderId: id }, { status: status });
+    
+    if (updated.modifiedCount === 0) {
+      // Try with the 'id' field instead
+      updated = await Order.updateOne({ id: id }, { status: status });
+    }
+    
+    if (updated.modifiedCount === 0) {
+      return res.status(404).json({ 
+        success: false, 
+        message: "Order not found",
+        error: "Order not found"
+      });
+    }
+
+    console.log(`✅ Order ${id} status updated to: ${status}`);
+
+    res.json({
+      success: true,
+      message: `Order status updated to ${status}`,
+      data: { 
+        orderId: id,
+        newStatus: status,
+        updated: updated.modifiedCount 
+      }
+    });
+
+  } catch (err) {
+    console.error("Order status update error:", err);
+    res.status(500).json({ 
+      success: false, 
+      message: "Server error during order status update",
+      error: "Server error during order status update"
+    });
+  }
+});
+
 // Change seller theme (for admin panel)
 app.post("/admin/change-theme", async (req, res) => {
   try {
