@@ -2551,17 +2551,6 @@ async function loadSales() {
         return;
       }
 
-      // Debug: Log order data to console to check what fields are available
-      if (process?.env?.NODE_ENV === 'development') {
-        console.log("Order data:", {
-          id: orderId,
-          variant: o.variant,
-          color: o.color,
-          paymentMethod: o.paymentMethod,
-          selectedVariant: o.selectedVariant,
-          selectedColor: o.selectedColor
-        });
-      }
 
       productCount[o.productName] = (productCount[o.productName] || 0) + 1;
       totalEarnings += parseFloat(o.total || 0);
