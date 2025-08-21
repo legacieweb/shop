@@ -349,53 +349,36 @@
     @apply text-slate-500 hover:text-slate-300 luxury-sans font-medium transition-colors text-sm;
   }
 
-  /* Cyberpunk Footer Glow Styles */
+  /* Elegant Footer Overrides (remove neon glow) */
   .glow-border {
-    box-shadow: 0 0 6px #0ff, 0 0 12px #0ff;
+    box-shadow: 0 2px 12px rgba(15, 23, 42, 0.08);
+    border: 1px solid rgba(15, 23, 42, 0.1);
   }
 
   .glow-text {
-    text-shadow: 0 0 4px #0ff, 0 0 8px #0ff;
+    text-shadow: none;
   }
 
   .flame-text-glow {
-    text-shadow: 0 0 4px #39f, 0 0 10px #0ff, 0 0 15px #0ff;
-    font-weight: 600;
+    text-shadow: none;
+    color: #94a3b8;
+    font-weight: 500;
     display: inline-block;
-    animation: flameGlowShift 3s ease-in-out infinite alternate;
-    transition: text-shadow 0.3s ease;
+    transition: color 0.2s ease;
+    animation: none;
   }
 
   .flame-text-glow:hover {
     text-decoration: underline;
+    color: #64748b;
   }
 
-  @keyframes flameGlowShift {
-    0% {
-      color: #000;
-      text-shadow:
-        0 0 2px #757575,
-        0 0 4px #838383,
-        0 0 6px #a1a1a1,
-        0 0 8px #b1b1b1;
-    }
-    50% {
-      color: #c0c0c0;
-      text-shadow:
-        0 0 4px #c0c0c0,
-        0 0 8px #cecece,
-        0 0 10px #c2c2c2,
-        0 0 12px #e0e0e0;
-    }
-    100% {
-      color: #d1cece;
-      text-shadow:
-        0 0 6px #dbdbdb,
-        0 0 12px #f7f4f3,
-        0 0 18px #f7f5f2,
-        0 0 24px #ffffff;
-    }
-  }
+  /* Subtle pulse for interactive footer text */
+  @keyframes flameGlowShift { from { opacity: 0.92; } 50% { opacity: 1; } to { opacity: 0.92; } }
+
+  /* Footer interaction overrides */
+  #footer { cursor: default; }
+  #footer:hover { filter: none !important; }
 
   .footer-link {
     color: #d1d5db;
@@ -602,6 +585,9 @@
   let socialLinks = Array.isArray(theme.socialLinks) ? theme.socialLinks : [];
   let footerLinks = Array.isArray(theme.footerLinks) ? theme.footerLinks : [];
   let currentEditingFooterLinkIndex = null;
+  // Expose data for global utility functions without colliding with DOM ids
+  window.__elegant = { socialLinks, footerLinks, theme, API, sellerParam, isOwner };
+  window.__elegantCurrentEditingFooterLinkIndex = null;
 
   // Ensure categoryHeroes is initialized
   if (!theme.categoryHeroes) {
@@ -792,7 +778,7 @@
       }
 
       heroSection.innerHTML = `
-        <div class="absolute inset-0 bg-gradient-to-r from-white/80 to-transparent"></div>
+        <div class="absolute inset-0"></div>
         <div class="relative z-10 max-w-6xl mx-auto px-6 text-center">
           <h2 class="category-hero-title luxury-category-title customizable-element">${categoryHero.title}</h2>
           <p class="category-hero-subtitle luxury-category-subtitle customizable-element">${categoryHero.subtitle}</p>
@@ -1316,43 +1302,46 @@
   const mobileMenu = document.getElementById('mobileMenu');
   
   if (mobileMenuBtn && mobileMenu) {
-    mobileMenuBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const isHidden = mobileMenu.classList.contains('hidden');
-      if (isHidden) {
+    // Accessibility attributes
+    mobileMenuBtn.setAttribute('aria-controls', 'mobileMenu');
+    mobileMenuBtn.setAttribute('aria-expanded', 'false');
+
+    const openIcon = `
+      <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+      </svg>`;
+    const closeIcon = `
+      <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+      </svg>`;
+
+    function toggleMobileMenu(force) {
+      const shouldOpen = typeof force === 'boolean' ? force : mobileMenu.classList.contains('hidden');
+      if (shouldOpen) {
         mobileMenu.classList.remove('hidden');
         mobileMenu.style.maxHeight = mobileMenu.scrollHeight + 'px';
-        mobileMenuBtn.innerHTML = `
-          <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-          </svg>
-        `;
+        mobileMenuBtn.innerHTML = closeIcon;
+        mobileMenuBtn.setAttribute('aria-expanded', 'true');
       } else {
         mobileMenu.style.maxHeight = '0px';
         setTimeout(() => {
           mobileMenu.classList.add('hidden');
         }, 300);
-        mobileMenuBtn.innerHTML = `
-          <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-          </svg>
-        `;
+        mobileMenuBtn.innerHTML = openIcon;
+        mobileMenuBtn.setAttribute('aria-expanded', 'false');
       }
+    }
+
+    mobileMenuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleMobileMenu();
     });
 
     // Close mobile menu when clicking outside
     document.addEventListener('click', (e) => {
       if (!mobileMenu.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
         if (!mobileMenu.classList.contains('hidden')) {
-          mobileMenu.style.maxHeight = '0px';
-          setTimeout(() => {
-            mobileMenu.classList.add('hidden');
-          }, 300);
-          mobileMenuBtn.innerHTML = `
-            <svg class="w-6 h-6 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-            </svg>
-          `;
+          toggleMobileMenu(false);
         }
       }
     });
@@ -1462,23 +1451,24 @@ function renderMobileAuthButtons() {
 function renderSocialLinks() {
   const container = document.getElementById("socialLinks");
   const section = document.getElementById("socialLinksSection");
+  const list = (window.__elegant && Array.isArray(window.__elegant.socialLinks)) ? window.__elegant.socialLinks : [];
   
-  if (socialLinks.length === 0) {
-    section.classList.add("hidden");
+  if (!list || list.length === 0) {
+    section?.classList.add("hidden");
     return;
   }
 
-  section.classList.remove("hidden");
-  container.innerHTML = '';
+  section?.classList.remove("hidden");
+  if (container) container.innerHTML = '';
 
-  socialLinks.forEach(link => {
+  list.forEach(link => {
     const linkEl = document.createElement("a");
     linkEl.href = link.url;
     linkEl.target = "_blank";
     linkEl.rel = "noopener noreferrer";
     linkEl.className = "bg-white/10 hover:bg-white/20 p-3 rounded-full transition-all transform hover:scale-110";
     linkEl.innerHTML = getSocialIcon(link.platform);
-    container.appendChild(linkEl);
+    container?.appendChild(linkEl);
   });
 }
 
@@ -1497,9 +1487,11 @@ function getSocialIcon(platform) {
 // Footer links management
 function renderFooterLinks() {
   const container = document.getElementById("footerLinks");
+  if (!container) return;
   container.innerHTML = '';
+  const list = (window.__elegant && Array.isArray(window.__elegant.footerLinks)) ? window.__elegant.footerLinks : [];
 
-  footerLinks.forEach(link => {
+  list.forEach(link => {
     const linkEl = document.createElement("button");
     linkEl.className = "footer-link";
     linkEl.textContent = link.title;
@@ -1516,17 +1508,19 @@ function showFooterLinkContent(link) {
 
 // Footer management functions
 function openFooterModal() {
-  if (!isOwner) return;
-  document.getElementById("footerModal").classList.remove("hidden");
+  if (!(window.__elegant && window.__elegant.isOwner)) return;
+  document.getElementById("footerModal")?.classList.remove("hidden");
   renderSocialLinksList();
   renderFooterLinksList();
 }
 
 function renderSocialLinksList() {
-  const list = document.getElementById("socialLinksList");
-  list.innerHTML = '';
+  const listEl = document.getElementById("socialLinksList");
+  if (!listEl) return;
+  listEl.innerHTML = '';
 
-  socialLinks.forEach((link, index) => {
+  const list = (window.__elegant && Array.isArray(window.__elegant.socialLinks)) ? window.__elegant.socialLinks : [];
+  list.forEach((link, index) => {
     const linkItem = document.createElement("div");
     linkItem.className = "flex items-center gap-3 p-3 bg-gray-50 rounded-lg";
     linkItem.innerHTML = `
@@ -1544,15 +1538,17 @@ function renderSocialLinksList() {
         Remove
       </button>
     `;
-    list.appendChild(linkItem);
+    listEl.appendChild(linkItem);
   });
 }
 
 function renderFooterLinksList() {
-  const list = document.getElementById("footerLinksList");
-  list.innerHTML = '';
+  const listEl = document.getElementById("footerLinksList");
+  if (!listEl) return;
+  listEl.innerHTML = '';
 
-  footerLinks.forEach((link, index) => {
+  const list = (window.__elegant && Array.isArray(window.__elegant.footerLinks)) ? window.__elegant.footerLinks : [];
+  list.forEach((link, index) => {
     const linkItem = document.createElement("div");
     linkItem.className = "flex items-center gap-3 p-3 bg-gray-50 rounded-lg";
     linkItem.innerHTML = `
@@ -1569,20 +1565,21 @@ function renderFooterLinksList() {
         </button>
       </div>
     `;
-    list.appendChild(linkItem);
+    listEl.appendChild(linkItem);
   });
 }
 
 function addSocialLink() {
-  socialLinks.push({
-    platform: 'facebook',
-    url: ''
-  });
+  if (!window.__elegant) window.__elegant = {};
+  if (!Array.isArray(window.__elegant.socialLinks)) window.__elegant.socialLinks = [];
+  window.__elegant.socialLinks.push({ platform: 'facebook', url: '' });
   renderSocialLinksList();
 }
 
 function addFooterLink() {
-  currentEditingFooterLinkIndex = footerLinks.length;
+  if (!window.__elegant) window.__elegant = {};
+  if (!Array.isArray(window.__elegant.footerLinks)) window.__elegant.footerLinks = [];
+  window.__elegantCurrentEditingFooterLinkIndex = window.__elegant.footerLinks.length;
   document.getElementById("footerLinkContentTitle").textContent = "Add New Footer Link";
   document.getElementById("footerLinkTitle").value = "";
   document.getElementById("footerLinkContent").value = "";
@@ -1590,8 +1587,9 @@ function addFooterLink() {
 }
 
 function editFooterLink(index) {
-  currentEditingFooterLinkIndex = index;
-  const link = footerLinks[index];
+  const list = (window.__elegant && Array.isArray(window.__elegant.footerLinks)) ? window.__elegant.footerLinks : [];
+  window.__elegantCurrentEditingFooterLinkIndex = index;
+  const link = list[index];
   document.getElementById("footerLinkContentTitle").textContent = "Edit Footer Link";
   document.getElementById("footerLinkTitle").value = link.title;
   document.getElementById("footerLinkContent").value = link.content;
@@ -1608,69 +1606,74 @@ function saveFooterLinkContent() {
   }
 
   const linkData = { title, content };
+  if (!window.__elegant) window.__elegant = {};
+  if (!Array.isArray(window.__elegant.footerLinks)) window.__elegant.footerLinks = [];
 
-  if (currentEditingFooterLinkIndex < footerLinks.length) {
-    footerLinks[currentEditingFooterLinkIndex] = linkData;
+  const idx = window.__elegantCurrentEditingFooterLinkIndex ?? window.__elegant.footerLinks.length;
+  if (idx < window.__elegant.footerLinks.length) {
+    window.__elegant.footerLinks[idx] = linkData;
   } else {
-    footerLinks.push(linkData);
+    window.__elegant.footerLinks.push(linkData);
   }
 
   renderFooterLinksList();
   renderFooterLinks();
   document.getElementById("footerLinkContentModal").classList.add("hidden");
-  currentEditingFooterLinkIndex = null;
+  window.__elegantCurrentEditingFooterLinkIndex = null;
 }
 
 function removeSocialLink(index) {
-  socialLinks.splice(index, 1);
+  const list = (window.__elegant && Array.isArray(window.__elegant.socialLinks)) ? window.__elegant.socialLinks : [];
+  list.splice(index, 1);
+  window.__elegant.socialLinks = list;
   renderSocialLinksList();
   renderSocialLinks();
 }
 
 function removeFooterLink(index) {
-  footerLinks.splice(index, 1);
+  const list = (window.__elegant && Array.isArray(window.__elegant.footerLinks)) ? window.__elegant.footerLinks : [];
+  list.splice(index, 1);
+  window.__elegant.footerLinks = list;
   renderFooterLinksList();
   renderFooterLinks();
 }
 
 async function saveFooterSettings() {
-  // Update socialLinks array with current form values
+  // Sync selections into data store
+  const list = (window.__elegant && Array.isArray(window.__elegant.socialLinks)) ? window.__elegant.socialLinks : [];
   document.querySelectorAll('.social-platform').forEach(select => {
     const index = parseInt(select.dataset.index);
-    if (socialLinks[index]) {
-      socialLinks[index].platform = select.value;
-    }
+    if (list[index]) list[index].platform = select.value;
   });
-
   document.querySelectorAll('.social-url').forEach(input => {
     const index = parseInt(input.dataset.index);
-    if (socialLinks[index]) {
-      socialLinks[index].url = input.value.trim();
-    }
+    if (list[index]) list[index].url = input.value.trim();
   });
 
-  // Remove empty links
-  socialLinks = socialLinks.filter(link => link.url);
+  const filtered = list.filter(link => link.url);
+  window.__elegant.socialLinks = filtered;
 
   // Update theme
-  theme.socialLinks = socialLinks;
-  theme.footerLinks = footerLinks;
+  const themeObj = (window.__elegant && window.__elegant.theme) || {};
+  themeObj.socialLinks = filtered;
+  themeObj.footerLinks = (window.__elegant && window.__elegant.footerLinks) || [];
+  window.__elegant.theme = themeObj;
 
   // Save to server
   try {
-    await fetch(`${API}/update`, {
+    await fetch(`${window.__elegant.API}/update`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         collection: "users",
-        query: { username: sellerParam },
+        query: { username: window.__elegant.sellerParam },
         updates: {
-          customTheme: theme,
-          theme: theme,
+          customTheme: themeObj,
+          theme: themeObj,
           shopSettings: {
-            ...theme,
-            socialLinks: socialLinks,
-            footerLinks: footerLinks
+            ...themeObj,
+            socialLinks: themeObj.socialLinks,
+            footerLinks: themeObj.footerLinks
           }
         }
       })
@@ -1683,7 +1686,7 @@ async function saveFooterSettings() {
 
   renderSocialLinks();
   renderFooterLinks();
-  document.getElementById("footerModal").classList.add("hidden");
+  document.getElementById("footerModal")?.classList.add("hidden");
 }
 
 // Event listeners for footer management

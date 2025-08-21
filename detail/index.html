@@ -1231,8 +1231,12 @@ function renderSizeGuideTable(){
 
   // Fallbacks by category type if shop has presets
   const category = (window.currentProduct?.category || '').toLowerCase();
-  const isShoes = category.includes('shoe') || guide.type === 'shoes';
-  const isBottoms = category.includes('jean') || category.includes('bottom') || guide.type === 'bottoms';
+  const categoryText = [category, (window.currentProduct?.tags || []).join(' ').toLowerCase()].join(' ');
+  const isShoes = categoryText.includes('shoe') || categoryText.includes('boot') || categoryText.includes('sandal') || guide.type === 'shoes';
+  const isBottoms = (
+    ['jean','bottom','short','shorts','skirt','skirts','pant','pants','trouser','trousers','legging','leggings','denim']
+      .some(k => categoryText.includes(k))
+  ) || guide.type === 'bottoms';
 
   // If seller saved a custom table: expect an array of rows with arbitrary columns
   if (Array.isArray(guide.table) && Array.isArray(guide.columns)) {

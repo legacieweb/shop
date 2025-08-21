@@ -587,7 +587,7 @@ app.post("/upload-files", memoryUpload.fields([
 const allowedLayouts = [
   "classic", "modern", "cyber", "vintage", "minimalist",
   "nature", "elegant", "luxury", "artistic", "bold",
-  "professional", "freestyle", "futuristic"
+  "professional", "freestyle", "minimalistdark"
 ];
 
 // ✅ Serve layout HTML files securely

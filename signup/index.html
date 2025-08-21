@@ -79,27 +79,34 @@
     }
 
     try {
-      // ✅ Query by username only (no strict role filter)
       let res = await fetch(`${API}/find?collection=users&username=${encodeURIComponent(seller)}`);
-      let sellers = await res.json();
-
-      if (!Array.isArray(sellers) || !sellers.length) {
-        nameEl.textContent = "❌ Seller not found";
-        return;
+      let sellers = [];
+      if (res.ok) {
+        sellers = await res.json();
+      } else {
+        try { sellers = await res.json(); } catch {}
       }
 
-      const shop = sellers[0];
-      const theme = shop.customTheme || {};
+      let shop = null;
+      if (Array.isArray(sellers) && sellers.length) {
+        shop = sellers.find(u => (u.username || '').toLowerCase() === seller.toLowerCase()) || sellers[0];
+      }
 
-      nameEl.textContent = theme.name || shop.username || "ShopRight";
+      const theme = (shop && shop.customTheme) || {};
+
+      // Fallback to URL seller if no record found
+      nameEl.textContent = theme.name || (shop && shop.username) || seller;
       logoEl.src = resolveImage(theme.logo);
 
-      // ✅ Keep seller param in login link
+      // Keep seller param in login link
       const loginLink = document.getElementById("loginLink");
-      loginLink.href = `../login?seller=${encodeURIComponent(shop.username)}`;
+      loginLink.href = `../login?seller=${encodeURIComponent((shop && shop.username) || seller)}`;
     } catch (err) {
-      nameEl.textContent = "⚠️ Error loading shop";
+      // Still show the seller from URL and keep the flow working
+      nameEl.textContent = seller || "Signup";
       console.error("Theme load failed:", err);
+      const loginLink = document.getElementById("loginLink");
+      if (seller) loginLink.href = `../login?seller=${encodeURIComponent(seller)}`;
     }
   }
 
@@ -138,7 +145,7 @@
 
         setTimeout(() => {
           const params = new URLSearchParams({ seller, email, password });
-          window.location.href = `login.html?${params.toString()}`;
+          window.location.href = `../login?${params.toString()}`;
         }, 1800);
       } else {
         const errorData = await res.json();
