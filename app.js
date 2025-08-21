@@ -3070,6 +3070,91 @@ app.post("/admin/update", async (req, res) => {
   }
 });
 
+// Update order status endpoint for dashboard
+app.patch("/order-status", async (req, res) => {
+  try {
+    const { id, status } = req.body;
+    
+    if (!id || !status) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Missing required fields: id and status are required" 
+      });
+    }
+
+    // Validate status values
+    const validStatuses = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ 
+        success: false, 
+        message: `Invalid status value. Must be one of: ${validStatuses.join(', ')}` 
+      });
+    }
+
+    // Try to find and update the order by the 'id' field (not MongoDB _id)
+    const updated = await Order.updateOne({ id }, { status });
+    
+    if (updated.modifiedCount === 0) {
+      // If not found by 'id', try by 'orderId' field as fallback
+      const updatedByOrderId = await Order.updateOne({ orderId: id }, { status });
+      
+      if (updatedByOrderId.modifiedCount === 0) {
+        return res.status(404).json({ 
+          success: false, 
+          message: "Order not found" 
+        });
+      }
+    }
+
+    // Find the updated order to get buyer information for email notification
+    const order = await Order.findOne({ $or: [{ id }, { orderId: id }] });
+    
+    if (order && order.buyer) {
+      try {
+        // Send email notification to buyer
+        const buyerEmail = typeof order.buyer === 'object' ? order.buyer.email : order.buyer;
+        const statusText = status.toLowerCase();
+        
+        await emailService.sendMail({
+          to: buyerEmail,
+          subject: `Order Update - Your order is now ${statusText}`,
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+              <h2>Order Status Update</h2>
+              <p>Hello,</p>
+              <p>Your order <strong>#${order.orderId || order.id}</strong> status has been updated to <strong>${status}</strong>.</p>
+              <div style="background: #f5f5f5; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                <p><strong>Product:</strong> ${order.productName}</p>
+                <p><strong>Status:</strong> ${status}</p>
+                <p><strong>Order ID:</strong> ${order.orderId || order.id}</p>
+              </div>
+              <p>Thank you for your business!</p>
+            </div>
+          `,
+          shopName: order.seller || "Your Store"
+        });
+      } catch (emailError) {
+        console.error("Failed to send order status email:", emailError);
+        // Don't fail the request if email fails
+      }
+    }
+
+    res.json({
+      success: true,
+      message: `Order status updated to ${status}`,
+      data: { updated: true }
+    });
+
+  } catch (err) {
+    console.error("Order status update error:", err);
+    res.status(500).json({ 
+      success: false, 
+      message: "Server error during order status update",
+      error: err.message 
+    });
+  }
+});
+
 // Change seller theme (for admin panel)
 app.post("/admin/change-theme", async (req, res) => {
   try {
