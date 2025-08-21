@@ -2556,12 +2556,16 @@ async function loadSales() {
       totalEarnings += parseFloat(o.total || 0);
 
       const statusColors = {
+        // Frontend statuses
         pending: "text-yellow-700 bg-yellow-100 border-yellow-200",
-        confirmed: "text-blue-700 bg-blue-100 border-blue-200",
+        confirmed: "text-blue-700 bg-blue-100 border-blue-200", 
         ready: "text-indigo-700 bg-indigo-100 border-indigo-200",
         delivered: "text-green-700 bg-green-100 border-green-200",
         cancelled: "text-red-700 bg-red-100 border-red-200",
-        declined: "text-gray-700 bg-gray-100 border-gray-200"
+        declined: "text-gray-700 bg-gray-100 border-gray-200",
+        // Backend statuses (in case they come back from server)
+        processing: "text-blue-700 bg-blue-100 border-blue-200",
+        shipped: "text-indigo-700 bg-indigo-100 border-indigo-200"
       };
       const statusClass = statusColors[o.status?.toLowerCase()] || "text-gray-700";
       const productImage = productMap[o.productId]?.image || 'https://placehold.co/80';
@@ -2659,8 +2663,11 @@ async function loadSales() {
 
         if (!orderId) {
           console.error("❌ Missing order ID for status update.");
+          showCoolNotification("Error: Order ID not found", 'error');
           return;
         }
+
+        console.log(`🔄 Updating order ${orderId} to status: ${newStatus}`);
 
         btn.disabled = true;
         const originalText = btn.textContent;
@@ -2745,28 +2752,36 @@ function showCoolNotification(message, type = 'success') {
 }
 
 window.updateOrderStatus = async function(orderId, status) {
-  // Capitalize first letter of status to match server validation
-  const capitalizedStatus = status.charAt(0).toUpperCase() + status.slice(1);
-  
   try {
-    // Use the correct endpoint for updating order status
-    const res = await fetch(`${API}/update`, {
-      method: "POST",
+    // Map frontend statuses to backend expected statuses
+    const statusMapping = {
+      'pending': 'Pending',
+      'confirmed': 'Processing', 
+      'ready': 'Shipped',
+      'delivered': 'Delivered',
+      'cancelled': 'Cancelled',
+      'declined': 'Cancelled'
+    };
+    
+    const backendStatus = statusMapping[status.toLowerCase()] || 'Pending';
+    
+    // Use the correct /order-status endpoint
+    const res = await fetch(`${API}/order-status`, {
+      method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        collection: "orders",
-        query: { $or: [{ _id: orderId }, { id: orderId }, { orderId: orderId }] },
-        updates: { status: capitalizedStatus }
+        id: orderId,
+        status: backendStatus
       })
     });
 
     const result = await res.json();
     if (!res.ok || !result.success) {
-      throw new Error(result?.error || result?.message || "Status update failed");
+      throw new Error(result?.message || result?.error || "Status update failed");
     }
     
-    // ✨ Show cool notification instead of console log
-    showCoolNotification(`Order marked as ${capitalizedStatus}. Email notification sent to buyer!`);
+    // ✨ Show cool notification
+    showCoolNotification(`Order marked as ${status}. Email notification sent to buyer!`);
     
     // Reload the sales data to reflect the updated status
     setTimeout(() => {
