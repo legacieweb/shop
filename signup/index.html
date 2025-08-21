@@ -54,115 +54,109 @@
       </p>
     </div>
   </div>
+<script>
+  const API = "https://shop-stp5.onrender.com";
 
-  <script>
-    const API = "https://shop-stp5.onrender.com";
-
-    function getSellerParam() {
-      const params = new URLSearchParams(window.location.search);
-      return params.get("seller");
-    }
-
-    function resolveImage(img) {
-      if (!img) return "https://placehold.co/100x100?text=Logo";
-      if (img.startsWith("http") || img.startsWith("data:")) return img;
-      return `${API}/uploads/${img.replace(/^\/?uploads\//, '')}`;
-    }
-
-async function loadShopTheme() {
-  const seller = getSellerParam();
-  const nameEl = document.getElementById("shopName");
-  const logoEl = document.getElementById("shopLogo");
-
-  if (!seller) {
-    nameEl.textContent = "Signup";
-    return;
+  function getSellerParam() {
+    const params = new URLSearchParams(window.location.search);
+    return params.get("seller");
   }
 
-  try {
-    // First try with role=seller (strict match)
-    let res = await fetch(`${API}/find?collection=users&username=${encodeURIComponent(seller)}&role=seller`);
-    let sellers = await res.json();
+  function resolveImage(img) {
+    if (!img) return "https://placehold.co/100x100?text=Logo";
+    if (img.startsWith("http") || img.startsWith("data:")) return img;
+    return `${API}/uploads/${img.replace(/^\/?uploads\//, '')}`;
+  }
 
-    // 🔄 Fallback: try without role restriction (for dynamic roles like seller_premium)
-    if (!sellers.length) {
-      res = await fetch(`${API}/find?collection=users&username=${encodeURIComponent(seller)}`);
-      sellers = await res.json();
-    }
+  async function loadShopTheme() {
+    const seller = getSellerParam();
+    const nameEl = document.getElementById("shopName");
+    const logoEl = document.getElementById("shopLogo");
 
-    if (!sellers.length) {
-      nameEl.textContent = "❌ Seller not found";
+    if (!seller) {
+      nameEl.textContent = "Signup";
       return;
     }
 
-    const shop = sellers[0];
-    const theme = shop.customTheme || {};
+    try {
+      // ✅ Query by username only (no strict role filter)
+      let res = await fetch(`${API}/find?collection=users&username=${encodeURIComponent(seller)}`);
+      let sellers = await res.json();
 
-    nameEl.textContent = theme.name || shop.username || "ShopRight";
-    logoEl.src = resolveImage(theme.logo);
-
-    // Update login link to retain seller param
-    const loginLink = document.getElementById("loginLink");
-    loginLink.href = `../login?seller=${encodeURIComponent(shop.username)}`;
-  } catch (err) {
-    nameEl.textContent = "⚠️ Error loading shop";
-    console.error("Theme load failed:", err);
-  }
-}
-
-    document.getElementById("signupForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const form = e.target;
-      const button = form.querySelector("button[type='submit']");
-      const email = form.email.value.trim();
-      const username = form.username.value.trim();
-      const password = form.password.value;
-      const seller = getSellerParam();
-
-      if (!email || !username || !password) {
-        alert("⚠️ All fields are required.");
+      if (!Array.isArray(sellers) || !sellers.length) {
+        nameEl.textContent = "❌ Seller not found";
         return;
       }
 
-      // Disable button and show loading
-      button.disabled = true;
-      button.innerHTML = `<svg class="animate-spin mr-2 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
-                          </svg> Creating...`;
+      const shop = sellers[0];
+      const theme = shop.customTheme || {};
 
-      try {
-        const res = await fetch(`${API}/signup${seller ? `?seller=${encodeURIComponent(seller)}` : ""}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, username, password })
-        });
+      nameEl.textContent = theme.name || shop.username || "ShopRight";
+      logoEl.src = resolveImage(theme.logo);
 
-        if (res.ok) {
-          const popup = document.getElementById("successPopup");
-          popup.classList.remove("hidden");
+      // ✅ Keep seller param in login link
+      const loginLink = document.getElementById("loginLink");
+      loginLink.href = `../login?seller=${encodeURIComponent(shop.username)}`;
+    } catch (err) {
+      nameEl.textContent = "⚠️ Error loading shop";
+      console.error("Theme load failed:", err);
+    }
+  }
 
-          setTimeout(() => {
-            const params = new URLSearchParams({ seller, email, password });
-            window.location.href = `login.html?${params.toString()}`;
-          }, 1800);
-        } else {
-          const errorData = await res.json();
-          alert("❌ Signup failed: " + (errorData.error || "Unknown error."));
-          button.disabled = false;
-          button.innerHTML = "Sign Up";
-        }
-      } catch (err) {
-        console.error("Signup error:", err);
-        alert("❌ Network error. Please try again later.");
+  document.getElementById("signupForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const form = e.target;
+    const button = form.querySelector("button[type='submit']");
+    const email = form.email.value.trim();
+    const username = form.username.value.trim();
+    const password = form.password.value;
+    const seller = getSellerParam();
+
+    if (!email || !username || !password) {
+      alert("⚠️ All fields are required.");
+      return;
+    }
+
+    button.disabled = true;
+    button.innerHTML = `<svg class="animate-spin mr-2 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                        </svg> Creating...`;
+
+    try {
+      // ✅ Pass seller if exists
+      const res = await fetch(`${API}/signup${seller ? `?seller=${encodeURIComponent(seller)}` : ""}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, username, password })
+      });
+
+      if (res.ok) {
+        const popup = document.getElementById("successPopup");
+        popup.classList.remove("hidden");
+
+        setTimeout(() => {
+          const params = new URLSearchParams({ seller, email, password });
+          window.location.href = `login.html?${params.toString()}`;
+        }, 1800);
+      } else {
+        const errorData = await res.json();
+        alert("❌ Signup failed: " + (errorData.error || "Unknown error."));
         button.disabled = false;
         button.innerHTML = "Sign Up";
       }
-    });
+    } catch (err) {
+      console.error("Signup error:", err);
+      alert("❌ Network error. Please try again later.");
+      button.disabled = false;
+      button.innerHTML = "Sign Up";
+    }
+  });
 
-    loadShopTheme();
-  </script>
+  loadShopTheme();
+</script>
+
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6JSC6HT7EC"></script>
 <script>

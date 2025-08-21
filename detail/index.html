@@ -1227,7 +1227,45 @@ function toCm(val){
 
 function renderSizeGuideTable(){
   const tableWrap = document.getElementById('sizeGuideTable');
-  const rows = Array.isArray(window.currentProduct?.sizeGuideTable) ? window.currentProduct.sizeGuideTable : [
+  const guide = (window.currentProduct?.shopSettings?.sizeGuide) || {};
+
+  // Fallbacks by category type if shop has presets
+  const category = (window.currentProduct?.category || '').toLowerCase();
+  const isShoes = category.includes('shoe') || guide.type === 'shoes';
+  const isBottoms = category.includes('jean') || category.includes('bottom') || guide.type === 'bottoms';
+
+  // If seller saved a custom table: expect an array of rows with arbitrary columns
+  if (Array.isArray(guide.table) && Array.isArray(guide.columns)) {
+    const cols = guide.columns; // e.g., ['Size','Bust','Waist','Hips','US/CAN'] or ['Size','US/CAN','UK','EU','AUS']
+    const header = `
+      <div class="mb-3 text-sm text-gray-600">${guide.title || ''}</div>
+      <table class="w-full text-sm border-separate border-spacing-0">
+        <thead>
+          <tr class="bg-gray-100 text-gray-700">
+            ${cols.map(c => `<th class='text-left py-2 px-3 font-semibold'>${c}</th>`).join('')}
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    function convertText(val){
+      if(sizeGuideUnit==='in') return val;
+      // convert any numeric inches we find to cm
+      return String(val).replace(/\d+(?:\.\d+)?/g, (m)=> (Math.round(parseFloat(m)*2.54*10)/10).toString());
+    }
+
+    const body = guide.table.map(row => `
+      <tr class="border-b">
+        ${cols.map(c => `<td class='py-2 px-3'>${convertText(row[c] ?? '')}</td>`).join('')}
+      </tr>
+    `).join('');
+
+    tableWrap.innerHTML = header + body + '</tbody></table>';
+    return;
+  }
+
+  // Default presets (if seller did not save a custom table)
+  const topsRows = [
     { size:'XS', bust:'32-33', waist:'24-25', hips:'35-36', us:'0/1' },
     { size:'S',  bust:'34-35', waist:'26-27', hips:'37-38', us:'3/5' },
     { size:'M',  bust:'36-37', waist:'28-29', hips:'39-40', us:'7/9' },
@@ -1237,37 +1275,96 @@ function renderSizeGuideTable(){
     { size:'2X', bust:'47-49', waist:'40-42', hips:'50-52', us:'18/20' },
     { size:'3X', bust:'51-53', waist:'44-46', hips:'54-56', us:'22/24' },
   ];
+  const bottomsRows = [
+    { size:'XS', waist:'24-25', hips:'35-36', us:'0/1' },
+    { size:'S',  waist:'26-27', hips:'37-38', us:'3/5' },
+    { size:'M',  waist:'28-29', hips:'39-40', us:'7/9' },
+    { size:'L',  waist:'30.5-32', hips:'41.5-43', us:'11/13' },
+    { size:'XL', waist:'33 1/2', hips:'44 1/2', us:'15' },
+    { size:'1X', waist:'37-38.5', hips:'47-48.5', us:'14/16' },
+    { size:'2X', waist:'40-42', hips:'50-52', us:'18/20' },
+    { size:'3X', waist:'44-46', hips:'54-56', us:'22/24' },
+  ];
+  const shoesRows = [
+    { size:'5',  'US/CAN':'5',  UK:'3',   EU:'35-36', AUS:'5' },
+    { size:'5.5','US/CAN':'5.5',UK:'3.5', EU:'36',    AUS:'5.5' },
+    { size:'6',  'US/CAN':'6',  UK:'4',   EU:'36-37', AUS:'6' },
+    { size:'6.5','US/CAN':'6.5',UK:'4.5', EU:'37',    AUS:'6.5' },
+    { size:'7',  'US/CAN':'7',  UK:'5',   EU:'37-38', AUS:'7' },
+    { size:'7.5','US/CAN':'7.5',UK:'5.5', EU:'38',    AUS:'7.5' },
+    { size:'8',  'US/CAN':'8',  UK:'6',   EU:'38-39', AUS:'8' },
+    { size:'8.5','US/CAN':'8.5',UK:'6.5', EU:'39',    AUS:'8.5' },
+    { size:'9',  'US/CAN':'9',  UK:'7',   EU:'39-40', AUS:'9' },
+    { size:'10', 'US/CAN':'10', UK:'7.5', EU:'40-41', AUS:'10' },
+    { size:'11', 'US/CAN':'11', UK:'8',   EU:'41-42', AUS:'11' },
+  ];
 
   function convertRange(text){
     if(sizeGuideUnit==='in') return text;
-    return text.replace(/\d+(?:\.\d+)?/g, (m)=> toCm(parseFloat(m)).toString());
+    return String(text).replace(/\d+(?:\.\d+)?/g, (m)=> (Math.round(parseFloat(m)*2.54*10)/10).toString());
   }
 
+  if (isShoes) {
+    const cols = ['Size','US/CAN','UK','EU','AUS'];
+    const header = `
+      <div class="mb-3 text-sm text-gray-600">${guide.title || "Women's Shoes Size Guide"}</div>
+      <table class="w-full text-sm border-separate border-spacing-0">
+        <thead>
+          <tr class="bg-gray-100 text-gray-700">${cols.map(c=>`<th class='text-left py-2 px-3 font-semibold'>${c}</th>`).join('')}</tr>
+        </thead>
+        <tbody>
+    `;
+    const body = shoesRows.map(r => `
+      <tr class="border-b">
+        ${cols.map(c => `<td class='py-2 px-3'>${r[c] || ''}</td>`).join('')}
+      </tr>
+    `).join('');
+    tableWrap.innerHTML = header + body + '</tbody></table>';
+    return;
+  }
+
+  if (isBottoms) {
+    const cols = ['Size','Waist','Hips','US/CAN'];
+    const header = `
+      <div class="mb-3 text-sm text-gray-600">${guide.title || 'Jeans & Bottoms Size Guide'}</div>
+      <table class="w-full text-sm border-separate border-spacing-0">
+        <thead>
+          <tr class="bg-gray-100 text-gray-700">${cols.map(c=>`<th class='text-left py-2 px-3 font-semibold'>${c}</th>`).join('')}</tr>
+        </thead>
+        <tbody>
+    `;
+    const body = bottomsRows.map(r => `
+      <tr class="border-b">
+        <td class='py-2 px-3'>${r.size}</td>
+        <td class='py-2 px-3'>${convertRange(r.waist)}</td>
+        <td class='py-2 px-3'>${convertRange(r.hips)}</td>
+        <td class='py-2 px-3'>${r.us}</td>
+      </tr>
+    `).join('');
+    tableWrap.innerHTML = header + body + '</tbody></table>';
+    return;
+  }
+
+  // Tops & dresses default
+  const cols = ['Size','Bust','Waist','Hips','US/CAN'];
   const header = `
-    <div class="mb-3 text-sm text-gray-600">Sizes may vary by style. This is a general guide.</div>
+    <div class="mb-3 text-sm text-gray-600">${guide.title || 'Tops & Dresses Size Guide'}</div>
     <table class="w-full text-sm border-separate border-spacing-0">
       <thead>
-        <tr class="bg-gray-100 text-gray-700">
-          <th class="text-left py-2 px-3 font-semibold">Size</th>
-          <th class="text-left py-2 px-3 font-semibold">Bust</th>
-          <th class="text-left py-2 px-3 font-semibold">Waist</th>
-          <th class="text-left py-2 px-3 font-semibold">Hips</th>
-          <th class="text-left py-2 px-3 font-semibold">US/CAN</th>
-        </tr>
+        <tr class="bg-gray-100 text-gray-700">${cols.map(c=>`<th class='text-left py-2 px-3 font-semibold'>${c}</th>`).join('')}</tr>
       </thead>
       <tbody>
   `;
-  const body = rows.map(r => `
+  const body = topsRows.map(r => `
     <tr class="border-b">
-      <td class="py-2 px-3">${r.size}</td>
-      <td class="py-2 px-3">${convertRange(r.bust)}</td>
-      <td class="py-2 px-3">${convertRange(r.waist)}</td>
-      <td class="py-2 px-3">${convertRange(r.hips)}</td>
-      <td class="py-2 px-3">${r.us || ''}</td>
+      <td class='py-2 px-3'>${r.size}</td>
+      <td class='py-2 px-3'>${convertRange(r.bust)}</td>
+      <td class='py-2 px-3'>${convertRange(r.waist)}</td>
+      <td class='py-2 px-3'>${convertRange(r.hips)}</td>
+      <td class='py-2 px-3'>${r.us}</td>
     </tr>
   `).join('');
-  const footer = '</tbody></table>';
-  tableWrap.innerHTML = header + body + footer;
+  tableWrap.innerHTML = header + body + '</tbody></table>';
 }
 
 
