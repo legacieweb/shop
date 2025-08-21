@@ -460,115 +460,6 @@ app.post("/update", async (req, res) => {
   }
 });
 
-// 🔹 ORDER STATUS UPDATE
-app.patch("/order-status", async (req, res) => {
-  try {
-    const { id, status } = req.body;
-    
-    if (!id || !status) {
-      return res.status(400).json({ 
-        success: false, 
-        message: "Missing required fields: id and status" 
-      });
-    }
-
-    // Validate status value
-    const validStatuses = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
-    if (!validStatuses.includes(status)) {
-      return res.status(400).json({ 
-        success: false, 
-        message: `Invalid status. Valid options: ${validStatuses.join(', ')}` 
-      });
-    }
-
-    // Find and update the order
-    const order = await Order.findOneAndUpdate(
-      { $or: [{ id: id }, { orderId: id }, { _id: id }] },
-      { status: status },
-      { new: true }
-    );
-
-    if (!order) {
-      return res.status(404).json({ 
-        success: false, 
-        message: "Order not found" 
-      });
-    }
-
-    // Send email notification to buyer
-    try {
-      if (order.buyer && (order.buyer.email || order.buyer.customerEmail)) {
-        const buyerEmail = order.buyer.email || order.buyer.customerEmail;
-        const buyerName = order.buyer.name || order.buyer.customerName || 'Valued Customer';
-        
-        const statusColors = {
-          'Pending': '#f59e0b',
-          'Processing': '#3b82f6', 
-          'Shipped': '#8b5cf6',
-          'Delivered': '#10b981',
-          'Cancelled': '#ef4444'
-        };
-
-        const emailHtml = `
-          <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; max-width: 600px; margin: 0 auto; background: #f8fafc; padding: 20px;">
-            <div style="background: white; border-radius: 12px; padding: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
-              <div style="text-align: center; margin-bottom: 30px;">
-                <h1 style="color: #1f2937; margin: 0; font-size: 28px;">Order Status Update</h1>
-              </div>
-              
-              <div style="background: ${statusColors[status] || '#6b7280'}; color: white; padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 25px;">
-                <h2 style="margin: 0; font-size: 24px;">Status: ${status}</h2>
-              </div>
-              
-              <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
-                <h3 style="color: #374151; margin-top: 0;">Order Details:</h3>
-                <p style="margin: 5px 0; color: #6b7280;"><strong>Order ID:</strong> ${order.orderId || order.id}</p>
-                <p style="margin: 5px 0; color: #6b7280;"><strong>Product:</strong> ${order.productName || 'N/A'}</p>
-                <p style="margin: 5px 0; color: #6b7280;"><strong>Quantity:</strong> ${order.quantity}</p>
-                <p style="margin: 5px 0; color: #6b7280;"><strong>Total:</strong> ${order.currency || 'USD'} ${order.total || order.subtotal || 'N/A'}</p>
-              </div>
-              
-              <div style="text-align: center; margin-top: 30px;">
-                <p style="color: #6b7280; margin: 0;">Thank you for your business!</p>
-                <p style="color: #9ca3af; font-size: 14px; margin: 10px 0 0 0;">This is an automated notification from your seller.</p>
-              </div>
-            </div>
-          </div>
-        `;
-
-        await emailService.sendMail({
-          to: buyerEmail,
-          subject: `Order Status Update: ${status} - Order #${order.orderId || order.id}`,
-          html: emailHtml,
-          shopName: order.shopSettings?.name || 'ShopRight'
-        });
-
-        console.log(`✅ Order status email sent to ${buyerEmail} for order ${order.orderId || order.id}`);
-      }
-    } catch (emailError) {
-      console.error("❌ Failed to send order status email:", emailError);
-      // Don't fail the request if email fails
-    }
-
-    res.json({ 
-      success: true, 
-      message: `Order status updated to ${status}`,
-      data: { 
-        orderId: order.orderId || order.id,
-        status: order.status 
-      }
-    });
-
-  } catch (error) {
-    console.error("Order status update error:", error);
-    res.status(500).json({ 
-      success: false, 
-      message: "Server error during order status update",
-      error: error.message 
-    });
-  }
-});
-
 // 🔹 DELETE
 app.post("/delete", async (req, res) => {
   try {
@@ -696,7 +587,7 @@ app.post("/upload-files", memoryUpload.fields([
 const allowedLayouts = [
   "classic", "modern", "cyber", "vintage", "minimalist",
   "nature", "elegant", "luxury", "artistic", "bold",
-  "professional", "freestyle", "minimalistdark"
+  "professional", "freestyle", "futuristic"
 ];
 
 // ✅ Serve layout HTML files securely
