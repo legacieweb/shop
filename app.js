@@ -2937,16 +2937,28 @@ app.post("/apply-coupon", async (req, res) => {
       return res.status(400).json({ success: false, message: "Missing coupon ID or discount amount" });
     }
 
-    const coupon = await Coupon.findById(couponId);
+    // Handle both Mongo _id and custom coupon.id
+    let coupon = null;
+    try {
+      const isObjectId = require('mongoose').Types.ObjectId.isValid(couponId);
+      coupon = isObjectId ? await Coupon.findById(couponId) : await Coupon.findOne({ id: couponId });
+    } catch (e) {
+      // Fallback to custom id query
+      coupon = await Coupon.findOne({ id: couponId });
+    }
+
     if (!coupon) {
       return res.status(404).json({ success: false, message: "Coupon not found" });
     }
 
+    const discount = Number(discountAmount) || 0;
     const newUsedCount = (coupon.usedCount || 0) + 1;
-    const newTotalSavings = (coupon.totalSavings || 0) + discountAmount;
+    const newTotalSavings = parseFloat(((coupon.totalSavings || 0) + discount).toFixed(2));
 
-    const updatedCoupon = await Coupon.findByIdAndUpdate(
-      couponId,
+    // Update by the same identifier type we resolved with
+    const identifier = coupon._id ? { _id: coupon._id } : { id: couponId };
+    const updatedCoupon = await Coupon.findOneAndUpdate(
+      identifier,
       {
         usedCount: newUsedCount,
         totalSavings: newTotalSavings
