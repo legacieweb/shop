@@ -3730,65 +3730,45 @@ app.post("/check-user-status", async (req, res) => {
   });
 });
 
-app.patch("/order-status", async (req, res) => {
+// 🔹 PATCH individual order by ID
+app.patch("/orders/:id", async (req, res) => {
   try {
-    const { id, status } = req.body;
-
-    // Validate required fields
-    if (!id || !status) {
-      return res.status(400).json({ 
-        success: false, 
-        message: "Missing required fields: id and status are required" 
-      });
+    const orderId = req.params.id;
+    const { status } = req.body;
+    
+    if (!status) {
+      return res.status(400).json({ success: false, message: "Missing status in request body" });
     }
 
-    // Validate status
     const validStatuses = ["Confirmed", "Ready", "Delivered", "Cancelled", "Declined"];
     if (!validStatuses.includes(status)) {
-      return res.status(400).json({ 
-        success: false, 
-        message: "Invalid status value. Must be one of: Confirmed, Ready, Delivered, Cancelled, Declined" 
-      });
+      return res.status(400).json({ success: false, message: "Invalid status value." });
     }
 
-    // Find the order
-    const order = await Order.findOne({ id });
+    // Try to find order by MongoDB _id first, then by custom id field
+    let order = await Order.findById(orderId);
     if (!order) {
-      return res.status(404).json({ 
-        success: false, 
-        message: "Order not found" 
-      });
+      order = await Order.findOne({ id: orderId });
+    }
+    
+    if (!order) {
+      return res.status(404).json({ success: false, message: "Order not found" });
     }
 
-    // Avoid duplicate updates and notifications
-    if (order.status === status) {
-      return res.json({ 
-        success: true, 
-        message: `Order status is already "${status}". No changes made.` 
-      });
+    // Update the order status
+    if (order._id) {
+      await Order.updateOne({ _id: order._id }, { status });
+    } else {
+      await Order.updateOne({ id: orderId }, { status });
     }
 
-    // Update the status only if it's different (prevents race conditions)
-    const updateResult = await Order.updateOne(
-      { id, status: { $ne: status } },
-      { $set: { status } }
-    );
-
-    // If no document was modified, it means status was already updated
-    if (updateResult.modifiedCount === 0) {
-      return res.json({ 
-        success: true, 
-        message: `Status already "${status}" or another process updated it.` 
-      });
-    }
-
-    // Fetch seller for shop name
     const seller = await User.findOne({ username: order.seller });
     const shopName = seller?.customTheme?.name || seller?.username || "Iyonicorp";
 
-    // Prepare email variables
-    const buyerEmail = typeof order.buyer === 'object' ? order.buyer.email : order.buyer;
-    const buyerName = typeof order.buyer === 'object' ? order.buyer.name : "Customer";
+    const currency = order?.shopSettings?.storeCurrency || "USD";
+    const symbol = getCurrencySymbol(currency);
+    const buyerEmail = order?.buyer?.email;
+    const buyerName = order?.buyer?.name;
     const productName = order.productName || "Unnamed Product";
 
     const statusMessages = {
@@ -3801,7 +3781,7 @@ app.patch("/order-status", async (req, res) => {
 
     const dashboardLink = `https://api.iyonicorp.com/dashboard.html?email=${encodeURIComponent(buyerEmail)}`;
 
-    // ✅ Send email only once, and only if status changed
+    // Send email notification to buyer
     if (buyerEmail) {
       await emailService.sendMail({
         to: buyerEmail,
@@ -3810,36 +3790,32 @@ app.patch("/order-status", async (req, res) => {
           <div style="font-family:sans-serif;max-width:600px;margin:auto;">
             <h2>Hi ${buyerName},</h2>
             <p>${statusMessages[status]}</p>
-            <img src="${order.productImage}" 
-                 alt="${productName}" 
-                 style="width:100%;max-width:300px;border-radius:8px;margin-top:10px;" />
+            <img src="${order.productImage}" alt="${productName}" style="width:100%;max-width:300px;border-radius:8px;margin-top:10px;" />
             <p style="margin-top:20px;">Track your order:</p>
-            <a href="${dashboardLink}" 
-               style="padding:10px 20px;background:#4f46e5;color:#fff;text-decoration:none;border-radius:6px;">
-               📋 View Dashboard
-            </a>
+            <a href="${dashboardLink}" style="display:inline-block;padding:10px 20px;background:#4f46e5;color:#fff;text-decoration:none;border-radius:6px;">📋 View Order Dashboard</a>
           </div>
         `,
-        shopName // Optional: if your emailService uses it for branding
+        shopName
       });
     }
 
-    // ✅ Success response
     return res.json({ 
       success: true, 
-      message: `Order status successfully updated to "${status}".` 
+      message: "Order status updated successfully",
+      data: { 
+        orderId: orderId,
+        status: status
+      }
     });
 
   } catch (error) {
-    console.error("Order status update error:", error);
+    console.error("Update order by ID error:", error);
     return res.status(500).json({ 
       success: false, 
-      message: "Server error during order status update", 
-      error: error.message 
+      message: "Server error during order status update" 
     });
   }
 });
-
 
 // -------------------------------
 // 🚀 Start Server
