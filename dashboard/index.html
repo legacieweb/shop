@@ -1442,7 +1442,7 @@ let userLimits = subscriptionLimits[currentPlan] || subscriptionLimits.free;
 window.refreshUserLimits = async function() {
   try {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
-    const API = "http://localhost:3000";
+    const API = "https://shop-stp5.onrender.com";
     const response = await fetch(`${API}/api/subscription-info?username=${encodeURIComponent(user.username)}`);
     const data = await response.json();
     if (data.success) {
@@ -2767,36 +2767,87 @@ window.updateOrderStatus = async function(orderId, status) {
     
     console.log(`🔄 Attempting to update order ${orderId} to status: ${backendStatus}`);
     
-    // Use only /order-status endpoint to prevent duplicate emails
-    console.log(`🔄 Using endpoint: ${API}/order-status with method: PATCH`);
-    
-    const res = await fetch(`${API}/order-status`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ 
-        id: orderId,  // Correct field name for /order-status endpoint
-        status: backendStatus 
-      })
-    });
+    // Try different API endpoints based on common patterns
+    const possibleEndpoints = [
+      // Most common pattern - using the orders collection directly
+      {
+        url: `${API}/update`,
+        method: "PATCH",
+        body: {
+          collection: "orders",
+          id: orderId,
+          data: { status: backendStatus }
+        }
+      },
+      // Alternative pattern - dedicated order-status endpoint
+      {
+        url: `${API}/order-status`,
+        method: "PATCH", 
+        body: {
+          orderId: orderId,
+          status: backendStatus
+        }
+      },
+      // Another common pattern - using _id field
+      {
+        url: `${API}/order-status`,
+        method: "PATCH",
+        body: {
+          _id: orderId,
+          status: backendStatus
+        }
+      },
+      // Generic update endpoint
+      {
+        url: `${API}/orders/${orderId}`,
+        method: "PATCH",
+        body: {
+          status: backendStatus
+        }
+      }
+    ];
 
-    const result = await res.json();
-    console.log(`📊 Response from ${API}/order-status:`, { status: res.status, result });
+    let lastError = null;
     
-    if (res.ok && result.success) {
-      console.log(`✅ Successfully updated order using ${API}/order-status`);
-      
-      // ✨ Show cool notification
-      showCoolNotification(`Order marked as ${status}. Email notification sent to buyer!`);
-      
-      // Reload the sales data to reflect the updated status
-      setTimeout(() => {
-        loadSales();
-      }, 1000);
-      
-      return; // Success - exit function
-    } else {
-      throw new Error(result?.message || result?.error || `Failed with status ${res.status}`);
+    // Try each endpoint until one works
+    for (const endpoint of possibleEndpoints) {
+      try {
+        console.log(`🔄 Trying endpoint: ${endpoint.url} with method: ${endpoint.method}`);
+        
+        const res = await fetch(endpoint.url, {
+          method: endpoint.method,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(endpoint.body)
+        });
+
+        const result = await res.json();
+        console.log(`📊 Response from ${endpoint.url}:`, { status: res.status, result });
+        
+        if (res.ok && (result.success || result.acknowledged || result.modifiedCount > 0)) {
+          console.log(`✅ Successfully updated order using ${endpoint.url}`);
+          
+          // ✨ Show cool notification
+          showCoolNotification(`Order marked as ${status}. Email notification sent to buyer!`);
+          
+          // Reload the sales data to reflect the updated status
+          setTimeout(() => {
+            loadSales();
+          }, 1000);
+          
+          return; // Success - exit function
+        } else {
+          lastError = new Error(result?.message || result?.error || `Failed with status ${res.status}`);
+        }
+        
+      } catch (err) {
+        console.log(`❌ Endpoint ${endpoint.url} failed:`, err.message);
+        lastError = err;
+        continue; // Try next endpoint
+      }
     }
+    
+    // If we get here, all endpoints failed
+    throw lastError || new Error("All update endpoints failed");
     
   } catch (err) {
     console.error("Order status update failed:", err);
@@ -3014,6 +3065,7 @@ window.deleteCoupon = async function(couponId) {
     alert('❌ Failed to delete coupon.');
   }
 };
+
 
 
 // Inventory Management Functions
