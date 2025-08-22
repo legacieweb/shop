@@ -1442,7 +1442,7 @@ let userLimits = subscriptionLimits[currentPlan] || subscriptionLimits.free;
 window.refreshUserLimits = async function() {
   try {
     const user = JSON.parse(localStorage.getItem("user") || "{}");
-    const API = "https://shop-stp5.onrender.com";
+    const API = "http://localhost:3000";
     const response = await fetch(`${API}/api/subscription-info?username=${encodeURIComponent(user.username)}`);
     const data = await response.json();
     if (data.success) {
