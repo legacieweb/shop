@@ -2767,71 +2767,35 @@ window.updateOrderStatus = async function(orderId, status) {
     
     console.log(`🔄 Attempting to update order ${orderId} to status: ${backendStatus}`);
     
-    // Try the most reliable endpoint first - /orders/:id
-    try {
-      console.log(`🔄 Trying endpoint: ${API}/orders/${orderId} with method: PATCH`);
-      
-      const res = await fetch(`${API}/orders/${orderId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: backendStatus })
-      });
-
-      const result = await res.json();
-      console.log(`📊 Response from ${API}/orders/${orderId}:`, { status: res.status, result });
-      
-      if (res.ok && result.success) {
-        console.log(`✅ Successfully updated order using ${API}/orders/${orderId}`);
-        
-        // ✨ Show cool notification
-        showCoolNotification(`Order marked as ${status}. Email notification sent to buyer!`);
-        
-        // Reload the sales data to reflect the updated status
-        setTimeout(() => {
-          loadSales();
-        }, 1000);
-        
-        return; // Success - exit function
-      }
-    } catch (err) {
-      console.log(`❌ Primary endpoint failed, trying fallback:`, err.message);
-    }
+    // Use only /order-status endpoint to prevent duplicate emails
+    console.log(`🔄 Using endpoint: ${API}/order-status with method: PATCH`);
     
-    // Fallback to /order-status endpoint with correct parameters
-    try {
-      console.log(`🔄 Trying fallback endpoint: ${API}/order-status with method: PATCH`);
-      
-      const res = await fetch(`${API}/order-status`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          id: orderId,  // Correct field name
-          status: backendStatus 
-        })
-      });
+    const res = await fetch(`${API}/order-status`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ 
+        id: orderId,  // Correct field name for /order-status endpoint
+        status: backendStatus 
+      })
+    });
 
-      const result = await res.json();
-      console.log(`📊 Response from ${API}/order-status:`, { status: res.status, result });
+    const result = await res.json();
+    console.log(`📊 Response from ${API}/order-status:`, { status: res.status, result });
+    
+    if (res.ok && result.success) {
+      console.log(`✅ Successfully updated order using ${API}/order-status`);
       
-      if (res.ok && result.success) {
-        console.log(`✅ Successfully updated order using ${API}/order-status`);
-        
-        // ✨ Show cool notification
-        showCoolNotification(`Order marked as ${status}. Email notification sent to buyer!`);
-        
-        // Reload the sales data to reflect the updated status
-        setTimeout(() => {
-          loadSales();
-        }, 1000);
-        
-        return; // Success - exit function
-      } else {
-        throw new Error(result?.message || result?.error || `Failed with status ${res.status}`);
-      }
+      // ✨ Show cool notification
+      showCoolNotification(`Order marked as ${status}. Email notification sent to buyer!`);
       
-    } catch (err) {
-      console.log(`❌ Fallback endpoint also failed:`, err.message);
-      throw err; // Re-throw to be caught by outer try-catch
+      // Reload the sales data to reflect the updated status
+      setTimeout(() => {
+        loadSales();
+      }, 1000);
+      
+      return; // Success - exit function
+    } else {
+      throw new Error(result?.message || result?.error || `Failed with status ${res.status}`);
     }
     
   } catch (err) {
@@ -3451,7 +3415,7 @@ const GATEWAY_FIELDS = {
     {
       label: "IyonicPay Request URL",
       key: "iyonicpayUrl",
-      placeholder: "e.g. https://pay.iyonicorp.com/request/?user=BusinessName"
+      placeholder: "e.g. https://pay.iyonicorp.com/request/?user=Andrea"
     }
   ]
 };
