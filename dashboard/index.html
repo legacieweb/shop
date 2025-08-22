@@ -2513,7 +2513,6 @@ window.deleteProduct = async function(id) {
     alert("❌ Failed to delete product.");
   }
 }
-
 async function loadSales() {
   try {
     const [orderRes, productRes] = await Promise.all([
@@ -2551,19 +2550,16 @@ async function loadSales() {
         return;
       }
 
-
       productCount[o.productName] = (productCount[o.productName] || 0) + 1;
       totalEarnings += parseFloat(o.total || 0);
 
       const statusColors = {
-        // Frontend statuses
         pending: "text-yellow-700 bg-yellow-100 border-yellow-200",
         confirmed: "text-blue-700 bg-blue-100 border-blue-200", 
         ready: "text-indigo-700 bg-indigo-100 border-indigo-200",
         delivered: "text-green-700 bg-green-100 border-green-200",
         cancelled: "text-red-700 bg-red-100 border-red-200",
         declined: "text-gray-700 bg-gray-100 border-gray-200",
-        // Backend statuses (in case they come back from server)
         processing: "text-blue-700 bg-blue-100 border-blue-200",
         shipped: "text-indigo-700 bg-indigo-100 border-indigo-200"
       };
@@ -2587,7 +2583,6 @@ async function loadSales() {
             </div>
           </div>
           <div class="text-sm text-gray-700 leading-5 space-y-1">
-            <!-- Enhanced Product Details with better formatting -->
             <div class="bg-gray-50 rounded-lg p-3 space-y-1">
               <div class="flex flex-wrap gap-4">
                 <p><strong>🎯 Variant:</strong> 
@@ -2667,22 +2662,16 @@ async function loadSales() {
           return;
         }
 
-        console.log(`🔄 Updating order ${orderId} to status: ${newStatus}`);
-
         btn.disabled = true;
         const originalText = btn.textContent;
         btn.textContent = "Updating...";
 
         try {
-          // ✅ Use the dedicated updateOrderStatus function instead of raw fetch
           await updateOrderStatus(orderId, newStatus);
-          
-          // ✅ Update the button visual state
           btn.textContent = `${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)} ✅`;
           btn.classList.remove("border", "hover:bg-gray-100");
           btn.classList.add("bg-green-100", "text-green-700", "font-semibold", "border-green-300");
-          
-          // ✅ Disable all buttons in this order to prevent multiple updates
+
           const orderCard = btn.closest('.border.rounded');
           if (orderCard) {
             const allButtons = orderCard.querySelectorAll('.update-status-btn');
@@ -2693,12 +2682,10 @@ async function loadSales() {
               }
             });
           }
-
         } catch (err) {
           console.error("Status update error:", err.message);
           btn.textContent = originalText + " ❌";
           btn.disabled = false;
-          // ✨ Error notification is already shown by updateOrderStatus function
         }
       });
     });
@@ -2711,7 +2698,6 @@ async function loadSales() {
 
 // ✨ Cool notification popup function
 function showCoolNotification(message, type = 'success') {
-  // Remove any existing notifications
   const existing = document.querySelector('.cool-notification');
   if (existing) existing.remove();
 
@@ -2739,21 +2725,19 @@ function showCoolNotification(message, type = 'success') {
   
   document.body.appendChild(notification);
   
-  // Animate in
   setTimeout(() => {
     notification.firstElementChild.style.transform = 'translateX(0)';
   }, 100);
   
-  // Animate out and remove
   setTimeout(() => {
     notification.firstElementChild.style.transform = 'translateX(full)';
     setTimeout(() => notification.remove(), 500);
   }, 4000);
 }
 
+// ✅ Final single definition
 window.updateOrderStatus = async function(orderId, status) {
   try {
-    // Map frontend statuses to backend expected statuses
     const statusMapping = {
       'pending': 'Pending',
       'confirmed': 'Confirmed',
@@ -2764,10 +2748,8 @@ window.updateOrderStatus = async function(orderId, status) {
     };
     
     const backendStatus = statusMapping[status.toLowerCase()] || 'Pending';
-    
     console.log(`🔄 Updating order ${orderId} to status: ${backendStatus}`);
-    
-    // Use the most appropriate endpoint that correctly handles email notifications
+
     const res = await fetch(`${API}/orders/${orderId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -2778,131 +2760,25 @@ window.updateOrderStatus = async function(orderId, status) {
     console.log(`📊 Response:`, { status: res.status, result });
     
     if (res.ok && (result.success || result.acknowledged || result.modifiedCount > 0)) {
-      console.log(`✅ Successfully updated order status`);
-      
-      // ✨ Show cool notification
       showCoolNotification(`Order marked as ${status}. Email notification sent to buyer!`);
-      
-      // Reload the sales data to reflect the updated status
-      setTimeout(() => {
-        loadSales();
-      }, 1000);
-      
-      return; // Success - exit function
+      setTimeout(() => loadSales(), 1000);
+      return;
     } else {
       throw new Error(result?.message || result?.error || `Failed with status ${res.status}`);
     }
-    
   } catch (err) {
     console.error("Order status update failed:", err);
     showCoolNotification(`Failed to update order status: ${err.message}`, 'error');
-    throw err; // Re-throw so the calling function can handle the error
+    throw err;
   }
-}
-window.updateOrderStatus = async function(orderId, status) {
-  try {
-    // Map frontend statuses to backend expected statuses
-    const statusMapping = {
-      'pending': 'Pending',
-      'confirmed': 'Confirmed',
-      'ready': 'Ready',
-      'delivered': 'Delivered',
-      'cancelled': 'Cancelled',
-      'declined': 'Cancelled'
-    };
-    
-    const backendStatus = statusMapping[status.toLowerCase()] || 'Pending';
-    
-    console.log(`🔄 Attempting to update order ${orderId} to status: ${backendStatus}`);
-    
-    // Try different API endpoints based on common patterns
-    const possibleEndpoints = [
-      // Most common pattern - using the orders collection directly
-      {
-        url: `${API}/update`,
-        method: "PATCH",
-        body: {
-          collection: "orders",
-          id: orderId,
-          data: { status: backendStatus }
-        }
-      },
-      // Alternative pattern - dedicated order-status endpoint
-      {
-        url: `${API}/order-status`,
-        method: "PATCH", 
-        body: {
-          orderId: orderId,
-          status: backendStatus
-        }
-      },
-      // Another common pattern - using _id field
-      {
-        url: `${API}/order-status`,
-        method: "PATCH",
-        body: {
-          _id: orderId,
-          status: backendStatus
-        }
-      },
-      // Generic update endpoint
-      {
-        url: `${API}/orders/${orderId}`,
-        method: "PATCH",
-        body: {
-          status: backendStatus
-        }
-      }
-    ];
+};
 
-    let lastError = null;
-    
-    // Try each endpoint until one works
-    for (const endpoint of possibleEndpoints) {
-      try {
-        console.log(`🔄 Trying endpoint: ${endpoint.url} with method: ${endpoint.method}`);
-        
-        const res = await fetch(endpoint.url, {
-          method: endpoint.method,
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(endpoint.body)
-        });
+// Auto-load sales when "Sales" section is opened
+document.querySelector('[data-section="sales"]').addEventListener("click", async function() {
+  await loadSellerCurrency();
+  loadSales();
+});
 
-        const result = await res.json();
-        console.log(`📊 Response from ${endpoint.url}:`, { status: res.status, result });
-        
-        if (res.ok && (result.success || result.acknowledged || result.modifiedCount > 0)) {
-          console.log(`✅ Successfully updated order using ${endpoint.url}`);
-          
-          // ✨ Show cool notification
-          showCoolNotification(`Order marked as ${status}. Email notification sent to buyer!`);
-          
-          // Reload the sales data to reflect the updated status
-          setTimeout(() => {
-            loadSales();
-          }, 1000);
-          
-          return; // Success - exit function
-        } else {
-          lastError = new Error(result?.message || result?.error || `Failed with status ${res.status}`);
-        }
-        
-      } catch (err) {
-        console.log(`❌ Endpoint ${endpoint.url} failed:`, err.message);
-        lastError = err;
-        continue; // Try next endpoint
-      }
-    }
-    
-    // If we get here, all endpoints failed
-    throw lastError || new Error("All update endpoints failed");
-    
-  } catch (err) {
-    console.error("Order status update failed:", err);
-    showCoolNotification(`Failed to update order status: ${err.message}`, 'error');
-    throw err; // Re-throw so the calling function can handle the error
-  }
-}
 // Auto-load sales when "Sales" section is opened
 document.querySelector('[data-section="sales"]').addEventListener("click", async function() {
   await loadSellerCurrency();
