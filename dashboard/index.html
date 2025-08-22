@@ -2756,8 +2756,8 @@ window.updateOrderStatus = async function(orderId, status) {
     // Map frontend statuses to backend expected statuses
     const statusMapping = {
       'pending': 'Pending',
-      'confirmed': 'Processing', 
-      'ready': 'Shipped',
+      'confirmed': 'Confirmed',
+      'ready': 'Ready',
       'delivered': 'Delivered',
       'cancelled': 'Cancelled',
       'declined': 'Cancelled'
