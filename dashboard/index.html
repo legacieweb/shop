@@ -2613,7 +2613,7 @@ async function loadSales() {
           </div>
           <div class="mt-3 flex flex-wrap gap-2">
             ${["confirmed", "ready", "delivered", "cancelled", "declined"].map(status => `
-              <button onclick="updateOrderStatus('${orderId}', '${status}')" data-id="${orderId}" data-status="${status}" class="update-status-btn text-xs border px-3 py-1 rounded hover:bg-gray-100">
+              <button data-id="${orderId}" data-status="${status}" class="update-status-btn text-xs border px-3 py-1 rounded hover:bg-gray-100">
                 ${status.charAt(0).toUpperCase() + status.slice(1)}
               </button>
             `).join("")}
@@ -2673,6 +2673,17 @@ function showCoolNotification(message, type = 'success') {
 
 // ✅ Update order status
 window.updateOrderStatus = async function(orderId, status) {
+  // Prevent duplicate calls by checking if already in progress
+  if (window.orderUpdateInProgress && window.orderUpdateInProgress[orderId]) {
+    console.log(`🔄 Order ${orderId} update already in progress, skipping duplicate call`);
+    return;
+  }
+  
+  if (!window.orderUpdateInProgress) {
+    window.orderUpdateInProgress = {};
+  }
+  window.orderUpdateInProgress[orderId] = true;
+  
   try {
     const statusMapping = {
       'pending': 'Pending',
@@ -2697,54 +2708,46 @@ window.updateOrderStatus = async function(orderId, status) {
     
     if (res.ok && (result.success || result.acknowledged || result.modifiedCount > 0)) {
       showCoolNotification(`Order marked as ${status}. Email notification sent to buyer!`);
-      // ❌ Removed setTimeout(() => loadSales(), 1000);
-      // UI already updates the button, so no need to reload orders
+      setTimeout(() => loadSales(), 1000);
     } else {
       throw new Error(result?.message || result?.error || `Failed with status ${res.status}`);
     }
   } catch (err) {
     console.error("Order status update failed:", err);
     showCoolNotification(`Failed to update order status: ${err.message}`, 'error');
+  } finally {
+    // Clear the in-progress flag after a short delay
+    setTimeout(() => {
+      if (window.orderUpdateInProgress) {
+        delete window.orderUpdateInProgress[orderId];
+      }
+    }, 1000);
   }
 };
 
-// ✅ Single delegated listener → attach only once
-if (!window._orderListListenerBound) {
-  document.getElementById("orderList").addEventListener("click", async (e) => {
-    const btn = e.target.closest(".update-status-btn");
-    if (!btn) return;
+// ✅ Single delegated listener → prevents duplicate triggers
+document.getElementById("orderList").addEventListener("click", async (e) => {
+  const btn = e.target.closest(".update-status-btn");
+  if (!btn) return;
 
-    if (btn.disabled) return; // prevent fast double click
+  const orderId = btn.dataset.id;
+  const newStatus = btn.dataset.status;
 
-    const orderId = btn.dataset.id;
-    const newStatus = btn.dataset.status;
-    if (!orderId) return console.error("❌ Missing order ID for status update.");
+  if (!orderId) return console.error("❌ Missing order ID for status update.");
 
-    btn.disabled = true;
-    const originalText = btn.textContent;
-    btn.textContent = "Updating...";
+  btn.disabled = true;
+  const originalText = btn.textContent;
+  btn.textContent = "Updating...";
 
-    try {
-      await updateOrderStatus(orderId, newStatus);
-      btn.textContent = `${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)} ✅`;
-      btn.classList.add("bg-green-100", "text-green-700", "font-semibold", "border-green-300");
-
-      // disable all buttons in this card after update
-      const card = btn.closest(".order-card");
-      if (card) {
-        card.querySelectorAll(".update-status-btn").forEach(b => {
-          b.disabled = true;
-          b.classList.add("opacity-50", "cursor-not-allowed");
-        });
-      }
-    } catch (err) {
-      btn.textContent = originalText + " ❌";
-      btn.disabled = false;
-    }
-  });
-
-  window._orderListListenerBound = true; // 🔒 prevent multiple bindings
-}
+  try {
+    await updateOrderStatus(orderId, newStatus);
+    btn.textContent = `${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)} ✅`;
+    btn.classList.add("bg-green-100", "text-green-700", "font-semibold", "border-green-300");
+  } catch (err) {
+    btn.textContent = originalText + " ❌";
+    btn.disabled = false;
+  }
+});
 
 // Auto-load sales when "Sales" section is opened
 document.querySelector('[data-section="sales"]').addEventListener("click", async function() {
