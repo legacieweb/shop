@@ -941,8 +941,19 @@ app.patch("/order-status", async (req, res) => {
 
     const order = await Order.findOne({ id });
     if (!order) return res.status(404).json({ success: false, message: "Order not found" });
+    // Avoid duplicate notifications: if status is unchanged, do nothing
+    if (order.status === status) {
+      return res.json({ success: true, message: `Status already ${status}. No notification sent.` });
+    }
 
-    await Order.updateOne({ id }, { status });
+    // Update only if changed; prevents race-condition duplicates
+    const updateResult = await Order.updateOne(
+      { id, status: { $ne: status } },
+      { $set: { status } }
+    );
+    if (updateResult.modifiedCount === 0) {
+      return res.json({ success: true, message: `Status already ${status}. No notification sent.` });
+    }
 
     const seller = await User.findOne({ username: order.seller });
     const shopName = seller?.customTheme?.name || seller?.username || "Iyonicorp";
@@ -3908,3 +3919,4 @@ async function startServer() {
 
 // Start the server
 startServer();
+gi
