@@ -1,3 +1,4 @@
+
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -938,61 +939,51 @@ app.patch("/order-status", async (req, res) => {
       return res.status(400).json({ success: false, message: "Invalid status value." });
     }
 
-    console.log(`🔍 Searching for order with id: "${id}" (type: ${typeof id})`);
-    
-    // Try to find order by custom id first, then by MongoDB _id
-    let order = await Order.findOne({ id });
-    console.log(`📝 Search by custom id field result:`, order ? 'FOUND' : 'NOT FOUND');
-    
-    if (!order) {
-      try {
-        order = await Order.findById(id);
-        console.log(`📝 Search by MongoDB _id result:`, order ? 'FOUND' : 'NOT FOUND');
-      } catch (err) {
-        console.log(`❌ Invalid MongoDB ObjectId format: ${err.message}`);
-      }
-    }
-    
-    if (!order) {
-      // Let's also try searching by orderId field as fallback
-      order = await Order.findOne({ orderId: id });
-      console.log(`📝 Search by orderId field result:`, order ? 'FOUND' : 'NOT FOUND');
-    }
-    
-    if (!order) {
-      console.log(`❌ Order with id "${id}" not found in any field`);
-      return res.status(404).json({ success: false, message: "Order not found" });
-    }
-    
-    console.log(`✅ Found order:`, { 
-      _id: order._id, 
-      id: order.id, 
-      orderId: order.orderId,
-      status: order.status,
-      seller: order.seller
-    });
+    const order = await Order.findOne({ id });
+    if (!order) return res.status(404).json({ success: false, message: "Order not found" });
 
-    // Update using the field that was used to find the order
-    if (order.id) {
-      // Order was found by custom id field
-      await Order.updateOne({ id: order.id }, { status });
-    } else {
-      // Order was found by MongoDB _id
-      await Order.updateOne({ _id: order._id }, { status });
+    await Order.updateOne({ id }, { status });
+
+    const seller = await User.findOne({ username: order.seller });
+    const shopName = seller?.customTheme?.name || seller?.username || "Iyonicorp";
+
+    const currency = order?.shopSettings?.storeCurrency || "USD";
+    const symbol = getCurrencySymbol(currency);
+    const buyerEmail = order?.buyer?.email;
+    const buyerName = order?.buyer?.name;
+    const productName = order.productName || "Unnamed Product";
+
+    const statusMessages = {
+      Confirmed: "✅ Your order has been confirmed!",
+      Ready: "📦 Your order is ready for pickup/delivery!",
+      Delivered: "🎉 Your order has been delivered!",
+      Cancelled: "⚠️ Your order was cancelled.",
+      Declined: "❌ Your order was declined."
+    };
+
+    const dashboardLink = `https://api.iyonicorp.com/dashboard.html?email=${encodeURIComponent(buyerEmail)}`;
+
+    if (buyerEmail) {
+      await emailService.sendMail({
+        to: buyerEmail,
+        subject: `📢 Order Update: "${status}"`,
+        html: `
+          <div style="font-family:sans-serif;max-width:600px;margin:auto;">
+            <h2>Hi ${buyerName},</h2>
+            <p>${statusMessages[status]}</p>
+            <img src="${order.productImage}" alt="${productName}" style="width:100%;max-width:300px;border-radius:8px;margin-top:10px;" />
+            <p style="margin-top:20px;">Track your order:</p>
+            <a href="${dashboardLink}" style="padding:10px 20px;background:#4f46e5;color:#fff;text-decoration:none;border-radius:6px;">📋 View Dashboard</a>
+          </div>
+        `,
+        shopName
+      });
     }
 
-    return res.json({ 
-      success: true, 
-      message: "Order status updated successfully",
-      data: { 
-        orderId: orderId,
-        status: status
-      }
-    });
-    
+    res.json({ success: true, message: `Order status updated to ${status}.` });
   } catch (error) {
     console.error("Order status update error:", error);
-    return res.status(500).json({ success: false, message: "Server error during order status update" });
+    res.status(500).json({ success: false, message: "Server error during order status update" });
   }
 });
 
@@ -3829,6 +3820,43 @@ app.patch("/orders/:id", async (req, res) => {
       await Order.updateOne({ id: orderId }, { status });
     }
 
+    const seller = await User.findOne({ username: order.seller });
+    const shopName = seller?.customTheme?.name || seller?.username || "Iyonicorp";
+
+    const currency = order?.shopSettings?.storeCurrency || "USD";
+    const symbol = getCurrencySymbol(currency);
+    const buyerEmail = order?.buyer?.email;
+    const buyerName = order?.buyer?.name;
+    const productName = order.productName || "Unnamed Product";
+
+    const statusMessages = {
+      Confirmed: "✅ Your order has been confirmed!",
+      Ready: "📦 Your order is ready for pickup/delivery!",
+      Delivered: "🎉 Your order has been delivered!",
+      Cancelled: "⚠️ Your order was cancelled.",
+      Declined: "❌ Your order was declined."
+    };
+
+    const dashboardLink = `https://api.iyonicorp.com/dashboard.html?email=${encodeURIComponent(buyerEmail)}`;
+
+    // Send email notification to buyer
+    if (buyerEmail) {
+      await emailService.sendMail({
+        to: buyerEmail,
+        subject: `📢 Order Update: "${status}"`,
+        html: `
+          <div style="font-family:sans-serif;max-width:600px;margin:auto;">
+            <h2>Hi ${buyerName},</h2>
+            <p>${statusMessages[status]}</p>
+            <img src="${order.productImage}" alt="${productName}" style="width:100%;max-width:300px;border-radius:8px;margin-top:10px;" />
+            <p style="margin-top:20px;">Track your order:</p>
+            <a href="${dashboardLink}" style="display:inline-block;padding:10px 20px;background:#4f46e5;color:#fff;text-decoration:none;border-radius:6px;">📋 View Order Dashboard</a>
+          </div>
+        `,
+        shopName
+      });
+    }
+
     return res.json({ 
       success: true, 
       message: "Order status updated successfully",
@@ -3837,16 +3865,46 @@ app.patch("/orders/:id", async (req, res) => {
         status: status
       }
     });
-    
+
   } catch (error) {
-    console.error("Order status update error:", error);
-    return res.status(500).json({ success: false, message: "Server error during order status update" });
+    console.error("Update order by ID error:", error);
+    return res.status(500).json({ 
+      success: false, 
+      message: "Server error during order status update" 
+    });
   }
 });
 
+// -------------------------------
+// 🚀 Start Server
+// -------------------------------
+function getLocalIp() {
+  const interfaces = os.networkInterfaces();
+  for (const name in interfaces) {
+    for (const iface of interfaces[name]) {
+      if (iface.family === "IPv4" && !iface.internal) {
+        return iface.address;
+      }
+    }
+  }
+  return "localhost";
+}
+
+
+// Initialize database and start server
+async function startServer() {
+  try {
+    app.listen(PORT, HOST, () => {
+      const localIp = getLocalIp();
+      console.log(`✅ Server is running on:`);
+      console.log(`   Local:    http://localhost:${PORT}`);
+      console.log(`   Network:  http://${localIp}:${PORT}`);
+    });
+  } catch (error) {
+    console.error('❌ Failed to start server:', error);
+    process.exit(1);
+  }
+}
+
 // Start the server
-app.listen(PORT, HOST, () => {
-  console.log(`✅ Server is running on:`);
-  console.log(`   Local:    http://localhost:${PORT}`);
-  console.log(`   Network:  http://192.168.0.104:${PORT}`);
-}); 
+startServer();
