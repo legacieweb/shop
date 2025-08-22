@@ -2613,7 +2613,7 @@ async function loadSales() {
           </div>
           <div class="mt-3 flex flex-wrap gap-2">
             ${["confirmed", "ready", "delivered", "cancelled", "declined"].map(status => `
-              <button data-id="${orderId}" data-status="${status}" class="update-status-btn text-xs border px-3 py-1 rounded hover:bg-gray-100">
+              <button onclick="updateOrderStatus('${orderId}', '${status}')" data-id="${orderId}" data-status="${status}" class="update-status-btn text-xs border px-3 py-1 rounded hover:bg-gray-100">
                 ${status.charAt(0).toUpperCase() + status.slice(1)}
               </button>
             `).join("")}
