@@ -3787,6 +3787,93 @@ app.post("/check-user-status", async (req, res) => {
   });
 });
 
+// 🔹 PATCH individual order by ID
+app.patch("/orders/:id", async (req, res) => {
+  try {
+    const orderId = req.params.id;
+    const { status } = req.body;
+    
+    if (!status) {
+      return res.status(400).json({ success: false, message: "Missing status in request body" });
+    }
+
+    const validStatuses = ["Confirmed", "Ready", "Delivered", "Cancelled", "Declined"];
+    if (!validStatuses.includes(status)) {
+      return res.status(400).json({ success: false, message: "Invalid status value." });
+    }
+
+    // Try to find order by MongoDB _id first, then by custom id field
+    let order = await Order.findById(orderId);
+    if (!order) {
+      order = await Order.findOne({ id: orderId });
+    }
+    
+    if (!order) {
+      return res.status(404).json({ success: false, message: "Order not found" });
+    }
+
+    // Update the order status
+    if (order._id) {
+      await Order.updateOne({ _id: order._id }, { status });
+    } else {
+      await Order.updateOne({ id: orderId }, { status });
+    }
+
+    const seller = await User.findOne({ username: order.seller });
+    const shopName = seller?.customTheme?.name || seller?.username || "Iyonicorp";
+
+    const currency = order?.shopSettings?.storeCurrency || "USD";
+    const symbol = getCurrencySymbol(currency);
+    const buyerEmail = order?.buyer?.email;
+    const buyerName = order?.buyer?.name;
+    const productName = order.productName || "Unnamed Product";
+
+    const statusMessages = {
+      Confirmed: "✅ Your order has been confirmed!",
+      Ready: "📦 Your order is ready for pickup/delivery!",
+      Delivered: "🎉 Your order has been delivered!",
+      Cancelled: "⚠️ Your order was cancelled.",
+      Declined: "❌ Your order was declined."
+    };
+
+    const dashboardLink = `https://api.iyonicorp.com/dashboard.html?email=${encodeURIComponent(buyerEmail)}`;
+
+    // Send email notification to buyer
+    if (buyerEmail) {
+      await emailService.sendMail({
+        to: buyerEmail,
+        subject: `📢 Order Update: "${status}"`,
+        html: `
+          <div style="font-family:sans-serif;max-width:600px;margin:auto;">
+            <h2>Hi ${buyerName},</h2>
+            <p>${statusMessages[status]}</p>
+            <img src="${order.productImage}" alt="${productName}" style="width:100%;max-width:300px;border-radius:8px;margin-top:10px;" />
+            <p style="margin-top:20px;">Track your order:</p>
+            <a href="${dashboardLink}" style="display:inline-block;padding:10px 20px;background:#4f46e5;color:#fff;text-decoration:none;border-radius:6px;">📋 View Order Dashboard</a>
+          </div>
+        `,
+        shopName
+      });
+    }
+
+    return res.json({ 
+      success: true, 
+      message: "Order status updated successfully",
+      data: { 
+        orderId: orderId,
+        status: status
+      }
+    });
+
+  } catch (error) {
+    console.error("Update order by ID error:", error);
+    return res.status(500).json({ 
+      success: false, 
+      message: "Server error during order status update" 
+    });
+  }
+});
+
 // -------------------------------
 // 🚀 Start Server
 // -------------------------------
