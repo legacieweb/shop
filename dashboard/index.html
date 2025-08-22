@@ -2697,7 +2697,8 @@ window.updateOrderStatus = async function(orderId, status) {
     
     if (res.ok && (result.success || result.acknowledged || result.modifiedCount > 0)) {
       showCoolNotification(`Order marked as ${status}. Email notification sent to buyer!`);
-      setTimeout(() => loadSales(), 1000);
+      // ❌ Removed setTimeout(() => loadSales(), 1000);
+      // UI already updates the button, so no need to reload orders
     } else {
       throw new Error(result?.message || result?.error || `Failed with status ${res.status}`);
     }
@@ -2707,29 +2708,43 @@ window.updateOrderStatus = async function(orderId, status) {
   }
 };
 
-// ✅ Single delegated listener → prevents duplicate triggers
-document.getElementById("orderList").addEventListener("click", async (e) => {
-  const btn = e.target.closest(".update-status-btn");
-  if (!btn) return;
+// ✅ Single delegated listener → attach only once
+if (!window._orderListListenerBound) {
+  document.getElementById("orderList").addEventListener("click", async (e) => {
+    const btn = e.target.closest(".update-status-btn");
+    if (!btn) return;
 
-  const orderId = btn.dataset.id;
-  const newStatus = btn.dataset.status;
+    if (btn.disabled) return; // prevent fast double click
 
-  if (!orderId) return console.error("❌ Missing order ID for status update.");
+    const orderId = btn.dataset.id;
+    const newStatus = btn.dataset.status;
+    if (!orderId) return console.error("❌ Missing order ID for status update.");
 
-  btn.disabled = true;
-  const originalText = btn.textContent;
-  btn.textContent = "Updating...";
+    btn.disabled = true;
+    const originalText = btn.textContent;
+    btn.textContent = "Updating...";
 
-  try {
-    await updateOrderStatus(orderId, newStatus);
-    btn.textContent = `${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)} ✅`;
-    btn.classList.add("bg-green-100", "text-green-700", "font-semibold", "border-green-300");
-  } catch (err) {
-    btn.textContent = originalText + " ❌";
-    btn.disabled = false;
-  }
-});
+    try {
+      await updateOrderStatus(orderId, newStatus);
+      btn.textContent = `${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)} ✅`;
+      btn.classList.add("bg-green-100", "text-green-700", "font-semibold", "border-green-300");
+
+      // disable all buttons in this card after update
+      const card = btn.closest(".order-card");
+      if (card) {
+        card.querySelectorAll(".update-status-btn").forEach(b => {
+          b.disabled = true;
+          b.classList.add("opacity-50", "cursor-not-allowed");
+        });
+      }
+    } catch (err) {
+      btn.textContent = originalText + " ❌";
+      btn.disabled = false;
+    }
+  });
+
+  window._orderListListenerBound = true; // 🔒 prevent multiple bindings
+}
 
 // Auto-load sales when "Sales" section is opened
 document.querySelector('[data-section="sales"]').addEventListener("click", async function() {
