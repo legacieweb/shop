@@ -58,7 +58,7 @@
         <a href="#" id="reviewsLink"
           class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50 relative">
           Reviews
-          <span id="reviewsLockIcon" class="absolute right-6 text-yellow-500 hidden">🔒</span>
+          <span id="reviewsLockIcon" class="absolute right-6 text-yellow-500 hidden">⭐</span>
         </a>
         <a href="#" data-section="settings"
           class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50">General Settings</a>
@@ -873,7 +873,7 @@
         </ul>
         <p class="text-sm text-green-700 mt-2">
           🔗 Sellers must provide their <strong>IyonicPay request link</strong><br>
-          (e.g. <code>https://pay.iyonicorp.com/request/?user=Andrea</code>)
+          (e.g. <code>https://pay.iyonicorp.com/request/?user=b/sname</code>)
         </p>
       </div>
     </div>
@@ -1750,7 +1750,7 @@ function setupSidebarHandlers() {
       return;
     }
     
-    // Redirect to review.html with seller parameter
+    // Redirect to review with seller parameter
     const seller = user.username;
     window.location.href = `../review?seller=${encodeURIComponent(seller)}`;
   });
@@ -2070,7 +2070,7 @@ function displayProducts(products) {
   }
 }
 
-// Search functionality - exact same as blank.html
+// Search functionality - exact same as blank
 function searchProducts(query) {
   if (!query.trim()) {
     displayProducts(allProducts);
@@ -2094,7 +2094,7 @@ function searchProducts(query) {
 }
 loadProducts();
 
-// Product search event listener - exact same as blank.html
+// Product search event listener - exact same as blank
 document.getElementById('productSearchInput').addEventListener('input', function(e) {
   searchProducts(e.target.value);
 });
@@ -2843,7 +2843,7 @@ document.getElementById('reviewsLink').addEventListener("click", function(e) {
   }
   
   // Redirect to review dashboard
-  window.location.href = `/review.html?seller=${encodeURIComponent(seller)}`;
+  window.location.href = `/review?seller=${encodeURIComponent(seller)}`;
 });
 
 // Coupon Management Functions
