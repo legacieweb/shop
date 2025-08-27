@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Review Dashboard - iyonicorp</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Comprehensive text overflow prevention */
+    .text-wrap, .review-text {
+      word-wrap: break-word;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      hyphens: auto;
+      max-width: 100%;
+    }
+    
+    /* Ensure containers don't overflow */
+    .container-safe {
+      max-width: 100%;
+      overflow: hidden;
+    }
+    
+    /* Product name styling - ensure proper spacing and no overlap */
+    .product-name {
+      word-wrap: break-word;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      hyphens: auto;
+      line-height: 1.4;
+      margin-bottom: 0.25rem;
+      max-width: 100%;
+    }
+    
+    /* Text content containers */
+    .text-content {
+      word-wrap: break-word;
+      word-break: break-word;
+      overflow-wrap: break-word;
+      hyphens: auto;
+      max-width: 100%;
+      line-height: 1.5;
+    }
+    
+    /* Ensure flex items don't overlap */
+    .product-info {
+      flex: 1;
+      min-width: 0;
+      padding-left: 1rem;
+      max-width: calc(100% - 120px); /* Account for image width + padding */
+    }
+    
+    @media (min-width: 640px) {
+      .product-info {
+        max-width: calc(100% - 140px); /* Account for larger image on sm+ screens */
+      }
+    }
+    
+    /* Product image container */
+    .product-image {
+      flex-shrink: 0;
+      width: 80px;
+      height: 80px;
+    }
+    
+    @media (min-width: 640px) {
+      .product-image {
+        width: 96px;
+        height: 96px;
+      }
+    }
+    
+    /* Review text area styling */
+    .review-text {
+      resize: vertical;
+      min-height: 100px;
+    }
+    
+    /* Ensure all flex containers have proper width constraints */
+    .flex-1.min-w-0 {
+      max-width: 100%;
+      overflow: hidden;
+    }
+    
+    /* Additional text overflow prevention for all text elements */
+    h1, h2, h3, h4, h5, h6, p, span, div {
+      max-width: 100%;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <!-- Header -->
+  <header class="bg-white shadow-sm border-b">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center py-4 gap-4">
+        <div class="flex items-center">
+          <h1 class="text-xl sm:text-2xl font-bold text-gray-900">Review Dashboard</h1>
+        </div>
+        <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+          <span id="sellerName" class="text-sm text-gray-600 order-2 sm:order-1"></span>
+          <a href="/dashboard" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-center text-sm sm:text-base order-1 sm:order-2">
+            Back to Dashboard
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    
+    <!-- Review for Order (Buyer View) -->
+    <div id="buyerReviewSection" class="hidden">
+      <div class="bg-white rounded-lg shadow-lg p-4 sm:p-6 max-w-2xl mx-auto">
+        <div id="orderDetails" class="mb-6">
+          <!-- Order details will be populated here -->
+        </div>
+        
+        <div id="sellerMessage" class="bg-blue-50 border-l-4 border-blue-400 p-3 sm:p-4 mb-6 hidden">
+          <p class="text-blue-800 text-sm sm:text-base"></p>
+        </div>
+        
+        <form id="reviewForm" class="space-y-4 sm:space-y-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Rating</label>
+            <div class="flex space-x-1 justify-center sm:justify-start" id="ratingStars">
+              <button type="button" class="star text-2xl sm:text-3xl text-gray-300 hover:text-yellow-400 transition-colors" data-rating="1">★</button>
+              <button type="button" class="star text-2xl sm:text-3xl text-gray-300 hover:text-yellow-400 transition-colors" data-rating="2">★</button>
+              <button type="button" class="star text-2xl sm:text-3xl text-gray-300 hover:text-yellow-400 transition-colors" data-rating="3">★</button>
+              <button type="button" class="star text-2xl sm:text-3xl text-gray-300 hover:text-yellow-400 transition-colors" data-rating="4">★</button>
+              <button type="button" class="star text-2xl sm:text-3xl text-gray-300 hover:text-yellow-400 transition-colors" data-rating="5">★</button>
+            </div>
+            <input type="hidden" id="selectedRating" name="rating" required>
+          </div>
+          
+          <div>
+            <label for="reviewText" class="block text-sm font-medium text-gray-700 mb-2">Your Review</label>
+            <textarea id="reviewText" name="text" rows="4" required
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base review-text"
+              placeholder="Share your experience with this product..."></textarea>
+          </div>
+          
+          <button type="submit" class="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-700 transition-colors font-semibold text-sm sm:text-base">
+            Submit Review
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Seller Dashboard -->
+    <div id="sellerDashboard">
+      <!-- Tab Navigation -->
+      <div class="bg-white rounded-lg shadow-sm mb-6">
+        <div class="border-b border-gray-200">
+          <nav class="-mb-px flex flex-wrap gap-2 sm:gap-0 sm:space-x-8 px-4 sm:px-6">
+            <button class="tab-btn py-3 sm:py-4 px-2 sm:px-1 border-b-2 border-indigo-500 font-medium text-xs sm:text-sm text-indigo-600 whitespace-nowrap" data-tab="overview">
+              Overview
+            </button>
+            <button class="tab-btn py-3 sm:py-4 px-2 sm:px-1 border-b-2 border-transparent font-medium text-xs sm:text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap" data-tab="requests">
+              Review Requests
+            </button>
+            <button class="tab-btn py-3 sm:py-4 px-2 sm:px-1 border-b-2 border-transparent font-medium text-xs sm:text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap" data-tab="received">
+              Reviews Received
+            </button>
+            <button class="tab-btn py-3 sm:py-4 px-2 sm:px-1 border-b-2 border-transparent font-medium text-xs sm:text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap" data-tab="orders">
+              Orders Without Reviews
+            </button>
+            <button class="tab-btn py-3 sm:py-4 px-2 sm:px-1 border-b-2 border-transparent font-medium text-xs sm:text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300 whitespace-nowrap" data-tab="all-orders">
+              All Orders
+            </button>
+          </nav>
+        </div>
+      </div>
+
+      <!-- Tab Content -->
+      <div id="tab-overview" class="tab-content">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+          <div class="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                  <span class="text-blue-600 font-semibold text-sm sm:text-base">📧</span>
+                </div>
+              </div>
+              <div class="ml-3 sm:ml-4">
+                <p class="text-xs sm:text-sm font-medium text-gray-600">Requests Sent</p>
+                <p id="requestsSentCount" class="text-xl sm:text-2xl font-semibold text-gray-900">0</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-white rounded-lg shadow-sm p-4 sm:p-6">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-green-100 rounded-full flex items-center justify-center">
+                  <span class="text-green-600 font-semibold text-sm sm:text-base">⭐</span>
+                </div>
+              </div>
+              <div class="ml-3 sm:ml-4">
+                <p class="text-xs sm:text-sm font-medium text-gray-600">Reviews Received</p>
+                <p id="reviewsReceivedCount" class="text-xl sm:text-2xl font-semibold text-gray-900">0</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-white rounded-lg shadow-sm p-4 sm:p-6 sm:col-span-2 lg:col-span-1">
+            <div class="flex items-center">
+              <div class="flex-shrink-0">
+                <div class="w-8 h-8 sm:w-10 sm:h-10 bg-yellow-100 rounded-full flex items-center justify-center">
+                  <span class="text-yellow-600 font-semibold text-sm sm:text-base">📦</span>
+                </div>
+              </div>
+              <div class="ml-3 sm:ml-4">
+                <p class="text-xs sm:text-sm font-medium text-gray-600">Orders Without Reviews</p>
+                <p id="ordersWithoutReviewsCount" class="text-xl sm:text-2xl font-semibold text-gray-900">0</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-requests" class="tab-content hidden">
+        <div class="bg-white rounded-lg shadow-sm">
+          <div class="px-4 sm:px-6 py-4 border-b border-gray-200">
+            <h3 class="text-base sm:text-lg font-medium text-gray-900">Review Requests Sent</h3>
+          </div>
+          <div id="requestsList" class="divide-y divide-gray-200">
+            <!-- Requests will be populated here -->
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-received" class="tab-content hidden">
+        <div class="bg-white rounded-lg shadow-sm">
+          <div class="px-4 sm:px-6 py-4 border-b border-gray-200">
+            <h3 class="text-base sm:text-lg font-medium text-gray-900">Reviews Received</h3>
+          </div>
+          <div id="reviewsList" class="divide-y divide-gray-200">
+            <!-- Reviews will be populated here -->
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-orders" class="tab-content hidden">
+        <div class="bg-white rounded-lg shadow-sm">
+          <div class="px-4 sm:px-6 py-4 border-b border-gray-200 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+            <h3 class="text-base sm:text-lg font-medium text-gray-900">Orders Without Reviews</h3>
+            <button id="requestAllReviewsBtn" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors text-sm sm:text-base">
+              Request All Reviews
+            </button>
+          </div>
+          <div id="ordersList" class="divide-y divide-gray-200">
+            <!-- Orders will be populated here -->
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-all-orders" class="tab-content hidden">
+        <div class="bg-white rounded-lg shadow-sm">
+          <div class="px-4 sm:px-6 py-4 border-b border-gray-200">
+            <h3 class="text-base sm:text-lg font-medium text-gray-900">All Orders</h3>
+            <p class="text-xs sm:text-sm text-gray-600 mt-1">View all your orders with their current status</p>
+          </div>
+          <div class="px-4 sm:px-6 py-2 text-xs text-gray-500">Currency: <span id="shopCurrencyCode">USD</span> (<span id="shopCurrencySymbol">$</span>)</div>
+          <div id="allOrdersList" class="divide-y divide-gray-200">
+            <!-- All orders will be populated here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Email Request Modal -->
+  <div id="emailRequestModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-lg shadow-xl p-4 sm:p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-base sm:text-lg font-semibold text-gray-900">Request Review</h3>
+        <button id="closeEmailModal" class="text-gray-400 hover:text-gray-600 p-1">
+          <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+      
+      <form id="emailRequestForm" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Email Subject</label>
+          <input type="text" id="emailSubject" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base" 
+                 value="We'd love your feedback on your recent purchase!">
+        </div>
+        
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">Email Message</label>
+          <textarea id="emailMessage" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm sm:text-base"
+                    placeholder="Write your personalized message to the customer..."></textarea>
+        </div>
+        
+        <div class="flex flex-col sm:flex-row justify-end gap-3">
+          <button type="button" id="cancelEmailRequest" class="px-4 py-2 text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors text-sm sm:text-base">
+            Cancel
+          </button>
+          <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-sm sm:text-base">
+            Send Request
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Elegant Toast Notification -->
+  <div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-3 pointer-events-none"></div>
+
+  <!-- Success Modal (upgraded styling) -->
+  <div id="successModal" class="hidden fixed inset-0 bg-black/40 backdrop-blur-[2px] flex items-center justify-center z-40 p-4">
+    <div class="relative bg-white rounded-2xl shadow-2xl p-6 sm:p-7 w-full max-w-md overflow-hidden">
+      <div class="absolute -top-16 -right-16 w-40 h-40 bg-indigo-100 rounded-full opacity-60 blur-3xl"></div>
+      <div class="absolute -bottom-16 -left-16 w-40 h-40 bg-purple-100 rounded-full opacity-60 blur-3xl"></div>
+      <div class="relative text-center">
+        <div class="mx-auto flex items-center justify-center h-14 w-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-500 shadow-lg mb-4">
+          <svg class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+        <h3 class="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Success</h3>
+        <p id="successMessage" class="text-sm text-gray-600 mb-5"></p>
+        <button id="closeSuccessModal" class="inline-flex items-center justify-center bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg shadow transition-colors">
+          OK
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Debug: Check if script loads
+    console.log('Review.html script starting to load...');
+    
+    const API = "https://shop-stp5.onrender.com";
+    const urlParams = new URLSearchParams(window.location.search);
+    const seller = urlParams.get('seller');
+    const orderId = urlParams.get('order');
+    
+    console.log('URL params:', { seller, orderId });
+    
+    let currentOrder = null;
+    let selectedRating = 0;
+
+    // Currency helpers
+    function getCurrencySymbol(code) {
+      const symbols = { USD: '$', EUR: '€', GBP: '£', INR: '₹', NGN: '₦', KES: 'Ksh', GHS: '₵', ZAR: 'R', CAD: 'C$', AUD: 'A$' };
+      return symbols[code] || code || '$';
+    }
+
+    function applyCurrencySymbol(container, symbol) {
+      try {
+        container.querySelectorAll('.currencySymbol').forEach(el => el.textContent = symbol);
+        const single = container.querySelector('#orderCurrencySymbol');
+        if (single) single.textContent = symbol;
+      } catch (_) {}
+    }
+
+    // Seller currency state (for dashboard)
+    let sellerCurrencyCode = 'USD';
+    let sellerCurrencySymbol = '$';
+    async function fetchSellerCurrency() {
+      if (!seller) return;
+      try {
+        const res = await fetch(`${API}/find?collection=users&username=${encodeURIComponent(seller)}`);
+        const data = await res.json();
+        if (data.success && Array.isArray(data.data) && data.data[0]) {
+          const code = data.data[0]?.shopSettings?.storeCurrency || 'USD';
+          sellerCurrencyCode = code;
+          sellerCurrencySymbol = getCurrencySymbol(code);
+        }
+      } catch (_) {}
+      const codeEl = document.getElementById('shopCurrencyCode');
+      const symEl = document.getElementById('shopCurrencySymbol');
+      if (codeEl) codeEl.textContent = sellerCurrencyCode;
+      if (symEl) symEl.textContent = sellerCurrencySymbol;
+    }
+
+    // Helper function to escape HTML entities
+    function escapeHtml(text) {
+      if (!text) return '';
+      return text
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+
+    // Helper function to decode HTML entities
+    function decodeHtml(text) {
+      if (!text) return '';
+      return text
+        .replace(/&amp;/g, '&')
+        .replace(/&quot;/g, '"')
+        .replace(/&#39;/g, "'")
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>');
+    }
+
+    // Helper function to resolve product image URL
+    function resolveImageUrl(imageUrl) {
+      if (!imageUrl) {
+        return 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0zMiAzMkM0MC44MzY2IDMyIDQ4IDM5LjE2MzQgNDggNDhDNDggNTYuODM2NiA0MC44MzY2IDY0IDMyIDY0QzIzLjE2MzQgNjQgMTYgNTYuODM2NiAxNiA0OEMxNiAzOS4xNjM0IDIzLjE2MzQgMzIgMzIgMzJaIiBmaWxsPSIjOUI5QkEwIi8+CjxwYXRoIGQ9Ik0zMiA0MEMzNi40MTgzIDQwIDQwIDQzLjU4MTcgNDAgNDhDNDAgNTIuNDE4MyAzNi40MTgzIDU2IDMyIDU2QzI3LjU4MTcgNTYgMjQgNTIuNDE4MyAyNCA0OEMyNCA0My41ODE3IDI3LjU4MTcgNDAgMzIgNDBaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K';
+      }
+      
+      // If it's already a full URL, return as is
+      if (imageUrl.startsWith('http')) {
+        return imageUrl;
+      }
+      
+      // If it's a MongoDB image ID path, ensure it starts with /
+      if (imageUrl.startsWith('images/')) {
+        return `${API}/${imageUrl}`;
+      }
+      
+      if (imageUrl.startsWith('/images/')) {
+        return `${API}${imageUrl}`;
+      }
+      
+      // If it's an uploads path, ensure it starts with /
+      if (imageUrl.startsWith('uploads/')) {
+        return `${API}/${imageUrl}`;
+      }
+      
+      if (imageUrl.startsWith('/uploads/')) {
+        return `${API}${imageUrl}`;
+      }
+      
+      // Default case - assume it's a relative path
+      return `${API}/${imageUrl}`;
+    }
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', async function() {
+      if (orderId) {
+        // Buyer view - show review form for specific order
+        showBuyerReviewForm();
+      } else if (seller) {
+        // Seller view - show dashboard
+        await fetchSellerCurrency();
+        showSellerDashboard();
+      } else {
+        // Redirect to home if no params
+        window.location.href = '/';
+      }
+    });
+
+    // Buyer Review Functions
+    async function showBuyerReviewForm() {
+      document.getElementById('sellerDashboard').classList.add('hidden');
+      document.getElementById('buyerReviewSection').classList.remove('hidden');
+      
+      try {
+        const response = await fetch(`${API}/api/order-for-review?orderId=${encodeURIComponent(orderId)}`);
+        const data = await response.json();
+        
+        if (data.success) {
+          currentOrder = data.order;
+          displayOrderDetails(data.order);
+
+          // Ensure buyer sees seller's shop currency (override with seller profile)
+          try {
+            if (data.order?.seller) {
+              const res = await fetch(`${API}/find?collection=users&username=${encodeURIComponent(data.order.seller)}`);
+              const u = await res.json();
+              const code = (u.success && Array.isArray(u.data) && u.data[0]?.shopSettings?.storeCurrency) ? u.data[0].shopSettings.storeCurrency : 'USD';
+              const symbol = getCurrencySymbol(code);
+              const container = document.getElementById('orderDetails');
+              applyCurrencySymbol(container, symbol);
+            }
+          } catch (_) {}
+          
+          if (data.sellerMessage) {
+            const messageDiv = document.getElementById('sellerMessage');
+            messageDiv.querySelector('p').textContent = data.sellerMessage;
+            messageDiv.classList.remove('hidden');
+          }
+        } else {
+          alert(data.message || 'Order not found');
+          window.location.href = '/';
+        }
+      } catch (error) {
+        console.error('Error loading order:', error);
+        alert('Error loading order details');
+      }
+    }
+
+    function displayOrderDetails(order) {
+      const orderDetails = document.getElementById('orderDetails');
+      const imageUrl = resolveImageUrl(order.productImage);
+      
+      orderDetails.innerHTML = `
+        <div class="flex items-start mb-4 container-safe">
+          <div class="product-image">
+            <img src="${imageUrl}" alt="${escapeHtml(order.productName)}" 
+                 class="w-full h-full object-cover rounded-lg border border-gray-200"
+                 onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0zMiAzMkM0MC44MzY2IDMyIDQ4IDM5LjE2MzQgNDggNDhDNDggNTYuODM2NiA0MC44MzY2IDY0IDMyIDY0QzIzLjE2MzQgNjQgMTYgNTYuODM2NiAxNiA0OEMxNiAzOS4xNjM0IDIzLjE2MzQgMzIgMzIgMzJaIiBmaWxsPSIjOUI5QkEwIi8+CjxwYXRoIGQ9Ik0zMiA0MEMzNi40MTgzIDQwIDQwIDQzLjU4MTcgNDAgNDhDNDAgNTIuNDE4MyAzNi40MTgzIDU2IDMyIDU2QzI3LjU4MTcgNTYgMjQgNTIuNDE4MyAyNCA0OEMyNCA0My41ODE3IDI3LjU4MTcgNDAgMzIgNDBaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K'">
+          </div>
+          <div class="product-info">
+            <h2 class="text-lg sm:text-xl font-semibold text-gray-900 product-name">${order.productName}</h2>
+            <p class="text-gray-600 text-sm sm:text-base text-content">Order #${order.orderId}</p>
+            <p class="text-xs sm:text-sm text-gray-500 text-content">Purchased on ${new Date(order.createdAt).toLocaleDateString()}</p>
+            ${order.total ? `<p class="text-sm font-medium text-green-600 mt-1 text-content">Total: <span id="orderCurrencySymbol">$</span>${order.total}</p>` : ''}
+          </div>
+        </div>
+      `;
+
+      // Apply shop currency from order.shopSettings.storeCurrency if available
+      const symbol = getCurrencySymbol(order?.shopSettings?.storeCurrency || order?.storeCurrency || 'USD');
+      applyCurrencySymbol(orderDetails, symbol);
+    }
+
+    // Rating stars functionality
+    document.querySelectorAll('.star').forEach(star => {
+      star.addEventListener('click', function() {
+        selectedRating = parseInt(this.dataset.rating);
+        document.getElementById('selectedRating').value = selectedRating;
+        
+        // Update star display
+        document.querySelectorAll('.star').forEach((s, index) => {
+          if (index < selectedRating) {
+            s.classList.remove('text-gray-300');
+            s.classList.add('text-yellow-400');
+          } else {
+            s.classList.remove('text-yellow-400');
+            s.classList.add('text-gray-300');
+          }
+        });
+      });
+    });
+
+    // Review form submission (one-click protection)
+    let isSubmittingReview = false;
+    document.getElementById('reviewForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      if (isSubmittingReview) return; // prevent duplicates
+
+      if (selectedRating === 0) {
+        alert('Please select a rating');
+        return;
+      }
+
+      const submitBtn = this.querySelector("button[type='submit']");
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
+        submitBtn.classList.add('opacity-60', 'cursor-not-allowed');
+      }
+      isSubmittingReview = true;
+      
+      const formData = new FormData(this);
+      const reviewData = {
+        orderId: orderId,
+        rating: selectedRating,
+        text: formData.get('text')
+      };
+      
+      let ok = false;
+      try {
+        const response = await fetch(`${API}/api/submit-review`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(reviewData)
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          ok = true;
+          showToast('Thank you for your review! The seller will be notified.', 'success');
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 1800);
+        } else {
+          showToast(data.message || 'Error submitting review', 'error');
+        }
+      } catch (error) {
+        console.error('Error submitting review:', error);
+        showToast('Error submitting review', 'error');
+      } finally {
+        if (!ok) {
+          isSubmittingReview = false;
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Submit Review';
+            submitBtn.classList.remove('opacity-60', 'cursor-not-allowed');
+          }
+        }
+      }
+    });
+
+    // Seller Dashboard Functions
+    async function showSellerDashboard() {
+      document.getElementById('sellerName').textContent = `Seller: ${seller}`;
+      loadDashboardData();
+      setupTabNavigation();
+    }
+
+    function setupTabNavigation() {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const tab = this.dataset.tab;
+          
+          // Update active tab
+          document.querySelectorAll('.tab-btn').forEach(b => {
+            b.classList.remove('border-indigo-500', 'text-indigo-600');
+            b.classList.add('border-transparent', 'text-gray-500');
+          });
+          this.classList.remove('border-transparent', 'text-gray-500');
+          this.classList.add('border-indigo-500', 'text-indigo-600');
+          
+          // Show/hide content
+          document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.add('hidden');
+          });
+          document.getElementById(`tab-${tab}`).classList.remove('hidden');
+          
+          // Load data for specific tabs
+          if (tab === 'requests') loadReviewRequests();
+          if (tab === 'received') loadReceivedReviews();
+          if (tab === 'orders') loadOrdersWithoutReviews();
+          if (tab === 'all-orders') loadAllOrders();
+        });
+      });
+    }
+
+    async function loadDashboardData() {
+      try {
+        const [requestsRes, reviewsRes, ordersRes] = await Promise.all([
+          fetch(`${API}/api/review-requests?seller=${encodeURIComponent(seller)}`),
+          fetch(`${API}/api/seller-reviews?seller=${encodeURIComponent(seller)}`),
+          fetch(`${API}/api/orders-without-reviews?seller=${encodeURIComponent(seller)}`)
+        ]);
+        
+        const requestsData = await requestsRes.json();
+        const reviewsData = await reviewsRes.json();
+        const ordersData = await ordersRes.json();
+        
+        document.getElementById('requestsSentCount').textContent = requestsData.success ? requestsData.requests.length : 0;
+        document.getElementById('reviewsReceivedCount').textContent = reviewsData.success ? reviewsData.reviews.length : 0;
+        document.getElementById('ordersWithoutReviewsCount').textContent = ordersData.success ? ordersData.orders.length : 0;
+
+        // Try to display shop currency in the header using first available order or review
+        let code = 'USD';
+        try {
+          const sampleOrder = (ordersData.success && ordersData.orders[0]) || (reviewsData.success && reviewsData.reviews[0]?.order) || null;
+          code = sampleOrder?.shopSettings?.storeCurrency || sampleOrder?.storeCurrency || 'USD';
+        } catch (_) {}
+        document.getElementById('shopCurrencyCode').textContent = code;
+        document.getElementById('shopCurrencySymbol').textContent = getCurrencySymbol(code);
+      } catch (error) {
+        console.error('Error loading dashboard data:', error);
+      }
+    }
+
+    async function loadReviewRequests() {
+      try {
+        const response = await fetch(`${API}/api/review-requests?seller=${encodeURIComponent(seller)}`);
+        const data = await response.json();
+        
+        const requestsList = document.getElementById('requestsList');
+        
+        if (data.success && data.requests.length > 0) {
+          requestsList.innerHTML = data.requests.map(request => `
+            <div class="px-4 sm:px-6 py-4">
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+                <div class="flex items-start gap-3 sm:gap-4 flex-1 min-w-0">
+                  <div class="flex-shrink-0">
+                    <img src="${resolveImageUrl(request.productImage)}" alt="${escapeHtml(request.productName)}" 
+                         class="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded-lg bg-gray-100 border border-gray-200" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xNiAxNkMyMC40MTgzIDE2IDI0IDE5LjU4MTcgMjQgMjRDMjQgMjguNDE4MyAyMC40MTgzIDMyIDE2IDMyQzExLjU4MTcgMzIgOCAyOC40MTgzIDggMjRDOCAxOS41ODE3IDExLjU4MTcgMTYgMTYgMTZaIiBmaWxsPSIjOUI5QkEwIi8+CjxwYXRoIGQ9Ik0xNiAyMEMxOC4yMDkxIDIwIDIwIDIxLjc5MDkgMjAgMjRDMjAgMjYuMjA5MSAxOC4yMDkxIDI4IDE2IDI4QzEzLjc5MDkgMjggMTIgMjYuMjA5MSAxMiAyNEMxMiAyMS43OTA5IDEzLjc5MDkgMjAgMTYgMjBaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K'">
+                  </div>
+                  <div class="flex-1 min-w-0 pt-1">
+                    <h4 class="font-medium text-gray-900 text-sm sm:text-base product-name">${request.productName}</h4>
+                    <p class="text-xs sm:text-sm text-gray-600 text-content">Order #${request.orderId}</p>
+                    <p class="text-xs sm:text-sm text-gray-500 text-content">Sent ${new Date(request.sentAt).toLocaleDateString()}</p>
+                  </div>
+                </div>
+                <div class="flex items-center justify-end sm:justify-start">
+                  <span class="px-2 py-1 text-xs font-medium rounded-full whitespace-nowrap ${
+                    request.status === 'reviewed' ? 'bg-green-100 text-green-800' :
+                    request.status === 'expired' ? 'bg-red-100 text-red-800' :
+                    'bg-yellow-100 text-yellow-800'
+                  }">
+                    ${request.status.charAt(0).toUpperCase() + request.status.slice(1)}
+                  </span>
+                </div>
+              </div>
+            </div>
+          `).join('');
+        } else {
+          requestsList.innerHTML = '<div class="px-4 sm:px-6 py-8 text-center text-gray-500 text-sm sm:text-base">No review requests sent yet</div>';
+        }
+      } catch (error) {
+        console.error('Error loading review requests:', error);
+      }
+    }
+
+    async function loadReceivedReviews() {
+      try {
+        console.log('Loading received reviews for seller:', seller);
+        const response = await fetch(`${API}/api/seller-reviews?seller=${encodeURIComponent(seller)}`);
+        const data = await response.json();
+        
+        console.log('Reviews data:', data);
+        const reviewsList = document.getElementById('reviewsList');
+        
+        if (data.success && data.reviews.length > 0) {
+          reviewsList.innerHTML = data.reviews.map(review => {
+            const reviewText = review.text || 'No comment provided.';
+            const truncatedText = reviewText.length > 100 ? reviewText.substring(0, 100) + '...' : reviewText;
+            const needsReadMore = reviewText.length > 100;
+            
+            return `
+            <div class="px-4 sm:px-6 py-4">
+              <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                <div class="flex items-start gap-3 sm:gap-4 flex-1 min-w-0">
+                  <div class="flex-shrink-0">
+                    <img src="${resolveImageUrl(review.productImage)}" alt="${escapeHtml(review.productName)}" 
+                         class="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded-lg bg-gray-100 border border-gray-200">
+                  </div>
+                  <div class="flex-1 min-w-0 pt-1">
+                    <h4 class="font-medium text-gray-900 text-sm sm:text-base product-name">${review.productName}</h4>
+                    <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 mt-1">
+                      <div class="text-yellow-400 text-sm sm:text-base">${'★'.repeat(review.rating)}${'☆'.repeat(5 - review.rating)}</div>
+                      <span class="text-xs sm:text-sm text-gray-600 text-content">by ${review.buyerName}</span>
+                    </div>
+                    <p class="text-xs sm:text-sm text-gray-700 mt-2 leading-relaxed review-text" id="reviewText-${review._id}">
+                      ${truncatedText}
+                    </p>
+                    ${needsReadMore ? `
+                      <button onclick="showFullReviewText('${review._id}', this)" 
+                              class="text-indigo-600 hover:text-indigo-800 text-xs font-medium mt-1"
+                              data-full-text="${escapeHtml(reviewText)}">
+                        Read More
+                      </button>
+                    ` : ''}
+                    <p class="text-xs text-gray-500 mt-1">${new Date(review.createdAt).toLocaleDateString()}</p>
+                  </div>
+                </div>
+                <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                  ${review.published ? 
+                    `<div class="flex flex-col sm:flex-row items-start sm:items-center gap-2">
+                       <span class="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full whitespace-nowrap">Published</span>
+                       <button onclick="publishReview('${review._id}', false)" class="px-3 py-1 text-xs bg-gray-600 text-white rounded hover:bg-gray-700 whitespace-nowrap">Unpublish</button>
+                     </div>` :
+                    `<button onclick="publishReview('${review._id}', true)" class="px-3 py-1 text-xs bg-indigo-600 text-white rounded hover:bg-indigo-700 whitespace-nowrap">Publish</button>`
+                  }
+                </div>
+              </div>
+            </div>
+          `;
+          }).join('');
+        } else {
+          reviewsList.innerHTML = '<div class="px-4 sm:px-6 py-8 text-center text-gray-500 text-sm sm:text-base">No reviews received yet</div>';
+        }
+      } catch (error) {
+        console.error('Error loading reviews:', error);
+      }
+    }
+
+    async function loadOrdersWithoutReviews() {
+      try {
+        const response = await fetch(`${API}/api/orders-without-reviews?seller=${encodeURIComponent(seller)}`);
+        const data = await response.json();
+        
+        const ordersList = document.getElementById('ordersList');
+        
+        if (data.success && data.orders.length > 0) {
+          ordersList.innerHTML = data.orders.map(order => `
+            <div class="px-4 sm:px-6 py-4">
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div class="flex items-start gap-3 sm:gap-4 flex-1 min-w-0">
+                  <div class="flex-shrink-0">
+                    <img src="${resolveImageUrl(order.productImage)}" alt="${escapeHtml(order.productName)}" 
+                         class="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded-lg bg-gray-100 border border-gray-200"
+                         onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xNiAxNkMyMC40MTgzIDE2IDI0IDE5LjU4MTcgMjQgMjRDMjQgMjguNDE4MyAyMC40MTgzIDMyIDE2IDMyQzExLjU4MTcgMzIgOCAyOC40MTgzIDggMjRDOCAxOS41ODE3IDExLjU4MTcgMTYgMTYgMTZaIiBmaWxsPSIjOUI5QkEwIi8+CjxwYXRoIGQ9Ik0xNiAyMEMxOC4yMDkxIDIwIDIwIDIxLjc5MDkgMjAgMjRDMjAgMjYuMjA5MSAxOC4yMDkxIDI4IDE2IDI4QzEzLjc5MDkgMjggMTIgMjYuMjA5MSAxMiAyNEMxMiAyMS43OTA5IDEzLjc5MDkgMjAgMTYgMjBaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K'">
+                  </div>
+                  <div class="flex-1 min-w-0 pt-1">
+                    <h4 class="font-medium text-gray-900 text-sm sm:text-base product-name">${order.productName}</h4>
+                    <p class="text-xs sm:text-sm text-gray-600 text-content">Order #${order.orderId}</p>
+                    <p class="text-xs sm:text-sm text-gray-500 text-content">Customer: ${order.buyer.email}</p>
+                    <p class="text-xs sm:text-sm text-gray-500 text-content">Ordered ${new Date(order.createdAt).toLocaleDateString()}</p>
+                  </div>
+                </div>
+                <button onclick="requestReview('${order.orderId}')" 
+                        class="px-3 sm:px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-xs sm:text-sm whitespace-nowrap">
+                  Request Review
+                </button>
+              </div>
+            </div>
+          `).join('');
+        } else {
+          ordersList.innerHTML = '<div class="px-4 sm:px-6 py-8 text-center text-gray-500 text-sm sm:text-base">All orders have reviews or requests sent</div>';
+        }
+      } catch (error) {
+        console.error('Error loading orders:', error);
+      }
+    }
+
+    async function loadAllOrders() {
+      try {
+        const response = await fetch(`${API}/find?collection=orders&seller=${encodeURIComponent(seller)}`);
+        const data = await response.json();
+
+        // Ensure seller currency loaded before rendering
+        await fetchSellerCurrency();
+        
+        const allOrdersList = document.getElementById('allOrdersList');
+        
+        if (data.success && data.data.length > 0) {
+          allOrdersList.innerHTML = data.data.map(order => {
+            const statusColor = {
+              'Pending': 'bg-yellow-100 text-yellow-800',
+              'Processing': 'bg-blue-100 text-blue-800',
+              'Shipped': 'bg-purple-100 text-purple-800',
+              'Completed': 'bg-green-100 text-green-800',
+              'Cancelled': 'bg-red-100 text-red-800'
+            };
+            
+            return `
+              <div class="px-4 sm:px-6 py-4">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                  <div class="flex items-start gap-3 sm:gap-4 flex-1 min-w-0">
+                    <div class="flex-shrink-0">
+                      <img src="${resolveImageUrl(order.productImage)}" alt="${escapeHtml(order.productName)}" 
+                           class="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded-lg bg-gray-100 border border-gray-200"
+                           onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xNiAxNkMyMC40MTgzIDE2IDI0IDE5LjU4MTcgMjQgMjRDMjQgMjguNDE4MyAyMC40MTgzIDMyIDE2IDMyQzExLjU4MTcgMzIgOCAyOC40MTgzIDggMjRDOCAxOS41ODE3IDExLjU4MTcgMTYgMTYgMTZaIiBmaWxsPSIjOUI5QkEwIi8+CjxwYXRoIGQ9Ik0xNiAyMEMxOC4yMDkxIDIwIDIwIDIxLjc5MDkgMjAgMjRDMjAgMjYuMjA5MSAxOC4yMDkxIDI4IDE2IDI4QzEzLjc5MDkgMjggMTIgMjYuMjA5MSAxMiAyNEMxMiAyMS43OTA5IDEzLjc5MDkgMjAgMTYgMjBaIiBmaWxsPSJ3aGl0ZSIvPgo8L3N2Zz4K'">
+                    </div>
+                    <div class="flex-1 min-w-0 pt-1">
+                      <h4 class="font-medium text-gray-900 text-sm sm:text-base product-name">${order.productName}</h4>
+                      <p class="text-xs sm:text-sm text-gray-600 text-content">Order #${order.orderId}</p>
+                      <p class="text-xs sm:text-sm text-gray-500 text-content">Customer: ${order.buyer?.email || 'N/A'}</p>
+                      <p class="text-xs sm:text-sm text-gray-500 text-content">Total: <span class=\"currencySymbol\">${sellerCurrencySymbol}</span>${order.total}</p>
+                      <p class="text-xs sm:text-sm text-gray-500 text-content">Ordered ${new Date(order.createdAt).toLocaleDateString()}</p>
+                    </div>
+                  </div>
+                  <div class="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium whitespace-nowrap ${statusColor[order.status] || 'bg-gray-100 text-gray-800'}">
+                      ${order.status}
+                    </span>
+                    <button onclick="requestReview('${order.orderId}')" 
+                            class="px-3 py-1 text-xs sm:text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700 transition-colors whitespace-nowrap">
+                      Request Review
+                    </button>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('');
+        } else {
+          allOrdersList.innerHTML = '<div class="px-4 sm:px-6 py-8 text-center text-gray-500 text-sm sm:text-base">No orders found</div>';
+        }
+      } catch (error) {
+        console.error('Error loading all orders:', error);
+        document.getElementById('allOrdersList').innerHTML = '<div class="px-4 sm:px-6 py-8 text-center text-red-500 text-sm sm:text-base">Error loading orders</div>';
+      }
+    }
+
+    // Request review functionality
+    let currentOrderForRequest = null;
+
+    function requestReview(orderId) {
+      currentOrderForRequest = orderId;
+      
+      // Pre-fill email content
+      document.getElementById('emailMessage').value = `Hi there!
+
+Thank you for your recent purchase from our store. We hope you're enjoying your new product!
+
+Your feedback means the world to us and helps other customers make informed decisions. Would you mind taking a moment to share your experience?
+
+Click the button below to leave your review:
+
+Thank you for choosing us!
+
+Best regards,
+${seller}`;
+      
+      document.getElementById('emailRequestModal').classList.remove('hidden');
+    }
+
+    // Email modal handlers
+    document.getElementById('closeEmailModal').addEventListener('click', function() {
+      document.getElementById('emailRequestModal').classList.add('hidden');
+    });
+
+    document.getElementById('cancelEmailRequest').addEventListener('click', function() {
+      document.getElementById('emailRequestModal').classList.add('hidden');
+    });
+
+    // Email request form (one-click protection)
+    let isSendingEmailRequest = false;
+    document.getElementById('emailRequestForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      if (isSendingEmailRequest) return;
+
+      const submitBtn = this.querySelector("button[type='submit']");
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Sending...';
+        submitBtn.classList.add('opacity-60', 'cursor-not-allowed');
+      }
+      isSendingEmailRequest = true;
+      
+      const subject = document.getElementById('emailSubject').value;
+      const message = document.getElementById('emailMessage').value;
+      
+      console.log('Sending review request with data:', {
+        orderId: currentOrderForRequest,
+        seller: seller,
+        subject: subject,
+        emailContent: message
+      });
+      
+      try {
+        const response = await fetch(`${API}/api/send-review-request`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            orderId: currentOrderForRequest,
+            seller: seller,
+            subject: subject,
+            emailContent: message
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          document.getElementById('emailRequestModal').classList.add('hidden');
+          showToast('Review request sent successfully!', 'success');
+          loadDashboardData();
+          loadOrdersWithoutReviews();
+        } else {
+          showToast(data.message || 'Error sending review request', 'error');
+        }
+      } catch (error) {
+        console.error('Error sending review request:', error);
+        showToast('Error sending review request', 'error');
+      } finally {
+        isSendingEmailRequest = false;
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Send Request';
+          submitBtn.classList.remove('opacity-60', 'cursor-not-allowed');
+        }
+      }
+    });
+
+    // Publish review function
+    async function publishReview(reviewId, published = true) {
+      try {
+        const response = await fetch(`${API}/api/publish-review`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            reviewId: reviewId,
+            published: published
+          })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          showSuccessModal(published ? 'Review published to product page!' : 'Review unpublished from product page!');
+          loadReceivedReviews();
+        } else {
+          alert(data.message || 'Error updating review');
+        }
+      } catch (error) {
+        console.error('Error publishing review:', error);
+        alert('Error publishing review');
+      }
+    }
+
+    // Show full review text
+    function showFullReviewText(reviewId, button) {
+      try {
+        const reviewTextElement = document.getElementById('reviewText-' + reviewId);
+        const fullText = button.getAttribute('data-full-text');
+        
+        if (reviewTextElement && fullText) {
+          // Decode HTML entities
+          const decodedText = decodeHtml(fullText);
+          reviewTextElement.textContent = decodedText;
+          button.style.display = 'none';
+          
+          // Add a "Show Less" button
+          const showLessBtn = document.createElement('button');
+          showLessBtn.textContent = 'Show Less';
+          showLessBtn.className = 'text-indigo-600 hover:text-indigo-800 text-xs font-medium mt-1 ml-2';
+          showLessBtn.onclick = function() {
+            const truncatedText = decodedText.length > 100 ? decodedText.substring(0, 100) + '...' : decodedText;
+            reviewTextElement.textContent = truncatedText;
+            button.style.display = 'inline';
+            showLessBtn.remove();
+          };
+          button.parentNode.insertBefore(showLessBtn, button.nextSibling);
+        }
+      } catch (error) {
+        console.error('Error in showFullReviewText:', error);
+      }
+    }
+
+    // Toast utility
+    function showToast(message, type = 'success', timeout = 3000) {
+      const container = document.getElementById('toastContainer');
+      const color = type === 'success' ? 'from-emerald-500 to-green-500' : type === 'error' ? 'from-red-500 to-pink-500' : 'from-indigo-500 to-purple-500';
+      const icon = type === 'success'
+        ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />'
+        : type === 'error'
+        ? '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />'
+        : '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01" />';
+
+      const el = document.createElement('div');
+      el.className = 'pointer-events-auto transform transition-all duration-300 translate-x-0 opacity-0';
+      el.innerHTML = `
+        <div class="flex items-center gap-3 bg-white rounded-xl shadow-lg p-4 border border-gray-200">
+          <div class="h-10 w-10 rounded-lg bg-gradient-to-br ${color} flex items-center justify-center shadow">
+            <svg class="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">${icon}</svg>
+          </div>
+          <div class="text-sm text-gray-800">${message}</div>
+        </div>`;
+      container.appendChild(el);
+      requestAnimationFrame(() => { el.style.opacity = '1'; });
+      setTimeout(() => {
+        el.style.opacity = '0';
+        setTimeout(() => el.remove(), 250);
+      }, timeout);
+    }
+
+    // Success modal
+    function showSuccessModal(message) {
+      document.getElementById('successMessage').textContent = message;
+      document.getElementById('successModal').classList.remove('hidden');
+    }
+
+    document.getElementById('closeSuccessModal').addEventListener('click', function() {
+      document.getElementById('successModal').classList.add('hidden');
+    });
+
+    // Request all reviews button
+    // Request all reviews (one-click protection)
+    let isSendingAllRequests = false;
+    document.getElementById('requestAllReviewsBtn').addEventListener('click', async function() {
+      if (isSendingAllRequests) return;
+      if (confirm("Send review requests to all customers with orders that don't have reviews?")) {
+        const btn = this;
+        btn.disabled = true;
+        btn.classList.add('opacity-60', 'cursor-not-allowed');
+        btn.textContent = 'Sending...';
+        isSendingAllRequests = true;
+        try {
+          const response = await fetch(`${API}/api/send-all-review-requests`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ seller: seller })
+          });
+          
+          const data = await response.json();
+          
+          if (data.success) {
+            showToast(`Review requests sent to ${data.count} customers!`, 'success');
+            loadDashboardData();
+            loadOrdersWithoutReviews();
+          } else {
+            showToast(data.message || 'Error sending review requests', 'error');
+          }
+        } catch (error) {
+          console.error('Error sending all review requests:', error);
+          showToast('Error sending review requests', 'error');
+        } finally {
+          isSendingAllRequests = false;
+          btn.disabled = false;
+          btn.classList.remove('opacity-60', 'cursor-not-allowed');
+          btn.textContent = 'Request All Reviews';
+        }
+      }
+    });
+  </script>
+</body>
+</html>

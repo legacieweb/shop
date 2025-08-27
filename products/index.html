@@ -3,14 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Seller Products</title>
+  <title>Seller Products – ShopRight</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
+    /* Active states */
     .tag-btn.active, .main-tag-btn.active, .sub-tag-btn.active {
-      background-color: #4f46e5;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       color: white;
-      border-color: #4f46e5;
+      border-color: #667eea;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
     }
+    
+    /* Scrollbar hiding */
     .scrollbar-hide::-webkit-scrollbar {
       display: none;
     }
@@ -18,72 +23,303 @@
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
+    
+    /* Cool animations */
+    .fade-in {
+      animation: fadeIn 0.6s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .slide-in-left {
+      animation: slideInLeft 0.5s ease-out;
+    }
+    
+    @keyframes slideInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    .bounce-in {
+      animation: bounceIn 0.8s ease-out;
+    }
+    
+    @keyframes bounceIn {
+      0% {
+        transform: scale(0.3);
+        opacity: 0;
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      70% {
+        transform: scale(0.9);
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+    
+    /* Product card hover effects */
+    .product-card {
+      transition: all 0.3s ease;
+      transform: translateY(0);
+    }
+    
+    .product-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+    
+    .product-card:hover .product-image {
+      transform: scale(1.05);
+    }
+    
+    .product-image {
+      transition: transform 0.3s ease;
+    }
+    
+    /* Gradient backgrounds */
+    .gradient-bg {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .gradient-text {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    /* Loading animation */
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid rgba(102, 126, 234, 0.2);
+      border-top: 4px solid #667eea;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    /* Search input enhancement */
+    .search-input {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border: 2px solid transparent;
+      background-clip: padding-box;
+      transition: all 0.3s ease;
+    }
+    
+    .search-input:focus {
+      background: white;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    /* Category button enhancements */
+    .category-btn {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .category-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+    
+    .category-btn:hover::before {
+      left: 100%;
+    }
+    
+    /* Mobile responsive improvements */
+    @media (max-width: 640px) {
+      .product-card {
+        margin-bottom: 1rem;
+      }
+      
+      .category-btn {
+        font-size: 0.875rem;
+        padding: 0.5rem 0.75rem;
+      }
+    }
+    
+    /* Wishlist button animation */
+    .wishlist-btn {
+      transition: all 0.3s ease;
+    }
+    
+    .wishlist-btn:hover {
+      transform: scale(1.05);
+    }
+    
+    .wishlist-btn.added {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      color: white;
+    }
+    
+    /* Price tag styling */
+    .price-tag {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 1rem;
+      font-weight: bold;
+      box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+    }
+    
+    /* Category tag styling */
+    .category-tag {
+      background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+      color: #374151;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
   </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
 
 <!-- Header -->
-<header class="bg-white shadow sticky top-0 z-50">
+<header class="bg-white shadow-lg sticky top-0 z-50 border-b-2 border-indigo-100">
   <div class="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
     <!-- Seller Logo + Name -->
-    <div id="sellerInfo" class="flex items-center gap-3">
-      <!-- Filled by JS -->
+    <div id="sellerInfo" class="flex items-center gap-3 slide-in-left">
+      <div class="loading-spinner"></div>
+      <span class="text-gray-400 italic">Loading seller info...</span>
     </div>
 
     <!-- Home Button -->
-    <a id="sellerHomeBtn" href="#" class="text-sm px-4 py-2 rounded bg-indigo-50 text-indigo-700 hover:bg-indigo-100 border border-indigo-500 transition">
-      🏠 Shop Home
+    <a id="sellerHomeBtn" href="#" class="gradient-bg text-white px-6 py-2 rounded-full hover:shadow-lg transition-all duration-300 transform hover:scale-105 font-medium">
+      Shop Home
     </a>
   </div>
 
   <!-- Categories -->
-  <div class="bg-white border-t">
-    <div class="max-w-7xl mx-auto px-4 py-2 overflow-x-auto scrollbar-hide">
-      <nav id="categoryButtons" class="flex gap-2 w-max">
+  <div class="bg-gradient-to-r from-indigo-50 to-purple-50 border-t border-indigo-100">
+    <div class="max-w-7xl mx-auto px-4 py-3 overflow-x-auto scrollbar-hide">
+      <nav id="categoryButtons" class="flex gap-3 w-max">
         <!-- Injected by JS -->
       </nav>
     </div>
   </div>
 
   <!-- Tags -->
-  <div class="max-w-7xl mx-auto px-4 py-2 hidden" id="tagControls">
-    <div class="mb-2" id="mainTagsContainer">
-      <h4 class="text-sm font-medium text-gray-700 mb-1">Main Tags</h4>
+  <div class="max-w-7xl mx-auto px-4 py-3 hidden bg-white border-t border-gray-100" id="tagControls">
+    <div class="mb-3" id="mainTagsContainer">
+      <h4 class="text-sm font-semibold gradient-text mb-2">Main Tags</h4>
       <nav id="mainTags" class="flex flex-wrap gap-2"></nav>
     </div>
     <div id="subTagsContainer">
-      <h4 class="text-sm font-medium text-gray-700 mb-1">Other Tags</h4>
+      <h4 class="text-sm font-semibold gradient-text mb-2">Other Tags</h4>
       <nav id="subTags" class="flex flex-wrap gap-2"></nav>
     </div>
   </div>
 </header>
 
 <!-- Search -->
-<section class="max-w-7xl mx-auto px-4 py-6">
-  <input
-    type="text"
-    id="searchInput"
-    placeholder="Search for products..."
-    class="w-full px-4 py-2 border rounded-lg shadow-sm focus:ring-2 focus:ring-indigo-300 bg-white"
-  />
+<section class="max-w-7xl mx-auto px-4 py-8">
+  <div class="relative max-w-2xl mx-auto fade-in">
+    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+      <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+      </svg>
+    </div>
+    <input
+      type="text"
+      id="searchInput"
+      placeholder="Search for amazing products..."
+      class="search-input w-full pl-12 pr-4 py-4 rounded-2xl shadow-lg focus:outline-none text-gray-700 placeholder-gray-400"
+    />
+    <div class="absolute inset-y-0 right-0 pr-4 flex items-center">
+      <kbd class="hidden sm:inline-block px-2 py-1 text-xs font-semibold text-gray-500 bg-gray-100 border border-gray-200 rounded">
+        ⌘K
+      </kbd>
+    </div>
+  </div>
 </section>
 
 <!-- Product Grid -->
 <main class="max-w-7xl mx-auto px-4 py-8">
-  <h2 id="pageTitle" class="text-2xl font-semibold mb-4">All Products</h2>
-  <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 min-h-[40vh]">
-    <!-- Injected by JS -->
+  <div class="flex items-center justify-between mb-8 fade-in">
+    <h2 id="pageTitle" class="text-3xl font-bold gradient-text">All Products</h2>
+    <div class="flex items-center gap-4">
+      <span id="productCount" class="text-sm text-gray-500 bg-gray-100 px-3 py-1 rounded-full">0 products</span>
+      <div class="flex items-center gap-2">
+        <button id="gridViewBtn" class="p-2 rounded-lg bg-indigo-100 text-indigo-600 hover:bg-indigo-200 transition">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+          </svg>
+        </button>
+        <button id="listViewBtn" class="p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 min-h-[40vh]">
+    <!-- Loading state -->
+    <div class="col-span-full flex items-center justify-center py-20">
+      <div class="text-center">
+        <div class="loading-spinner mx-auto mb-4"></div>
+        <p class="text-gray-500">Loading amazing products...</p>
+      </div>
+    </div>
   </div>
 </main>
 
 <!-- Footer -->
-<footer class="bg-white border-t py-8 mt-10">
-  <div class="max-w-7xl mx-auto text-center">
-    <p class="text-gray-500 text-sm">© 2025 ShopRight Marketplace. All rights reserved.</p>
+<footer class="gradient-bg text-white py-12 mt-16">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="text-center">
+      <div class="mb-6">
+        <h3 id="footerShopName" class="text-2xl font-bold mb-2">Loading Shop...</h3>
+        <p id="footerShopDescription" class="text-indigo-100">Discover amazing products from trusted sellers</p>
+      </div>
+      <div class="flex justify-center items-center gap-6 mb-6">
+        <a href="#" class="text-indigo-100 hover:text-white transition">About</a>
+        <a href="#" class="text-indigo-100 hover:text-white transition">Support</a>
+        <a href="#" class="text-indigo-100 hover:text-white transition">Privacy</a>
+        <a href="#" class="text-indigo-100 hover:text-white transition">Terms</a>
+      </div>
+      <div class="border-t border-indigo-400 pt-6">
+        <p id="footerCopyright" class="text-indigo-100 text-sm">© 2025 Loading... All rights reserved.</p>
+      </div>
+    </div>
   </div>
 </footer>
 <script>
-const API = "http://api.iyonicorp.com";
+const API = "https://shop-stp5.onrender.com";
 const user = JSON.parse(localStorage.getItem("user") || "{}");
 const urlParams = new URLSearchParams(window.location.search);
 const seller = urlParams.get("seller");
@@ -122,18 +358,38 @@ function getCurrencySymbol(code) {
 }
 
 async function loadSellerDetails() {
-  sellerInfo.innerHTML = `<span class="text-gray-400 italic">Loading seller info...</span>`;
-
   try {
     const res = await fetch(`${API}/find?collection=users`);
-    const users = await res.json();
+    const response = await res.json();
+    
+    console.log("🔍 Raw users API response:", response);
+    
+    // Handle different API response formats
+    const users = Array.isArray(response) ? response : (response.data || response.users || []);
+    
+    console.log("🔍 Processed users array:", users);
+    
+    if (!Array.isArray(users)) {
+      console.error("Users data is not an array:", users);
+      throw new Error("Invalid users data format");
+    }
 
     const sellerData = users.find(user =>
       (user.username || "").toLowerCase() === seller.toLowerCase()
     );
 
     if (!sellerData || !sellerData.customTheme) {
-      sellerInfo.innerHTML = `<span class="text-gray-500">Unknown Seller</span>`;
+      sellerInfo.innerHTML = `
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 bg-gradient-to-r from-gray-300 to-gray-400 rounded-full flex items-center justify-center">
+            <span class="text-white font-bold">?</span>
+          </div>
+          <span class="text-gray-500 font-medium">Unknown Seller</span>
+        </div>
+      `;
+      
+      // Update footer with fallback information for unknown seller
+      updateFooter(`${seller}'s Shop`, "Online marketplace for quality products");
       return;
     }
 
@@ -143,7 +399,7 @@ async function loadSellerDetails() {
     storeCurrency = sellerData?.shopSettings?.storeCurrency || "USD";
 
     const resolveImage = (img) => {
-      if (!img) return "https://placehold.co/40x40?text=🛍️";
+      if (!img) return "https://placehold.co/50x50?text=🛍️";
       if (img.startsWith("http") || img.startsWith("data:")) return img;
       if (img.startsWith("/uploads/")) return `${API}${img}`;
       return `${API}/uploads/${img}`;
@@ -152,17 +408,58 @@ async function loadSellerDetails() {
     const logoUrl = resolveImage(rawLogo);
 
     sellerInfo.innerHTML = `
-      <a href="shop.html?seller=${encodeURIComponent(seller)}" class="flex items-center gap-2 hover:underline">
-        <img src="${logoUrl}" alt="Shop Logo" class="w-10 h-10 object-cover rounded-full border"
-             onerror="this.onerror=null;this.src='https://placehold.co/40x40?text=🛍️';" />
-        <span class="font-bold text-lg text-indigo-700">${shopName}</span>
+      <a href="../shop?seller=${encodeURIComponent(seller)}" class="flex items-center gap-3 hover:scale-105 transition-transform duration-300 group">
+        <div class="relative">
+          <img src="${logoUrl}" alt="Shop Logo" class="w-12 h-12 object-cover rounded-full border-2 border-indigo-200 group-hover:border-indigo-400 transition-colors"
+               onerror="this.onerror=null;this.src='https://placehold.co/50x50?text=🛍️';" />
+          <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-400 rounded-full border-2 border-white"></div>
+        </div>
+        <div>
+          <span class="font-bold text-lg gradient-text block">${shopName}</span>
+          <span class="text-xs text-gray-500">Verified Seller ✓</span>
+        </div>
       </a>
     `;
 
     sellerHomeBtn.href = `../shop?seller=${encodeURIComponent(seller)}`;
+    
+    // Update footer with seller's shop information
+    updateFooter(shopName, theme.description || theme.tagline);
   } catch (err) {
     console.error("❌ Failed to load seller info", err);
-    sellerInfo.innerHTML = `<span class="text-red-500">Error loading seller info</span>`;
+    sellerInfo.innerHTML = `
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
+          <span class="text-red-500">⚠️</span>
+        </div>
+        <span class="text-red-500 font-medium">Error loading seller info</span>
+      </div>
+    `;
+    
+    // Update footer with fallback information
+    updateFooter(`${seller}'s Shop`, "Online marketplace for quality products");
+  }
+}
+
+// Function to update footer with seller information
+function updateFooter(shopName, description) {
+  const footerShopName = document.getElementById('footerShopName');
+  const footerShopDescription = document.getElementById('footerShopDescription');
+  const footerCopyright = document.getElementById('footerCopyright');
+  
+  if (footerShopName) {
+    footerShopName.textContent = shopName;
+  }
+  
+  if (footerShopDescription && description) {
+    footerShopDescription.textContent = description;
+  } else if (footerShopDescription) {
+    footerShopDescription.textContent = `Welcome to ${shopName} - Your trusted online store`;
+  }
+  
+  if (footerCopyright) {
+    const currentYear = new Date().getFullYear();
+    footerCopyright.textContent = `© ${currentYear} ${shopName}. All rights reserved.`;
   }
 }
 
@@ -171,11 +468,31 @@ setInterval(loadSellerDetails, 5 * 60 * 1000);
 async function fetchSellerProducts() {
   try {
     const res = await fetch(`${API}/find?collection=products`);
-    const all = await res.json();
-    products = all.filter(p => (p.seller || "").toLowerCase() === seller.toLowerCase());
+    const response = await res.json();
+    
+    console.log("🔍 Raw products API response:", response);
+    
+    // Handle different API response formats
+    const all = Array.isArray(response) ? response : (response.data || response.products || []);
+    
+    console.log("🔍 Processed products array:", all);
+    
+    if (!Array.isArray(all)) {
+      console.error("Products data is not an array:", all);
+      throw new Error("Invalid products data format");
+    }
 
-    if (!products.length) {
-      grid.innerHTML = `<p class="text-gray-500">No products found for this seller.</p>`;
+    products = all.filter(p => (p.seller || "").toLowerCase() === seller.toLowerCase());
+    console.log(`✅ Found ${products.length} products for seller: ${seller}`);
+
+    if (products.length === 0) {
+      grid.innerHTML = `
+        <div class="col-span-full flex flex-col items-center justify-center py-20">
+          <div class="text-6xl mb-4">🏪</div>
+          <h3 class="text-xl font-semibold text-gray-700 mb-2">No products found</h3>
+          <p class="text-gray-500 text-center max-w-md">This seller hasn't added any products yet. Check back later!</p>
+        </div>
+      `;
       return;
     }
 
@@ -184,7 +501,16 @@ async function fetchSellerProducts() {
     filterAndDisplay();
   } catch (err) {
     console.error("❌ Products fetch error:", err);
-    grid.innerHTML = `<p class="text-red-500">Failed to load products.</p>`;
+    grid.innerHTML = `
+      <div class="col-span-full flex flex-col items-center justify-center py-20">
+        <div class="text-6xl mb-4">⚠️</div>
+        <h3 class="text-xl font-semibold text-red-600 mb-2">Failed to load products</h3>
+        <p class="text-gray-500 text-center max-w-md">There was an error loading the products. Please try refreshing the page.</p>
+        <button onclick="location.reload()" class="mt-4 gradient-bg text-white px-6 py-2 rounded-full hover:shadow-lg transition">
+          🔄 Retry
+        </button>
+      </div>
+    `;
   }
 }
 
@@ -192,11 +518,20 @@ function buildCategories() {
   const categories = new Set(products.map(p => (p.category || "others").toLowerCase()));
   const list = ["all", ...Array.from(categories)];
 
-  categoryButtons.innerHTML = list.map(cat => `
-    <button class="tag-btn whitespace-nowrap px-3 py-1 text-sm rounded-full border border-indigo-500 text-indigo-600 hover:bg-indigo-100 transition font-medium" data-category="${cat}">
-      ${capitalize(cat)}
+  categoryButtons.innerHTML = list.map((cat, index) => `
+    <button class="tag-btn category-btn whitespace-nowrap px-4 py-2 text-sm rounded-full border-2 border-indigo-200 text-indigo-600 hover:border-indigo-400 hover:bg-indigo-50 transition-all duration-300 font-medium shadow-sm hover:shadow-md" 
+            data-category="${cat}" 
+            style="animation-delay: ${index * 0.1}s">
+      ${cat === 'all' ? '🌟' : '📦'} ${capitalize(cat)}
     </button>
   `).join("");
+
+  // Add animation class to buttons
+  setTimeout(() => {
+    document.querySelectorAll(".tag-btn").forEach(btn => {
+      btn.classList.add('bounce-in');
+    });
+  }, 100);
 
   document.querySelectorAll(".tag-btn").forEach(btn => {
     btn.addEventListener("click", () => {
@@ -317,36 +652,104 @@ function filterAndDisplay() {
 
 function displayProducts(data) {
   grid.innerHTML = "";
+  
+  // Update product count
+  const productCount = document.getElementById('productCount');
+  productCount.textContent = `${data.length} product${data.length !== 1 ? 's' : ''}`;
 
   if (data.length === 0) {
-    grid.innerHTML = "<p class='text-gray-500 col-span-full'>No matching products found.</p>";
+    grid.innerHTML = `
+      <div class="col-span-full flex flex-col items-center justify-center py-20">
+        <div class="text-6xl mb-4">🔍</div>
+        <h3 class="text-xl font-semibold text-gray-700 mb-2">No products found</h3>
+        <p class="text-gray-500 text-center max-w-md">Try adjusting your search or browse different categories to discover amazing products.</p>
+      </div>
+    `;
     return;
   }
 
-  data.forEach(p => {
+  data.forEach((p, index) => {
     const imageUrl = p.image?.startsWith("http") ? p.image : `${API}${p.image}`;
     const card = document.createElement("div");
-    card.className = "bg-white shadow-md rounded-xl overflow-hidden hover:shadow-lg transition flex flex-col";
+    card.className = "product-card bg-white shadow-lg rounded-2xl overflow-hidden hover:shadow-2xl transition-all duration-300 flex flex-col group";
+    card.style.animationDelay = `${index * 0.1}s`;
+
+    const hasDiscount = p.originalPrice && parseFloat(p.originalPrice) > parseFloat(p.price);
+    const discountPercent = hasDiscount ? Math.round(((parseFloat(p.originalPrice) - parseFloat(p.price)) / parseFloat(p.originalPrice)) * 100) : 0;
 
     card.innerHTML = `
-      ${p.image ? `<img src="${imageUrl}" class="w-full max-h-56 object-cover" alt="${p.name}" />` : ""}
-      <div class="p-4 flex-1 flex flex-col gap-2">
-        <h3 class="text-md font-semibold text-indigo-700">${p.name}</h3>
-        <div class="flex justify-between items-center">
-          <span class="text-lg font-bold text-gray-900">${getCurrencySymbol(storeCurrency)}${parseFloat(p.price).toFixed(2)}</span>
-          ${p.category ? `<span class="text-xs bg-indigo-100 text-indigo-600 px-2 py-1 rounded">${capitalize(p.category)}</span>` : ""}
+      <div class="relative overflow-hidden">
+        ${p.image ? `
+          <img src="${imageUrl}" class="product-image w-full h-48 sm:h-56 object-cover" alt="${p.name}" 
+               onerror="this.onerror=null;this.src='https://placehold.co/300x200?text=📦';" />
+        ` : `
+          <div class="w-full h-48 sm:h-56 bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center">
+            <span class="text-4xl">📦</span>
+          </div>
+        `}
+        ${hasDiscount ? `
+          <div class="absolute top-3 left-3 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+            -${discountPercent}%
+          </div>
+        ` : ''}
+        <div class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+          <button class="quick-view-btn w-8 h-8 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition" data-id="${p.id}">
+            👁️
+          </button>
         </div>
       </div>
-      <div class="flex gap-2 px-4 pb-4">
-        <a href="product-detail.html?id=${p.id}" class="flex-1 bg-gray-100 text-gray-800 text-sm py-2 rounded hover:bg-gray-200 text-center">View</a>
-        <button class="wishlist-btn flex-1 bg-pink-100 text-pink-700 text-sm py-2 rounded hover:bg-pink-200" data-id="${p.id}">
-          ❤️ Wishlist
-        </button>
+      
+      <div class="p-4 flex-1 flex flex-col">
+        <div class="flex-1">
+          <h3 class="font-bold text-lg text-gray-800 mb-2 line-clamp-2 group-hover:text-indigo-600 transition-colors">${p.name}</h3>
+          
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex flex-col">
+              ${hasDiscount ? `
+                <div class="flex items-center gap-2">
+                  <span class="price-tag text-sm">${getCurrencySymbol(storeCurrency)}${parseFloat(p.price).toFixed(2)}</span>
+                  <span class="text-xs text-gray-400 line-through">${getCurrencySymbol(storeCurrency)}${parseFloat(p.originalPrice).toFixed(2)}</span>
+                </div>
+              ` : `
+                <span class="price-tag">${getCurrencySymbol(storeCurrency)}${parseFloat(p.price).toFixed(2)}</span>
+              `}
+            </div>
+            ${p.category ? `<span class="category-tag">${capitalize(p.category)}</span>` : ""}
+          </div>
+          
+          ${p.tags && p.tags.length > 0 ? `
+            <div class="flex flex-wrap gap-1 mb-3">
+              ${p.tags.slice(0, 2).map(tag => `
+                <span class="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full">#${tag}</span>
+              `).join('')}
+              ${p.tags.length > 2 ? `<span class="text-xs text-gray-400">+${p.tags.length - 2}</span>` : ''}
+            </div>
+          ` : ''}
+        </div>
+        
+        <div class="flex gap-2 mt-4">
+          <a href="../detail?id=${p.id}" class="flex-1 gradient-bg text-white text-sm py-2.5 rounded-xl hover:shadow-lg transition-all duration-300 text-center font-medium transform hover:scale-105">
+            View Details
+          </a>
+          <button class="wishlist-btn w-12 h-10 bg-pink-50 text-pink-500 rounded-xl hover:bg-pink-100 transition-all duration-300 flex items-center justify-center" data-id="${p.id}">
+            ❤️
+          </button>
+        </div>
       </div>
     `;
 
-    card.querySelector(".wishlist-btn").addEventListener("click", async () => {
-      if (!user?.email) return alert("⚠️ Please log in.");
+    // Add wishlist functionality
+    const wishlistBtn = card.querySelector(".wishlist-btn");
+    wishlistBtn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      if (!user?.email) {
+        showNotification("⚠️ Please log in to add to wishlist", "warning");
+        return;
+      }
+      
+      wishlistBtn.disabled = true;
+      wishlistBtn.innerHTML = "⏳";
+      
       try {
         const res = await fetch(`${API}/add-wishlist`, {
           method: "POST",
@@ -354,31 +757,134 @@ function displayProducts(data) {
           body: JSON.stringify({ buyer: user.email, productId: p.id })
         });
         const json = await res.json();
-        if (res.ok) alert("✅ Added to wishlist!");
-        else alert("❌ Failed to add: " + (json.error || "Unknown error"));
+        
+        if (res.ok) {
+          wishlistBtn.classList.add('added');
+          wishlistBtn.innerHTML = "💖";
+          showNotification("✅ Added to wishlist!", "success");
+        } else {
+          wishlistBtn.innerHTML = "❤️";
+          showNotification("❌ Failed to add: " + (json.error || "Unknown error"), "error");
+        }
       } catch (e) {
         console.error(e);
-        alert("❌ Network error.");
+        wishlistBtn.innerHTML = "❤️";
+        showNotification("❌ Network error", "error");
+      } finally {
+        wishlistBtn.disabled = false;
       }
     });
 
+    // Add fade-in animation
+    card.classList.add('fade-in');
     grid.appendChild(card);
   });
 }
 
+// Notification system
+function showNotification(message, type = 'info') {
+  const notification = document.createElement('div');
+  notification.className = `fixed top-4 right-4 z-50 px-6 py-3 rounded-lg shadow-lg text-white font-medium transform translate-x-full transition-transform duration-300`;
+  
+  switch(type) {
+    case 'success':
+      notification.classList.add('bg-green-500');
+      break;
+    case 'error':
+      notification.classList.add('bg-red-500');
+      break;
+    case 'warning':
+      notification.classList.add('bg-yellow-500');
+      break;
+    default:
+      notification.classList.add('bg-blue-500');
+  }
+  
+  notification.textContent = message;
+  document.body.appendChild(notification);
+  
+  // Animate in
+  setTimeout(() => {
+    notification.classList.remove('translate-x-full');
+  }, 100);
+  
+  // Animate out and remove
+  setTimeout(() => {
+    notification.classList.add('translate-x-full');
+    setTimeout(() => {
+      document.body.removeChild(notification);
+    }, 300);
+  }, 3000);
+}
+
+// Enhanced search with debouncing
+let searchTimeout;
 searchInput.addEventListener("input", () => {
-  const q = searchInput.value.toLowerCase();
-  const result = products.filter(p =>
-    p.name?.toLowerCase().includes(q) ||
-    (Array.isArray(p.tags) && p.tags.some(tag => tag.toLowerCase().includes(q)))
-  );
-  pageTitle.textContent = `Search: "${q}"`;
-  displayProducts(result);
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    const q = searchInput.value.toLowerCase().trim();
+    
+    if (q === '') {
+      filterAndDisplay();
+      return;
+    }
+    
+    const result = products.filter(p =>
+      p.name?.toLowerCase().includes(q) ||
+      p.description?.toLowerCase().includes(q) ||
+      (Array.isArray(p.tags) && p.tags.some(tag => tag.toLowerCase().includes(q))) ||
+      (p.category || "").toLowerCase().includes(q)
+    );
+    
+    pageTitle.textContent = `🔍 Search: "${q}"`;
+    displayProducts(result);
+  }, 300);
 });
 
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+  // Cmd/Ctrl + K to focus search
+  if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+    e.preventDefault();
+    searchInput.focus();
+    searchInput.select();
+  }
+  
+  // Escape to clear search
+  if (e.key === 'Escape' && document.activeElement === searchInput) {
+    searchInput.value = '';
+    searchInput.blur();
+    filterAndDisplay();
+  }
+});
+
+// View toggle functionality
+document.getElementById('gridViewBtn').addEventListener('click', () => {
+  grid.className = 'grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 min-h-[40vh]';
+  document.getElementById('gridViewBtn').classList.add('bg-indigo-100', 'text-indigo-600');
+  document.getElementById('gridViewBtn').classList.remove('bg-gray-100', 'text-gray-600');
+  document.getElementById('listViewBtn').classList.add('bg-gray-100', 'text-gray-600');
+  document.getElementById('listViewBtn').classList.remove('bg-indigo-100', 'text-indigo-600');
+});
+
+document.getElementById('listViewBtn').addEventListener('click', () => {
+  grid.className = 'grid grid-cols-1 gap-4 min-h-[40vh]';
+  document.getElementById('listViewBtn').classList.add('bg-indigo-100', 'text-indigo-600');
+  document.getElementById('listViewBtn').classList.remove('bg-gray-100', 'text-gray-600');
+  document.getElementById('gridViewBtn').classList.add('bg-gray-100', 'text-gray-600');
+  document.getElementById('gridViewBtn').classList.remove('bg-indigo-100', 'text-indigo-600');
+});
+
+// Initialize
 (async () => {
-  await loadSellerDetails();
-  await fetchSellerProducts();
+  try {
+    await loadSellerDetails();
+    await fetchSellerProducts();
+    showNotification("🎉 Products loaded successfully!", "success");
+  } catch (error) {
+    console.error("Initialization error:", error);
+    showNotification("❌ Failed to load products", "error");
+  }
 })();
 </script>
 

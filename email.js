@@ -20,7 +20,7 @@ transporter.verify((error, success) => {
   }
 });
 
-module.exports.sendMail = async ({ to, subject, html, shopName = "ShopRight" }) => {
+module.exports.sendMail = async ({ to, subject, html, shopName = "iyonicorp" }) => {
   try {
     // Validate email address
     if (!to || !to.includes('@')) {
@@ -64,7 +64,7 @@ module.exports.testEmail = async (testRecipient) => {
   try {
     return await module.exports.sendMail({
       to: testRecipient,
-      subject: "🧪 Email System Test - ShopRight Admin",
+      subject: "🧪 Email System Test - iyonicorp Admin",
       html: `
         <div style="font-family:sans-serif;max-width:600px;margin:auto;padding:20px;">
           <h2>Email System Test</h2>
@@ -72,10 +72,10 @@ module.exports.testEmail = async (testRecipient) => {
           <p><strong>Timestamp:</strong> ${new Date().toISOString()}</p>
           <p><strong>Recipient:</strong> ${testRecipient}</p>
           <hr style="margin:20px 0;">
-          <p style="color:#666;font-size:14px;">This test was sent from the ShopRight Admin Panel.</p>
+          <p style="color:#666;font-size:14px;">This test was sent from the iyonicorp Admin Panel.</p>
         </div>
       `,
-      shopName: "ShopRight Admin"
+      shopName: "iyonicorp Admin"
     });
   } catch (error) {
     console.error("❌ Test email failed:", error);

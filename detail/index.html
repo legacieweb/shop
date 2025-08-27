@@ -11,9 +11,7 @@
   <!-- ✅ Paystack -->
   <script src="https://js.paystack.co/v1/inline.js"></script>
 
-  <!-- ✅ Stripe -->
-  <script src="https://js.stripe.com/v3/"></script>
-
+ 
   <!-- ✅ Flutterwave -->
   <script src="https://checkout.flutterwave.com/v3.js"></script>
 
@@ -32,6 +30,31 @@
   from {
     opacity: 0;
     transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Review text overflow prevention */
+.review-text {
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  hyphens: auto;
+  max-width: 100%;
+}
+
+/* Animation for new reviews */
+.review-fade-in {
+  animation: reviewFadeIn 0.5s ease-out;
+}
+
+@keyframes reviewFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
   to {
     opacity: 1;
@@ -88,6 +111,457 @@
   0%, 100% { opacity: 1; }
   50% { opacity: 0.6; }
 }
+
+/* Cool Product Preloader Styles */
+.product-loader-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  z-index: 9999;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+
+.product-loader-container.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.product-loader-content {
+  text-align: center;
+  animation: bounceInScale 0.8s ease-out;
+}
+
+@keyframes bounceInScale {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.product-loader-ring {
+  width: 80px;
+  height: 80px;
+  border: 3px solid rgba(148, 163, 184, 0.2);
+  border-top: 3px solid #6366f1;
+  border-radius: 50%;
+  margin: 0 auto 30px;
+  animation: productLoaderSpin 1s linear infinite;
+}
+
+@keyframes productLoaderSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.product-loader-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 20px 0;
+}
+
+.product-loader-dot {
+  width: 8px;
+  height: 8px;
+  background: #6366f1;
+  border-radius: 50%;
+  animation: productDotWave 1.4s ease-in-out infinite;
+}
+
+.product-loader-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.product-loader-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes productDotWave {
+  0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+.product-progress-bar {
+  width: 200px;
+  height: 2px;
+  background: rgba(148, 163, 184, 0.3);
+  border-radius: 1px;
+  overflow: hidden;
+  margin: 20px auto;
+}
+
+.product-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #6366f1, #8b5cf6);
+  border-radius: 1px;
+  width: 0%;
+  animation: productProgressFill 3s ease-in-out;
+}
+
+@keyframes productProgressFill {
+  0% { width: 0%; }
+  20% { width: 30%; }
+  60% { width: 70%; }
+  100% { width: 100%; }
+}
+
+/* Floating particles */
+.floating-particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.particle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(99, 102, 241, 0.3);
+  border-radius: 50%;
+  animation: floatUp 6s infinite linear;
+}
+
+.particle:nth-child(1) {
+  left: 10%;
+  animation-delay: 0s;
+  animation-duration: 6s;
+}
+
+.particle:nth-child(2) {
+  left: 20%;
+  animation-delay: 1s;
+  animation-duration: 8s;
+}
+
+.particle:nth-child(3) {
+  left: 30%;
+  animation-delay: 2s;
+  animation-duration: 7s;
+}
+
+.particle:nth-child(4) {
+  left: 70%;
+  animation-delay: 0.5s;
+  animation-duration: 9s;
+}
+
+.particle:nth-child(5) {
+  left: 80%;
+  animation-delay: 1.5s;
+  animation-duration: 6.5s;
+}
+
+.particle:nth-child(6) {
+  left: 90%;
+  animation-delay: 2.5s;
+  animation-duration: 8.5s;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(100vh) scale(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(90vh) scale(1);
+  }
+  90% {
+    opacity: 1;
+    transform: translateY(10vh) scale(1);
+  }
+  100% {
+    transform: translateY(-10vh) scale(0);
+    opacity: 0;
+  }
+}
+
+/* Enhanced loader ring with glow */
+.product-loader-ring-container {
+  position: relative;
+  margin: 0 auto 30px;
+}
+
+.product-loader-glow {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+  animation: glowPulse 2s ease-in-out infinite;
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+}
+
+/* Enhanced text animations */
+.product-loader-text {
+  animation: textFadeIn 1s ease-out;
+}
+
+@keyframes textFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Loading percentage */
+.product-loading-percentage {
+  margin-top: 10px;
+  animation: fadeInUp 1.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Manual Sliding Product Animations */
+.related-products-container,
+.store-products-container {
+  overflow: hidden;
+  position: relative;
+  perspective: 1000px;
+}
+
+.related-products-grid,
+.store-products-grid {
+  display: flex;
+  gap: 1.5rem;
+  transition: transform 0.5s ease-in-out;
+  transform-style: preserve-3d;
+}
+
+/* Responsive product cards */
+@media (max-width: 640px) {
+  .related-products-grid,
+  .store-products-grid {
+    gap: 1rem;
+  }
+  
+  .related-products-grid .bg-white,
+  .store-products-grid .bg-white {
+    min-width: 160px;
+    max-width: 160px;
+  }
+  
+  .related-products-grid img,
+  .store-products-grid img {
+    height: 120px;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .related-products-grid .bg-white,
+  .store-products-grid .bg-white {
+    min-width: 180px;
+    max-width: 180px;
+  }
+}
+
+/* Slide control buttons */
+.slide-controls {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+}
+
+.slide-btn {
+  background: rgba(255, 255, 255, 0.95);
+  border: 2px solid rgba(99, 102, 241, 0.2);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+  font-size: 16px;
+  color: #4f46e5;
+  font-weight: bold;
+}
+
+.slide-btn:hover {
+  background: rgba(255, 255, 255, 1);
+  border-color: rgba(99, 102, 241, 0.4);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+  transform: scale(1.1);
+}
+
+.slide-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: scale(1);
+  background: rgba(255, 255, 255, 0.7);
+}
+
+.slide-prev {
+  left: -18px;
+}
+
+.slide-next {
+  right: -18px;
+}
+
+/* Mobile responsive adjustments */
+@media (max-width: 640px) {
+  .slide-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  .slide-prev {
+    left: -16px;
+  }
+  
+  .slide-next {
+    right: -16px;
+  }
+}
+
+/* Auto-slide animation (optional) */
+.auto-slide .related-products-grid {
+  animation: swipeLeftToRight 20s linear infinite;
+}
+
+.auto-slide .store-products-grid {
+  animation: swipeRightToLeft 25s linear infinite;
+}
+
+@keyframes swipeLeftToRight {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes swipeRightToLeft {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+/* Pause animation on hover */
+.auto-slide .related-products-grid:hover,
+.auto-slide .store-products-grid:hover {
+  animation-play-state: paused;
+}
+
+/* Individual product card animations */
+.product-card-slide-in-left {
+  animation: slideInFromLeft 0.8s ease-out;
+}
+
+.product-card-slide-in-right {
+  animation: slideInFromRight 0.8s ease-out;
+}
+
+.product-card-slide-in-up {
+  animation: slideInFromUp 0.8s ease-out;
+}
+
+.product-card-slide-in-down {
+  animation: slideInFromDown 0.8s ease-out;
+}
+
+@keyframes slideInFromLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px) scale(0.9) rotateY(-15deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1) rotateY(0deg);
+  }
+}
+
+@keyframes slideInFromRight {
+  from {
+    opacity: 0;
+    transform: translateX(50px) scale(0.9) rotateY(15deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1) rotateY(0deg);
+  }
+}
+
+@keyframes slideInFromUp {
+  from {
+    opacity: 0;
+    transform: translateY(-50px) scale(0.9) rotateX(15deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotateX(0deg);
+  }
+}
+
+@keyframes slideInFromDown {
+  from {
+    opacity: 0;
+    transform: translateY(50px) scale(0.9) rotateX(-15deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotateX(0deg);
+  }
+}
+
+/* Staggered animation delays */
+.product-card-delay-1 { animation-delay: 0.1s; }
+.product-card-delay-2 { animation-delay: 0.2s; }
+.product-card-delay-3 { animation-delay: 0.3s; }
+.product-card-delay-4 { animation-delay: 0.4s; }
 
 /* Success Notification Styles */
 .success-modal {
@@ -212,6 +686,86 @@
     box-shadow: 0 0 30px rgba(99, 102, 241, 0.8), 0 0 40px rgba(99, 102, 241, 0.3);
   }
 }
+
+/* Mobile Hamburger Menu */
+.mobile-menu-btn {
+  display: none;
+}
+
+.mobile-menu {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 280px;
+  height: 100vh;
+  background: white;
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+  transition: right 0.3s ease-in-out;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.mobile-menu.open {
+  right: 0;
+}
+
+.mobile-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.mobile-menu-overlay.open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.mobile-menu-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.mobile-menu-items {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.mobile-menu-item {
+  padding: 12px 16px;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: #374151;
+}
+
+.mobile-menu-item:hover {
+  background-color: #f3f4f6;
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-btn {
+    display: flex;
+  }
+  
+  .desktop-actions {
+    display: none !important;
+  }
+}
 </style>
   <style>
     /* Remove @apply, use Tailwind classes directly in HTML */
@@ -231,7 +785,7 @@
     </div>
 
     <!-- Desktop actions -->
-    <div class="hidden md:flex items-center gap-4">
+    <div class="desktop-actions hidden md:flex items-center gap-4">
 
 <!-- 🛒 Cart Dropdown -->
 <div class="relative">
@@ -273,59 +827,110 @@
   </div>
 </div>
 
-
-      <!-- 🔁 Return Menu -->
-      <div class="relative">
-        <button 
-          onclick="toggleReturnMenu()" 
-          class="flex items-center gap-1 text-sm px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded shadow-sm transition"
-          aria-haspopup="true"
-        >
-          🔁 Return To
-        </button>
-
-        <div 
-          id="returnMenu" 
-          class="absolute top-12 right-0 bg-white border border-gray-200 rounded-lg shadow-lg px-4 py-3 space-y-2 opacity-0 pointer-events-none transform scale-95 transition-all duration-200 ease-out z-50"
-        >
-          <a 
-            id="visitStoreBtn" 
-            href="#" 
-            class="block text-sm px-3 py-2 rounded bg-blue-100 text-blue-700 hover:bg-blue-200 transition"
-          >
-            🏬 Visit Store
-          </a>
-          <a 
-            href="products.html" 
-            class="block text-sm px-3 py-2 rounded bg-indigo-100 text-indigo-700 hover:bg-indigo-200 transition"
-          >
-            ↩️ Return to Marketplace
-          </a>
-        </div>
-      </div>
-
-      <!-- Mobile hamburger -->
-      <button id="mobileMenuBtn" class="md:hidden px-3 py-2 border rounded text-gray-700" aria-label="Open menu">☰</button>
-      
-      <!-- Mobile dropdown -->
-      <div id="mobileMenu" class="absolute right-4 top-[64px] bg-white border rounded-lg shadow-xl p-3 w-64 hidden md:hidden">
-        <div class="mb-2 text-xs font-semibold text-gray-500">Menu</div>
-        <a id="mobileVisitStore" href="#" class="block px-3 py-2 rounded hover:bg-gray-100">🏬 Visit Store</a>
-        <a href="products.html" class="block px-3 py-2 rounded hover:bg-gray-100">↩️ Return to Marketplace</a>
-        <button onclick="showSizeGuide()" class="w-full text-left px-3 py-2 rounded hover:bg-gray-100">📏 Size Guide</button>
-        <div class="mt-2 border-t pt-2">
-          <button onclick="proceedToCheckout(0)" class="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700">✅ Checkout</button>
-        </div>
-      </div>
+      <!-- 🏬 Visit Store Button -->
+      <a 
+        id="visitStoreBtn" 
+        href="#" 
+        class="flex items-center gap-1 text-sm px-4 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded shadow-sm transition"
+      >
+        🏬 Visit Store
+      </a>
 
     </div>
+
+    <!-- Mobile hamburger menu button -->
+    <button 
+      class="mobile-menu-btn md:hidden flex items-center justify-center w-10 h-10 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors"
+      onclick="toggleMobileMenu()"
+      aria-label="Open menu"
+    >
+      <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+      </svg>
+    </button>
+
   </div>
 </header>
+
+<!-- Mobile Menu Overlay -->
+<div class="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu">
+  <div class="mobile-menu-header">
+    <h3 class="text-lg font-semibold text-gray-800">Menu</h3>
+    <button 
+      onclick="closeMobileMenu()" 
+      class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+    >
+      <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+  </div>
+  
+  <div class="mobile-menu-items">
+    <button 
+      onclick="showMobileCart(); closeMobileMenu();" 
+      class="mobile-menu-item"
+    >
+      <span class="text-lg">🛒</span>
+      <span>Cart</span>
+      <span id="mobileCartCount" class="ml-auto bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">0</span>
+    </button>
+    
+    <a 
+      id="mobileVisitStoreBtn" 
+      href="#" 
+      class="mobile-menu-item"
+    >
+      <span class="text-lg">🏬</span>
+      <span>Visit Store</span>
+    </a>
+  </div>
+</div>
+
+<!-- Mobile Cart Modal -->
+<div id="mobileCartModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+  <div class="bg-white rounded-lg w-full max-w-md max-h-[80vh] overflow-hidden">
+    <div class="flex items-center justify-between p-4 border-b">
+      <h3 class="text-lg font-semibold text-gray-800">🛒 Your Cart</h3>
+      <button 
+        onclick="closeMobileCart()" 
+        class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+      >
+        <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+    
+    <div id="mobileCartItems" class="p-4 max-h-96 overflow-y-auto">
+      <p class="text-gray-500 italic text-center">🛒 Cart is empty.</p>
+    </div>
+    
+    <div class="border-t p-4">
+      <div class="flex justify-between items-center text-sm font-medium text-gray-700 mb-3">
+        <span>Total:</span>
+        <span id="mobileCartTotal">$0.00</span>
+      </div>
+      
+      <button 
+        id="mobileCheckoutBtn"
+        onclick="proceedToCheckout(0); closeMobileCart();" 
+        class="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition font-medium"
+        disabled
+      >
+        ✅ Proceed to Checkout
+      </button>
+    </div>
+  </div>
+</div>
 
 <!-- Product Section -->
 <main class="flex-grow">
 <!-- 🔗 Breadcrumb -->
-<div class="max-w-7xl mx-auto px-4 py-2 text-sm text-gray-600">
+<div class="max-w-7xl mx-auto px-4 py-2 text-sm text-gray-600 hidden" id="breadcrumbSection">
   <nav class="flex items-center gap-2">
     <a id="breadcrumbShopLink" href="#" class="text-indigo-600 hover:underline">All Products</a>
     <span>/</span>
@@ -335,20 +940,98 @@
 
 
   <!-- Main Product Display -->
-  <section class="max-w-5xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-2 gap-10 items-start" id="productSection">
+  <section class="max-w-5xl mx-auto px-4 py-10 grid grid-cols-1 md:grid-cols-2 gap-10 items-start hidden" id="productSection">
     <!-- Injected by JS -->
   </section>
+
+  <!-- Customer Reviews Section -->
+  <section class="max-w-5xl mx-auto px-4 py-12 hidden" id="reviewsSection">
+    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 p-4 sm:p-6 lg:p-8">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 sm:mb-8 gap-4">
+        <div class="flex-1">
+          <h3 class="text-xl sm:text-2xl font-bold text-gray-900 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
+            <span class="flex items-center gap-2">⭐ Customer Reviews</span>
+            <span id="totalReviewsText" class="text-sm sm:text-base font-normal text-gray-500">(0)</span>
+          </h3>
+          <div class="flex flex-col sm:flex-row sm:items-center mt-3 gap-2 sm:gap-0">
+            <div id="averageRating" class="flex text-yellow-400 text-lg sm:text-xl mr-0 sm:mr-3">
+              ☆☆☆☆☆
+            </div>
+            <span id="averageRatingText" class="text-base sm:text-lg font-semibold text-gray-700"></span>
+          </div>
+        </div>
+      </div>
+
+      <div id="reviewsList" class="space-y-4 sm:space-y-6">
+        <!-- Reviews will be populated by JS -->
+      </div>
+
+      <!-- No Reviews Message -->
+      <div id="noReviewsMessage" class="text-center py-8 sm:py-12">
+        <div class="text-3xl sm:text-4xl mb-3 sm:mb-4">⭐</div>
+        <h4 class="text-lg sm:text-xl font-semibold text-gray-600 mb-2">No Reviews Yet</h4>
+        <p class="text-gray-500 text-sm sm:text-base px-4">Be the first to share your experience!</p>
+      </div>
+
+      <!-- Load More Reviews Button -->
+      <div id="loadMoreReviewsBtn" class="text-center mt-6 sm:mt-8 hidden">
+        <button 
+          onclick="loadMoreReviews()" 
+          class="px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white rounded-lg hover:from-indigo-700 hover:to-purple-700 transition-all transform hover:scale-105 shadow-lg text-sm sm:text-base"
+        >
+          Load More Reviews
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Review Popup Modal -->
+  <div id="reviewModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+      <div class="p-4 sm:p-6 lg:p-8">
+        <div class="flex items-start justify-between mb-6">
+          <h3 class="text-xl sm:text-2xl font-bold text-gray-900">Customer Review</h3>
+          <button onclick="closeReviewModal()" class="text-gray-400 hover:text-gray-600 text-2xl font-bold leading-none p-1">
+            ×
+          </button>
+        </div>
+        
+        <div id="modalReviewContent">
+          <!-- Review content will be populated by JS -->
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Related Products -->
   <section class="max-w-7xl mx-auto px-4 py-12 hidden" id="relatedSection">
     <h3 class="text-xl font-semibold mb-4">Related Products</h3>
-    <div id="relatedGrid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+    <div class="related-products-container">
+      <div class="slide-controls slide-prev">
+        <button class="slide-btn" onclick="slideProducts('related', 'prev')">‹</button>
+      </div>
+      <div class="slide-controls slide-next">
+        <button class="slide-btn" onclick="slideProducts('related', 'next')">›</button>
+      </div>
+      <div id="relatedGrid" class="related-products-grid"></div>
+    </div>
   </section>
+
+
 
   <!-- Store Products -->
   <section class="max-w-7xl mx-auto px-4 py-12 hidden" id="storeSection">
     <h3 class="text-xl font-semibold mb-4">More From This Store</h3>
-    <div id="storeGrid" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"></div>
+    <div class="store-products-container">
+      <div class="slide-controls slide-prev">
+        <button class="slide-btn" onclick="slideProducts('store', 'prev')">‹</button>
+      </div>
+      <div class="slide-controls slide-next">
+        <button class="slide-btn" onclick="slideProducts('store', 'next')">›</button>
+      </div>
+      <div id="storeGrid" class="store-products-grid"></div>
+    </div>
+  </section>
   <!-- Size Guide Drawer (right side) -->
   <div id="sizeGuideModal" class="fixed inset-0 bg-black/60 z-50 hidden">
     <!-- click outside to close -->
@@ -466,7 +1149,6 @@
       <!-- Example Containers -->
       <div id="paypal-button-container" class="mt-4"></div>
       <div id="square-container" class="mt-4"></div>
-      <div id="stripe-container" class="mt-4"></div>
       <!-- You can dynamically target these inside JS -->
     </div>
 
@@ -513,6 +1195,50 @@
     >
       ✖ Cancel
     </button>
+  </div>
+</div>
+
+<!-- Cool Product Loading Preloader -->
+<div id="productPreloader" class="product-loader-container">
+  <!-- Floating particles background -->
+  <div class="floating-particles">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+  </div>
+  
+  <div class="product-loader-content">
+    <!-- Main loader ring with glow effect -->
+    <div class="product-loader-ring-container">
+      <div class="product-loader-ring"></div>
+      <div class="product-loader-glow"></div>
+    </div>
+    
+    <!-- Animated dots -->
+    <div class="product-loader-dots">
+      <div class="product-loader-dot"></div>
+      <div class="product-loader-dot"></div>
+      <div class="product-loader-dot"></div>
+    </div>
+    
+    <!-- Text with subtle animation -->
+    <div class="product-loader-text">
+      <h2 class="text-2xl font-light text-slate-600 mb-2 animate-pulse">🛍️ Getting Product</h2>
+      <p class="text-slate-400 text-sm mb-4">Loading product details and reviews...</p>
+    </div>
+    
+    <!-- Progress bar -->
+    <div class="product-progress-bar">
+      <div class="product-progress-fill"></div>
+    </div>
+    
+    <!-- Loading percentage -->
+    <div class="product-loading-percentage">
+      <span id="loadingPercentage" class="text-xs text-slate-500">0%</span>
+    </div>
   </div>
 </div>
 
@@ -631,10 +1357,18 @@ async function loadStoreProducts(seller, currentProductId, currencyCode = "USD")
 
     if (storeProducts.length > 0) {
       let html = "";
-      storeProducts.forEach(p => {
+      // Different animation classes for store products (opposite direction)
+      const animationClasses = ['product-card-slide-in-right', 'product-card-slide-in-down', 'product-card-slide-in-left', 'product-card-slide-in-up'];
+      const delayClasses = ['product-card-delay-1', 'product-card-delay-2', 'product-card-delay-3', 'product-card-delay-4'];
+
+      // No duplication - just show actual products
+      storeProducts.forEach((p, index) => {
         const img = resolveUrl(p.image);
+        const animationClass = animationClasses[index % animationClasses.length];
+        const delayClass = delayClasses[index % delayClasses.length];
+        
         html += `
-          <a href="product-detail.html?id=${p.id}" class="bg-white shadow-sm hover:shadow-md rounded-lg p-3 transition-all duration-200 hover:scale-[1.02] block">
+          <a href="../detail?id=${p.id}" class="bg-white shadow-sm hover:shadow-md rounded-lg p-3 transition-all duration-200 hover:scale-[1.02] block min-w-[200px] flex-shrink-0 ${animationClass} ${delayClass}">
             ${img ? `<div class="bg-gray-50 rounded overflow-hidden mb-2">
               <img src="${img}" class="w-full max-h-56 mx-auto object-contain" />
             </div>` : ""}
@@ -643,8 +1377,23 @@ async function loadStoreProducts(seller, currentProductId, currencyCode = "USD")
           </a>
         `;
       });
+      
       storeGrid.innerHTML = html;
+      storeSection.classList.remove('hidden');
       storeSection.style.display = "block"; // Show the section
+      
+      // Initialize slide position
+      window.storeSlideIndex = 0;
+      window.storeProducts = storeProducts;
+      
+      // Initialize slide buttons
+      setTimeout(() => {
+        const containerWidth = storeGrid.parentElement.offsetWidth;
+        let itemWidth = containerWidth < 640 ? 180 : containerWidth < 1024 ? 200 : 232;
+        const visibleItems = Math.max(1, Math.floor(containerWidth / itemWidth));
+        const maxSlide = Math.max(0, storeProducts.length - visibleItems);
+        updateSlideButtons('store', 0, maxSlide);
+      }, 100);
     } else {
       storeSection.style.display = "none"; // Hide if no products
     }
@@ -654,8 +1403,13 @@ async function loadStoreProducts(seller, currentProductId, currencyCode = "USD")
   }
 }
 async function loadProduct() {
+  // Preloader is already visible by default
+  // Start the loading percentage animation
+  animateLoadingPercentage();
+
   if (!productId) {
     productSection.innerHTML = "<p class='text-red-500'>❌ No product ID provided.</p>";
+    hideProductPreloader();
     return;
   }
 
@@ -665,6 +1419,7 @@ async function loadProduct() {
     const product = response.success && response.data && response.data[0] ? response.data[0] : null;
     if (!product) {
       productSection.innerHTML = "<p class='text-red-500'>❌ Product not found.</p>";
+      hideProductPreloader();
       return;
     }
 
@@ -691,9 +1446,10 @@ async function loadProduct() {
 
     window.currentProduct = product;
 
-    document.getElementById("visitStoreBtn").href = `shop.html?seller=${encodeURIComponent(product.seller)}`;
+    document.getElementById("visitStoreBtn").href = `../shop?seller=${encodeURIComponent(product.seller)}`;
+    document.getElementById("mobileVisitStoreBtn").href = `../shop?seller=${encodeURIComponent(product.seller)}`;
     document.getElementById("breadcrumbProduct").textContent = product.name;
-    document.getElementById("breadcrumbShopLink").href = `products.html?seller=${encodeURIComponent(product.seller)}`;
+    document.getElementById("breadcrumbShopLink").href = `../products?seller=${encodeURIComponent(product.seller)}`;
     document.getElementById("breadcrumbShopLink").textContent = "All Products";
 
     const shopName = seller?.customTheme?.title || seller?.username || "Shop";
@@ -740,7 +1496,6 @@ async function loadProduct() {
     const paymentSystems = product.shopSettings.paymentSystems || [];
     const gatewayIcons = {
       paypal: "https://www.paypalobjects.com/webstatic/icon/pp258.png",
-      stripe: "https://img.icons8.com/color/48/stripe.png",
       paystack: "https://upload.wikimedia.org/wikipedia/commons/2/20/Paystack_Logo.png",
       flutterwave: "https://flutterwave.com/favicon.png",
       razorpay: "https://razorpay.com/favicon.png",
@@ -855,10 +1610,232 @@ async function loadProduct() {
 
     renderCartDropdown();
 
+    // ✅ Load product reviews
+    console.log('Loading reviews for product:', product.id, 'seller:', product.seller);
+    setTimeout(async () => {
+      await loadProductReviews(product.id, product.seller);
+      // Hide preloader and show content after everything is loaded
+      hideProductPreloader();
+    }, 100); // Small delay to ensure DOM is ready
+
   } catch (err) {
     console.error(err);
     productSection.innerHTML = "<p class='text-red-500'>⚠️ Error loading product.</p>";
+    hideProductPreloader();
   }
+}
+
+function animateLoadingPercentage() {
+  const percentageElement = document.getElementById('loadingPercentage');
+  if (!percentageElement) return;
+  
+  let percentage = 0;
+  const interval = setInterval(() => {
+    percentage += Math.random() * 15; // Random increment for realistic feel
+    if (percentage > 95) percentage = 95; // Don't go to 100% until actually done
+    
+    percentageElement.textContent = Math.floor(percentage) + '%';
+    
+    if (percentage >= 95) {
+      clearInterval(interval);
+    }
+  }, 200);
+  
+  // Store interval ID to clear it later
+  window.loadingInterval = interval;
+}
+
+function slideProducts(type, direction) {
+  const isRelated = type === 'related';
+  const grid = document.getElementById(isRelated ? 'relatedGrid' : 'storeGrid');
+  const products = isRelated ? window.relatedProducts : window.storeProducts;
+  
+  if (!grid || !products || products.length === 0) return;
+  
+  const slideIndex = isRelated ? window.relatedSlideIndex : window.storeSlideIndex;
+  const containerWidth = grid.parentElement.offsetWidth;
+  
+  // Responsive item width calculation
+  let itemWidth;
+  if (containerWidth < 640) { // Mobile
+    itemWidth = 180; // Smaller cards on mobile
+  } else if (containerWidth < 1024) { // Tablet
+    itemWidth = 200;
+  } else { // Desktop
+    itemWidth = 232;
+  }
+  
+  const visibleItems = Math.max(1, Math.floor(containerWidth / itemWidth));
+  const maxSlide = Math.max(0, products.length - visibleItems);
+  
+  let newIndex = slideIndex;
+  
+  if (direction === 'next') {
+    newIndex = Math.min(slideIndex + 1, maxSlide);
+  } else {
+    newIndex = Math.max(slideIndex - 1, 0);
+  }
+  
+  // Update slide index
+  if (isRelated) {
+    window.relatedSlideIndex = newIndex;
+  } else {
+    window.storeSlideIndex = newIndex;
+  }
+  
+  // Apply transform
+  const translateX = -newIndex * itemWidth;
+  grid.style.transform = `translateX(${translateX}px)`;
+  
+  // Update button states
+  updateSlideButtons(type, newIndex, maxSlide);
+}
+
+function updateSlideButtons(type, currentIndex, maxSlide) {
+  const section = document.getElementById(type === 'related' ? 'relatedSection' : 'storeSection');
+  const prevBtn = section.querySelector('.slide-prev .slide-btn');
+  const nextBtn = section.querySelector('.slide-next .slide-btn');
+  
+  if (prevBtn) prevBtn.disabled = currentIndex === 0;
+  if (nextBtn) nextBtn.disabled = currentIndex === maxSlide;
+}
+
+// Mobile Menu Functions
+function toggleMobileMenu() {
+  const menu = document.querySelector('.mobile-menu');
+  const overlay = document.querySelector('.mobile-menu-overlay');
+  
+  menu.classList.add('open');
+  overlay.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMobileMenu() {
+  const menu = document.querySelector('.mobile-menu');
+  const overlay = document.querySelector('.mobile-menu-overlay');
+  
+  menu.classList.remove('open');
+  overlay.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+// Mobile Cart Functions
+function showMobileCart() {
+  const modal = document.getElementById('mobileCartModal');
+  modal.classList.remove('hidden');
+  renderMobileCart();
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMobileCart() {
+  const modal = document.getElementById('mobileCartModal');
+  modal.classList.add('hidden');
+  document.body.style.overflow = '';
+}
+
+function renderMobileCart() {
+  const container = document.getElementById("mobileCartItems");
+  const totalElement = document.getElementById("mobileCartTotal");
+  const checkoutBtn = document.getElementById("mobileCheckoutBtn");
+  
+  container.innerHTML = "";
+
+  if (!cart.length) {
+    container.innerHTML = `<p class="text-gray-500 italic text-center">🛒 Cart is empty.</p>`;
+    totalElement.innerText = "$0.00";
+    checkoutBtn.disabled = true;
+    checkoutBtn.classList.add('opacity-50', 'cursor-not-allowed');
+    return;
+  }
+
+  let total = 0;
+
+  cart.forEach((item, index) => {
+    let basePrice = item.price || 0;
+    let variantLabel = "";
+    let colorLabel = "";
+    let itemTotal = 0;
+
+    if (item.variant?.price) {
+      basePrice = item.variant.price;
+      variantLabel = `<div class="text-xs text-gray-500">Variant: ${item.variant.name}</div>`;
+    }
+
+    if (item.color?.price) {
+      basePrice += item.color.price;
+      colorLabel = `<div class="text-xs text-gray-500">Color: ${item.color.name}</div>`;
+    }
+
+    itemTotal = basePrice * item.qty;
+    total += itemTotal;
+
+    const currencyCode = item.shopSettings?.storeCurrency || "USD";
+    const currencySymbol = getCurrencySymbol(currencyCode);
+
+    container.innerHTML += `
+      <div class="flex items-start gap-3 p-3 border-b border-gray-100 last:border-b-0">
+        <img src="${resolveImage(item.image)}" class="w-12 h-12 object-cover rounded" />
+        <div class="flex-1 min-w-0">
+          <h4 class="font-medium text-sm text-gray-800 truncate">${item.name}</h4>
+          ${variantLabel}
+          ${colorLabel}
+          <div class="flex items-center justify-between mt-1">
+            <span class="text-xs text-gray-500">Qty: ${item.qty}</span>
+            <span class="font-medium text-sm text-gray-800">${currencySymbol}${itemTotal.toFixed(2)}</span>
+          </div>
+        </div>
+        <button 
+          onclick="removeFromCart(${index}); renderMobileCart();" 
+          class="text-red-500 hover:text-red-700 text-sm"
+        >
+          ✕
+        </button>
+      </div>
+    `;
+  });
+
+  const currencyCode = cart[0]?.shopSettings?.storeCurrency || "USD";
+  const currencySymbol = getCurrencySymbol(currencyCode);
+  totalElement.innerText = `${currencySymbol}${total.toFixed(2)}`;
+  
+  checkoutBtn.disabled = false;
+  checkoutBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+}
+
+function hideProductPreloader() {
+  const productPreloader = document.getElementById('productPreloader');
+  const breadcrumbSection = document.getElementById('breadcrumbSection');
+  const productSection = document.getElementById('productSection');
+  const reviewsSection = document.getElementById('reviewsSection');
+  const percentageElement = document.getElementById('loadingPercentage');
+  
+  // Complete the loading percentage
+  if (percentageElement) {
+    percentageElement.textContent = '100%';
+  }
+  
+  // Clear the loading interval
+  if (window.loadingInterval) {
+    clearInterval(window.loadingInterval);
+  }
+  
+  // Add a small delay to show 100% before hiding
+  setTimeout(() => {
+    if (productPreloader) {
+      productPreloader.classList.add('hidden');
+    }
+    
+    // Show all the main content sections
+    if (breadcrumbSection) {
+      breadcrumbSection.classList.remove('hidden');
+    }
+    if (productSection) {
+      productSection.classList.remove('hidden');
+    }
+    if (reviewsSection) {
+      reviewsSection.classList.remove('hidden');
+    }
+  }, 500);
 }
 
 function getCurrencySymbol(code) {
@@ -883,6 +1860,11 @@ function navigateImage(step) {
   const nextIndex = (window.currentImageIndex + step + window.productImages.length) % window.productImages.length;
   switchImage(nextIndex);
 }
+
+// Initialize page - preloader is shown by default
+document.addEventListener('DOMContentLoaded', function() {
+  // Preloader is already visible by default, no need to show it
+});
 
 loadProduct();
 
@@ -922,11 +1904,17 @@ async function loadRelated(product, currencyCode = "USD") {
 
     if (filtered.length > 0) {
       let html = "";
+      const animationClasses = ['product-card-slide-in-left', 'product-card-slide-in-up', 'product-card-slide-in-right', 'product-card-slide-in-down'];
+      const delayClasses = ['product-card-delay-1', 'product-card-delay-2', 'product-card-delay-3', 'product-card-delay-4'];
 
-      filtered.forEach(p => {
+      // No duplication - just show actual products
+      filtered.forEach((p, index) => {
         const img = resolveUrl(p.image);
+        const animationClass = animationClasses[index % animationClasses.length];
+        const delayClass = delayClasses[index % delayClasses.length];
+        
         html += `
-          <a href="../detail?id=${p.id}" class="bg-white shadow-sm hover:shadow-md rounded-lg p-3 transition-all duration-200 hover:scale-[1.02] block">
+          <a href="../detail?id=${p.id}" class="bg-white shadow-sm hover:shadow-md rounded-lg p-3 transition-all duration-200 hover:scale-[1.02] block min-w-[200px] flex-shrink-0 ${animationClass} ${delayClass}">
             ${img ? `<div class="bg-gray-50 rounded overflow-hidden mb-2">
               <img src="${img}" class="w-full max-h-56 mx-auto object-contain" />
             </div>` : ""}
@@ -936,10 +1924,25 @@ async function loadRelated(product, currencyCode = "USD") {
         `;
       });
 
-      storeSection.style.display = "block";
+      relatedGrid.innerHTML = html;
+      relatedSection.classList.remove('hidden');
+      relatedSection.style.display = "block";
+      
+      // Initialize slide position
+      window.relatedSlideIndex = 0;
+      window.relatedProducts = filtered;
+      
+      // Initialize slide buttons
+      setTimeout(() => {
+        const containerWidth = relatedGrid.parentElement.offsetWidth;
+        let itemWidth = containerWidth < 640 ? 180 : containerWidth < 1024 ? 200 : 232;
+        const visibleItems = Math.max(1, Math.floor(containerWidth / itemWidth));
+        const maxSlide = Math.max(0, filtered.length - visibleItems);
+        updateSlideButtons('related', 0, maxSlide);
+      }, 100);
     }
   } catch (err) {
-    console.error("❌ Store products failed", err);
+    console.error("❌ Related products failed", err);
   }
 }
 
@@ -962,33 +1965,60 @@ function saveCart() {
 function updateCartCount() {
   const count = cart.reduce((sum, item) => sum + (item.qty || 0), 0);
   document.getElementById("cartCount").textContent = count;
+  
+  // Also update mobile cart count
+  const mobileCartCount = document.getElementById("mobileCartCount");
+  if (mobileCartCount) {
+    mobileCartCount.textContent = count;
+  }
 }
 
 function toggleCartDropdown() {
   document.getElementById("cartDropdown").classList.toggle("hidden");
 }
 
-// Mobile menu toggle
-(function(){
-  const btn = document.getElementById('mobileMenuBtn');
-  const menu = document.getElementById('mobileMenu');
-  if(!btn || !menu) return;
-  btn.addEventListener('click', ()=>{
-    menu.classList.toggle('hidden');
-  });
-  // close on outside click
-  document.addEventListener('click', (e)=>{
-    if(!menu.classList.contains('hidden')){
-      const withinMenu = menu.contains(e.target);
-      const onBtn = btn.contains(e.target);
-      if(!withinMenu && !onBtn){ menu.classList.add('hidden'); }
+// Window resize handler for responsive sliding
+window.addEventListener('resize', debounce(() => {
+  // Reset slide positions and recalculate
+  if (window.relatedProducts && window.relatedProducts.length > 0) {
+    window.relatedSlideIndex = 0;
+    const relatedGrid = document.getElementById('relatedGrid');
+    if (relatedGrid) {
+      relatedGrid.style.transform = 'translateX(0px)';
+      const containerWidth = relatedGrid.parentElement.offsetWidth;
+      let itemWidth = containerWidth < 640 ? 180 : containerWidth < 1024 ? 200 : 232;
+      const visibleItems = Math.max(1, Math.floor(containerWidth / itemWidth));
+      const maxSlide = Math.max(0, window.relatedProducts.length - visibleItems);
+      updateSlideButtons('related', 0, maxSlide);
     }
-  });
-  // close on escape
-  document.addEventListener('keydown', (e)=>{
-    if(e.key === 'Escape'){ menu.classList.add('hidden'); }
-  });
-})();
+  }
+  
+  if (window.storeProducts && window.storeProducts.length > 0) {
+    window.storeSlideIndex = 0;
+    const storeGrid = document.getElementById('storeGrid');
+    if (storeGrid) {
+      storeGrid.style.transform = 'translateX(0px)';
+      const containerWidth = storeGrid.parentElement.offsetWidth;
+      let itemWidth = containerWidth < 640 ? 180 : containerWidth < 1024 ? 200 : 232;
+      const visibleItems = Math.max(1, Math.floor(containerWidth / itemWidth));
+      const maxSlide = Math.max(0, window.storeProducts.length - visibleItems);
+      updateSlideButtons('store', 0, maxSlide);
+    }
+  }
+}, 250));
+
+// Debounce function to limit resize event calls
+function debounce(func, wait) {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+}
 
 function renderCartDropdown() {
   const container = document.getElementById("cartItems");
@@ -1418,8 +2448,8 @@ function showCheckoutModal(product, qty = 1) {
   window.selectedVariant = selectedVariant;
   window.selectedColor = selectedColor;
   
-  // Clear any applied coupon when opening checkout
-  window.appliedCoupon = null;
+  // Keep any applied coupon from product page
+  // window.appliedCoupon is preserved if it exists
 
   const modal = document.getElementById("checkoutModal");
   modal.classList.remove("hidden");
@@ -1502,10 +2532,19 @@ function showCheckoutModal(product, qty = 1) {
     dBox.innerHTML = deliveryHTML;
   }
 
-  // Clear coupon fields
-  document.getElementById("checkoutCouponCode").value = "";
-  document.getElementById("checkoutCouponMessage").innerHTML = "";
-  document.getElementById("couponDiscountRow").classList.add("hidden");
+  // Auto-populate coupon if already applied on product page
+  if (window.appliedCoupon) {
+    document.getElementById("checkoutCouponCode").value = window.appliedCoupon.code;
+    document.getElementById("checkoutCouponMessage").innerHTML = `
+      <span class="text-green-600">✅ Coupon "${window.appliedCoupon.code}" is applied!</span>
+    `;
+    document.getElementById("couponDiscountRow").classList.remove("hidden");
+  } else {
+    // Clear coupon fields if no coupon applied
+    document.getElementById("checkoutCouponCode").value = "";
+    document.getElementById("checkoutCouponMessage").innerHTML = "";
+    document.getElementById("couponDiscountRow").classList.add("hidden");
+  }
 
   // Reset price displays with correct symbol
   document.getElementById("checkoutSubtotal").textContent = `${currencySymbol}0.00`;
@@ -1718,6 +2757,13 @@ async function placeOrder() {
     createdAt: new Date().toISOString()
   };
 
+  // Debug: Log what we're sending
+  console.log("Order data being sent:", {
+    variant: orderData.variant,
+    color: orderData.color,
+    productName: orderData.productName
+  });
+
   const btn = document.getElementById("placeOrderBtn");
   btn.disabled = true;
   btn.textContent = "Processing...";
@@ -1840,8 +2886,6 @@ function showGatewayPopup(gateways, total, orderData, gatewayConfigs, email, pro
     khalti: "Khalti",
     instamojo: "Instamojo",
     shopright: "ShopRight Pay",
-    stripe: "Stripe",
-    wise: "Wise Business",
     revolut: "Revolut Business",
     iyzipay: "Iyzipay"
   };
@@ -1856,8 +2900,6 @@ function showGatewayPopup(gateways, total, orderData, gatewayConfigs, email, pro
     khalti: "https://seeklogo.com/images/K/khalti-logo-962A1A4174-seeklogo.com.png",
     instamojo: "https://assets.instamojo.com/logo/full-logo-dark.png",
     shopright: "https://placehold.co/32x32?text=SR",
-    stripe: "https://img.icons8.com/color/48/stripe.png",
-    wise: "https://wise.com/favicon.ico",
     revolut: "https://www.revolut.com/favicon.ico",
     iyzipay: "https://www.iyzico.com/favicon.ico"
   };
@@ -2231,86 +3273,6 @@ async function processPayment(gateway, total, orderData, configs, email, product
     }
   }
 
-  else if (gateway === "stripe") {
-    const key = configs.stripePublicKey;
-    if (!key) return alert("❌ Stripe not configured.");
-    
-    // Validate Stripe.js is loaded
-    if (typeof Stripe === 'undefined') {
-      console.error("Stripe.js not loaded");
-      return alert("❌ Stripe payment system not available. Please try again later.");
-    }
-    
-    const stripe = Stripe(key);
-    
-    // Normalize currency code for Stripe (must be lowercase)
-    const stripeCurrency = storeCurrency.toLowerCase();
-    
-    // Validate currency is supported by Stripe
-    const supportedCurrencies = ['usd', 'eur', 'gbp', 'jpy', 'cad', 'aud', 'nzd', 'chf', 'dkk', 'nok', 'sek', 'zar', 'kes', 'ngn', 'inr'];
-    if (!supportedCurrencies.includes(stripeCurrency)) {
-      console.warn(`Currency ${storeCurrency} may not be supported by Stripe`);
-    }
-    
-    try {
-      // Create a Stripe checkout session using the correct method
-      const sessionData = {
-        lineItems: [{
-          price_data: {
-            currency: stripeCurrency,
-            product_data: {
-              name: productName,
-            },
-            unit_amount: Math.round(total * 100), // Convert to cents
-          },
-          quantity: 1,
-        }],
-        mode: 'payment',
-        successUrl: window.location.href + '?payment=success',
-        cancelUrl: window.location.href + '?payment=cancelled',
-        clientReferenceId: "ORD" + Date.now()
-      };
-      
-      // Use the correct Stripe.js method for client-only integration
-      const { error } = await stripe.redirectToCheckout(sessionData);
-      
-      if (error) {
-        console.error("Stripe error:", error);
-        alert("❌ Payment failed: " + error.message);
-      }
-    } catch (err) {
-      console.error("Stripe error:", err);
-      alert("❌ Payment failed: " + err.message);
-    }
-  }
-  else if (gateway === "wise") {
-    // For Wise Business, we'll redirect to their payment page
-    const wiseUrl = configs.wiseUrl;
-    if (!wiseUrl) return alert("❌ Wise Business URL is not configured by seller.");
-    
-    const name = encodeURIComponent(orderData.buyer.name);
-    const buyerEmail = encodeURIComponent(email);
-    const amount = encodeURIComponent(total.toFixed(2));
-    const delimiter = wiseUrl.includes("?") ? "&" : "?";
-    const url = `${wiseUrl}${delimiter}amount=${amount}&name=${name}&email=${buyerEmail}&currency=${storeCurrency}`;
-    
-    window.open(url, "_blank");
-    alert("Please complete your payment in the new window, then click the button below.");
-    
-    // Show confirmation button
-    const paymentContainer = document.getElementById("gatewayPaymentContainer");
-    paymentContainer.innerHTML = `
-      <div class="text-center">
-        <p class="text-sm text-gray-600 mb-4">Complete your payment in the new window, then click confirm below.</p>
-        <button onclick="confirmWisePayment()" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">
-          ✅ I've Completed Payment
-        </button>
-      </div>
-    `;
-    paymentContainer.classList.remove("hidden");
-    
-    window.confirmWisePayment = () => saveOrderAfterPayment({ gateway: "wise", reference: "WISE-" + Date.now() });
-  }
   else if (gateway === "revolut") {
     // For Revolut Business, we'll redirect to their payment page
     const revolutUrl = configs.revolutUrl;
@@ -2551,7 +3513,7 @@ function closeSuccessModal() {
 function goToDashboard() {
   const user = JSON.parse(localStorage.getItem("user"));
   if (user && user.email) {
-    window.open(`https://api.iyonicorp.com/dashboard.html?email=${encodeURIComponent(user.email)}`, '_blank');
+    window.open(`https://iyonicorp.com/dashboard?email=${encodeURIComponent(user.email)}`, '_blank');
   } else {
     alert("Please log in to access your dashboard.");
   }
@@ -2663,6 +3625,324 @@ window.addEventListener('DOMContentLoaded', () => {
     }, 800);
   }
 });
+
+// ==============================================
+// ⭐ REVIEWS FUNCTIONALITY
+// ==============================================
+
+let reviewsOffset = 0;
+const reviewsLimit = 5;
+
+async function loadProductReviews(productId, seller) {
+  if (!productId || !seller) {
+    console.log('Missing productId or seller for reviews');
+    return;
+  }
+  
+  console.log('Loading reviews for:', { productId, seller });
+  
+  try {
+    const response = await fetch(`${API}/api/product-reviews?productId=${encodeURIComponent(productId)}&seller=${encodeURIComponent(seller)}`);
+    const data = await response.json();
+    
+    console.log('Reviews API response:', data);
+    
+    if (data.success) {
+      displayProductReviews(data.reviews || [], data.totalReviews || 0, data.averageRating || 0);
+    } else {
+      console.error('Reviews API error:', data.message);
+      // Still show the section with no reviews message
+      displayProductReviews([], 0, 0);
+    }
+  } catch (error) {
+    console.error('Failed to load product reviews:', error);
+    // Still show the section with no reviews message
+    displayProductReviews([], 0, 0);
+  }
+}
+
+function displayProductReviews(reviews, totalCount = 0, averageRating = 0) {
+  const reviewsList = document.getElementById('reviewsList');
+  const averageRatingDiv = document.getElementById('averageRating');
+  const averageRatingText = document.getElementById('averageRatingText');
+  const totalReviewsText = document.getElementById('totalReviewsText');
+  const noReviewsMessage = document.getElementById('noReviewsMessage');
+  const loadMoreBtn = document.getElementById('loadMoreReviewsBtn');
+  
+  console.log('Displaying reviews:', { reviews, totalCount, averageRating });
+  
+  if (!reviewsList) {
+    console.error('Reviews list element not found');
+    return;
+  }
+  
+  // Store all reviews globally
+  allReviews = reviews;
+  displayedReviewsCount = 0;
+  
+  // Update total reviews count
+  if (totalReviewsText) {
+    totalReviewsText.textContent = `(${totalCount} review${totalCount !== 1 ? 's' : ''})`;
+  }
+  
+  // Update average rating display
+  if (averageRatingDiv && averageRating > 0) {
+    const fullStars = Math.floor(averageRating);
+    const hasHalfStar = averageRating % 1 >= 0.5;
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+    
+    averageRatingDiv.innerHTML = 
+      '★'.repeat(fullStars) + 
+      (hasHalfStar ? '☆' : '') + 
+      '☆'.repeat(emptyStars);
+  } else if (averageRatingDiv) {
+    averageRatingDiv.innerHTML = '☆☆☆☆☆';
+  }
+  
+  if (averageRatingText) {
+    averageRatingText.textContent = averageRating > 0 ? `${averageRating} out of 5` : '';
+  }
+  
+  // Show/hide reviews vs no reviews message
+  if (reviews.length === 0) {
+    reviewsList.style.display = 'none';
+    if (noReviewsMessage) {
+      noReviewsMessage.style.display = 'block';
+    }
+    if (loadMoreBtn) {
+      loadMoreBtn.style.display = 'none';
+      loadMoreBtn.classList.add('hidden');
+    }
+    return;
+  }
+  
+  reviewsList.style.display = 'block';
+  if (noReviewsMessage) {
+    noReviewsMessage.style.display = 'none';
+  }
+  
+  // Display initial reviews (first 5)
+  displayReviewsBatch();
+}
+
+// Global variables for reviews
+let reviewsData = {};
+let allReviews = [];
+let displayedReviewsCount = 0;
+const REVIEWS_PER_PAGE = 5;
+
+function createReviewElement(review, animate = false) {
+  const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+  const reviewDate = new Date(review.createdAt).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+  
+  // Use buyerName if available, otherwise use the reviewer name from the review
+  const reviewerName = review.buyerName || review.reviewerName || 'Anonymous';
+  const reviewText = review.text || 'No comment provided.';
+  
+  // Store review data for modal access
+  reviewsData[review._id] = review;
+  
+  // Truncate text for display (show first 120 characters)
+  const truncatedText = reviewText.length > 120 ? reviewText.substring(0, 120) + '...' : reviewText;
+  const needsReadMore = reviewText.length > 120;
+  
+  return `
+    <div class="border border-gray-200 rounded-lg p-4 sm:p-6 bg-white hover:shadow-md transition-shadow ${animate ? 'review-fade-in' : ''}">
+      <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 gap-3 sm:gap-4">
+        <div class="flex items-center gap-3 flex-1">
+          <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-sm sm:text-lg flex-shrink-0">
+            ${reviewerName.charAt(0).toUpperCase()}
+          </div>
+          <div class="flex-1 min-w-0">
+            <h4 class="font-semibold text-gray-900 text-sm sm:text-base truncate">${reviewerName}</h4>
+            <p class="text-xs sm:text-sm text-gray-500">${reviewDate}</p>
+          </div>
+        </div>
+        <div class="text-yellow-400 text-base sm:text-lg flex-shrink-0 self-start sm:self-center">
+          ${stars}
+        </div>
+      </div>
+      
+      <div class="mb-4">
+        <p class="text-gray-700 leading-relaxed text-sm sm:text-base review-text" id="reviewText-${review._id}">
+          ${truncatedText}
+        </p>
+        ${needsReadMore ? `
+          <button 
+            onclick="showFullReview('${review._id}')" 
+            class="text-indigo-600 hover:text-indigo-800 text-sm font-medium mt-2 inline-flex items-center gap-1 transition-colors"
+          >
+            Read More
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </button>
+        ` : ''}
+      </div>
+    </div>
+  `;
+}
+
+// Display a batch of reviews
+function displayReviewsBatch() {
+  const reviewsList = document.getElementById('reviewsList');
+  const loadMoreBtn = document.getElementById('loadMoreReviewsBtn');
+  
+  if (!reviewsList) return;
+  
+  // Calculate which reviews to show
+  const startIndex = displayedReviewsCount;
+  const endIndex = Math.min(startIndex + REVIEWS_PER_PAGE, allReviews.length);
+  const reviewsToShow = allReviews.slice(startIndex, endIndex);
+  
+  // If this is the first batch, replace content; otherwise append
+  if (displayedReviewsCount === 0) {
+    reviewsList.innerHTML = reviewsToShow.map(review => createReviewElement(review)).join('');
+  } else {
+    // Create new reviews with animation
+    const newReviewsHTML = reviewsToShow.map(review => createReviewElement(review, true)).join('');
+    reviewsList.innerHTML += newReviewsHTML;
+  }
+  
+  // Update displayed count
+  displayedReviewsCount = endIndex;
+  
+  // Show/hide load more button
+  if (loadMoreBtn) {
+    if (displayedReviewsCount < allReviews.length) {
+      loadMoreBtn.style.display = 'block';
+      loadMoreBtn.classList.remove('hidden');
+      // Update button text to show remaining count
+      const remainingCount = allReviews.length - displayedReviewsCount;
+      const buttonText = loadMoreBtn.querySelector('button');
+      if (buttonText) {
+        buttonText.textContent = `See More Reviews (${remainingCount} remaining)`;
+      }
+    } else {
+      loadMoreBtn.style.display = 'none';
+      loadMoreBtn.classList.add('hidden');
+    }
+  }
+}
+
+// Load more reviews function
+function loadMoreReviews() {
+  const loadMoreBtn = document.getElementById('loadMoreReviewsBtn');
+  const buttonText = loadMoreBtn?.querySelector('button');
+  
+  // Show loading state
+  if (buttonText) {
+    const originalText = buttonText.textContent;
+    buttonText.textContent = 'Loading...';
+    buttonText.disabled = true;
+    
+    // Add a small delay for better UX
+    setTimeout(() => {
+      displayReviewsBatch();
+      buttonText.disabled = false;
+    }, 300);
+  } else {
+    displayReviewsBatch();
+  }
+}
+
+// Show full review in modal
+function showFullReview(reviewId) {
+  const modal = document.getElementById('reviewModal');
+  const modalContent = document.getElementById('modalReviewContent');
+  
+  if (!modal || !modalContent) {
+    console.error('Modal elements not found');
+    return;
+  }
+  
+  // Get review data from global storage
+  const review = reviewsData[reviewId];
+  if (!review) {
+    console.error('Review data not found for ID:', reviewId);
+    return;
+  }
+  
+  const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+  const reviewDate = new Date(review.createdAt).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+  const reviewerName = review.buyerName || review.reviewerName || 'Anonymous';
+  
+  modalContent.innerHTML = `
+    <div class="space-y-6">
+      <div class="flex flex-col sm:flex-row sm:items-start gap-4">
+        <div class="flex items-center gap-3 flex-1">
+          <div class="w-12 h-12 sm:w-16 sm:h-16 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold text-lg sm:text-xl flex-shrink-0">
+            ${reviewerName.charAt(0).toUpperCase()}
+          </div>
+          <div class="flex-1">
+            <h4 class="font-semibold text-gray-900 text-lg sm:text-xl">${reviewerName}</h4>
+            <p class="text-sm sm:text-base text-gray-500">${reviewDate}</p>
+          </div>
+        </div>
+        <div class="text-yellow-400 text-xl sm:text-2xl flex-shrink-0">
+          ${stars}
+        </div>
+      </div>
+      
+      <div class="border-t pt-6">
+        <h5 class="font-semibold text-gray-900 mb-3 text-base sm:text-lg">Review</h5>
+        <p class="text-gray-700 leading-relaxed text-sm sm:text-base whitespace-pre-wrap review-text">${review.text || 'No comment provided.'}</p>
+      </div>
+      
+      ${review.productName ? `
+        <div class="border-t pt-6">
+          <h5 class="font-semibold text-gray-900 mb-3 text-base sm:text-lg">Product</h5>
+          <div class="flex items-center gap-3">
+            ${review.productImage ? `<img src="${review.productImage}" alt="${review.productName}" class="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded-lg border">` : ''}
+            <div>
+              <p class="font-medium text-gray-900 text-sm sm:text-base">${review.productName}</p>
+              <p class="text-xs sm:text-sm text-gray-500">Reviewed product</p>
+            </div>
+          </div>
+        </div>
+      ` : ''}
+    </div>
+  `;
+  
+  // Show modal
+  modal.classList.remove('hidden');
+  document.body.style.overflow = 'hidden'; // Prevent background scrolling
+}
+
+// Close review modal
+function closeReviewModal() {
+  const modal = document.getElementById('reviewModal');
+  if (modal) {
+    modal.classList.add('hidden');
+    document.body.style.overflow = ''; // Restore scrolling
+  }
+}
+
+// Close modal when clicking outside
+document.addEventListener('click', function(event) {
+  const modal = document.getElementById('reviewModal');
+  if (modal && event.target === modal) {
+    closeReviewModal();
+  }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Escape') {
+    closeReviewModal();
+  }
+});
+
+
+
 </script>
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-6JSC6HT7EC"></script>

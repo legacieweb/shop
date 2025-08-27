@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Seller Dashboard – ShopRight</title>
+  <title>merchant Dashboard – Iyonicorp</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdn.tailwindcss.com"></script>
 
@@ -20,7 +20,7 @@
 
   <!-- Mobile Navbar -->
   <div class="md:hidden flex justify-between items-center px-4 py-3 bg-white border-b shadow sticky top-0 z-50 h-[64px]">
-    <h1 class="text-lg font-bold text-indigo-600">ShopRight Seller</h1>
+    <h1 class="text-lg font-bold text-indigo-600">merchant</h1>
     <button id="hamburgerBtn" class="text-indigo-600 text-2xl font-bold">&#9776;</button>
   </div>
 
@@ -32,7 +32,7 @@
       class="w-64 bg-white shadow-md fixed top-[64px] left-0 h-[calc(100%-64px)] z-40 transform -translate-x-full transition-transform duration-300 md:relative md:top-0 md:h-auto md:translate-x-0 md:block hidden">
       
       <div class="p-6 border-b hidden md:block">
-        <h1 class="text-xl font-bold text-indigo-600">ShopRight Seller</h1>
+        <h1 class="text-xl font-bold text-indigo-600">merchant</h1>
       </div>
 
       <nav class="mt-6 space-y-1">
@@ -45,15 +45,20 @@
           class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50">Products</a>
         <a href="#" data-section="inventory" id="inventoryLink"
           class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50 relative">
-          📦 Inventory
+          Inventory
           <span id="inventoryLockIcon" class="absolute right-6 text-yellow-500 hidden">🔒</span>
         </a>
         <a href="#" data-section="sales"
           class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50">Sales</a>
         <a href="#" data-section="coupons" id="couponsLink"
           class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50 relative">
-          🎫 Coupons
+          Coupons
           <span id="couponsLockIcon" class="absolute right-6 text-yellow-500 hidden">🔒</span>
+        </a>
+        <a href="#" id="reviewsLink"
+          class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50 relative">
+          Reviews
+          <span id="reviewsLockIcon" class="absolute right-6 text-yellow-500 hidden">🔒</span>
         </a>
         <a href="#" data-section="settings"
           class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50">General Settings</a>
@@ -62,7 +67,7 @@
           class="block px-6 py-3 text-indigo-600 hover:bg-indigo-50 font-semibold">View My Shop</a>
             <!-- ADD THIS LOGOUT BUTTON -->
   <button id="logoutBtn" class="w-full text-left block px-6 py-3 text-red-600 hover:bg-red-50 font-semibold border-t border-gray-200 mt-4">
-    🚪 Logout
+    Logout
   </button>
       </nav>
     </aside>
@@ -81,7 +86,7 @@
       <h3 id="successPopupTitle" class="text-xl font-bold text-gray-900 mb-2">Success!</h3>
       <p id="successPopupMessage" class="text-gray-600 mb-6">Operation completed successfully.</p>
       <button id="closeSuccessPopup" class="w-full bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 font-semibold transition-colors">
-        Awesome! 🎉
+        Awesome!
       </button>
     </div>
   </div>
@@ -115,7 +120,7 @@
       Analytics and detailed insights are available for Basic plan and above. Upgrade your subscription to track your growth, customers, and success metrics.
     </p>
     <button onclick="document.getElementById('upgradeBtn').click()" class="bg-indigo-600 text-white px-8 py-3 rounded-lg hover:bg-indigo-700 font-semibold transition-all transform hover:scale-105">
-      🚀 Upgrade to Basic Plan
+      Upgrade to Basic Plan
     </button>
   </div>
 
@@ -413,6 +418,16 @@
 <!-- Sales Section -->
 <section id="section-sales" class="section p-6">
   <h2 class="text-2xl font-bold mb-4 text-indigo-700">Sales Overview</h2>
+
+  <div id="salesTabs" class="flex flex-wrap gap-2 mb-4">
+    <button class="toggle-btn active" data-sales-tab="all">All</button>
+    <button class="toggle-btn" data-sales-tab="new">New</button>
+    <button class="toggle-btn" data-sales-tab="confirmed">Confirmed</button>
+    <button class="toggle-btn" data-sales-tab="ready">Ready</button>
+    <button class="toggle-btn" data-sales-tab="delivered">Delivered</button>
+    <button class="toggle-btn" data-sales-tab="cancelled">Cancelled</button>
+    <button class="toggle-btn" data-sales-tab="declined">Declined</button>
+  </div>
 
   <!-- Highlights -->
   <div class="grid md:grid-cols-2 gap-4 mb-6">
@@ -863,16 +878,16 @@
       </div>
     </div>
 
-    <!-- ⭐ RECOMMENDED: ShopRight -->
+    <!-- ⭐ RECOMMENDED: Iyonicorp -->
     <div class="col-span-1 sm:col-span-2 bg-indigo-50 border border-indigo-300 rounded-lg p-4 relative flex items-start gap-3 shadow-md">
-      <input type="checkbox" value="shopright" class="paymentOption mt-1" checked>
+      <input type="checkbox" value="Iyonicorp" class="paymentOption mt-1" checked>
       <div>
         <div class="flex items-center gap-2 mb-1">
-          <h6 class="font-semibold text-indigo-800">ShopRight Payment (Recommended)</h6>
+          <h6 class="font-semibold text-indigo-800">Iyonicorp Payment (Recommended)</h6>
           <span class="text-xs text-white bg-indigo-500 px-2 py-0.5 rounded-full">✔️ Recommended</span>
         </div>
         <p class="text-sm text-gray-700">
-          The easiest way to receive payments with no setup required. Powered by <strong>Paystack</strong> through ShopRight.
+          The easiest way to receive payments with no setup required. Powered by <strong>Paystack</strong> through Iyonicorp.
         </p>
         <ul class="list-disc ml-5 mt-2 text-sm text-gray-600">
           <li>Debit/Credit Cards (Visa, MasterCard, Verve)</li>
@@ -1400,32 +1415,36 @@ async function loadSubscriptionPlans() {
     // Fallback to static limits
     subscriptionLimits = {
       free: {
-        maxProducts: 20,
+        maxProducts: 10,
         analytics: false,
         coupons: false,
         premiumGateways: false,
-        inventoryTracking: false
+        inventoryTracking: false,
+        reviews: false
       },
       basic: {
         maxProducts: 50,
         analytics: true,
         coupons: false,
         premiumGateways: false,
-        inventoryTracking: false
+        inventoryTracking: false,
+        reviews: false
       },
       pro: {
         maxProducts: -1,
         analytics: true,
         coupons: true,
         premiumGateways: true,
-        inventoryTracking: true
+        inventoryTracking: true,
+        reviews: true
       },
       premium: {
         maxProducts: -1,
         analytics: true,
         coupons: true,
         premiumGateways: true,
-        inventoryTracking: true
+        inventoryTracking: true,
+        reviews: true
       }
     };
   }
@@ -1520,6 +1539,7 @@ function enforceRestrictions() {
   const analyticsLockIcon = document.getElementById("analyticsLockIcon");
   const couponsLockIcon = document.getElementById("couponsLockIcon");
   const inventoryLockIcon = document.getElementById("inventoryLockIcon");
+  const reviewsLockIcon = document.getElementById("reviewsLockIcon");
   
   if (analyticsLockIcon) {
     analyticsLockIcon.classList.toggle("hidden", userLimits.analytics);
@@ -1529,6 +1549,9 @@ function enforceRestrictions() {
   }
   if (inventoryLockIcon) {
     inventoryLockIcon.classList.toggle("hidden", userLimits.inventoryTracking);
+  }
+  if (reviewsLockIcon) {
+    reviewsLockIcon.classList.toggle("hidden", userLimits.reviews);
   }
   
   // Update product limits
@@ -1549,6 +1572,7 @@ function initializeSubscriptionUI() {
   const analyticsLink = document.getElementById("analyticsLink");
   const couponsLink = document.getElementById("couponsLink");
   const inventoryLink = document.getElementById("inventoryLink");
+  const reviewsLink = document.getElementById("reviewsLink");
   
   // For free users, hide restricted sections completely
   if (currentPlan === 'free') {
@@ -1561,11 +1585,15 @@ function initializeSubscriptionUI() {
     if (!userLimits.inventoryTracking && inventoryLink) {
       inventoryLink.style.display = 'none';
     }
+    if (!userLimits.reviews && reviewsLink) {
+      reviewsLink.style.display = 'none';
+    }
   } else {
     // For paid users, show all sections but with lock icons if needed
     const analyticsLockIcon = document.getElementById("analyticsLockIcon");
     const couponsLockIcon = document.getElementById("couponsLockIcon");
     const inventoryLockIcon = document.getElementById("inventoryLockIcon");
+    const reviewsLockIcon = document.getElementById("reviewsLockIcon");
     
     if (!userLimits.analytics && analyticsLockIcon) {
       analyticsLockIcon.classList.remove("hidden");
@@ -1577,6 +1605,10 @@ function initializeSubscriptionUI() {
     
     if (!userLimits.inventoryTracking && inventoryLockIcon) {
       inventoryLockIcon.classList.remove("hidden");
+    }
+    
+    if (!userLimits.reviews && reviewsLockIcon) {
+      reviewsLockIcon.classList.remove("hidden");
     }
   }
   
@@ -1707,6 +1739,20 @@ function setupSidebarHandlers() {
       sidebar.classList.add("-translate-x-full");
       sidebar.classList.remove("translate-x-0");
     }
+  });
+  
+  // Reviews link handler
+  document.getElementById("reviewsLink").addEventListener("click", (e) => {
+    e.preventDefault();
+    if (!userLimits.reviews) {
+      // Redirect to general settings and show upgrade modal
+      showGeneralSettingsWithUpgrade("Reviews", "Pro");
+      return;
+    }
+    
+    // Redirect to review.html with seller parameter
+    const seller = user.username;
+    window.location.href = `../review?seller=${encodeURIComponent(seller)}`;
   });
   
   // Inventory link handler
@@ -2543,12 +2589,21 @@ async function loadSales() {
     const productCount = {};
     let totalEarnings = 0;
 
-    orders.forEach(o => {
+    const activeTab = document.querySelector('#salesTabs .toggle-btn.active')?.dataset.salesTab || 'all';
+
+    orders
+      .filter(o => {
+        if (activeTab === 'all') return true;
+        if (activeTab === 'new') return !o.status || String(o.status).toLowerCase() === 'pending';
+        return String(o.status).toLowerCase() === activeTab;
+      })
+      .forEach(o => {
       const orderId = o._id || o.id || o.orderId;
       if (!orderId) {
         console.warn("Order missing ID:", o);
         return;
       }
+
 
       productCount[o.productName] = (productCount[o.productName] || 0) + 1;
       totalEarnings += parseFloat(o.total || 0);
@@ -2585,8 +2640,8 @@ async function loadSales() {
           <div class="text-sm text-gray-700 leading-5 space-y-1">
             <div class="bg-gray-50 rounded-lg p-3 space-y-1">
               <div class="flex flex-wrap gap-4">
-                <p><strong>🎯 Variant:</strong> <span class="text-indigo-600 font-medium">${o.variant?.name || o.selectedVariant?.name || o.variantName || "Default"}</span></p>
-                <p><strong>🎨 Color:</strong> <span class="text-purple-600 font-medium">${o.color?.name || o.selectedColor?.name || o.colorName || o.color || "Default"}</span></p>
+                <p><strong>🎯 Variant:</strong> <span class="text-indigo-600 font-medium">${o.variant?.name || 'Default'}</span></p>
+                <p><strong>🎨 Color:</strong> <span class="text-purple-600 font-medium">${o.color?.name || 'Default'}</span></p>
               </div>
               <div class="flex flex-wrap gap-4">
                 <p><strong>💰 Total:</strong> 
@@ -2755,9 +2810,41 @@ document.querySelector('[data-section="sales"]').addEventListener("click", async
   loadSales();
 });
 
+// Sales tabs: filter orders by status
+const salesTabs = document.getElementById('salesTabs');
+if (salesTabs) {
+  salesTabs.addEventListener('click', (e) => {
+    const btn = e.target.closest('.toggle-btn');
+    if (!btn) return;
+    // toggle active state
+    salesTabs.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    // reload sales with filter
+    loadSales();
+  });
+}
+
 
 // Auto-load coupons when "Coupons" section is opened
 document.querySelector('[data-section="coupons"]').addEventListener("click", loadCoupons);
+
+// Reviews link handler (Pro and Premium subscribers only)
+document.getElementById('reviewsLink').addEventListener("click", function(e) {
+  e.preventDefault();
+  
+  // Get fresh user data from localStorage
+  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const userPlan = currentUser.plan ? currentUser.plan.toLowerCase() : 'free';
+  
+  // Check if user has pro or premium subscription
+  if (userPlan !== 'pro' && userPlan !== 'premium') {
+    showUpgradeModal('Reviews feature is available for Pro and Premium subscribers only!');
+    return;
+  }
+  
+  // Redirect to review dashboard
+  window.location.href = `/review.html?seller=${encodeURIComponent(seller)}`;
+});
 
 // Coupon Management Functions
 async function loadCoupons() {
@@ -2960,6 +3047,8 @@ window.deleteCoupon = async function(couponId) {
     alert('❌ Failed to delete coupon.');
   }
 };
+
+
 
 
 
@@ -3335,22 +3424,22 @@ const GATEWAY_FIELDS = {
     { label: "Square Application ID", key: "squareAppId", placeholder: "e.g. sq0idp-..." }
   ],
 
-  // ✅ ShopRight – hardcoded (readonly)
-  shopright: [
+  // ✅ Iyonicorp – hardcoded (readonly)
+  Iyonicorp: [
     {
-      label: "ShopRight - Platform managed",
+      label: "Iyonicorp - Platform managed",
       key: "note",
       readonly: true,
-      placeholder: "This gateway is managed by ShopRight."
+      placeholder: "This gateway is managed by Iyonicorp."
     },
     {
-      label: "Paystack Public Key (ShopRight)",
+      label: "Paystack Public Key (Iyonicorp)",
       key: "paystackPublicKey",
       readonly: true,
       value: "pk_test_232531a5c927ef2cc67ed1b85af3f26e3b8ed2f2"
     },
     {
-      label: "Paystack Secret Key (ShopRight)",
+      label: "Paystack Secret Key (Iyonicorp)",
       key: "paystackSecretKey",
       readonly: true,
       value: "sk_test_a832c30ce0a082daae0ba4d91032098f0b7fc9c6"
@@ -3939,7 +4028,7 @@ function saveStoreSettings() {
     if (input) gatewayConfigs[f.key] = input.value;
   });
 
-  if (paymentSystems.includes("shopright")) {
+  if (paymentSystems.includes("Iyonicorp")) {
     // Removed live Paystack public key
     // Removed Stripe API key placeholder
   }

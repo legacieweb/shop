@@ -14,6 +14,7 @@ const orderSchema = new mongoose.Schema({
   status: { type: String, default: 'Pending' },
   currency: { type: String, default: 'USD' },
   variant: { type: mongoose.Schema.Types.Mixed },
+  color: { type: mongoose.Schema.Types.Mixed },
   delivery: { type: mongoose.Schema.Types.Mixed },
   shopSettings: { type: mongoose.Schema.Types.Mixed },
   createdAt: { type: Date, default: Date.now }

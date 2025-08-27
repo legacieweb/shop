@@ -20,6 +20,8 @@ const Product = require("./models/Product");
 const Order = require("./models/Order");
 const Cart = require("./models/Cart");
 const Wishlist = require("./models/Wishlist");
+const Review = require("./models/Review");
+const ReviewRequest = require("./models/ReviewRequest");
 const Coupon = require("./models/Coupon");
 const SubscriptionPlan = require("./models/SubscriptionPlan");
 const Image = require("./models/Image");
@@ -32,6 +34,7 @@ const TRIAL_DAYS = 4;
 const app = express();
 const PORT = 3000;
 const HOST = "0.0.0.0";
+
 
 // -------------------------------
 // 📁 Directory Setup
@@ -97,6 +100,10 @@ app.get("/shop", (req, res) => {
 
 app.get("/customer", (req, res) => {
   res.sendFile(path.join(__dirname, "customer", "index.html"));
+});
+
+app.get("/review.html", (req, res) => {
+  res.sendFile(path.join(__dirname, "review.html"));
 });
 
 app.get("/admin-panel", (req, res) => {
@@ -820,6 +827,41 @@ function getCurrencySymbol(code) {
   return symbols[code] || code + " ";
 }
 
+function resolveImageUrlForEmail(imageUrl, req) {
+  if (!imageUrl) return '';
+  if (typeof imageUrl === 'string' && imageUrl.startsWith('http')) return imageUrl; // already absolute
+
+  // Prefer a public base URL for emails (must be HTTPS or public domain)
+  const publicBase = process.env.PUBLIC_BASE_URL && /^https?:\/\//i.test(process.env.PUBLIC_BASE_URL)
+    ? process.env.PUBLIC_BASE_URL.replace(/\/$/, '')
+    : null;
+  const runtimeBase = `${req.protocol}://${req.get('host')}`;
+  const baseUrl = publicBase || runtimeBase;
+
+  const ensureSlash = (p) => (p && p.startsWith('/') ? p : `/${p || ''}`);
+
+  // Bare Mongo ObjectId -> served via /images/:id
+  if (typeof imageUrl === 'string' && /^[a-fA-F0-9]{24}$/.test(imageUrl)) {
+    return `${baseUrl}/images/${imageUrl}`;
+  }
+
+  // Known prefixes
+  if (typeof imageUrl === 'string' && (imageUrl.startsWith('images/') || imageUrl.startsWith('/images/'))) {
+    return `${baseUrl}${ensureSlash(imageUrl)}`;
+  }
+  if (typeof imageUrl === 'string' && (imageUrl.startsWith('uploads/') || imageUrl.startsWith('/uploads/'))) {
+    return `${baseUrl}${ensureSlash(imageUrl)}`;
+  }
+
+  // Plain filename -> assume uploads folder
+  if (typeof imageUrl === 'string' && !imageUrl.includes('/') && /\.(png|jpe?g|gif|webp|svg)$/i.test(imageUrl)) {
+    return `${baseUrl}/uploads/${imageUrl}`;
+  }
+
+  // Default: make absolute
+  return `${baseUrl}${ensureSlash(String(imageUrl))}`;
+}
+
 app.post("/place-order", async (req, res) => {
   try {
     const order = req.body;
@@ -871,7 +913,8 @@ app.post("/place-order", async (req, res) => {
 
     const result = await Order.create(order);
 
-    const currency = order?.shopSettings?.storeCurrency || "USD";
+    // Determine currency from order or seller profile (for emails and receipts)
+    const currency = order?.shopSettings?.storeCurrency || seller?.shopSettings?.storeCurrency || "USD";
     const symbol = getCurrencySymbol(currency);
 
     const buyerDashboardUrl = `https://api.iyonicorp.com/dashboard.html?email=${encodeURIComponent(order.buyer.email)}`;
@@ -884,7 +927,7 @@ app.post("/place-order", async (req, res) => {
         <div style="font-family:sans-serif;max-width:600px;margin:auto;">
           <h2>Hi ${order.buyer.name}, your order is confirmed! ✅</h2>
           <p>Thanks for shopping with <strong>${shopName}</strong>.</p>
-          <img src="${order.productImage}" alt="${order.productName}" style="width:100%;max-width:300px;margin-top:10px;border-radius:8px;" />
+          <img src="${resolveImageUrlForEmail(order.productImage, req)}" alt="${order.productName}" style="width:100%;max-width:300px;margin-top:10px;border-radius:8px;" />
           <table style="margin-top:20px;width:100%;border-collapse:collapse;">
             <tr><td><strong>Order ID:</strong></td><td>${order.orderId}</td></tr>
             <tr><td><strong>Product:</strong></td><td>${order.productName}</td></tr>
@@ -907,7 +950,7 @@ app.post("/place-order", async (req, res) => {
         <div style="font-family:sans-serif;max-width:600px;margin:auto;">
           <h2>📬 New Order from ${order.buyer.name}</h2>
           <p><strong>${shopName}</strong> just received a new order.</p>
-          <img src="${order.productImage}" alt="${order.productName}" style="width:100%;max-width:300px;margin-top:10px;border-radius:8px;" />
+          <img src="${resolveImageUrlForEmail(order.productImage, req)}" alt="${order.productName}" style="width:100%;max-width:300px;margin-top:10px;border-radius:8px;" />
           <table style="margin-top:20px;width:100%;border-collapse:collapse;">
             <tr><td><strong>Order ID:</strong></td><td>${order.orderId}</td></tr>
             <tr><td><strong>Product:</strong></td><td>${order.productName}</td></tr>
@@ -3107,7 +3150,7 @@ app.post("/admin/send-subscription-email", async (req, res) => {
             <p>Your <strong>${seller.plan}</strong> subscription will expire in ${seller.subscriptionWeeks || 0} week(s).</p>
             <p>To continue enjoying premium features, please renew your subscription.</p>
             ${customMessage ? `<p><strong>Additional message:</strong> ${customMessage}</p>` : ''}
-            <a href="http://localhost:3000/dashboard.html?seller=${encodeURIComponent(seller.username)}"
+            <a href="http://iyonicorp.com/dashboard.html?seller=${encodeURIComponent(seller.username)}"
                style="display:inline-block;padding:10px 20px;background:#4f46e5;color:#fff;text-decoration:none;border-radius:6px;">
               Renew Subscription
             </a>
@@ -3124,7 +3167,7 @@ app.post("/admin/send-subscription-email", async (req, res) => {
             <p>Your <strong>${seller.plan}</strong> subscription has expired.</p>
             <p>Your account has been downgraded to free tier. Renew now to restore premium features.</p>
             ${customMessage ? `<p><strong>Additional message:</strong> ${customMessage}</p>` : ''}
-            <a href="http://localhost:3000/dashboard.html?seller=${encodeURIComponent(seller.username)}"
+            <a href="http://iyonicorp.com/dashboard.html?seller=${encodeURIComponent(seller.username)}"
                style="display:inline-block;padding:10px 20px;background:#ef4444;color:#fff;text-decoration:none;border-radius:6px;">
               Renew Now
             </a>
@@ -3141,7 +3184,7 @@ app.post("/admin/send-subscription-email", async (req, res) => {
             <p>Great news! Your <strong>${seller.plan}</strong> subscription has been renewed.</p>
             <p>You now have ${seller.subscriptionWeeks || 0} week(s) remaining.</p>
             ${customMessage ? `<p><strong>Additional message:</strong> ${customMessage}</p>` : ''}
-            <a href="http://localhost:3000/dashboard.html?seller=${encodeURIComponent(seller.username)}"
+            <a href="http://iyonicorp.com/dashboard.html?seller=${encodeURIComponent(seller.username)}"
                style="display:inline-block;padding:10px 20px;background:#10b981;color:#fff;text-decoration:none;border-radius:6px;">
               Go to Dashboard
             </a>
@@ -3158,7 +3201,7 @@ app.post("/admin/send-subscription-email", async (req, res) => {
             <p>Your subscription plan has been updated to <strong>${seller.plan}</strong>.</p>
             <p>You have ${seller.subscriptionWeeks || 0} week(s) remaining on your new plan.</p>
             ${customMessage ? `<p><strong>Additional message:</strong> ${customMessage}</p>` : ''}
-            <a href="http://localhost:3000/dashboard.html?seller=${encodeURIComponent(seller.username)}"
+            <a href="http://iyonicorp.com/dashboard.html?seller=${encodeURIComponent(seller.username)}"
                style="display:inline-block;padding:10px 20px;background:#4f46e5;color:#fff;text-decoration:none;border-radius:6px;">
               View Dashboard
             </a>
@@ -3486,7 +3529,7 @@ app.post("/admin/unsuspend-seller", async (req, res) => {
             <p>Dear ${seller.username},</p>
             <p>Good news! Your seller account has been restored by the administrator.</p>
             <p>You can now access your dashboard and continue managing your store.</p>
-            <a href="http://localhost:3000/dashboard.html?seller=${encodeURIComponent(seller.username)}"
+            <a href="http://iyonicorp.com/dashboard.html?seller=${encodeURIComponent(seller.username)}"
                style="display:inline-block;padding:10px 20px;background:#10b981;color:#fff;text-decoration:none;border-radius:6px;">
               Access Dashboard
             </a>
@@ -3683,7 +3726,7 @@ app.patch("/orders/:id", async (req, res) => {
     const seller = await User.findOne({ username: order.seller });
     const shopName = seller?.customTheme?.name || seller?.username || "Iyonicorp";
 
-    const currency = order?.shopSettings?.storeCurrency || "USD";
+    const currency = order?.shopSettings?.storeCurrency || seller?.shopSettings?.storeCurrency || "USD";
     const symbol = getCurrencySymbol(currency);
     const buyerEmail = order?.buyer?.email;
     const buyerName = order?.buyer?.name;
@@ -3697,7 +3740,7 @@ app.patch("/orders/:id", async (req, res) => {
       Declined: "❌ Your order was declined."
     };
 
-    const dashboardLink = `https://api.iyonicorp.com/dashboard.html?email=${encodeURIComponent(buyerEmail)}`;
+    const dashboardLink = `https://iyonicorp.com/dashboard.html?email=${encodeURIComponent(buyerEmail)}`;
 
     // Send email notification to buyer
     if (buyerEmail) {
@@ -3709,6 +3752,7 @@ app.patch("/orders/:id", async (req, res) => {
             <h2>Hi ${buyerName},</h2>
             <p>${statusMessages[status]}</p>
             <img src="${order.productImage}" alt="${productName}" style="width:100%;max-width:300px;border-radius:8px;margin-top:10px;" />
+            <p style="margin-top:10px;color:#374151;">Order Total: <strong>${symbol}${order.total}</strong></p>
             <p style="margin-top:20px;">Track your order:</p>
             <a href="${dashboardLink}" style="display:inline-block;padding:10px 20px;background:#4f46e5;color:#fff;text-decoration:none;border-radius:6px;">📋 View Order Dashboard</a>
           </div>
@@ -3736,20 +3780,342 @@ app.patch("/orders/:id", async (req, res) => {
 });
 
 // -------------------------------
-// 🚀 Start Server
+// 📝 Review System API Endpoints
 // -------------------------------
-function getLocalIp() {
-  const interfaces = os.networkInterfaces();
-  for (const name in interfaces) {
-    for (const iface of interfaces[name]) {
-      if (iface.family === "IPv4" && !iface.internal) {
-        return iface.address;
-      }
-    }
-  }
-  return "localhost";
-}
 
+// Get review stats for seller dashboard
+app.get("/api/review-stats", async (req, res) => {
+  try {
+    const { seller } = req.query;
+    if (!seller) {
+      return res.status(400).json({ success: false, message: "Missing seller parameter" });
+    }
+
+    const requestsSent = await ReviewRequest.countDocuments({ seller });
+    const reviewsReceived = await Review.countDocuments({ seller });
+    
+    // Count orders without reviews (completed orders that don't have a review)
+    const completedOrders = await Order.find({ seller, status: 'Completed' });
+    const reviewedOrderIds = await Review.distinct('orderId', { seller });
+    const ordersWithoutReviews = completedOrders.filter(order => 
+      !reviewedOrderIds.includes(order.orderId)
+    ).length;
+
+    res.json({
+      success: true,
+      data: {
+        requestsSent,
+        reviewsReceived,
+        ordersWithoutReviews
+      }
+    });
+  } catch (error) {
+    console.error("Review stats error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+// Get seller orders
+app.get("/api/seller-orders", async (req, res) => {
+  try {
+    const { seller, status } = req.query;
+    if (!seller) {
+      return res.status(400).json({ success: false, message: "Missing seller parameter" });
+    }
+
+    let query = { seller };
+    if (status) {
+      query.status = status === 'completed' ? 'Completed' : status;
+    }
+
+    const orders = await Order.find(query).sort({ createdAt: -1 });
+    res.json({ success: true, orders });
+  } catch (error) {
+    console.error("Seller orders error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+// Get review requests for seller
+app.get("/api/review-requests", async (req, res) => {
+  try {
+    const { seller } = req.query;
+    if (!seller) {
+      return res.status(400).json({ success: false, message: "Missing seller parameter" });
+    }
+
+    const requests = await ReviewRequest.find({ seller }).sort({ createdAt: -1 });
+    res.json({ success: true, requests });
+  } catch (error) {
+    console.error("Review requests error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+// Get received reviews for seller
+app.get("/api/received-reviews", async (req, res) => {
+  try {
+    const { seller } = req.query;
+    if (!seller) {
+      return res.status(400).json({ success: false, message: "Missing seller parameter" });
+    }
+
+    const reviews = await Review.find({ seller }).sort({ createdAt: -1 });
+    res.json({ success: true, reviews });
+  } catch (error) {
+    console.error("Received reviews error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+// Get order for review (single order by orderId)
+app.get("/api/order-for-review", async (req, res) => {
+  try {
+    const { orderId } = req.query;
+    
+    if (!orderId) {
+      return res.status(400).json({ success: false, message: "Missing orderId" });
+    }
+
+    const order = await Order.findOne({ orderId });
+    
+    if (!order) {
+      return res.status(404).json({ success: false, message: "Order not found" });
+    }
+
+    res.json({ success: true, order });
+  } catch (error) {
+    console.error("Order for review error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+// Get orders without reviews
+app.get("/api/orders-without-reviews", async (req, res) => {
+  try {
+    const { seller } = req.query;
+    
+    if (!seller) {
+      return res.status(400).json({ success: false, message: "Missing seller parameter" });
+    }
+
+    // Get all completed orders for this seller
+    const orders = await Order.find({ seller, status: 'Completed' });
+    
+    // Get all review requests and reviews for this seller
+    const reviewRequests = await ReviewRequest.find({ seller });
+    const reviews = await Review.find({ seller });
+    
+    // Create sets of order IDs that have requests or reviews
+    const requestedOrderIds = new Set(reviewRequests.map(req => req.orderId));
+    const reviewedOrderIds = new Set(reviews.map(rev => rev.orderId));
+    
+    // Filter orders that don't have requests or reviews
+    const ordersWithoutReviews = orders.filter(order => 
+      !requestedOrderIds.has(order.orderId) && !reviewedOrderIds.has(order.orderId)
+    );
+
+    res.json({ 
+      success: true, 
+      orders: ordersWithoutReviews
+    });
+  } catch (error) {
+    console.error("Orders without reviews error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+// Get seller reviews (for seller dashboard)
+app.get("/api/seller-reviews", async (req, res) => {
+  try {
+    const { seller } = req.query;
+    
+    if (!seller) {
+      return res.status(400).json({ success: false, message: "Missing seller parameter" });
+    }
+
+    const reviews = await Review.find({ seller }).sort({ createdAt: -1 });
+
+    res.json({ 
+      success: true, 
+      reviews
+    });
+  } catch (error) {
+    console.error("Seller reviews error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+// Send review request
+app.post("/api/send-review-request", async (req, res) => {
+  try {
+    console.log('Received review request data:', req.body);
+    const { seller, orderId, emailContent, subject } = req.body;
+    
+    console.log('Extracted fields:', { seller, orderId, emailContent: emailContent ? 'present' : 'missing', subject });
+    
+    if (!seller || !orderId || !emailContent) {
+      console.log('Missing fields check:', { seller: !!seller, orderId: !!orderId, emailContent: !!emailContent });
+      return res.status(400).json({ success: false, message: "Missing required fields" });
+    }
+
+    // Get order details
+    const order = await Order.findOne({ orderId, seller });
+    if (!order) {
+      return res.status(404).json({ success: false, message: "Order not found" });
+    }
+
+    // Check if review request already sent for this order
+    const existingRequest = await ReviewRequest.findOne({ seller, orderId });
+    if (existingRequest) {
+      return res.status(400).json({ success: false, message: "Review request already sent for this order" });
+    }
+
+    // Create review request record
+    const reviewRequest = new ReviewRequest({
+      seller,
+      orderId,
+      productId: order.productId,
+      productName: order.productName,
+      productImage: order.productImage,
+      buyerEmail: order.buyer.email,
+      status: 'sent'
+    });
+
+    await reviewRequest.save();
+
+    // Create review link
+    const reviewLink = `${req.protocol}://${req.get('host')}/review.html?order=${encodeURIComponent(orderId)}`;
+
+    // Determine seller shop currency for email display
+    const sellerUser = await User.findOne({ username: seller });
+    const currency = order?.shopSettings?.storeCurrency || sellerUser?.shopSettings?.storeCurrency || "USD";
+    const symbol = getCurrencySymbol(currency);
+    const shopName = sellerUser?.customTheme?.name || seller || "Iyonicorp";
+
+    // Replace [REVIEW_LINK] placeholder in email content
+    const finalEmailContent = String(emailContent).replace('[REVIEW_LINK]', reviewLink);
+
+    // Send email to buyer
+    await emailService.sendMail({
+      to: order.buyer.email,
+      subject: subject || "We'd love your feedback on your recent purchase!",
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+            <h2 style="color: #333; margin-bottom: 10px;">Review Request</h2>
+            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+              <img src="${resolveImageUrlForEmail(order.productImage, req)}" alt="${order.productName}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;">
+              <div>
+                <h3 style="margin: 0; color: #333;">${order.productName}</h3>
+                <p style="margin: 5px 0; color: #666;">Order #${order.orderId}</p>
+                <p style="margin: 5px 0; color: #666;">Total: ${symbol}${order.total}</p>
+              </div>
+            </div>
+          </div>
+          
+          <div style="white-space: pre-line; line-height: 1.6; color: #333; margin-bottom: 30px;">
+            ${finalEmailContent}
+          </div>
+          
+          <div style="text-align: center; margin: 30px 0;">
+            <a href="${reviewLink}" style="display: inline-block; background: #4f46e5; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold;">Leave a Review</a>
+          </div>
+          
+          <div style="border-top: 1px solid #eee; padding-top: 20px; text-align: center; color: #666; font-size: 14px;">
+            <p>This email was sent by ${shopName}</p>
+          </div>
+        </div>
+      `,
+      shopName
+    });
+
+    return res.json({ success: true, message: "Review request sent successfully" });
+  } catch (error) {
+    console.error("Send review request error:", error);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+});
+
+
+// Publish/unpublish a review (admin function)
+app.post("/api/publish-review", async (req, res) => {
+  try {
+    console.log('Received publish review request:', req.body);
+    const { reviewId, published } = req.body;
+
+    // Validate required fields
+    if (!reviewId || typeof published !== 'boolean') {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Missing required fields: reviewId and published (boolean) are required" 
+      });
+    }
+
+    // Find and update the review
+    const review = await Review.findByIdAndUpdate(
+      reviewId,
+      { 
+        published: published,
+        updatedAt: new Date()
+      },
+      { new: true }
+    );
+
+    if (!review) {
+      return res.status(404).json({ 
+        success: false, 
+        message: "Review not found" 
+      });
+    }
+
+    res.json({ 
+      success: true, 
+      message: `Review ${published ? 'published' : 'unpublished'} successfully`,
+      review: review
+    });
+
+  } catch (error) {
+    console.error("Publish review error:", error);
+    res.status(500).json({ 
+      success: false, 
+      message: "Server error while updating review" 
+    });
+  }
+});
+
+// Get published reviews for product page
+app.get("/api/product-reviews", async (req, res) => {
+  try {
+    const { productId, seller } = req.query;
+    
+    if (!productId || !seller) {
+      return res.status(400).json({ success: false, message: "Missing required parameters" });
+    }
+
+    const reviews = await Review.find({ 
+      productId, 
+      seller, 
+      published: true 
+    }).sort({ createdAt: -1 });
+
+    // Calculate average rating
+    const totalReviews = reviews.length;
+    const averageRating = totalReviews > 0 
+      ? reviews.reduce((sum, review) => sum + review.rating, 0) / totalReviews 
+      : 0;
+
+    res.json({ 
+      success: true, 
+      reviews,
+      totalReviews,
+      averageRating: Math.round(averageRating * 10) / 10 // Round to 1 decimal place
+    });
+  } catch (error) {
+    console.error("Product reviews error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+});
 
 // Initialize database and start server
 async function startServer() {
@@ -3766,5 +4132,16 @@ async function startServer() {
   }
 }
 
-// Start the server
+function getLocalIp() {
+  const interfaces = os.networkInterfaces();
+  for (const name of Object.keys(interfaces)) {
+    for (const iface of interfaces[name]) {
+      if (iface.family === 'IPv4' && !iface.internal) {
+        return iface.address;
+      }
+    }
+  }
+  return '127.0.0.1';
+}
+
 startServer();
