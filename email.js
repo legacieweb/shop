@@ -2,14 +2,18 @@ require("dotenv").config();
 const nodemailer = require("nodemailer");
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 587,
-  secure: false,
+  host: process.env.SMTP_HOST || "mail.privateemail.com",
+  port: process.env.SMTP_PORT || 587,
+  secure: false, // TLS on port 587
   auth: {
     user: process.env.SMTP_USER,
     pass: process.env.SMTP_PASS
+  },
+  tls: {
+    rejectUnauthorized: false // sometimes helps with self-signed certs
   }
 });
+
 
 // Verify transporter configuration
 transporter.verify((error, success) => {
@@ -20,7 +24,7 @@ transporter.verify((error, success) => {
   }
 });
 
-module.exports.sendMail = async ({ to, subject, html, shopName = "iyonicorp" }) => {
+module.exports.sendMail = async ({ to, subject, html, shopName = "ShopRight" }) => {
   try {
     // Validate email address
     if (!to || !to.includes('@')) {
@@ -55,30 +59,6 @@ module.exports.sendMail = async ({ to, subject, html, shopName = "iyonicorp" }) 
     
   } catch (error) {
     console.error("❌ Email sending failed:", error);
-    throw error;
-  }
-};
-
-// Test email function for admin
-module.exports.testEmail = async (testRecipient) => {
-  try {
-    return await module.exports.sendMail({
-      to: testRecipient,
-      subject: "🧪 Email System Test - iyonicorp Admin",
-      html: `
-        <div style="font-family:sans-serif;max-width:600px;margin:auto;padding:20px;">
-          <h2>Email System Test</h2>
-          <p>This is a test email to verify that the email system is working correctly.</p>
-          <p><strong>Timestamp:</strong> ${new Date().toISOString()}</p>
-          <p><strong>Recipient:</strong> ${testRecipient}</p>
-          <hr style="margin:20px 0;">
-          <p style="color:#666;font-size:14px;">This test was sent from the iyonicorp Admin Panel.</p>
-        </div>
-      `,
-      shopName: "iyonicorp Admin"
-    });
-  } catch (error) {
-    console.error("❌ Test email failed:", error);
     throw error;
   }
 };
