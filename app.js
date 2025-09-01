@@ -876,6 +876,12 @@ app.post("/place-order", async (req, res) => {
       return res.status(400).json({ success: false, message: "❌ Incomplete order data." });
     }
 
+    // Default optional fields for robustness (esp. for new sellers with only delivery)
+    order.delivery = order.delivery || { country: null, state: null, subcounty: null, fee: 0 };
+    order.currency = order.currency || (order.shopSettings?.storeCurrency) || 'USD';
+    order.subtotal = typeof order.subtotal === 'string' ? parseFloat(order.subtotal) : (order.subtotal || 0);
+    order.total = typeof order.total === 'string' ? parseFloat(order.total) : (order.total || 0);
+
     // Generate unique IDs for the order
     const timestamp = Date.now();
     const random = Math.random().toString(36).substring(2, 10);
@@ -911,6 +917,13 @@ app.post("/place-order", async (req, res) => {
       await Product.updateOne({ id: order.productId }, { inventory: newInventory });
     }
 
+    // Debug: Log order data before saving
+    console.log("Creating order with variant/color data:", {
+      variant: order.variant,
+      color: order.color,
+      productName: order.productName
+    });
+    
     const result = await Order.create(order);
 
     // Determine currency from order or seller profile (for emails and receipts)
@@ -2119,6 +2132,8 @@ app.get("/debug/orders", async (req, res) => {
           productName: order.productName,
           total: order.total,
           subtotal: order.subtotal,
+          variant: order.variant,
+          color: order.color,
           createdAt: order.createdAt
         }))
       }
@@ -3954,89 +3969,47 @@ app.post("/api/send-review-request", async (req, res) => {
     
     console.log('Extracted fields:', { seller, orderId, emailContent: emailContent ? 'present' : 'missing', subject });
     
-    if (!seller || !orderId || !emailContent) {
-      console.log('Missing fields check:', { seller: !!seller, orderId: !!orderId, emailContent: !!emailContent });
-      return res.status(400).json({ success: false, message: "Missing required fields" });
+    if (!seller || !orderId || !emailContent || !subject) {
+      return res.status(400).json({ 
+        success: false, 
+        message: "Missing required fields: seller, orderId, emailContent, or subject" 
+      });
     }
 
-    // Get order details
+    // Find the order
     const order = await Order.findOne({ orderId, seller });
     if (!order) {
       return res.status(404).json({ success: false, message: "Order not found" });
     }
 
-    // Check if review request already sent for this order
-    const existingRequest = await ReviewRequest.findOne({ seller, orderId });
-    if (existingRequest) {
-      return res.status(400).json({ success: false, message: "Review request already sent for this order" });
-    }
-
-    // Create review request record
+    // Create review request
     const reviewRequest = new ReviewRequest({
       seller,
       orderId,
-      productId: order.productId,
-      productName: order.productName,
-      productImage: order.productImage,
       buyerEmail: order.buyer.email,
-      status: 'sent'
+      buyerName: order.buyer.name,
+      productName: order.productName,
+      emailContent,
+      subject,
+      status: 'sent',
+      sentAt: new Date()
     });
 
     await reviewRequest.save();
 
-    // Create review link
-    const reviewLink = `${req.protocol}://${req.get('host')}/review.html?order=${encodeURIComponent(orderId)}`;
-
-    // Determine seller shop currency for email display
-    const sellerUser = await User.findOne({ username: seller });
-    const currency = order?.shopSettings?.storeCurrency || sellerUser?.shopSettings?.storeCurrency || "USD";
-    const symbol = getCurrencySymbol(currency);
-    const shopName = sellerUser?.customTheme?.name || seller || "Iyonicorp";
-
-    // Replace [REVIEW_LINK] placeholder in email content
-    const finalEmailContent = String(emailContent).replace('[REVIEW_LINK]', reviewLink);
-
     // Send email to buyer
     await emailService.sendMail({
       to: order.buyer.email,
-      subject: subject || "We'd love your feedback on your recent purchase!",
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-          <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
-            <h2 style="color: #333; margin-bottom: 10px;">Review Request</h2>
-            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-              <img src="${resolveImageUrlForEmail(order.productImage, req)}" alt="${order.productName}" style="width: 80px; height: 80px; object-fit: cover; border-radius: 8px;">
-              <div>
-                <h3 style="margin: 0; color: #333;">${order.productName}</h3>
-                <p style="margin: 5px 0; color: #666;">Order #${order.orderId}</p>
-                <p style="margin: 5px 0; color: #666;">Total: ${symbol}${order.total}</p>
-              </div>
-            </div>
-          </div>
-          
-          <div style="white-space: pre-line; line-height: 1.6; color: #333; margin-bottom: 30px;">
-            ${finalEmailContent}
-          </div>
-          
-          <div style="text-align: center; margin: 30px 0;">
-            <a href="${reviewLink}" style="display: inline-block; background: #4f46e5; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold;">Leave a Review</a>
-          </div>
-          
-          <div style="border-top: 1px solid #eee; padding-top: 20px; text-align: center; color: #666; font-size: 14px;">
-            <p>This email was sent by ${shopName}</p>
-          </div>
-        </div>
-      `,
-      shopName
+      subject: subject,
+      html: emailContent
     });
 
-    return res.json({ success: true, message: "Review request sent successfully" });
+    res.json({ success: true, message: "Review request sent successfully" });
   } catch (error) {
     console.error("Send review request error:", error);
-    return res.status(500).json({ success: false, message: "Server error" });
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
-
 
 // Publish/unpublish a review (admin function)
 app.post("/api/publish-review", async (req, res) => {

@@ -1149,6 +1149,7 @@
       <!-- Example Containers -->
       <div id="paypal-button-container" class="mt-4"></div>
       <div id="square-container" class="mt-4"></div>
+      <div id="stripe-container" class="mt-4"></div>
       <!-- You can dynamically target these inside JS -->
     </div>
 
@@ -1304,7 +1305,7 @@
 </main>
 
 <script>
-const API = "https://shop-stp5.onrender.com";
+const API = "http://localhost:3000";
 const params = new URLSearchParams(window.location.search);
 const productId = params.get("id");
 
@@ -1368,7 +1369,7 @@ async function loadStoreProducts(seller, currentProductId, currencyCode = "USD")
         const delayClass = delayClasses[index % delayClasses.length];
         
         html += `
-          <a href="../detail?id=${p.id}" class="bg-white shadow-sm hover:shadow-md rounded-lg p-3 transition-all duration-200 hover:scale-[1.02] block min-w-[200px] flex-shrink-0 ${animationClass} ${delayClass}">
+          <a href="product-detail.html?id=${p.id}" class="bg-white shadow-sm hover:shadow-md rounded-lg p-3 transition-all duration-200 hover:scale-[1.02] block min-w-[200px] flex-shrink-0 ${animationClass} ${delayClass}">
             ${img ? `<div class="bg-gray-50 rounded overflow-hidden mb-2">
               <img src="${img}" class="w-full max-h-56 mx-auto object-contain" />
             </div>` : ""}
@@ -1431,7 +1432,7 @@ async function loadProduct() {
     const mobileVisit = document.getElementById('mobileVisitStore');
     if (mobileVisit) mobileVisit.href = `../shop?seller=${encodeURIComponent(product.seller)}`;
 
-    await fetch("https://shop-stp5.onrender.com/api/track-view", {
+    await fetch("http://localhost:3000/api/track-view", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ productId: product.id, seller: product.seller })
@@ -1446,10 +1447,10 @@ async function loadProduct() {
 
     window.currentProduct = product;
 
-    document.getElementById("visitStoreBtn").href = `../shop?seller=${encodeURIComponent(product.seller)}`;
-    document.getElementById("mobileVisitStoreBtn").href = `../shop?seller=${encodeURIComponent(product.seller)}`;
+    document.getElementById("visitStoreBtn").href = `shop.html?seller=${encodeURIComponent(product.seller)}`;
+    document.getElementById("mobileVisitStoreBtn").href = `shop.html?seller=${encodeURIComponent(product.seller)}`;
     document.getElementById("breadcrumbProduct").textContent = product.name;
-    document.getElementById("breadcrumbShopLink").href = `../products?seller=${encodeURIComponent(product.seller)}`;
+    document.getElementById("breadcrumbShopLink").href = `products.html?seller=${encodeURIComponent(product.seller)}`;
     document.getElementById("breadcrumbShopLink").textContent = "All Products";
 
     const shopName = seller?.customTheme?.title || seller?.username || "Shop";
@@ -1496,6 +1497,7 @@ async function loadProduct() {
     const paymentSystems = product.shopSettings.paymentSystems || [];
     const gatewayIcons = {
       paypal: "https://www.paypalobjects.com/webstatic/icon/pp258.png",
+      stripe: "https://img.icons8.com/color/48/stripe.png",
       paystack: "https://upload.wikimedia.org/wikipedia/commons/2/20/Paystack_Logo.png",
       flutterwave: "https://flutterwave.com/favicon.png",
       razorpay: "https://razorpay.com/favicon.png",
@@ -2151,7 +2153,7 @@ function handleCart(productId) {
   cart.push(cartItem);
   saveCart();
 
-  fetch("https://shop-stp5.onrender.com/add-cart", {
+  fetch("http://localhost:3000/add-cart", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -2699,12 +2701,13 @@ async function placeOrder() {
   const address = document.getElementById("inputAddress")?.value.trim();
   const notes = document.getElementById("buyerNotes")?.value.trim();
   const delivery = document.querySelector('input[name="deliveryLocation"]:checked');
+  const hasRegions = Array.isArray(product.shopSettings?.deliveryRegions) && product.shopSettings.deliveryRegions.length > 0;
 
-  if (!name || !email || !phone || !address || !notes) {
+  if (!name || !email || !phone || !address) {
     alert("⚠️ Please fill in all required fields.");
     return;
   }
-  if (!delivery) {
+  if (hasRegions && !delivery) {
     alert("Please select a delivery location.");
     return;
   }
@@ -2721,7 +2724,7 @@ async function placeOrder() {
   if (variant?.price) unitPrice = variant.price;
   if (color?.price) unitPrice += color.price;
   let subtotal = unitPrice * qty;
-  const deliveryFee = parseFloat(delivery.value || "0");
+  const deliveryFee = delivery ? parseFloat(delivery.value || "0") : 0;
 
   // Apply coupon discount
   let discount = 0;
@@ -2739,10 +2742,15 @@ async function placeOrder() {
     quantity: qty,
     buyer: { name, email, phone, address, notes },
     seller: product.seller,
-    delivery: {
-      country: delivery.dataset.country,
-      state: delivery.dataset.state,
-      subcounty: delivery.dataset.subcounty || null,
+    delivery: hasRegions ? {
+      country: delivery?.dataset.country,
+      state: delivery?.dataset.state,
+      subcounty: delivery?.dataset.subcounty || null,
+      fee: deliveryFee
+    } : {
+      country: null,
+      state: null,
+      subcounty: null,
       fee: deliveryFee
     },
     variant,
@@ -2886,6 +2894,8 @@ function showGatewayPopup(gateways, total, orderData, gatewayConfigs, email, pro
     khalti: "Khalti",
     instamojo: "Instamojo",
     shopright: "ShopRight Pay",
+    stripe: "Stripe",
+    wise: "Wise Business",
     revolut: "Revolut Business",
     iyzipay: "Iyzipay"
   };
@@ -2900,6 +2910,8 @@ function showGatewayPopup(gateways, total, orderData, gatewayConfigs, email, pro
     khalti: "https://seeklogo.com/images/K/khalti-logo-962A1A4174-seeklogo.com.png",
     instamojo: "https://assets.instamojo.com/logo/full-logo-dark.png",
     shopright: "https://placehold.co/32x32?text=SR",
+    stripe: "https://img.icons8.com/color/48/stripe.png",
+    wise: "https://wise.com/favicon.ico",
     revolut: "https://www.revolut.com/favicon.ico",
     iyzipay: "https://www.iyzico.com/favicon.ico"
   };
@@ -3273,6 +3285,86 @@ async function processPayment(gateway, total, orderData, configs, email, product
     }
   }
 
+  else if (gateway === "stripe") {
+    const key = configs.stripePublicKey;
+    if (!key) return alert("❌ Stripe not configured.");
+    
+    // Validate Stripe.js is loaded
+    if (typeof Stripe === 'undefined') {
+      console.error("Stripe.js not loaded");
+      return alert("❌ Stripe payment system not available. Please try again later.");
+    }
+    
+    const stripe = Stripe(key);
+    
+    // Normalize currency code for Stripe (must be lowercase)
+    const stripeCurrency = storeCurrency.toLowerCase();
+    
+    // Validate currency is supported by Stripe
+    const supportedCurrencies = ['usd', 'eur', 'gbp', 'jpy', 'cad', 'aud', 'nzd', 'chf', 'dkk', 'nok', 'sek', 'zar', 'kes', 'ngn', 'inr'];
+    if (!supportedCurrencies.includes(stripeCurrency)) {
+      console.warn(`Currency ${storeCurrency} may not be supported by Stripe`);
+    }
+    
+    try {
+      // Create a Stripe checkout session using the correct method
+      const sessionData = {
+        lineItems: [{
+          price_data: {
+            currency: stripeCurrency,
+            product_data: {
+              name: productName,
+            },
+            unit_amount: Math.round(total * 100), // Convert to cents
+          },
+          quantity: 1,
+        }],
+        mode: 'payment',
+        successUrl: window.location.href + '?payment=success',
+        cancelUrl: window.location.href + '?payment=cancelled',
+        clientReferenceId: "ORD" + Date.now()
+      };
+      
+      // Use the correct Stripe.js method for client-only integration
+      const { error } = await stripe.redirectToCheckout(sessionData);
+      
+      if (error) {
+        console.error("Stripe error:", error);
+        alert("❌ Payment failed: " + error.message);
+      }
+    } catch (err) {
+      console.error("Stripe error:", err);
+      alert("❌ Payment failed: " + err.message);
+    }
+  }
+  else if (gateway === "wise") {
+    // For Wise Business, we'll redirect to their payment page
+    const wiseUrl = configs.wiseUrl;
+    if (!wiseUrl) return alert("❌ Wise Business URL is not configured by seller.");
+    
+    const name = encodeURIComponent(orderData.buyer.name);
+    const buyerEmail = encodeURIComponent(email);
+    const amount = encodeURIComponent(total.toFixed(2));
+    const delimiter = wiseUrl.includes("?") ? "&" : "?";
+    const url = `${wiseUrl}${delimiter}amount=${amount}&name=${name}&email=${buyerEmail}&currency=${storeCurrency}`;
+    
+    window.open(url, "_blank");
+    alert("Please complete your payment in the new window, then click the button below.");
+    
+    // Show confirmation button
+    const paymentContainer = document.getElementById("gatewayPaymentContainer");
+    paymentContainer.innerHTML = `
+      <div class="text-center">
+        <p class="text-sm text-gray-600 mb-4">Complete your payment in the new window, then click confirm below.</p>
+        <button onclick="confirmWisePayment()" class="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700">
+          ✅ I've Completed Payment
+        </button>
+      </div>
+    `;
+    paymentContainer.classList.remove("hidden");
+    
+    window.confirmWisePayment = () => saveOrderAfterPayment({ gateway: "wise", reference: "WISE-" + Date.now() });
+  }
   else if (gateway === "revolut") {
     // For Revolut Business, we'll redirect to their payment page
     const revolutUrl = configs.revolutUrl;
@@ -3513,7 +3605,7 @@ function closeSuccessModal() {
 function goToDashboard() {
   const user = JSON.parse(localStorage.getItem("user"));
   if (user && user.email) {
-    window.open(`https://iyonicorp.com/dashboard?email=${encodeURIComponent(user.email)}`, '_blank');
+    window.open(`https://api.iyonicorp.com/dashboard.html?email=${encodeURIComponent(user.email)}`, '_blank');
   } else {
     alert("Please log in to access your dashboard.");
   }
