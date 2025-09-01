@@ -1305,7 +1305,7 @@
 </main>
 
 <script>
-const API = "http://localhost:3000";
+const API = "https://shop-stp5.onrender.com";
 const params = new URLSearchParams(window.location.search);
 const productId = params.get("id");
 
@@ -1432,7 +1432,7 @@ async function loadProduct() {
     const mobileVisit = document.getElementById('mobileVisitStore');
     if (mobileVisit) mobileVisit.href = `../shop?seller=${encodeURIComponent(product.seller)}`;
 
-    await fetch("http://localhost:3000/api/track-view", {
+    await fetch("https://shop-stp5.onrender.com/api/track-view", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ productId: product.id, seller: product.seller })
@@ -2153,7 +2153,7 @@ function handleCart(productId) {
   cart.push(cartItem);
   saveCart();
 
-  fetch("http://localhost:3000/add-cart", {
+  fetch("https://shop-stp5.onrender.com/add-cart", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
