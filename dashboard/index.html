@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>merchant Dashboard – Iyonicorp</title>
+  <title>Seller Dashboard – ShopRight</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdn.tailwindcss.com"></script>
 
@@ -20,7 +20,7 @@
 
   <!-- Mobile Navbar -->
   <div class="md:hidden flex justify-between items-center px-4 py-3 bg-white border-b shadow sticky top-0 z-50 h-[64px]">
-    <h1 class="text-lg font-bold text-indigo-600">merchant</h1>
+    <h1 class="text-lg font-bold text-indigo-600">ShopRight Seller</h1>
     <button id="hamburgerBtn" class="text-indigo-600 text-2xl font-bold">&#9776;</button>
   </div>
 
@@ -32,7 +32,7 @@
       class="w-64 bg-white shadow-md fixed top-[64px] left-0 h-[calc(100%-64px)] z-40 transform -translate-x-full transition-transform duration-300 md:relative md:top-0 md:h-auto md:translate-x-0 md:block hidden">
       
       <div class="p-6 border-b hidden md:block">
-        <h1 class="text-xl font-bold text-indigo-600">merchant</h1>
+        <h1 class="text-xl font-bold text-indigo-600">ShopRight Seller</h1>
       </div>
 
       <nav class="mt-6 space-y-1">
@@ -45,20 +45,20 @@
           class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50">Products</a>
         <a href="#" data-section="inventory" id="inventoryLink"
           class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50 relative">
-          Inventory
+          📦 Inventory
           <span id="inventoryLockIcon" class="absolute right-6 text-yellow-500 hidden">🔒</span>
         </a>
         <a href="#" data-section="sales"
           class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50">Sales</a>
         <a href="#" data-section="coupons" id="couponsLink"
           class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50 relative">
-          Coupons
+          🎫 Coupons
           <span id="couponsLockIcon" class="absolute right-6 text-yellow-500 hidden">🔒</span>
         </a>
         <a href="#" id="reviewsLink"
           class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50 relative">
-          Reviews
-          <span id="reviewsLockIcon" class="absolute right-6 text-yellow-500 hidden">⭐</span>
+          ⭐ Reviews
+          <span id="reviewsLockIcon" class="absolute right-6 text-yellow-500 hidden">🔒</span>
         </a>
         <a href="#" data-section="settings"
           class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50">General Settings</a>
@@ -67,7 +67,7 @@
           class="block px-6 py-3 text-indigo-600 hover:bg-indigo-50 font-semibold">View My Shop</a>
             <!-- ADD THIS LOGOUT BUTTON -->
   <button id="logoutBtn" class="w-full text-left block px-6 py-3 text-red-600 hover:bg-red-50 font-semibold border-t border-gray-200 mt-4">
-    Logout
+    🚪 Logout
   </button>
       </nav>
     </aside>
@@ -86,7 +86,7 @@
       <h3 id="successPopupTitle" class="text-xl font-bold text-gray-900 mb-2">Success!</h3>
       <p id="successPopupMessage" class="text-gray-600 mb-6">Operation completed successfully.</p>
       <button id="closeSuccessPopup" class="w-full bg-green-600 text-white px-6 py-3 rounded-lg hover:bg-green-700 font-semibold transition-colors">
-        Awesome!
+        Awesome! 🎉
       </button>
     </div>
   </div>
@@ -120,7 +120,7 @@
       Analytics and detailed insights are available for Basic plan and above. Upgrade your subscription to track your growth, customers, and success metrics.
     </p>
     <button onclick="document.getElementById('upgradeBtn').click()" class="bg-indigo-600 text-white px-8 py-3 rounded-lg hover:bg-indigo-700 font-semibold transition-all transform hover:scale-105">
-      Upgrade to Basic Plan
+      🚀 Upgrade to Basic Plan
     </button>
   </div>
 
@@ -873,21 +873,21 @@
         </ul>
         <p class="text-sm text-green-700 mt-2">
           🔗 Sellers must provide their <strong>IyonicPay request link</strong><br>
-          (e.g. <code>https://pay.iyonicorp.com/request/?user=b/sname</code>)
+          (e.g. <code>https://pay.iyonicorp.com/request/?user=Andrea</code>)
         </p>
       </div>
     </div>
 
-    <!-- ⭐ RECOMMENDED: Iyonicorp -->
+    <!-- ⭐ RECOMMENDED: ShopRight -->
     <div class="col-span-1 sm:col-span-2 bg-indigo-50 border border-indigo-300 rounded-lg p-4 relative flex items-start gap-3 shadow-md">
-      <input type="checkbox" value="Iyonicorp" class="paymentOption mt-1" checked>
+      <input type="checkbox" value="shopright" class="paymentOption mt-1" checked>
       <div>
         <div class="flex items-center gap-2 mb-1">
-          <h6 class="font-semibold text-indigo-800">Iyonicorp Payment (Recommended)</h6>
+          <h6 class="font-semibold text-indigo-800">ShopRight Payment (Recommended)</h6>
           <span class="text-xs text-white bg-indigo-500 px-2 py-0.5 rounded-full">✔️ Recommended</span>
         </div>
         <p class="text-sm text-gray-700">
-          The easiest way to receive payments with no setup required. Powered by <strong>Paystack</strong> through Iyonicorp.
+          The easiest way to receive payments with no setup required. Powered by <strong>Paystack</strong> through ShopRight.
         </p>
         <ul class="list-disc ml-5 mt-2 text-sm text-gray-600">
           <li>Debit/Credit Cards (Visa, MasterCard, Verve)</li>
@@ -1415,7 +1415,7 @@ async function loadSubscriptionPlans() {
     // Fallback to static limits
     subscriptionLimits = {
       free: {
-        maxProducts: 10,
+        maxProducts: 20,
         analytics: false,
         coupons: false,
         premiumGateways: false,
@@ -1560,11 +1560,27 @@ function enforceRestrictions() {
 
 document.getElementById("storeName").textContent = seller;
 
-const shopURL = `../shop?seller=${encodeURIComponent(seller)}`;
+const shopURL = `shop?seller=${encodeURIComponent(seller)}`;
 document.getElementById("themesLink").href = `../themes?seller=${encodeURIComponent(seller)}`;
 document.getElementById("shopLink").href = shopURL;
-document.getElementById("publicUrl").textContent = window.location.origin + "/" + shopURL;
-document.getElementById("publicUrl").addEventListener("click", () => window.open(shopURL, "_blank"));
+const fullPublicUrl = window.location.origin + "/" + shopURL;
+const publicUrlEl = document.getElementById("publicUrl");
+publicUrlEl.textContent = fullPublicUrl;
+publicUrlEl.addEventListener("click", async (e) => {
+  e.preventDefault();
+  try {
+    await navigator.clipboard.writeText(fullPublicUrl);
+    const prev = publicUrlEl.textContent;
+    publicUrlEl.textContent = "✔ Copied!";
+    setTimeout(() => { publicUrlEl.textContent = prev; }, 1500);
+  } catch (err) {
+    const ta = document.createElement("textarea");
+    ta.value = fullPublicUrl;
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand("copy"); } finally { document.body.removeChild(ta); }
+  }
+});
 
 // Initialize UI based on subscription plan
 function initializeSubscriptionUI() {
@@ -1750,9 +1766,9 @@ function setupSidebarHandlers() {
       return;
     }
     
-    // Redirect to review with seller parameter
+    // Redirect to review.html with seller parameter
     const seller = user.username;
-    window.location.href = `../review?seller=${encodeURIComponent(seller)}`;
+    window.location.href = `../review.html?seller=${encodeURIComponent(seller)}`;
   });
   
   // Inventory link handler
@@ -2070,7 +2086,7 @@ function displayProducts(products) {
   }
 }
 
-// Search functionality - exact same as blank
+// Search functionality - exact same as blank.html
 function searchProducts(query) {
   if (!query.trim()) {
     displayProducts(allProducts);
@@ -2094,7 +2110,7 @@ function searchProducts(query) {
 }
 loadProducts();
 
-// Product search event listener - exact same as blank
+// Product search event listener - exact same as blank.html
 document.getElementById('productSearchInput').addEventListener('input', function(e) {
   searchProducts(e.target.value);
 });
@@ -2843,7 +2859,7 @@ document.getElementById('reviewsLink').addEventListener("click", function(e) {
   }
   
   // Redirect to review dashboard
-  window.location.href = `/review?seller=${encodeURIComponent(seller)}`;
+  window.location.href = `../review?seller=${encodeURIComponent(seller)}`;
 });
 
 // Coupon Management Functions
@@ -3047,7 +3063,6 @@ window.deleteCoupon = async function(couponId) {
     alert('❌ Failed to delete coupon.');
   }
 };
-
 
 
 

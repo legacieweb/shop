@@ -1038,7 +1038,7 @@
     <div class="absolute inset-0" onclick="hideSizeGuide()"></div>
     <aside id="sizeGuidePanel" class="absolute right-0 top-0 h-full w-full sm:w-[560px] bg-white shadow-2xl p-6 sm:p-8 transform translate-x-full transition-transform duration-300">
       <div class="flex items-center justify-between mb-4">
-        <h3 class="text-xl sm:text-2xl font-extrabold text-gray-900">TOPS & DRESSES SIZE GUIDE</h3>
+        <h3 class="text-xl sm:text-2xl font-extrabold text-gray-900">SIZE GUIDE</h3>
         <button onclick="hideSizeGuide()" class="text-gray-500 hover:text-gray-700 text-2xl leading-none">&times;</button>
       </div>
 
@@ -1517,10 +1517,20 @@ async function loadProduct() {
       `;
     }).join(" ") || "<span class='text-sm text-gray-500'>No payment gateways available.</span>";
 
-    // Show Size Guide button always, not just for variants
-    let sizeGuideButton = `
+    // Show Size Guide button only for apparel/shoes
+    const category = (product.category || '').toLowerCase();
+    const tags = Array.isArray(product.tags) ? product.tags.map(t => String(t).toLowerCase()) : [];
+    const isApparelOrShoes =
+      category.includes('apparel') ||
+      category.includes('shoe') ||
+      category.includes('clothing') ||
+      category.includes('fashion') ||
+      category.includes('footwear') ||
+      tags.some(t => ['apparel','shoes','shoe','clothing','fashion','footwear'].some(k => t.includes(k)));
+
+    const sizeGuideButton = isApparelOrShoes ? `
       <button onclick="showSizeGuide()" class="text-sm text-blue-600 hover:underline">📏 Size Guide</button>
-    `;
+    ` : '';
 
     productSection.innerHTML = `
       <div class="space-y-4">
@@ -1546,7 +1556,7 @@ async function loadProduct() {
           <div class="mt-4">
             <div class="flex items-center justify-between mb-2">
               <h4 class="font-semibold text-gray-700">Available Sizes/Variants</h4>
-              ${sizeGuideButton}
+              ${sizeGuideButton || ''}
             </div>
             ${variantHTML}
           </div>` : ""}
@@ -1558,7 +1568,7 @@ async function loadProduct() {
           </div>` : ""}
 
         <!-- Always show Size Guide button if no variants -->
-        ${!variantHTML ? `
+        ${(!variantHTML && sizeGuideButton) ? `
           <div class="mt-2">
             ${sizeGuideButton}
           </div>
