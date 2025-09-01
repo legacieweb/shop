@@ -10,10 +10,16 @@
 </head>
 <body class="bg-gray-50 text-gray-800">
 
+  <!-- Mobile Navbar -->
+  <div class="md:hidden flex justify-between items-center px-4 py-3 bg-white border-b shadow sticky top-0 z-50 h-[64px]">
+    <h1 class="text-lg font-bold text-indigo-600">iyonicorp Customer</h1>
+    <button id="hamburgerBtn" class="text-indigo-600 text-2xl font-bold">&#9776;</button>
+  </div>
+
 <div class="flex min-h-screen">
 
   <!-- Sidebar -->
-  <aside class="w-64 bg-white shadow-md hidden md:block">
+  <aside id="sidebar" class="w-64 bg-white shadow-md fixed top-[64px] left-0 h-[calc(100%-64px)] z-40 transform -translate-x-full transition-transform duration-300 md:relative md:top-0 md:h-auto md:translate-x-0 md:block hidden">
     <div class="p-6 border-b">
       <h1 class="text-xl font-bold text-indigo-600">iyonicorp Customer</h1>
     </div>
@@ -170,6 +176,27 @@
   </main>
 </div>
 <script>
+// Mobile hamburger toggle for sidebar
+const sidebar = document.getElementById("sidebar");
+const hamburgerBtn = document.getElementById("hamburgerBtn");
+if (hamburgerBtn) {
+  hamburgerBtn.addEventListener("click", () => {
+    sidebar.classList.remove("hidden");
+    sidebar.classList.toggle("-translate-x-full");
+    sidebar.classList.toggle("translate-x-0");
+  });
+}
+
+// Auto-hide sidebar on small screens when a nav item is clicked
+document.querySelectorAll("#sidebarNav .nav-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    if (window.innerWidth < 768) {
+      sidebar.classList.add("-translate-x-full");
+      sidebar.classList.remove("translate-x-0");
+    }
+  });
+});
+
 // Initialize user and seller data
 const API = "https://shop-stp5.onrender.com"; // Replace with your actual API endpoint
 const user = JSON.parse(localStorage.getItem("user"));
