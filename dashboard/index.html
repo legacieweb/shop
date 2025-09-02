@@ -1562,7 +1562,7 @@ function enforceRestrictions() {
 
 document.getElementById("storeName").textContent = seller;
 
-const shopURL = `shop?seller=${encodeURIComponent(seller)}`;
+const shopURL = `../shop?seller=${encodeURIComponent(seller)}`;
 document.getElementById("themesLink").href = `../themes?seller=${encodeURIComponent(seller)}`;
 document.getElementById("shopLink").href = shopURL;
 const fullPublicUrl = window.location.origin + "/" + shopURL;
