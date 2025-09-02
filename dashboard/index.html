@@ -1573,7 +1573,7 @@ const promotionLink = document.getElementById("promotionLink");
 if (promotionLink) {
   promotionLink.addEventListener('click', (e) => {
     e.preventDefault();
-    window.location.href = `../promotion.html?seller=${encodeURIComponent(seller)}`;
+    window.location.href = `../promotion?seller=${encodeURIComponent(seller)}`;
   });
 }
 publicUrlEl.addEventListener("click", async (e) => {

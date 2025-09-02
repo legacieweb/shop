@@ -1332,6 +1332,23 @@ function resolveUrl(path) {
   return path?.startsWith("http") ? path : `${API}${path}`;
 }
 
+// Normalize seller-configured payment method to one of: 'online', 'delivery', 'both'
+function normalizePaymentMethod(method) {
+  const m = String(method || '').toLowerCase();
+  if (m.includes('both')) return 'both';
+  if (m.includes('online') || m.includes('shop')) return 'online';
+  if (m.includes('delivery') || m.includes('cod') || m.includes('cash')) return 'delivery';
+  return 'delivery';
+}
+
+// Human-readable label for UI
+function getPaymentMethodDisplay(method) {
+  const m = normalizePaymentMethod(method);
+  if (m === 'online') return 'Pay Online on Shop';
+  if (m === 'both') return 'Online or Delivery';
+  return 'Pay on Delivery (Cash on Delivery)';
+}
+
 function showAuthModal() {
   alert("🔐 Please log in to continue.");
 }
@@ -1439,6 +1456,10 @@ async function loadProduct() {
     });
 
     product.shopSettings = seller?.shopSettings || {};
+    // Normalize payment method here to ensure consistent behavior across UI and checkout
+    if (product.shopSettings) {
+      product.shopSettings.paymentMethod = normalizePaymentMethod(product.shopSettings.paymentMethod);
+    }
     product.sellerLogo = seller?.customTheme?.logo || "https://placehold.co/40x40";
     product.sellerSettings = product.shopSettings;
 
@@ -1582,7 +1603,7 @@ async function loadProduct() {
         <div class="text-sm text-gray-600 mt-2">
           <strong>Payment Method:</strong>
           <span class="inline-flex items-center gap-1">
-            ${getPaymentMethodDisplay(product.shopSettings?.paymentMethod || "delivery")}
+            ${getPaymentMethodDisplay(product.shopSettings?.paymentMethod)}
           </span>
         </div>
 
@@ -2509,6 +2530,14 @@ function showCheckoutModal(product, qty = 1) {
 
   const deliveryRegions = product.shopSettings?.deliveryRegions || [];
   const currencySymbol = getCurrencySymbol(product.shopSettings?.storeCurrency || "USD");
+  const paymentMethodConfig = normalizePaymentMethod(product.shopSettings?.paymentMethod || "delivery");
+
+  // Hide delivery selection for online-only shops
+  if (paymentMethodConfig === "online") {
+    dBox.classList.add("hidden");
+  } else {
+    dBox.classList.remove("hidden");
+  }
 
   if (!deliveryRegions.length) {
     dBox.innerHTML = `<p class="text-sm text-gray-500 italic">This shop has no delivery regions defined.</p>`;
@@ -2698,7 +2727,7 @@ async function applyCheckoutCoupon() {
 async function placeOrder() {
   const product = window.currentProduct;
   const shopSettings = product.shopSettings || {};
-  const paymentMethodConfig = shopSettings.paymentMethod || "delivery"; // "delivery", "online", or "both"
+  const paymentMethodConfig = normalizePaymentMethod(shopSettings.paymentMethod || "delivery"); // "delivery", "online", or "both"
   const gateways = shopSettings.paymentSystems || [];
   const gatewayConfigs = shopSettings.gatewayConfigs || {};
   const storeCurrency = shopSettings.storeCurrency || "USD";
@@ -2717,7 +2746,8 @@ async function placeOrder() {
     alert("⚠️ Please fill in all required fields.");
     return;
   }
-  if (hasRegions && !delivery) {
+  // Only require delivery selection if not online-only
+  if (paymentMethodConfig !== "online" && hasRegions && !delivery) {
     alert("Please select a delivery location.");
     return;
   }
