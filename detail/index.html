@@ -2532,8 +2532,8 @@ function showCheckoutModal(product, qty = 1) {
   const currencySymbol = getCurrencySymbol(product.shopSettings?.storeCurrency || "USD");
   const paymentMethodConfig = normalizePaymentMethod(product.shopSettings?.paymentMethod || "delivery");
 
-  // Hide delivery selection for online-only shops
-  if (paymentMethodConfig === "online") {
+  // Show delivery selection whenever regions exist; hide only if no regions
+  if (!deliveryRegions.length) {
     dBox.classList.add("hidden");
   } else {
     dBox.classList.remove("hidden");
