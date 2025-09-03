@@ -4192,7 +4192,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 </script>
 <script src="https://js.paystack.co/v1/inline.js"></script>
 <script>
-const API = "http://localhost:3000";
+const API = "https://shop-stp5.onrender.com";
 
 
 const urlParams = new URLSearchParams(window.location.search);
@@ -4230,7 +4230,7 @@ async function loadBillingSection() {
   try {
     if (!sellerUsername) throw new Error("No seller username provided.");
 
-    const API = "http://localhost:3000"; // Define API constant
+    const API = "https://shop-stp5.onrender.com"; // Define API constant
     const sellerRes = await fetch(`${API}/find?collection=users&username=${encodeURIComponent(sellerUsername)}`);
     const sellerResult = await sellerRes.json();
     const sellerArray = sellerResult.data || [];
@@ -4522,7 +4522,7 @@ async function loadSellerCurrency() {
     const urlParams = new URLSearchParams(window.location.search);
     const seller = urlParams.get("seller") || user.username;
     
-    const res = await fetch(`http://localhost:3000/find?collection=users&username=${encodeURIComponent(seller)}`);
+    const res = await fetch(`https://shop-stp5.onrender.com/find?collection=users&username=${encodeURIComponent(seller)}`);
     const result = await res.json();
     const users = result.data || [];
     
@@ -4557,7 +4557,7 @@ async function loadAnalytics() {
     console.log("- URL params:", urlParams.toString());
     console.log("- Range:", range);
 
-    let query = `http://localhost:3000/api/seller/analytics?seller=${seller}&range=${range}`;
+    let query = `https://shop-stp5.onrender.com/api/seller/analytics?seller=${seller}&range=${range}`;
     if (start) query += `&start=${start}`;
     if (end) query += `&end=${end}`;
 
