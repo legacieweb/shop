@@ -1563,7 +1563,7 @@ function enforceRestrictions() {
 document.getElementById("storeName").textContent = seller;
 
 const sidebarShopUrl = `../shop?seller=${encodeURIComponent(seller)}`;
-const shareShopUrl = `${window.location.origin}shop?seller=${encodeURIComponent(seller)}`;
+const shareShopUrl = `${window.location.origin}/shop?seller=${encodeURIComponent(seller)}`;
 document.getElementById("themesLink").href = `../themes?seller=${encodeURIComponent(seller)}`;
 document.getElementById("shopLink").href = sidebarShopUrl;
 const fullPublicUrl = shareShopUrl;
