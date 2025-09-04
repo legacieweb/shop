@@ -1078,6 +1078,13 @@
   <div id="tagSuggestions" class="mt-2 flex flex-wrap gap-2 text-sm"></div>
 </div>
 
+<!-- Specifications -->
+<div>
+  <label class="text-sm text-gray-600">Specifications</label>
+  <div id="specGroups" class="space-y-3 mt-2"></div>
+  <button type="button" id="addSpecGroupBtn" class="mt-1 text-sm text-indigo-600 underline">+ Add Specifications Group</button>
+</div>
+
 
     <!-- Controls -->
     <div class="flex justify-end gap-2 pt-2">
@@ -1092,6 +1099,33 @@
 
 <script>
   
+// --- Specifications UI (Add Product) ---
+function addSpecGroupUI(container){
+  const wrap = document.createElement('div');
+  wrap.className = 'spec-group border rounded p-3';
+  wrap.innerHTML = `
+    <div class="flex items-center gap-2">
+      <input type="text" class="spec-title border px-3 py-2 rounded flex-1" placeholder="Group title e.g. Key Features"/>
+      <button type="button" class="text-red-600 text-sm remove-spec-group">Remove</button>
+    </div>
+    <textarea class="spec-values w-full border px-3 py-2 rounded text-sm mt-2" rows="6" placeholder="One per line, use Key: Value\nBrand: Naviforce\nBand Material: Rubber\nGender: Men\nFunctional sub-dials for chronograph stopwatch\nGlass: Hardlex Scratch Resistant\nWater Resistance: 3ATM\nMovement: Quartz\nDial Diameter: 40mm\nCase thickness: 11mm"></textarea>
+  `;
+  wrap.querySelector('.remove-spec-group').onclick = () => wrap.remove();
+  container.appendChild(wrap);
+}
+
+(function initSpecsUI(){
+  const container = document.getElementById('specGroups');
+  const addBtn = document.getElementById('addSpecGroupBtn');
+  if (container && addBtn) {
+    addBtn.addEventListener('click', ()=> addSpecGroupUI(container));
+    // Add one default group
+    addSpecGroupUI(container);
+    const titleEl = container.querySelector('.spec-title');
+    if (titleEl) titleEl.value = 'Key Features';
+  }
+})();
+
 const tagData = {
   apparel: {
     primary: ["men clothing", "women clothing", "kids clothing", "unisex", "seasonal", "others"],
@@ -1952,6 +1986,44 @@ async function saveProduct() {
       tags,
       image: uploadedMainImage,
       gallery: uploadedGallery,
+      ...(function(){
+        // Grouped specs UI (new)
+        const specUI = document.querySelector('#specGroups');
+        if (specUI) {
+          const groups = Array.from(specUI.querySelectorAll('.spec-group')).map(groupEl => {
+            const title = groupEl.querySelector('.spec-title')?.value.trim();
+            const lines = (groupEl.querySelector('.spec-values')?.value || '').trim().split(/\r?\n/).filter(Boolean);
+            const entries = lines.map(line => {
+              const idx = line.indexOf(':');
+              if (idx > -1) return { key: line.slice(0, idx).trim(), value: line.slice(idx + 1).trim() };
+              return { key: line.trim(), value: '' };
+            });
+            return { title: title || 'Specifications', entries };
+          }).filter(g => g.entries && g.entries.length);
+          if (groups.length) return { specifications: groups };
+        }
+        const raw = document.getElementById('productSpecifications')?.value || '';
+        const trimmed = raw.trim();
+        // Try JSON first
+        try {
+          if ((trimmed.startsWith('{') && trimmed.endsWith('}')) || (trimmed.startsWith('[') && trimmed.endsWith(']'))) {
+            return { specifications: JSON.parse(trimmed) };
+          }
+        } catch (_) {}
+        // Fallback: key:value per line
+        const obj = {};
+        if (trimmed) {
+          trimmed.split(/\r?\n/).forEach(line => {
+            const idx = line.indexOf(':');
+            if (idx > -1) {
+              const key = line.slice(0, idx).trim();
+              const value = line.slice(idx + 1).trim();
+              if (key) obj[key] = value;
+            }
+          });
+        }
+        return Object.keys(obj).length ? { specifications: obj } : {};
+      })(),
       createdAt: Date.now()
     }
   };
@@ -2331,6 +2403,13 @@ window.openManageProduct = function(product) {
       <input type="text" id="colorInput" placeholder="Add colors (comma separated)" class="w-full border px-3 py-2 rounded mt-2" />
     </div>
 
+    <!-- Specifications (Manage) -->
+    <div>
+      <label class="text-sm text-gray-600">Specifications</label>
+      <div id="manageSpecGroups" class="space-y-3 mt-2"></div>
+      <button type="button" id="manageAddSpecGroupBtn" class="mt-1 text-sm text-indigo-600 underline">+ Add Specifications Group</button>
+    </div>
+
     <!-- Size Chart -->
     <div>
       <label class="text-sm text-gray-600">Size Chart</label>
@@ -2391,6 +2470,38 @@ window.openManageProduct = function(product) {
   if (product.strikeThroughPrice) {
     document.getElementById("strikeThroughContainer").classList.remove("hidden");
     document.getElementById("strikeThroughPrice").value = product.strikeThroughPrice;
+  }
+
+  // --- Init specs in Manage modal ---
+  const manageContainer = document.getElementById('manageSpecGroups');
+  const manageAddBtn = document.getElementById('manageAddSpecGroupBtn');
+  if (manageContainer && manageAddBtn) {
+    function addManageGroup(title = '', entries = []){
+      const wrap = document.createElement('div');
+      wrap.className = 'spec-group border rounded p-3';
+      const valuesText = entries.map(e => e.key ? `${e.key}: ${e.value || ''}` : e.value || '').join('\n');
+      wrap.innerHTML = `
+        <div class="flex items-center gap-2">
+          <input type="text" class="spec-title border px-3 py-2 rounded flex-1" placeholder="Group title" value="${title ? String(title).replace(/"/g,'&quot;') : ''}"/>
+          <button type="button" class="text-red-600 text-sm remove-spec-group">Remove</button>
+        </div>
+        <textarea class="spec-values w-full border px-3 py-2 rounded text-sm mt-2" rows="6" placeholder="Key: Value per line">${valuesText}</textarea>
+      `;
+      wrap.querySelector('.remove-spec-group').onclick = () => wrap.remove();
+      manageContainer.appendChild(wrap);
+    }
+    manageAddBtn.onclick = () => addManageGroup();
+
+    // Prefill from product.specifications if present
+    const spec = product.specifications;
+    if (Array.isArray(spec)) {
+      spec.forEach(g => addManageGroup(g.title || 'Specifications', g.entries || []));
+    } else if (spec && typeof spec === 'object') {
+      const entries = Object.entries(spec).map(([k,v])=>({key:k, value:String(v)}));
+      addManageGroup('Specifications', entries);
+    } else {
+      addManageGroup('Key Features', []);
+    }
   }
 
   document.getElementById("manageProductModal").classList.remove("hidden");
@@ -2509,6 +2620,23 @@ async function saveProductChanges() {
   }
 
   updated.gallery.push(...newGalleryURLs);
+
+  // Serialize specifications from manage UI
+  (function(){
+    const specWrap = document.getElementById('manageSpecGroups');
+    if (!specWrap) return;
+    const groups = Array.from(specWrap.querySelectorAll('.spec-group')).map(el => {
+      const title = el.querySelector('.spec-title')?.value.trim();
+      const lines = (el.querySelector('.spec-values')?.value || '').trim().split(/\r?\n/).filter(Boolean);
+      const entries = lines.map(line => {
+        const idx = line.indexOf(':');
+        if (idx > -1) return { key: line.slice(0, idx).trim(), value: line.slice(idx + 1).trim() };
+        return { key: line.trim(), value: '' };
+      });
+      return { title: title || 'Specifications', entries };
+    }).filter(g => g.entries && g.entries.length);
+    if (groups.length) updated.specifications = groups; else delete updated.specifications;
+  })();
 
   const payload = {
     collection: "products",
@@ -3057,8 +3185,6 @@ window.deleteCoupon = async function(couponId) {
 };
 
 
-
-
 // Inventory Management Functions
 async function loadInventory() {
   try {
@@ -3443,7 +3569,7 @@ const GATEWAY_FIELDS = {
       label: "Paystack Public Key (Iyonicorp)",
       key: "paystackPublicKey",
       readonly: true,
-      value: "pk_test_232531a5c927ef2cc67ed1b85af3f26e3b8ed2f2"
+      value: "pk_live_7ab8e015626516d7d00210b2e7fe169805c226b8"
     },
     {
       label: "Paystack Secret Key (Iyonicorp)",
@@ -4378,7 +4504,7 @@ function addWeeksToSubscription(email, weeklyPrice, plan, username) {
   }
 
   const handler = PaystackPop.setup({
-    key: 'pk_test_232531a5c927ef2cc67ed1b85af3f26e3b8ed2f2',
+    key: 'pk_live_7ab8e015626516d7d00210b2e7fe169805c226b8',
     email,
     amount: Math.round(totalAmount * 100),
     currency: 'USD',
@@ -4433,7 +4559,7 @@ function addWeeksToSubscription(email, weeklyPrice, plan, username) {
 
 function startPaystack(email, amount, plan, username) {
   const handler = PaystackPop.setup({
-    key: 'pk_test_232531a5c927ef2cc67ed1b85af3f26e3b8ed2f2',
+    key: 'pk_live_7ab8e015626516d7d00210b2e7fe169805c226b8',
     email,
     amount: Math.round(amount * 100),
     currency: 'USD',

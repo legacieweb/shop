@@ -4,6 +4,8 @@ const productSchema = new mongoose.Schema({
   id: { type: String, unique: true, required: true },
   name: { type: String, required: true },
   description: { type: String },
+  // New: rich specifications field. Flexible to accept string, array, or key-value map
+  specifications: { type: mongoose.Schema.Types.Mixed, default: null },
   price: { type: Number, required: true },
   seller: { type: String, required: true },
   image: { type: String },

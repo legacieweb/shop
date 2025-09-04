@@ -25,6 +25,8 @@ const ReviewRequest = require("./models/ReviewRequest");
 const Coupon = require("./models/Coupon");
 const SubscriptionPlan = require("./models/SubscriptionPlan");
 const Image = require("./models/Image");
+const Promotion = require("./models/Promotion");
+const Payment = require("./models/Payment");
 
 // Import email service
 const emailService = require("./email");
@@ -142,6 +144,93 @@ db.once('open', () => {
 // ✅ API ROUTES (Must come BEFORE static catch-all)
 // -------------------------------
 
+// Promotions API
+// Create promotion (campaign or ad)
+app.post('/promotions', async (req, res) => {
+  try {
+    const payload = req.body || {};
+    if (!payload.type || !payload.seller) {
+      return res.status(400).json({ success: false, message: 'Missing required fields: type, seller' });
+    }
+    const promo = await Promotion.create(payload);
+    return res.status(201).json({ success: true, data: promo });
+  } catch (e) {
+    console.error('Create promotion error:', e);
+    return res.status(500).json({ success: false, message: 'Server error creating promotion' });
+  }
+});
+
+// List promotions (supports query by status/seller/productId/type)
+app.get('/promotions', async (req, res) => {
+  try {
+    const q = { ...req.query };
+    // normalize numerics
+    ['budget','reach','impressions','clicks','conversions','spend'].forEach(k=>{ if (q[k]!==undefined) q[k] = Number(q[k]); });
+    const items = await Promotion.find(q).sort({ createdAt: -1 });
+    return res.json({ success: true, data: items });
+  } catch (e) {
+    console.error('List promotions error:', e);
+    return res.status(500).json({ success: false, message: 'Server error listing promotions' });
+  }
+});
+
+// Update promotion (status or metrics)
+app.patch('/promotions/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = { ...req.body, updatedAt: new Date() };
+    const item = await Promotion.findByIdAndUpdate(id, updates, { new: true });
+    if (!item) return res.status(404).json({ success: false, message: 'Promotion not found' });
+    return res.json({ success: true, data: item });
+  } catch (e) {
+    console.error('Update promotion error:', e);
+    return res.status(500).json({ success: false, message: 'Server error updating promotion' });
+  }
+});
+
+// Payments API (Paystack)
+// Create payment record (pending)
+app.post('/payments', async (req, res) => {
+  try {
+    const { seller, amount, currency = 'NGN', reference, gateway = 'paystack', meta = {} } = req.body || {};
+    if (!seller || !amount || !reference) return res.status(400).json({ success:false, message:'Missing fields: seller, amount, reference' });
+    const exists = await Payment.findOne({ reference });
+    if (exists) return res.status(409).json({ success:false, message:'Reference already exists' });
+    const pay = await Payment.create({ seller, amount, currency, reference, gateway, meta, status:'pending' });
+    return res.status(201).json({ success:true, data: pay });
+  } catch (e) {
+    console.error('Create payment error:', e);
+    return res.status(500).json({ success:false, message:'Server error creating payment' });
+  }
+});
+
+// Update payment (e.g., after Paystack callback/verification)
+app.patch('/payments/:reference', async (req, res) => {
+  try {
+    const { reference } = req.params;
+    const updates = { ...req.body, updatedAt: new Date() };
+    const pay = await Payment.findOneAndUpdate({ reference }, updates, { new: true });
+    if (!pay) return res.status(404).json({ success:false, message:'Payment not found' });
+    return res.json({ success:true, data: pay });
+  } catch (e) {
+    console.error('Update payment error:', e);
+    return res.status(500).json({ success:false, message:'Server error updating payment' });
+  }
+});
+
+// List payments
+app.get('/payments', async (req, res) => {
+  try {
+    const q = { ...req.query };
+    if (q.amount !== undefined) q.amount = Number(q.amount);
+    const items = await Payment.find(q).sort({ createdAt: -1 });
+    return res.json({ success:true, data: items });
+  } catch (e) {
+    console.error('List payments error:', e);
+    return res.status(500).json({ success:false, message:'Server error listing payments' });
+  }
+});
+
 // 🔹 INSERT: Add to collection
 app.post("/insert", async (req, res) => {
   try {
@@ -255,6 +344,18 @@ app.post("/insert", async (req, res) => {
             if (x.startsWith('/uploads/') || x.startsWith('uploads/')) return x.startsWith('/') ? x : '/' + x;
             return x;
           });
+        }
+        // Normalize specifications input from UI
+        if (data.specifications) {
+          try {
+            // If string that looks like JSON, parse
+            if (typeof data.specifications === 'string') {
+              const trimmed = data.specifications.trim();
+              if ((trimmed.startsWith('{') && trimmed.endsWith('}')) || (trimmed.startsWith('[') && trimmed.endsWith(']'))) {
+                data.specifications = JSON.parse(trimmed);
+              }
+            }
+          } catch (_) { /* keep original */ }
         }
         result = await Product.create(data);
         break;
@@ -435,6 +536,19 @@ app.post("/update", async (req, res) => {
                 : x
               : x);
           }
+          // Normalize specifications if provided
+          if (s.specifications !== undefined) {
+            try {
+              if (typeof s.specifications === 'string') {
+                const t = s.specifications.trim();
+                if ((t.startsWith('{') && t.endsWith('}')) || (t.startsWith('[') && t.endsWith(']'))) {
+                  s.specifications = JSON.parse(t);
+                } else if (!t) {
+                  s.specifications = null;
+                }
+              }
+            } catch (_) { /* keep as-is */ }
+          }
         }
         result = await Product.updateMany(query, updates);
         break;
@@ -595,7 +709,7 @@ app.post("/upload-files", memoryUpload.fields([
 const allowedLayouts = [
   "classic", "modern", "cyber", "vintage", "minimalist",
   "nature", "elegant", "luxury", "artistic", "bold",
-  "professional", "freestyle", "minimalistdark"
+  "professional", "freestyle", "futuristic"
 ];
 
 // ✅ Serve layout HTML files securely
@@ -3882,6 +3996,7 @@ app.get("/api/received-reviews", async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
+
 
 // Get order for review (single order by orderId)
 app.get("/api/order-for-review", async (req, res) => {

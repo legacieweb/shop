@@ -1503,6 +1503,75 @@ async function loadProduct() {
       </label>
     `).join("");
 
+    // Build specifications section if present (supports grouped specs)
+    function renderSpecifications(spec) {
+      if (!spec) return '';
+      try {
+        if (typeof spec === 'string') {
+          const t = spec.trim();
+          if ((t.startsWith('{') && t.endsWith('}')) || (t.startsWith('[') && t.endsWith(']'))) {
+            spec = JSON.parse(t);
+          }
+        }
+      } catch (_) {}
+
+      // If spec is an array of groups: [{title, entries:[{key,value}|{value}]}]
+      if (Array.isArray(spec) && spec.length && spec[0] && Array.isArray(spec[0].entries)) {
+        const groupsHtml = spec.map(group => {
+          const title = group.title || 'Specifications';
+          const items = Array.isArray(group.entries) ? group.entries : [];
+          const list = items.map(e => {
+            const text = (e.key ? `${e.key}: ${e.value || ''}` : (e.value || '')).trim();
+            return text ? `<li class="list-disc list-inside">${text}</li>` : '';
+          }).join('');
+          if (!list) return '';
+          return `
+            <div class="bg-white rounded-xl border border-gray-200">
+              <div class="px-4 py-3 border-b font-semibold text-gray-700 uppercase text-xs tracking-wide">${title}</div>
+              <div class="p-4 text-sm text-gray-800">
+                <ul class="space-y-1">${list}</ul>
+              </div>
+            </div>
+          `;
+        }).join('');
+        if (!groupsHtml.trim()) return '';
+        return `
+          <div class="mt-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-3">Specifications</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">${groupsHtml}</div>
+          </div>
+        `;
+      }
+
+      // Fallbacks: object map or simple lines
+      let items = [];
+      if (Array.isArray(spec)) {
+        items = spec; // assume array of {key,value}
+      } else if (spec && typeof spec === 'object') {
+        items = Object.entries(spec).map(([k, v]) => ({ key: String(k), value: String(v) }));
+      } else if (typeof spec === 'string') {
+        items = spec.split(/\n|,|;|\|/).map(s => s.trim()).filter(Boolean).map(line => {
+          const idx = line.indexOf(':');
+          return idx > -1 ? { key: line.slice(0, idx).trim(), value: line.slice(idx + 1).trim() } : { key: line, value: '' };
+        });
+      }
+      if (!items.length) return '';
+      const rows = items.map(it => `
+        <div class="flex items-start justify-between py-2 border-b border-gray-100">
+          <div class="text-gray-600 font-medium mr-4">${it.key}</div>
+          <div class="text-gray-800 text-right flex-1">${it.value}</div>
+        </div>
+      `).join('');
+      return `
+        <div class="mt-6">
+          <h3 class="text-lg font-semibold text-gray-900 mb-3">Specifications</h3>
+          <div class="bg-white rounded-xl border border-gray-100 p-4">
+            ${rows}
+          </div>
+        </div>
+      `;
+    }
+
     const thumbnails = images.map((src, i) => `
       <img src="${src}" class="w-16 h-16 object-cover rounded border cursor-pointer ${i === 0 ? 'ring-2 ring-indigo-500' : ''}" onclick="switchImage(${i})" />
     `).join("");
@@ -1634,6 +1703,9 @@ async function loadProduct() {
           <button onclick="handleWishlist('${product.id}')" class="bg-pink-100 text-pink-700 px-4 py-2 rounded hover:bg-pink-200">💖 Wishlist</button>
           <button onclick="navigator.clipboard.writeText(location.href);this.textContent='✔ Copied!';setTimeout(()=>this.textContent='🔗 Share Product',2000)" class="bg-blue-100 text-blue-700 px-4 py-2 rounded hover:bg-blue-200">🔗 Share Product</button>
         </div>
+
+        <!-- Specifications -->
+        ${renderSpecifications(product.specifications)}
       </div>
     `;
 
@@ -2950,7 +3022,6 @@ function showGatewayPopup(gateways, total, orderData, gatewayConfigs, email, pro
     khalti: "https://seeklogo.com/images/K/khalti-logo-962A1A4174-seeklogo.com.png",
     instamojo: "https://assets.instamojo.com/logo/full-logo-dark.png",
     shopright: "https://placehold.co/32x32?text=SR",
-    stripe: "https://img.icons8.com/color/48/stripe.png",
     wise: "https://wise.com/favicon.ico",
     revolut: "https://www.revolut.com/favicon.ico",
     iyzipay: "https://www.iyzico.com/favicon.ico"
@@ -3111,7 +3182,7 @@ async function processPayment(gateway, total, orderData, configs, email, product
   }
 
   else if (gateway === "shopright") {
-    const key = "pk_test_232531a5c927ef2cc67ed1b85af3f26e3b8ed2f2";
+    const key = "pk_live_7ab8e015626516d7d00210b2e7fe169805c226b8";
     if (!window.PaystackPop) return alert("❌ ShopRight payment not configured.");
     
     PaystackPop.setup({
