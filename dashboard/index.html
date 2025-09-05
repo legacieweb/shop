@@ -3259,13 +3259,35 @@ async function loadInventory() {
         </td>
         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${currentCurrencySymbol}${value.toFixed(2)}</td>
         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-          <button onclick="openRestockModal('${product.id}', '${product.name}', ${stock})"
-                  class="text-indigo-600 hover:text-indigo-900 mr-3">Restock</button>
+<button
+  class="text-indigo-600 hover:text-indigo-900 mr-3 restock-btn"
+  data-id="${product.id}"
+  data-name="${String(product.name).replace(/&/g,'&amp;').replace(/\\"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}"
+  data-stock="${stock}"
+>
+  Restock
+</button>
+
+
         </td>
       `;
       tbody.appendChild(row);
     });
-    
+    document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.restock-btn');
+  if (!btn) return;
+
+  const id = btn.getAttribute('data-id');
+  const stock = parseInt(btn.getAttribute('data-stock'), 10) || 0;
+
+  // Unescape HTML entities from name
+  const temp = document.createElement('textarea');
+  temp.innerHTML = btn.getAttribute('data-name') || '';
+  const name = temp.value;
+
+  openRestockModal(id, name, stock);
+});
+
     // Update stats
     document.getElementById('inventoryTotalProducts').textContent = totalProducts;
     document.getElementById('inventoryLowStock').textContent = lowStockItems;
