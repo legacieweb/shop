@@ -27,6 +27,7 @@ const SubscriptionPlan = require("./models/SubscriptionPlan");
 const Image = require("./models/Image");
 const Promotion = require("./models/Promotion");
 const Payment = require("./models/Payment");
+const Chatbot = require("./models/Chatbot");
 
 // Import email service
 const emailService = require("./email");
@@ -228,6 +229,80 @@ app.get('/payments', async (req, res) => {
   } catch (e) {
     console.error('List payments error:', e);
     return res.status(500).json({ success:false, message:'Server error listing payments' });
+  }
+});
+
+// Chatbot API
+// Get chatbot config by seller
+app.get('/chatbots/:seller', async (req, res) => {
+  try {
+    const { seller } = req.params;
+    const doc = await Chatbot.findOne({ seller });
+    if (!doc) return res.status(404).json({ success: false, message: 'Chatbot not found' });
+    return res.json({ success: true, data: doc });
+  } catch (e) {
+    console.error('Get chatbot error:', e);
+    return res.status(500).json({ success: false, message: 'Server error fetching chatbot' });
+  }
+});
+
+// Create or update chatbot config
+app.put('/chatbots/:seller', async (req, res) => {
+  try {
+    const { seller } = req.params;
+    const payload = req.body || {};
+    const update = {
+      botName: payload.botName,
+      botTone: payload.botTone,
+      welcomeMessage: payload.welcomeMessage,
+      knowledgeBase: payload.knowledgeBase,
+      widget: payload.widget,
+    };
+    const doc = await Chatbot.findOneAndUpdate(
+      { seller },
+      { $set: update },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
+    return res.json({ success: true, data: doc });
+  } catch (e) {
+    console.error('Upsert chatbot error:', e);
+    return res.status(500).json({ success: false, message: 'Server error saving chatbot' });
+  }
+});
+
+// Train chatbot via conversation examples
+app.post('/chatbots/:seller/train', async (req, res) => {
+  try {
+    const { seller } = req.params;
+    const { conversation = [] } = req.body || {};
+    const doc = await Chatbot.findOneAndUpdate(
+      { seller },
+      {
+        $set: { 'training.status': 'trained', 'training.lastTrainedAt': new Date() },
+        $push: { 'training.conversation': { $each: conversation } }
+      },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
+    return res.json({ success: true, data: doc });
+  } catch (e) {
+    console.error('Train chatbot error:', e);
+    return res.status(500).json({ success: false, message: 'Server error training chatbot' });
+  }
+});
+
+// Deploy chatbot to shop (enable flag)
+app.post('/chatbots/:seller/deploy', async (req, res) => {
+  try {
+    const { seller } = req.params;
+    const doc = await Chatbot.findOneAndUpdate(
+      { seller },
+      { $set: { enabled: true } },
+      { upsert: true, new: true, setDefaultsOnInsert: true }
+    );
+    return res.json({ success: true, data: doc });
+  } catch (e) {
+    console.error('Deploy chatbot error:', e);
+    return res.status(500).json({ success: false, message: 'Server error deploying chatbot' });
   }
 });
 

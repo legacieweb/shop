@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Promotion Center – ShopRight</title>
+  <title>Promotion Center – Iyonicorp</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
@@ -30,10 +30,10 @@
         <p class="text-sm text-gray-500 mt-1">Grow your store</p>
       </div>
       <nav class="mt-6 space-y-1">
-        <a href="#" data-section="campaigns" class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50">📢 Campaigns</a>
-        <a href="#" data-section="promotions" class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50">🎯 Promotions</a>
-        <a href="#" data-section="performance" class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50">📈 Performance</a>
-        <a href="#" data-section="billing" class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50">💳 Billing</a>
+        <a href="#" data-section="campaigns" class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50">Campaigns</a>
+        <a href="#" data-section="promotions" class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50">Promotions</a>
+        <a href="#" data-section="performance" class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50">Performance</a>
+        <a href="#" data-section="billing" class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50">Billing</a>
         <a href="../dashboard" class="block px-6 py-3 text-indigo-600 hover:bg-indigo-50 font-semibold">← Back to Dashboard</a>
       </nav>
     </aside>
@@ -232,12 +232,19 @@
   <script src="https://js.paystack.co/v1/inline.js"></script>
   <script>
     (function(){
-      // Auth context / seller
-      const user = JSON.parse(localStorage.getItem('user') || '{}');
-      const seller = user?.username || '';
-      const sellerBadge = document.getElementById('sellerBadge');
-      sellerBadge.textContent = seller ? `Signed in as: ${seller}` : 'Please sign in to manage promotions.';
+    // Auth context / seller
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const seller = user?.username || '';
+    const sellerBadge = document.getElementById('sellerBadge');
+    sellerBadge.textContent = seller ? `Signed in as: ${seller}` : 'Please sign in to manage promotions.';
 
+    // 🔗 Ensure Back to Dashboard always carries ?seller=<username> if seller exists
+    const backDashboard = document.getElementById('backDashboard');
+    if (backDashboard) {
+      backDashboard.href = seller 
+        ? `../dashboard?seller=${encodeURIComponent(seller)}`
+        : `../dashboard`;
+    }
       // Seller shop currency (fallback to USD)
       let shopCurrency = 'USD';
       let currencySymbol = '$';

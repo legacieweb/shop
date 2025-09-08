@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Chatbots – Iyonicorp</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style type="text/tailwindcss">
+    .section-card { @apply bg-white rounded-2xl shadow-lg p-6 border border-gray-100; }
+    .pill { @apply inline-block px-3 py-1 rounded-full text-xs font-semibold; }
+    .btn { @apply px-4 py-2 rounded-lg font-semibold transition; }
+    .btn-primary { @apply bg-indigo-600 text-white hover:bg-indigo-700; }
+    .btn-ghost { @apply bg-gray-100 text-gray-700 hover:bg-gray-200; }
+    .btn-danger { @apply bg-red-600 text-white hover:bg-red-700; }
+    .btn-outline { @apply border border-gray-300 bg-white hover:bg-gray-50; }
+    .label { @apply block text-sm font-medium text-gray-700 mb-1; }
+    .input { @apply w-full border border-gray-300 rounded-md px-3 py-2 shadow-sm focus:ring-indigo-500 focus:border-indigo-500; }
+
+    /* Mobile sidebar (drawer) */
+    .drawer { @apply fixed inset-y-0 left-0 w-72 bg-white shadow-xl transform -translate-x-full transition-transform duration-300 z-40; }
+    .drawer-open { @apply translate-x-0; }
+    .backdrop { @apply fixed inset-0 bg-black/40 z-30 hidden; }
+    .backdrop-show { @apply block; }
+
+    .sidebar-btn { @apply w-full text-left px-4 py-2 rounded-lg font-semibold transition; }
+    .sidebar-btn-active { @apply bg-indigo-600 text-white; }
+    .sidebar-btn-inactive { @apply bg-white text-gray-700 hover:bg-gray-50 border; }
+
+    /* Training area flair */
+    .training-wrap { @apply relative overflow-hidden; }
+    .training-wrap::before { content: ""; @apply absolute inset-0 bg-gradient-to-br from-indigo-50 via-white to-emerald-50; opacity: 0.7; }
+    .training-inner { @apply relative; }
+
+    .glass { @apply bg-white/70 backdrop-blur border border-white/60 shadow-lg; }
+
+    /* Widget preview */
+    .widget-sim { @apply relative h-[560px] rounded-xl border bg-gradient-to-br from-slate-50 to-white overflow-hidden; }
+    .widget-bubble { @apply rounded-full shadow-lg text-white fixed; width:56px; height:56px; display:flex; align-items:center; justify-content:center; font-size:22px; }
+    .widget-panel { @apply shadow-2xl rounded-xl overflow-hidden border bg-white fixed flex flex-col; width: 360px; height: 500px; }
+    .widget-header { @apply flex items-center justify-between px-3 py-2 font-semibold text-white; }
+    .widget-body { @apply flex-1 bg-gray-50 p-3 overflow-y-auto; }
+    .widget-input { @apply flex gap-2 p-3 border-t bg-white; }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-indigo-50 min-h-screen">
+  <div class="max-w-7xl mx-auto px-4 py-6">
+    <div class="flex items-center justify-between gap-4 mb-6">
+      <div class="flex items-center gap-3">
+        <button id="hamburgerBtn" class="btn btn-ghost lg:hidden" aria-label="Open menu">☰</button>
+        <div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-indigo-700">🤖 Chatbots</h1>
+          <p class="text-gray-600">Train, configure, and manage your store assistant.</p>
+        </div>
+      </div>
+      <a id="backToDashboard" class="btn btn-ghost">← Back to Dashboard</a>
+    </div>
+
+    <!-- Mobile backdrop -->
+    <div id="sidebarBackdrop" class="backdrop lg:hidden"></div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <!-- Sidebar (drawer on mobile, static on desktop) -->
+      <aside class="lg:col-span-1">
+        <div id="sidebarDrawer" class="drawer lg:static lg:translate-x-0 lg:shadow-none lg:bg-transparent lg:w-auto lg:z-auto lg:transform-none">
+          <div class="p-4 space-y-3">
+            <button id="tabTraining" class="sidebar-btn sidebar-btn-active">1) Bot Training</button>
+            <button id="tabConfig" class="sidebar-btn sidebar-btn-inactive">2) Bot Configuration</button>
+            <button id="tabSettings" class="sidebar-btn sidebar-btn-inactive">3) Bot Settings</button>
+
+            <div class="section-card">
+              <h3 class="font-semibold text-gray-800 mb-2">Status</h3>
+              <div class="text-sm text-gray-600">
+                <div>Deployment: <span id="statusDeployment" class="pill bg-gray-100 text-gray-700">Unknown</span></div>
+                <div>Plan: <span id="planBadge" class="pill bg-indigo-100 text-indigo-700">All plans</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Main area -->
+      <main class="lg:col-span-3 space-y-6">
+        <!-- Training Panel (visually separated) -->
+        <section id="panelTraining" class="training-wrap rounded-3xl p-2">
+          <div class="training-inner space-y-6">
+            <div class="section-card glass">
+              <div class="flex items-center justify-between mb-3">
+                <div>
+                  <h2 class="text-xl font-bold text-indigo-700">Bot Training</h2>
+                  <span class="text-xs text-gray-500">Build smarter replies, live product answers, and curated showcases.</span>
+                </div>
+                <div class="flex items-center gap-2 text-xs">
+                  <span class="pill bg-indigo-100 text-indigo-700">Live</span>
+                  <span class="pill bg-emerald-100 text-emerald-700">AI Ready</span>
+                </div>
+              </div>
+
+              <!-- Bot Capabilities -->
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <label class="flex items-center gap-2"><input id="permProducts" type="checkbox" class="h-4 w-4" /><span class="text-sm text-gray-700">Allow bot to read store products</span></label>
+                <label class="flex items-center gap-2"><input id="permShipping" type="checkbox" class="h-4 w-4" /><span class="text-sm text-gray-700">Shipping fees</span></label>
+                <label class="flex items-center gap-2"><input id="permDelivery" type="checkbox" class="h-4 w-4" /><span class="text-sm text-gray-700">Delivery locations</span></label>
+                <label class="flex items-center gap-2"><input id="permPayments" type="checkbox" class="h-4 w-4" /><span class="text-sm text-gray-700">Payment gateways</span></label>
+              </div>
+
+              <!-- Two Columns: Keyword rules and Product rules -->
+              <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                <!-- Keyword Rules -->
+                <div class="space-y-3">
+                  <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-semibold text-gray-800">Keyword Rules</h3>
+                    <button id="addKeywordRuleBtn" class="btn btn-outline">+ Add Keyword Rule</button>
+                  </div>
+                  <p class="text-sm text-gray-500">Match keywords or regex and set quick replies.</p>
+                  <div id="keywordRules" class="space-y-3"></div>
+                </div>
+
+                <!-- Removed Product Rules/Curated UI: Using keyword rules + capability toggles only -->
+              </div>
+
+              <!-- Curated Collections Removed -->
+
+              <div class="flex flex-wrap gap-3 mt-6">
+                <button id="saveTraining" class="btn btn-primary">Save Training</button>
+                <span id="trainingMsg" class="text-sm text-gray-500"></span>
+              </div>
+            </div>
+
+            <!-- Live Preview (widget simulation) -->
+            <div class="section-card glass">
+              <h2 class="text-xl font-bold text-indigo-700 mb-3">Live Preview</h2>
+              <div class="widget-sim" id="widgetSim"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Configuration Panel -->
+        <section id="panelConfig" class="space-y-6 hidden">
+          <div class="section-card">
+            <h2 class="text-xl font-bold text-indigo-700 mb-3">Widget Configuration</h2>
+            <p class="text-sm text-gray-600 mb-4">Choose a widget style, colors, and placement.</p>
+
+            <!-- Presets -->
+            <div>
+              <label class="label">Widget Preset</label>
+              <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3" id="presetGrid"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <div>
+                <label class="label">Theme</label>
+                <select id="widgetTheme" class="input">
+                  <option value="indigo">Indigo</option>
+                  <option value="emerald">Emerald</option>
+                  <option value="rose">Rose</option>
+                  <option value="slate">Slate</option>
+                </select>
+              </div>
+              <div>
+                <label class="label">Accent Color</label>
+                <input id="accentColor" class="input" type="color" value="#4f46e5" />
+              </div>
+              <div>
+                <label class="label">Position</label>
+                <select id="position" class="input">
+                  <option value="right">Bottom Right</option>
+                  <option value="left">Bottom Left</option>
+                </select>
+              </div>
+              <div>
+                <label class="label">Initial State</label>
+                <select id="initialState" class="input">
+                  <option value="closed">Closed</option>
+                  <option value="open">Open</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="flex gap-3 mt-4">
+              <button id="saveWidget" class="btn btn-primary">Save Configuration</button>
+              <span id="configMsg" class="text-sm text-gray-500"></span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Settings Panel -->
+        <section id="panelSettings" class="space-y-6 hidden">
+          <div class="section-card">
+            <h2 class="text-xl font-bold text-indigo-700 mb-4">Bot Settings</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label class="label">Bot Name</label>
+                <input id="botName" class="input" placeholder="e.g. Iyonicorp Helper" />
+              </div>
+              <div>
+                <label class="label">Primary Tone</label>
+                <select id="botTone" class="input">
+                  <option value="friendly">Friendly</option>
+                  <option value="professional">Professional</option>
+                  <option value="playful">Playful</option>
+                  <option value="concise">Concise</option>
+                </select>
+              </div>
+              <div class="md:col-span-2">
+                <label class="label">Welcome Message</label>
+                <input id="welcomeMessage" class="input" placeholder="e.g. Hi! I can help with products, orders, and policies." />
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-3 mt-4">
+              <button id="saveSettings" class="btn btn-primary">Save Settings</button>
+              <button id="deployBot" class="btn btn-primary">Deploy</button>
+              <button id="undeployBot" class="btn btn-danger">Undeploy</button>
+              <span id="settingsMsg" class="text-sm text-gray-500"></span>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <script type="module">
+    const API = "http://localhost:3000";
+    const params = new URLSearchParams(window.location.search);
+    const seller = params.get('seller') || (JSON.parse(localStorage.getItem('user')||"{}").username || '');
+
+    // Back link
+    const back = document.getElementById('backToDashboard');
+    if (seller) back.href = `./dashboard?seller=${encodeURIComponent(seller)}`; else back.href = './dashboard';
+
+    // Drawer logic
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const sidebarDrawer = document.getElementById('sidebarDrawer');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+    function openSidebar(){ sidebarDrawer.classList.add('drawer-open'); sidebarBackdrop.classList.add('backdrop-show'); }
+    function closeSidebar(){ sidebarDrawer.classList.remove('drawer-open'); sidebarBackdrop.classList.remove('backdrop-show'); }
+    if (hamburgerBtn) hamburgerBtn.addEventListener('click', openSidebar);
+    if (sidebarBackdrop) sidebarBackdrop.addEventListener('click', closeSidebar);
+
+    // Tabs
+    const tabTraining = document.getElementById('tabTraining');
+    const tabConfig = document.getElementById('tabConfig');
+    const tabSettings = document.getElementById('tabSettings');
+    const panelTraining = document.getElementById('panelTraining');
+    const panelConfig = document.getElementById('panelConfig');
+    const panelSettings = document.getElementById('panelSettings');
+
+    function activate(tab){
+      const map = { tabTraining: panelTraining, tabConfig: panelConfig, tabSettings: panelSettings };
+      [tabTraining, tabConfig, tabSettings].forEach(btn => {
+        const active = (btn === tab);
+        btn.classList.toggle('sidebar-btn-active', active);
+        btn.classList.toggle('sidebar-btn-inactive', !active);
+        map[btn.id].classList.toggle('hidden', !active);
+      });
+      if (window.innerWidth < 1024) closeSidebar();
+    }
+
+    tabTraining.addEventListener('click', ()=>activate(tabTraining));
+    tabConfig.addEventListener('click', ()=>activate(tabConfig));
+    tabSettings.addEventListener('click', ()=>activate(tabSettings));
+
+    // Storage helpers
+    const KEY = (s) => `chatbot_config_${s || 'anonymous'}`;
+    function defaultConfig() {
+      return {
+        botName: 'Shop Assistant',
+        botTone: 'friendly',
+        welcomeMessage: 'Hi! How can I help you today?',
+        training: {
+          capabilities: { products: true, shipping: false, delivery: false, payments: false },
+          rules: [
+            { id: crypto.randomUUID(), pattern: 'refund, return', match: 'contains', response: 'You can view our return policy here: /policies/returns' }
+          ]
+        },
+        widget: { preset: 'classic', theme: 'indigo', accentColor: '#4f46e5', position: 'right', initialState: 'closed' },
+        deployed: false
+      };
+    }
+
+    function normalizeConfig(cfg){
+      const base = defaultConfig();
+      const merged = {
+        ...base,
+        ...cfg,
+        training: {
+          capabilities: { ...base.training.capabilities, ...(cfg?.training?.capabilities||{}) },
+          rules: Array.isArray(cfg?.training?.rules) ? cfg.training.rules : (cfg?.training?.rules ? [cfg.training?.rules] : base.training.rules)
+        },
+        widget: { ...base.widget, ...(cfg?.widget||{}) }
+      };
+      merged.training.rules = merged.training.rules.map(r => ({ id: r.id || crypto.randomUUID(), pattern: r.pattern||'', match: r.match||'contains', response: r.response||'' }));
+      return merged;
+    }
+
+    async function loadConfig() {
+      try {
+        if (seller) {
+          const r = await fetch(`${API}/chatbots/${encodeURIComponent(seller)}`);
+          if (r.ok) {
+            const j = await r.json();
+            if (j && j.data) return normalizeConfig(j.data);
+          } else if (r.status === 404) {
+            let localCfg = null;
+            try { localCfg = JSON.parse(localStorage.getItem(KEY(seller)) || 'null'); } catch {}
+            const cfg = normalizeConfig(localCfg || defaultConfig());
+            try {
+              const up = await fetch(`${API}/chatbots/${encodeURIComponent(seller)}`, {
+                method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cfg)
+              });
+              if (up.ok) {
+                const j2 = await up.json();
+                if (j2 && j2.data) return normalizeConfig(j2.data);
+              }
+            } catch(_){}
+            return cfg;
+          }
+        }
+      } catch(_){}
+      try { return normalizeConfig(JSON.parse(localStorage.getItem(KEY(seller)) || 'null') || defaultConfig()); } catch { return defaultConfig(); }
+    }
+
+    async function saveConfig(cfg) {
+      localStorage.setItem(KEY(seller), JSON.stringify(cfg));
+      try {
+        if (seller) {
+          await fetch(`${API}/chatbots/${encodeURIComponent(seller)}`, {
+            method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cfg)
+          });
+        }
+      } catch(_){}
+    }
+
+    // Bind UI elements
+    const statusDeployment = document.getElementById('statusDeployment');
+    const trainingMsg = document.getElementById('trainingMsg');
+    const configMsg = document.getElementById('configMsg');
+    const settingsMsg = document.getElementById('settingsMsg');
+
+    const botName = document.getElementById('botName');
+    const botTone = document.getElementById('botTone');
+    const welcomeMessage = document.getElementById('welcomeMessage');
+
+    // Capability toggles
+    const permProducts = document.getElementById('permProducts');
+    const permShipping = document.getElementById('permShipping');
+    const permDelivery = document.getElementById('permDelivery');
+    const permPayments = document.getElementById('permPayments');
+
+    const widgetTheme = document.getElementById('widgetTheme');
+    const accentColor = document.getElementById('accentColor');
+    const position = document.getElementById('position');
+    const initialState = document.getElementById('initialState');
+
+    const keywordRulesEl = document.getElementById('keywordRules');
+
+    const addKeywordRuleBtn = document.getElementById('addKeywordRuleBtn');
+
+    // Removed product/curated DOM references
+
+    // Preview container
+    const widgetSim = document.getElementById('widgetSim');
+    let chatWindowEl; let chatInputEl; let sendBtnEl; let panelEl; let bubbleEl;
+
+    const presetGrid = document.getElementById('presetGrid');
+
+    // Load config
+    let config = await loadConfig();
+
+    // Populate fields
+    botName.value = config.botName;
+    botTone.value = config.botTone;
+    welcomeMessage.value = config.welcomeMessage;
+
+    // Capability toggles (persisted under training.capabilities)
+    config.training.capabilities = config.training.capabilities || { products: true, shipping: false, delivery: false, payments: false };
+    document.getElementById('permProducts').checked = !!config.training.capabilities.products;
+    document.getElementById('permShipping').checked = !!config.training.capabilities.shipping;
+    document.getElementById('permDelivery').checked = !!config.training.capabilities.delivery;
+    document.getElementById('permPayments').checked = !!config.training.capabilities.payments;
+
+    widgetTheme.value = config.widget.theme;
+    accentColor.value = config.widget.accentColor;
+    position.value = config.widget.position;
+    initialState.value = config.widget.initialState;
+
+    statusDeployment.textContent = config.deployed ? 'Deployed' : 'Not Deployed';
+    statusDeployment.className = `pill ${config.deployed ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`;
+
+    // Presets
+    const PRESETS = [
+      { id: 'classic', name: 'Classic', desc: 'Bubble + panel, rounded', preview: '💬' },
+      { id: 'compact', name: 'Compact', desc: 'Minimal compact widget', preview: '🗨️' },
+      { id: 'modern', name: 'Modern', desc: 'Glassmorphism card style', preview: '✨' },
+    ];
+
+    function renderPresets(){
+      presetGrid.innerHTML = '';
+      PRESETS.forEach(p => {
+        const card = document.createElement('button');
+        card.type = 'button';
+        card.className = `text-left p-4 rounded-xl border transition ${config.widget.preset===p.id ? 'border-indigo-500 ring-2 ring-indigo-200 bg-indigo-50' : 'border-gray-200 bg-white hover:bg-gray-50'}`;
+        card.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="text-2xl">${p.preview}</div>
+            <div>
+              <div class="font-semibold text-gray-800">${p.name}</div>
+              <div class="text-xs text-gray-500">${p.desc}</div>
+            </div>
+          </div>`;
+        card.addEventListener('click', ()=>{ config.widget.preset = p.id; renderPresets(); buildWidgetPreview(); });
+        presetGrid.appendChild(card);
+      });
+    }
+    renderPresets();
+
+    // Utility: action bar
+    function actionBar(removeCb){
+      const bar = document.createElement('div');
+      bar.className = 'flex justify-end gap-2 mt-2';
+      const rm = document.createElement('button');
+      rm.className = 'btn btn-outline';
+      rm.textContent = 'Remove';
+      rm.addEventListener('click', removeCb);
+      bar.appendChild(rm);
+      return bar;
+    }
+
+    // Keyword Rules list
+    function renderKeywordRules(){
+      keywordRulesEl.innerHTML = '';
+      if (!Array.isArray(config.training.rules)) config.training.rules = [];
+      if (config.training.rules.length === 0){
+        const empty = document.createElement('div');
+        empty.className = 'text-sm text-gray-500';
+        empty.textContent = 'No keyword rules yet.';
+        keywordRulesEl.appendChild(empty);
+      }
+      config.training.rules.forEach(rule => {
+        const card = document.createElement('div');
+        card.className = 'p-4 border rounded-xl bg-white/70 backdrop-blur';
+        card.innerHTML = `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="label">Trigger Keywords</label>
+              <input class="input" value="${rule.pattern||''}" />
+            </div>
+            <div>
+              <label class="label">Match</label>
+              <select class="input">
+                <option value="contains" ${rule.match==='contains'?'selected':''}>Contains</option>
+                <option value="exact" ${rule.match==='exact'?'selected':''}>Exact</option>
+                <option value="regex" ${rule.match==='regex'?'selected':''}>Regex</option>
+              </select>
+            </div>
+            <div class="md:col-span-2">
+              <label class="label">Response</label>
+              <textarea class="input h-20">${rule.response||''}</textarea>
+            </div>
+          </div>`;
+        const [patternEl, matchEl, respEl] = card.querySelectorAll('input,select,textarea');
+        patternEl.addEventListener('input', e => rule.pattern = e.target.value);
+        matchEl.addEventListener('change', e => rule.match = e.target.value);
+        respEl.addEventListener('input', e => rule.response = e.target.value);
+        card.appendChild(actionBar(()=>{
+          config.training.rules = config.training.rules.filter(r => r.id !== rule.id);
+          renderKeywordRules();
+        }));
+        keywordRulesEl.appendChild(card);
+      });
+    }
+
+    function newKeywordRule(){
+      return { id: crypto.randomUUID(), pattern: '', match: 'contains', response: '' };
+    }
+
+    addKeywordRuleBtn.addEventListener('click', ()=>{
+      config.training.rules.push(newKeywordRule());
+      renderKeywordRules();
+    });
+
+    // Product Catalog + Editor (single product rules)
+    function normalizeUploadUrl(img){
+      if (!img || typeof img !== 'string') return '';
+      let val = img.trim().replace(/\\\\/g,'/').replace(/\\/g,'/');
+      if (/^(https?:)?\/\//i.test(val) || val.startsWith('data:')) return val;
+      const uploadsIdx2 = val.toLowerCase().lastIndexOf('uploads/');
+      if (uploadsIdx2 !== -1) {
+        const clean = val.slice(uploadsIdx2 + 8);
+        return `${API}/uploads/${clean.replace(/^\/+/, '')}`;
+      }
+      if (/^\/?uploads\//i.test(val)) {
+        const clean = val.replace(/^\/?uploads\//i, '');
+        return `${API}/uploads/${clean}`;
+      }
+      return `${API}/uploads/${val.replace(/^\/+/, '')}`;
+    }
+
+    async function tryFetchJson(url, opts){ try { const r = await fetch(url, opts); if (!r.ok) return null; return await r.json(); } catch { return null; } }
+
+    // Cache seller products to avoid multiple calls
+    let _sellerProducts = null;
+    async function getSellerProducts(force=false){
+      if (!seller) return [];
+      if (!force && Array.isArray(_sellerProducts)) return _sellerProducts;
+      const j = await tryFetchJson(`${API}/find?collection=products&seller=${encodeURIComponent(seller)}`);
+      const items = j && (Array.isArray(j) ? j : j.data);
+      _sellerProducts = Array.isArray(items) ? items : [];
+      return _sellerProducts;
+    }
+
+    // Helpers for bot product search/display
+    async function fetchSellerProducts(force=false){
+      return await getSellerProducts(force);
+    }
+    function tagsFromProduct(p){
+      const arr = [];
+      if (Array.isArray(p?.tags)) arr.push(...p.tags.map(t=>String(t).toLowerCase()));
+      if (p?.category) arr.push(String(p.category).toLowerCase());
+      const name = (p?.title || p?.name || '').toString().toLowerCase();
+      name.split(/[^a-z0-9]+/i).forEach(w=>{ if (w && w.length>2) arr.push(w); });
+      return Array.from(new Set(arr.filter(Boolean)));
+    }
+    function findCheapestProduct(list){
+      return (list||[]).reduce((min,p)=> (min==null || (p?.price ?? Infinity) < (min?.price ?? Infinity)) ? p : min, null);
+    }
+    function productCard(p){
+      const title = p.title || p.name || 'Product';
+      const price = (p.price!=null) ? p.price : (p.pricing?.price);
+      let img = p.image || (Array.isArray(p.gallery) ? p.gallery[0] : '');
+      img = normalizeUploadUrl(img);
+      return `
+        <div class="p-3 rounded-xl border bg-white">
+          ${img?`<img src="${img}" class="w-full h-28 object-cover rounded-lg mb-2" />`:''}
+          <div class="font-medium text-gray-800 truncate">${title}</div>
+          ${price!=null?`<div class="text-xs text-gray-500">$${price}</div>`:''}
+        </div>`;
+    }
+
+    async function catalogSearchProducts(query){
+      const limit = 12;
+      const items = await getSellerProducts(false);
+      const q = (query||'').trim().toLowerCase();
+      if (!q) return items.slice(0, limit);
+      const filtered = items.filter(p => {
+        const name = (p.title || p.name || '').toString().toLowerCase();
+        const category = (p.category || '').toString().toLowerCase();
+        const tags = Array.isArray(p.tags) ? p.tags.join(' ').toLowerCase() : '';
+        return name.includes(q) || category.includes(q) || tags.includes(q);
+      });
+      return filtered.slice(0, limit);
+    }
+
+    function productCardMini(p){
+      const title = p.title || p.name || 'Product';
+      const price = (p.price!=null) ? p.price : (p.pricing?.price);
+      let img = p.image || (Array.isArray(p.gallery) ? p.gallery[0] : '');
+      img = normalizeUploadUrl(img);
+      return `
+        <div class="group p-3 rounded-xl border bg-white hover:shadow transition">
+          ${img?`<img src="${img}" class="w-full h-28 object-cover rounded-lg mb-2" />`:''}
+          <div class="font-medium text-gray-800 truncate">${title}</div>
+          ${price!=null?`<div class="text-xs text-gray-500">$${price}</div>`:''}
+          <div class="mt-2 text-xs text-indigo-600 opacity-0 group-hover:opacity-100 transition">Add rule →</div>
+        </div>`;
+    }
+
+    let editorProduct = null;
+
+    function renderProductCatalog(items){
+      productCatalog.innerHTML = '';
+      productCatalogEmpty.classList.toggle('hidden', items && items.length);
+      (items||[]).forEach(p => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'text-left';
+        btn.innerHTML = productCardMini(p);
+        btn.addEventListener('click', ()=>{
+          const title = p.title || p.name || 'Product';
+          const price = (p.price!=null) ? p.price : (p.pricing?.price);
+          const img = normalizeUploadUrl(p.image || (Array.isArray(p.gallery) ? p.gallery[0] : ''));
+          editorProduct = { id: p._id || p.id || '', title, price, image: img };
+          editorProdImg.src = img;
+          editorProdTitle.textContent = title;
+          editorProdPrice.textContent = price!=null?`$${price}`:'';
+          editorPrPattern.value = '';
+          editorPrMatch.value = 'contains';
+          editorPrResponse.value = '';
+          productRuleEditor.classList.remove('hidden');
+          productRuleEditor.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+        productCatalog.appendChild(btn);
+      });
+    }
+
+    async function loadCatalog(initial=false){
+      const q = productSearch.value.trim();
+      const items = await catalogSearchProducts(q);
+      renderProductCatalog(items);
+      if (initial && items && items.length) {
+        const p = items[0];
+        const title = p.title || p.name || 'Product';
+        const price = (p.price!=null) ? p.price : (p.pricing?.price);
+        const img = normalizeUploadUrl(p.image || (Array.isArray(p.gallery) ? p.gallery[0] : ''));
+        editorProduct = { id: p._id || p.id || '', title, price, image: img };
+        editorProdImg.src = img;
+        editorProdTitle.textContent = title;
+        editorProdPrice.textContent = price!=null?`$${price}`:'';
+        productRuleEditor.classList.remove('hidden');
+      }
+    }
+
+    let searchDebounceA;
+    // Catalog UI removed; guard old listeners to avoid errors
+    if (typeof productSearch !== 'undefined' && productSearch) {
+      productSearch.addEventListener('input', ()=>{
+        clearTimeout(searchDebounceA);
+        searchDebounceA = setTimeout(()=> loadCatalog(false), 250);
+      });
+    }
+    if (typeof reloadCatalogBtn !== 'undefined' && reloadCatalogBtn) {
+      reloadCatalogBtn.addEventListener('click', ()=> loadCatalog(false));
+    }
+    if (typeof focusProductSearchBtn !== 'undefined' && focusProductSearchBtn) {
+      focusProductSearchBtn.addEventListener('click', ()=> productSearch.focus());
+    }
+
+    if (typeof addProductRuleBtn !== 'undefined' && addProductRuleBtn) {
+      addProductRuleBtn.addEventListener('click', ()=>{
+        if (!editorProduct) return;
+        const pr = {
+          id: crypto.randomUUID(),
+          productId: editorProduct.id,
+          productTitle: editorProduct.title,
+          productImage: editorProduct.image,
+          pattern: editorPrPattern?.value?.trim() || '',
+          match: editorPrMatch?.value || 'contains',
+          responseTemplate: editorPrResponse?.value?.trim() || ''
+        };
+        if (!pr.pattern){ editorPrPattern?.focus?.(); return; }
+        config.training.productRules.push(pr);
+        renderProductRules?.();
+        addProductRuleBtn.textContent = 'Added ✔';
+        setTimeout(()=> addProductRuleBtn.textContent = 'Add Product Rule', 900);
+      });
+    }
+
+    // Existing Product Rules list
+    function renderProductRules(){
+      productRulesEl.innerHTML = '';
+      if (!Array.isArray(config.training.productRules)) config.training.productRules = [];
+      if (config.training.productRules.length === 0){
+        const empty = document.createElement('div');
+        empty.className = 'text-sm text-gray-500';
+        empty.textContent = 'No product rules yet.';
+        productRulesEl.appendChild(empty);
+      }
+      config.training.productRules.forEach(pr => {
+        const card = document.createElement('div');
+        card.className = 'p-4 border rounded-xl bg-white/70 backdrop-blur';
+        card.innerHTML = `
+          <div class="flex items-start gap-3">
+            ${pr.productImage ? `<img src="${pr.productImage}" class="w-12 h-12 rounded object-cover" />` : ''}
+            <div class="min-w-0 flex-1">
+              <div class="font-medium text-gray-800 truncate">${pr.productTitle || 'Product'}</div>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                <div>
+                  <label class="label">Trigger Keywords</label>
+                  <input class="input" value="${pr.pattern||''}" />
+                </div>
+                <div>
+                  <label class="label">Match</label>
+                  <select class="input">
+                    <option value="contains" ${pr.match==='contains'?'selected':''}>Contains</option>
+                    <option value="exact" ${pr.match==='exact'?'selected':''}>Exact</option>
+                    <option value="regex" ${pr.match==='regex'?'selected':''}>Regex</option>
+                  </select>
+                </div>
+                <div class="md:col-span-2">
+                  <label class="label">Response Template</label>
+                  <textarea class="input h-20">${pr.responseTemplate||''}</textarea>
+                  <p class="text-xs text-gray-500 mt-1">Placeholders: {{title}}, {{price}}, {{description}}</p>
+                </div>
+              </div>
+            </div>
+          </div>`;
+        const inputs = card.querySelectorAll('input,select,textarea');
+        inputs[0].addEventListener('input', e => pr.pattern = e.target.value);
+        inputs[1].addEventListener('change', e => pr.match = e.target.value);
+        inputs[2].addEventListener('input', e => pr.responseTemplate = e.target.value);
+        card.appendChild(actionBar(()=>{
+          config.training.productRules = config.training.productRules.filter(r => r.id !== pr.id);
+          renderProductRules();
+        }));
+        productRulesEl.appendChild(card);
+      });
+    }
+
+    // Curated collections
+    const CUR_TYPES = {
+      top: 'Top Sold',
+      trending: 'Trending',
+      cheap: 'Cheap',
+      expensive: 'Expensive',
+      exclusive: 'Exclusive',
+      best: 'Best Reviewed'
+    };
+    let curatedType = 'trending';
+    let curatedSelected = new Map(); // id -> {id,title,image,price}
+
+    function cardSelectable(p){
+      const title = p.title || p.name || 'Product';
+      const price = (p.price!=null) ? p.price : (p.pricing?.price);
+      let img = p.image || (Array.isArray(p.gallery) ? p.gallery[0] : '');
+      img = normalizeUploadUrl(img);
+      const id = p._id || p.id || title+img;
+      const selected = curatedSelected.has(id);
+      return `
+        <div class="relative p-3 rounded-xl border bg-white hover:shadow transition">
+          ${img?`<img src="${img}" class="w-full h-28 object-cover rounded-lg mb-2" />`:''}
+          <div class="font-medium text-gray-800 truncate">${title}</div>
+          ${price!=null?`<div class="text-xs text-gray-500">$${price}</div>`:''}
+          <div class="absolute top-2 right-2">
+            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full text-xs ${selected?'bg-indigo-600 text-white':'bg-gray-200 text-gray-600'}">${selected?'✓':'+'}</span>
+          </div>
+        </div>`;
+    }
+
+    function renderCurated(items){
+      curatedCatalog.innerHTML = '';
+      curatedEmpty.classList.toggle('hidden', items && items.length);
+      (items||[]).forEach(p => {
+        const id = p._id || p.id || (p.title||p.name||'');
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'text-left';
+        btn.innerHTML = cardSelectable(p);
+        btn.addEventListener('click', ()=>{
+          const title = p.title || p.name || 'Product';
+          const price = (p.price!=null) ? p.price : (p.pricing?.price);
+          const image = normalizeUploadUrl(p.image || (Array.isArray(p.gallery)?p.gallery[0]:''));
+          if (curatedSelected.has(id)) curatedSelected.delete(id); else curatedSelected.set(id, { id, title, price, image });
+          curatedCount.textContent = `${curatedSelected.size} selected`;
+          renderCurated(items); // re-render to update checkmarks
+        });
+        curatedCatalog.appendChild(btn);
+      });
+    }
+
+    async function curatedFetch(type, q){
+      const limit = 18;
+      const qs = encodeURIComponent(q||'');
+      let candidates = [];
+      if (type === 'top') {
+        candidates = [
+          `${API}/find?collection=products&sort=-sales&limit=${limit}&search=${qs}`,
+          `${API}/find?collection=products&sort=-orderCount&limit=${limit}&search=${qs}`,
+          `${API}/products?sort=-sales&limit=${limit}`
+        ];
+      } else if (type === 'trending') {
+        candidates = [
+          `${API}/find?collection=products&sort=-views&limit=${limit}&search=${qs}`,
+          `${API}/find?collection=products&sort=-popularity&limit=${limit}&search=${qs}`,
+          `${API}/find?collection=products&sort=-createdAt&limit=${limit}&search=${qs}`
+        ];
+      } else if (type === 'cheap') {
+        candidates = [
+          `${API}/find?collection=products&sort=price&limit=${limit}&search=${qs}`,
+          `${API}/products?sort=price&limit=${limit}`
+        ];
+      } else if (type === 'expensive') {
+        candidates = [
+          `${API}/find?collection=products&sort=-price&limit=${limit}&search=${qs}`,
+          `${API}/products?sort=-price&limit=${limit}`
+        ];
+      } else if (type === 'exclusive') {
+        candidates = [
+          `${API}/find?collection=products&tag=exclusive&limit=${limit}&search=${qs}`,
+          `${API}/find?collection=products&category=exclusive&limit=${limit}&search=${qs}`,
+          `${API}/products/search?q=exclusive&limit=${limit}`
+        ];
+      } else if (type === 'best') {
+        candidates = [
+          `${API}/find?collection=products&sort=-rating&limit=${limit}&search=${qs}`,
+          `${API}/find?collection=products&sort=-reviewsCount&limit=${limit}&search=${qs}`,
+          `${API}/products?sort=-rating&limit=${limit}`
+        ];
+      }
+      // Always add generic fallbacks
+      candidates.push(
+        `${API}/find?collection=products&search=${qs}&limit=${limit}`,
+        `${API}/find?collection=products&q=${qs}&limit=${limit}`,
+        `${API}/products/search?q=${qs}&limit=${limit}`,
+        `${API}/products?limit=${limit}`
+      );
+      for (const url of candidates){
+        const j = await tryFetchJson(url);
+        if (j && (Array.isArray(j) ? j.length : j.data)) return Array.isArray(j) ? j : j.data;
+      }
+      return [];
+    }
+
+    async function loadCurated(){
+      const items = await curatedFetch(curatedType, curatedSearch.value.trim());
+      renderCurated(items);
+    }
+
+    if (typeof curatedButtons !== 'undefined' && curatedButtons && curatedButtons.forEach) {
+      curatedButtons.forEach(btn => btn.addEventListener('click', async ()=>{
+        curatedButtons.forEach(b=> b.classList.remove('btn-primary'));
+        btn.classList.add('btn-primary');
+        curatedType = btn.getAttribute('data-curated');
+        curatedSelected.clear();
+        if (typeof curatedCount !== 'undefined' && curatedCount) curatedCount.textContent = '0 selected';
+        await loadCurated();
+      }));
+    }
+
+    if (typeof curatedReload !== 'undefined' && curatedReload) {
+      curatedReload.addEventListener('click', ()=> loadCurated());
+    }
+    let searchDebounceB;
+    if (typeof curatedSearch !== 'undefined' && curatedSearch) {
+      curatedSearch.addEventListener('input', ()=>{
+        clearTimeout(searchDebounceB);
+        searchDebounceB = setTimeout(()=> loadCurated(), 250);
+      });
+    }
+
+    function renderCuratedRules(){
+      curatedRulesEl.innerHTML = '';
+      if (!Array.isArray(config.training.collectionRules)) config.training.collectionRules = [];
+      if (config.training.collectionRules.length === 0){
+        const empty = document.createElement('div');
+        empty.className = 'text-sm text-gray-500';
+        empty.textContent = 'No collection rules yet.';
+        curatedRulesEl.appendChild(empty);
+      }
+      config.training.collectionRules.forEach(cr => {
+        const card = document.createElement('div');
+        card.className = 'p-4 border rounded-xl bg-white/70 backdrop-blur';
+        card.innerHTML = `
+          <div class="flex items-start gap-3">
+            <div class="min-w-0 flex-1">
+              <div class="font-medium text-gray-800 truncate">${CUR_TYPES[cr.type]||'Collection'} · ${cr.productIds?.length||0} items</div>
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+                <div>
+                  <label class="label">Trigger Keywords</label>
+                  <input class="input" value="${cr.pattern||''}" />
+                </div>
+                <div>
+                  <label class="label">Match</label>
+                  <select class="input">
+                    <option value="contains" ${cr.match==='contains'?'selected':''}>Contains</option>
+                    <option value="exact" ${cr.match==='exact'?'selected':''}>Exact</option>
+                    <option value="regex" ${cr.match==='regex'?'selected':''}>Regex</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="label">Intro</label>
+                  <input class="input" value="${cr.intro||''}" />
+                </div>
+              </div>
+            </div>
+          </div>`;
+        const inputs = card.querySelectorAll('input,select');
+        inputs[0].addEventListener('input', e => cr.pattern = e.target.value);
+        inputs[1].addEventListener('change', e => cr.match = e.target.value);
+        inputs[2].addEventListener('input', e => cr.intro = e.target.value);
+        card.appendChild(actionBar(()=>{
+          config.training.collectionRules = config.training.collectionRules.filter(r => r.id !== cr.id);
+          renderCuratedRules();
+        }));
+        curatedRulesEl.appendChild(card);
+      });
+    }
+
+    if (typeof addCuratedRuleBtn !== 'undefined' && addCuratedRuleBtn) addCuratedRuleBtn.addEventListener('click', ()=>{
+      if (curatedSelected.size === 0) { curatedCount.classList.add('text-red-600'); setTimeout(()=>curatedCount.classList.remove('text-red-600'), 900); return; }
+      const cr = {
+        id: crypto.randomUUID(),
+        type: curatedType,
+        productIds: Array.from(curatedSelected.values()).map(p=>p.id),
+        pattern: curPattern.value.trim(),
+        match: curMatch.value,
+        intro: curIntro.value.trim() || `${CUR_TYPES[curatedType]||'Selected'} products:`
+      };
+      if (!cr.pattern){ curPattern.focus(); return; }
+      config.training.collectionRules.push(cr);
+      curatedSelected.clear();
+      curatedCount.textContent = '0 selected';
+      curPattern.value = '';
+      curIntro.value = '';
+      renderCuratedRules();
+    });
+
+    // Save Training (send to backend)
+    document.getElementById('saveTraining').addEventListener('click', async ()=>{
+      // persist keyword rules and capability toggles
+      config.training.capabilities = {
+        products: document.getElementById('permProducts').checked,
+        shipping: document.getElementById('permShipping').checked,
+        delivery: document.getElementById('permDelivery').checked,
+        payments: document.getElementById('permPayments').checked,
+      };
+
+      await saveConfig(config);
+      try {
+        const payload = {
+          meta: { name: config.botName, tone: config.botTone },
+          capabilities: config.training.capabilities,
+          rules: config.training.rules || []
+        };
+        if (seller) {
+          await fetch(`${API}/chatbots/${encodeURIComponent(seller)}/train`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+          });
+        }
+        trainingMsg.textContent = 'Saved and updated ✔';
+      } catch (_) {
+        trainingMsg.textContent = 'Saved locally (update failed)';
+      }
+      setTimeout(()=>trainingMsg.textContent='',1500);
+    });
+
+    // Save widget config
+    document.getElementById('saveWidget').addEventListener('click', async ()=>{
+      config.widget.theme = widgetTheme.value;
+      config.widget.accentColor = accentColor.value;
+      config.widget.position = position.value;
+      config.widget.initialState = initialState.value;
+      await saveConfig(config);
+      configMsg.textContent = 'Widget configuration saved';
+      setTimeout(()=>configMsg.textContent='',1200);
+      buildWidgetPreview();
+    });
+
+    // Save settings
+    document.getElementById('saveSettings').addEventListener('click', async ()=>{
+      config.botName = botName.value.trim() || 'Shop Assistant';
+      config.botTone = botTone.value;
+      config.welcomeMessage = welcomeMessage.value.trim() || 'Hi! How can I help you today?';
+      await saveConfig(config);
+      settingsMsg.textContent = 'Settings saved';
+      setTimeout(()=>settingsMsg.textContent='',1200);
+      buildWidgetPreview(true);
+    });
+
+    // Deploy / Undeploy
+    async function setDeployState(deploy){
+      try{
+        settingsMsg.textContent = deploy ? 'Deploying...' : 'Undeploying...';
+        if (!seller){
+          settingsMsg.textContent = 'Login as a seller to manage deployment';
+          setTimeout(()=>settingsMsg.textContent='',1500);
+          return;
+        }
+        let ok = false;
+        const path = deploy ? 'deploy' : 'undeploy';
+        let r = await fetch(`${API}/chatbots/${encodeURIComponent(seller)}/${path}`, { method: 'POST' });
+        if (r.ok) ok = true;
+        if (!ok){
+          r = await fetch(`${API}/chatbots/${encodeURIComponent(seller)}/deploy`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: deploy ? 'deploy' : 'undeploy' })
+          });
+          if (r.ok) ok = true;
+        }
+        if (!ok){
+          const cfg = { ...(normalizeConfig(config)), deployed: !!deploy };
+          r = await fetch(`${API}/chatbots/${encodeURIComponent(seller)}`, {
+            method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cfg)
+          });
+          if (r.ok) ok = true;
+        }
+        if (!ok) throw new Error('All deploy endpoints failed');
+        config.deployed = !!deploy;
+        await saveConfig(config);
+        statusDeployment.textContent = config.deployed ? 'Deployed' : 'Not Deployed';
+        statusDeployment.className = `pill ${config.deployed ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`;
+        settingsMsg.textContent = deploy ? 'Deployed ✔' : 'Undeployed ✔';
+        setTimeout(()=>settingsMsg.textContent='',1200);
+      }catch(e){
+        settingsMsg.textContent = 'Operation failed';
+        setTimeout(()=>settingsMsg.textContent='',1500);
+      }
+    }
+
+    document.getElementById('deployBot').addEventListener('click', ()=>setDeployState(true));
+    document.getElementById('undeployBot').addEventListener('click', ()=>setDeployState(false));
+
+    // Matching helper
+    function firstMatching(pattern, match, input){
+      const text = (input||'').trim();
+      const tokens = (pattern||'').toLowerCase().split(',').map(s=>s.trim()).filter(Boolean);
+      try {
+        if (match === 'contains') return tokens.some(t => text.toLowerCase().includes(t));
+        if (match === 'exact') return tokens.some(t => text.toLowerCase() === t);
+        if (match === 'regex') return tokens.some(t => new RegExp(t, 'i').test(text));
+      } catch(_){/* ignore */}
+      return false;
+    }
+
+
+
+    function normalizeImage(img){
+      if (!img || typeof img !== 'string') return '';
+      let val = img.trim().replace(/\\\\/g,'/').replace(/\\/g,'/');
+      if (/^https?:\/\//i.test(val) || val.startsWith('data:')) return val;
+      const up = val.replace(/^\/?uploads\//i,'');
+      return `${API}/uploads/${up}`;
+    }
+
+ 
+
+    function composeProductText(p, template){
+      const map = {
+        title: p.title || p.name || 'this product',
+        price: (p.price!=null) ? p.price : (p.pricing?.price || ''),
+        description: (p.description || p.details || p.summary || '').toString().slice(0, 300)
+      };
+      if (template){
+        return template.replace(/\{\{\s*(title|price|description)\s*\}\}/g, (_,k)=> String(map[k] ?? '')) || `Here are details for ${map.title}.`;
+      }
+      return `Here are details for ${map.title}${map.price?` priced at $${map.price}`:''}. ${map.description?map.description:''}`;
+    }
+
+    // Widget preview UI
+    function buildWidgetPreview(reset=false){
+      widgetSim.innerHTML = '';
+      const theme = config.widget.theme;
+      const accent = config.widget.accentColor || '#4f46e5';
+      const posRight = config.widget.position !== 'left';
+
+      // Bubble
+      bubbleEl = document.createElement('button');
+      bubbleEl.type = 'button';
+      bubbleEl.className = 'widget-bubble';
+      bubbleEl.style.backgroundColor = accent;
+      bubbleEl.style.bottom = '16px';
+      bubbleEl.style[posRight ? 'right':'left'] = '16px';
+      bubbleEl.textContent = '💬';
+
+      // Panel
+      panelEl = document.createElement('div');
+      panelEl.className = 'widget-panel';
+      panelEl.style.bottom = '80px';
+      panelEl.style[posRight ? 'right':'left'] = '16px';
+      panelEl.style.display = (config.widget.initialState === 'open' && !reset) ? 'flex' : 'none';
+
+      const header = document.createElement('div');
+      header.className = 'widget-header';
+      header.style.backgroundColor = accent;
+      header.innerHTML = `<div class="flex items-center gap-2"><span>🤖</span><span>${config.botName}</span></div><button id="closeWidget" class="text-white/90 hover:text-white">✕</button>`;
+
+      chatWindowEl = document.createElement('div');
+      chatWindowEl.className = 'widget-body';
+
+      const inputWrap = document.createElement('div');
+      inputWrap.className = 'widget-input';
+      chatInputEl = document.createElement('input');
+      chatInputEl.className = 'input flex-1';
+      chatInputEl.placeholder = 'Type a message...';
+      sendBtnEl = document.createElement('button');
+      sendBtnEl.className = 'btn btn-primary';
+      sendBtnEl.textContent = 'Send';
+      inputWrap.appendChild(chatInputEl);
+      inputWrap.appendChild(sendBtnEl);
+
+      panelEl.appendChild(header);
+      panelEl.appendChild(chatWindowEl);
+      panelEl.appendChild(inputWrap);
+
+      widgetSim.appendChild(bubbleEl);
+      widgetSim.appendChild(panelEl);
+
+      const closeBtn = header.querySelector('#closeWidget');
+      bubbleEl.addEventListener('click', ()=> panelEl.style.display = 'flex');
+      closeBtn.addEventListener('click', ()=> panelEl.style.display = 'none');
+
+      // Welcome message on build
+      chatWindowEl.innerHTML = '';
+      addMsg('bot', config.welcomeMessage || 'Hi!');
+
+      // Bind send
+      sendBtnEl.onclick = async () => {
+        const val = (chatInputEl.value||'').trim();
+        if (!val) return;
+        addMsg('user', val);
+        chatInputEl.value = '';
+        const r = await botReply(val);
+        if (r) addMsg('bot', r);
+      };
+      chatInputEl.onkeydown = (e)=>{ if (e.key==='Enter') sendBtnEl.click(); };
+    }
+
+    function addMsg(author, text) {
+      const wrap = document.createElement('div');
+      wrap.className = author === 'bot' ? 'flex items-start gap-2' : 'flex items-start gap-2 justify-end';
+      const bubble = document.createElement('div');
+      bubble.className = `max-w-[80%] px-3 py-2 rounded-xl text-sm ${author==='bot' ? 'bg-white border' : 'bg-indigo-600 text-white'}`;
+      bubble.textContent = text;
+      wrap.appendChild(bubble);
+      chatWindowEl.appendChild(wrap);
+      chatWindowEl.scrollTop = chatWindowEl.scrollHeight;
+    }
+
+    function addRichBotBlock(html){
+      const wrap = document.createElement('div');
+      wrap.className = 'flex items-start gap-2';
+      const bubble = document.createElement('div');
+      bubble.className = 'max-w-[80%] px-3 py-2 rounded-xl text-sm bg-white border';
+      bubble.innerHTML = html;
+      wrap.appendChild(bubble);
+      chatWindowEl.appendChild(wrap);
+      chatWindowEl.scrollTop = chatWindowEl.scrollHeight;
+    }
+
+    // Bot logic for preview (capabilities + keyword rules)
+    async function botReply(userText){
+      const text = (userText||'').trim();
+      const caps = config.training.capabilities || {};
+
+      // 1) Keyword rules
+      for (const r of (config.training.rules||[])){
+        if (firstMatching(r.pattern, r.match, text)){
+          return r.response || 'Okay.';
+        }
+      }
+
+      // 2) Shop Q&A if enabled
+      if (caps.shipping || caps.delivery || caps.payments){
+        const low = text.toLowerCase();
+        const u = await tryFetchJson(`${API}/find?collection=users&username=${encodeURIComponent(seller)}`);
+        const sellerDoc = Array.isArray(u?.data) ? u.data[0] : Array.isArray(u) ? u[0] : u?.data;
+        const shop = sellerDoc || {};
+        const ss = shop.shopSettings || {};
+
+        // Shipping fees
+        if (caps.shipping && /shipping|delivery fee|ship(ping)? cost/i.test(low)){
+          const fees = (ss.deliveryRegions||[]).map(r=> `${r.country}${r.state?`, ${r.state}`:''}: $${r.fee||0}`);
+          if (fees.length){ return `Shipping fees: ${fees.join(' | ')}`; }
+        }
+        // Delivery locations
+        if (caps.delivery && /(deliver(y)?|ship) to|available in|locations?|where.*deliver/i.test(low)){
+          const locs = (ss.deliveryRegions||[]).map(r=> `${r.country}${r.state?` (${r.state})`:''}`);
+          if (locs.length){ return `We deliver to: ${locs.join(', ')}`; }
+        }
+        // Payment gateways
+        if (caps.payments && /(payment|pay|checkout|gateway|methods)/i.test(low)){
+          const list = (ss.paymentSystems||[]).map(x=> String(x)).join(', ');
+          if (list){ return `Accepted payment methods: ${list}`; }
+        }
+      }
+
+      // 3) Product queries if enabled
+      if (caps.products){
+        const low = text.toLowerCase();
+        const products = await fetchSellerProducts();
+        if (/cheapest|lowest price|min(imum)? price|lowest-cost|low cost/i.test(low)){
+          const cheap = findCheapestProduct(products);
+          if (cheap){
+            addMsg('bot', 'Here is the cheapest product:');
+            addRichBotBlock(productCard(cheap));
+            return '';
+          }
+        }
+        // Tag-based suggestion: "have any [tag]?" or mentions of known tags
+        const allTags = new Set(products.flatMap(tagsFromProduct));
+        const hit = Array.from(allTags).find(t=> low.includes(t));
+        if (hit){
+          const picks = products.filter(p=> tagsFromProduct(p).includes(hit)).slice(0,3);
+          if (picks.length){
+            addMsg('bot', `Products tagged "${hit}":`);
+            addRichBotBlock(`<div class=\"space-y-2\">${picks.map(productCard).join('')}</div>`);
+            return '';
+          }
+        }
+      }
+
+      // 4) Fallback
+      const base = {
+        friendly: "Got it! I'll help you with that.",
+        professional: "Understood. I will assist with your request.",
+        playful: "Roger that! Let's sort this out 😎",
+        concise: "OK."
+      }[config.botTone] || 'Okay.';
+      return base;
+    }
+
+    // Initial renders
+    renderKeywordRules();
+    buildWidgetPreview();
+
+    // End script
+  </script>
+</body>
+</html>

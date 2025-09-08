@@ -813,7 +813,7 @@
         pageProducts.forEach(product => {
           const imageSrc = resolveImage(product.image);
           const card = document.createElement("a");
-          card.href = `product-detail.html?id=${product.id}`;
+          card.href = `../detail?id=${product.id}`;
           card.className = "luxury-product-card block";
 
           card.innerHTML = `
