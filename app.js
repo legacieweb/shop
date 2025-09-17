@@ -88,6 +88,38 @@ app.get('/images/:id', async (req, res) => {
   }
 });
 
+// Upload image (multipart) -> persist in MongoDB
+app.post('/images', memoryUpload.single('file'), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ success:false, message:'No file uploaded' });
+    const { buffer, mimetype, originalname } = req.file;
+    if (!/^image\//i.test(mimetype)) return res.status(400).json({ success:false, message:'Only image files are allowed' });
+    const doc = await Image.create({ filename: originalname, contentType: mimetype, data: buffer, metadata: { via: 'multipart' } });
+    return res.status(201).json({ success:true, id: String(doc._id), url: `/images/${doc._id}` });
+  } catch (e) {
+    console.error('Upload image (multipart) error:', e);
+    return res.status(500).json({ success:false, message:'Server error uploading image' });
+  }
+});
+
+// Upload image from base64 data URL -> persist in MongoDB
+app.post('/images/base64', async (req, res) => {
+  try {
+    const { dataUrl, filename = 'image.png' } = req.body || {};
+    if (!dataUrl || typeof dataUrl !== 'string') return res.status(400).json({ success:false, message:'Missing dataUrl' });
+    const m = dataUrl.match(/^data:(.+);base64,(.+)$/);
+    if (!m) return res.status(400).json({ success:false, message:'Invalid data URL' });
+    const contentType = m[1];
+    if (!/^image\//i.test(contentType)) return res.status(400).json({ success:false, message:'Only image data URLs are allowed' });
+    const buffer = Buffer.from(m[2], 'base64');
+    const doc = await Image.create({ filename, contentType, data: buffer, metadata: { via: 'base64' } });
+    return res.status(201).json({ success:true, id: String(doc._id), url: `/images/${doc._id}` });
+  } catch (e) {
+    console.error('Upload image (base64) error:', e);
+    return res.status(500).json({ success:false, message:'Server error uploading image' });
+  }
+});
+
 // ✅ Serve dashboard, themes, and shop HTML files
 app.get("/dashboard", (req, res) => {
   res.sendFile(path.join(__dirname, "dashboard", "index.html"));
@@ -270,17 +302,37 @@ app.put('/chatbots/:seller', async (req, res) => {
   }
 });
 
-// Train chatbot via conversation examples
+// Train chatbot via keyword rules + capability toggles (and optional conversation examples)
 app.post('/chatbots/:seller/train', async (req, res) => {
   try {
     const { seller } = req.params;
-    const { conversation = [] } = req.body || {};
+    const { capabilities = {}, rules = [], conversation = [] } = req.body || {};
+
+    const update = {
+      $set: {
+        'training.status': 'trained',
+        'training.lastTrainedAt': new Date(),
+        'training.capabilities': {
+          products: !!capabilities.products,
+          shipping: !!capabilities.shipping,
+          delivery: !!capabilities.delivery,
+          payments: !!capabilities.payments,
+        },
+        'training.rules': Array.isArray(rules) ? rules.map(r => ({
+          id: r.id || (typeof crypto !== 'undefined' ? crypto.randomUUID?.() : undefined),
+          pattern: r.pattern || '',
+          match: ['contains','exact','regex'].includes(r.match) ? r.match : 'contains',
+          response: r.response || ''
+        })) : []
+      },
+    };
+    if (Array.isArray(conversation) && conversation.length) {
+      update.$push = { 'training.conversation': { $each: conversation } };
+    }
+
     const doc = await Chatbot.findOneAndUpdate(
       { seller },
-      {
-        $set: { 'training.status': 'trained', 'training.lastTrainedAt': new Date() },
-        $push: { 'training.conversation': { $each: conversation } }
-      },
+      update,
       { upsert: true, new: true, setDefaultsOnInsert: true }
     );
     return res.json({ success: true, data: doc });

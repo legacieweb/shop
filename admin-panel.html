@@ -1,0 +1,3258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>🛠️ Admin Dashboard – ShopRight</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style type="text/tailwindcss">
+    .toggle-btn {
+      @apply px-3 py-1.5 text-sm font-medium text-gray-600 bg-white rounded-full transition duration-150 ease-in-out hover:bg-indigo-100 hover:text-indigo-700 focus:outline-none;
+    }
+
+    .toggle-btn.active {
+      @apply bg-indigo-600 text-white shadow-md;
+    }
+
+    .metric-card {
+      @apply bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-all duration-300;
+    }
+
+    .admin-sidebar-link {
+      @apply block px-6 py-3 text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-all duration-200 border-l-4 border-transparent hover:border-indigo-500;
+    }
+
+    .admin-sidebar-link.active {
+      @apply bg-indigo-50 text-indigo-700 font-semibold border-indigo-500;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+  <!-- Mobile Navbar -->
+  <div class="md:hidden flex justify-between items-center px-4 py-3 bg-white border-b shadow sticky top-0 z-50 h-[64px]">
+    <h1 class="text-lg font-bold text-indigo-600">🛠️ ShopRight Admin</h1>
+    <button id="hamburgerBtn" class="text-indigo-600 text-2xl font-bold">&#9776;</button>
+  </div>
+
+  <!-- Full Page Layout -->
+  <div class="flex min-h-screen">
+
+    <!-- Sidebar -->
+    <aside id="sidebar"
+      class="w-64 bg-white shadow-md fixed top-[64px] left-0 h-[calc(100%-64px)] z-40 transform -translate-x-full transition-transform duration-300 md:relative md:top-0 md:h-auto md:translate-x-0 md:block hidden">
+      
+      <div class="p-6 border-b hidden md:block">
+        <h1 class="text-xl font-bold text-indigo-600">🛠️ ShopRight Admin</h1>
+        <p class="text-sm text-gray-500 mt-1">Master Control Panel</p>
+      </div>
+
+      <nav class="mt-6 space-y-1">
+        <a href="#" data-section="overview"
+          class="admin-sidebar-link active">📊 Overview</a>
+        <a href="#" data-section="sellers"
+          class="admin-sidebar-link">👥 Sellers</a>
+        <a href="#" data-section="buyers"
+          class="admin-sidebar-link">🛒 Buyers</a>
+        <a href="#" data-section="orders"
+          class="admin-sidebar-link">📦 Orders</a>
+        <a href="#" data-section="products"
+          class="admin-sidebar-link">🏷️ Products</a>
+        <a href="#" data-section="subscriptions"
+          class="admin-sidebar-link">💳 Subscriptions</a>
+        <a href="#" data-section="analytics"
+          class="admin-sidebar-link">📈 Analytics</a>
+        <a href="#" data-section="revenue"
+          class="admin-sidebar-link">💰 Revenue</a>
+        <a href="#" data-section="themes"
+          class="admin-sidebar-link">🎨 Theme Management</a>
+        <a href="./admin-promotions.html" id="adminPromotionLink"
+          class="admin-sidebar-link">📣 Promotion</a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-x-hidden px-4 sm:px-6 lg:px-8 pt-6">
+
+      <!-- OVERVIEW SECTION -->
+      <section id="section-overview" class="section space-y-8">
+        
+        <!-- Top Bar -->
+        <div class="mb-6">
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-indigo-700">Admin Dashboard Overview 🚀</h2>
+          <p class="text-sm text-gray-600 mt-1">Monitor your entire platform's performance and growth.</p>
+          <p class="text-sm mt-2">
+            <span class="text-gray-500">Last Updated:</span>
+            <span id="lastUpdated" class="text-indigo-700 font-medium">Loading...</span>
+          </p>
+        </div>
+
+        <!-- Key Platform Metrics -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+          <div class="bg-gradient-to-r from-blue-600 to-blue-400 text-white rounded-xl p-6 shadow-lg">
+            <h3 class="text-sm font-medium opacity-90">Total Sellers</h3>
+            <p id="totalSellers" class="text-3xl font-bold mt-2">0</p>
+            <div class="flex items-center mt-2 text-sm opacity-80">
+              <span id="sellersGrowth" class="text-green-200">+0%</span>
+              <span class="ml-1">this month</span>
+            </div>
+          </div>
+          
+          <div class="bg-gradient-to-r from-green-600 to-green-400 text-white rounded-xl p-6 shadow-lg">
+            <h3 class="text-sm font-medium opacity-90">Total Buyers</h3>
+            <p id="totalBuyers" class="text-3xl font-bold mt-2">0</p>
+            <div class="flex items-center mt-2 text-sm opacity-80">
+              <span id="buyersGrowth" class="text-green-200">+0%</span>
+              <span class="ml-1">this month</span>
+            </div>
+          </div>
+          
+          <div class="bg-gradient-to-r from-purple-600 to-purple-400 text-white rounded-xl p-6 shadow-lg">
+            <h3 class="text-sm font-medium opacity-90">Total Revenue</h3>
+            <p id="totalRevenue" class="text-3xl font-bold mt-2">$0</p>
+            <div class="flex items-center mt-2 text-sm opacity-80">
+              <span id="revenueGrowth" class="text-green-200">+0%</span>
+              <span class="ml-1">this month</span>
+            </div>
+          </div>
+          
+          <div class="bg-gradient-to-r from-orange-600 to-orange-400 text-white rounded-xl p-6 shadow-lg">
+            <h3 class="text-sm font-medium opacity-90">Active Subscriptions</h3>
+            <p id="activeSubscriptions" class="text-3xl font-bold mt-2">0</p>
+            <div class="flex items-center mt-2 text-sm opacity-80">
+              <span id="subscriptionsGrowth" class="text-green-200">+0%</span>
+              <span class="ml-1">this month</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Platform Analytics Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-lg font-semibold text-indigo-700 mb-4">📈 Platform Growth</h3>
+            <canvas id="platformGrowthChart" height="120"></canvas>
+          </div>
+          
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-lg font-semibold text-indigo-700 mb-4">💰 Revenue Breakdown</h3>
+            <canvas id="revenueBreakdownChart" height="120"></canvas>
+          </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <h3 class="text-lg font-semibold text-indigo-700 mb-4">🔔 Recent Platform Activity</h3>
+          <div id="recentActivity" class="space-y-3">
+            <!-- Activity items will be populated here -->
+          </div>
+        </div>
+
+      </section>
+
+      <!-- SELLERS SECTION -->
+      <section id="section-sellers" class="section hidden space-y-8">
+        
+        <div class="mb-6">
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-indigo-700">Seller Management 👥</h2>
+          <p class="text-sm text-gray-600 mt-1">Manage and monitor all sellers on your platform.</p>
+        </div>
+
+        <!-- Seller Metrics -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="metric-card">
+            <h3 class="text-sm text-gray-500">Active Sellers</h3>
+            <p id="activeSellers" class="text-2xl font-bold text-indigo-600 mt-2">0</p>
+          </div>
+          <div class="metric-card">
+            <h3 class="text-sm text-gray-500">Premium Sellers</h3>
+            <p id="premiumSellers" class="text-2xl font-bold text-indigo-600 mt-2">0</p>
+          </div>
+          <div class="metric-card">
+            <h3 class="text-sm text-gray-500">Total Products</h3>
+            <p id="totalProducts" class="text-2xl font-bold text-indigo-600 mt-2">0</p>
+          </div>
+          <div class="metric-card">
+            <h3 class="text-sm text-gray-500">Avg Revenue/Seller</h3>
+            <p id="avgRevenuePerSeller" class="text-2xl font-bold text-indigo-600 mt-2">$0</p>
+          </div>
+        </div>
+
+        <!-- Seller Search and Filters -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <div class="flex flex-col md:flex-row gap-4 mb-6">
+            <input type="text" id="sellerSearch" placeholder="Search sellers..." 
+                   class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+            <select id="sellerPlanFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+              <option value="">All Plans</option>
+              <option value="free">Free</option>
+              <option value="basic">Basic</option>
+              <option value="pro">Pro</option>
+              <option value="premium">Premium</option>
+            </select>
+            <button id="searchSellers" class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+              🔍 Search
+            </button>
+          </div>
+
+          <!-- Sellers Table -->
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+              <thead class="bg-gray-50 border-b">
+                <tr>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Seller</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Plan</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Products</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Revenue</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Status</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="sellersTable" class="divide-y divide-gray-100">
+                <!-- Seller rows will be populated here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- BUYERS SECTION -->
+      <section id="section-buyers" class="section hidden space-y-8">
+        
+        <div class="mb-6">
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-indigo-700">Buyer Analytics 🛒</h2>
+          <p class="text-sm text-gray-600 mt-1">Understand your customer base and buying patterns.</p>
+        </div>
+
+        <!-- Buyer Metrics -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="metric-card">
+            <h3 class="text-sm text-gray-500">Total Buyers</h3>
+            <p id="buyerCount" class="text-2xl font-bold text-indigo-600 mt-2">0</p>
+          </div>
+          <div class="metric-card">
+            <h3 class="text-sm text-gray-500">Repeat Customers</h3>
+            <p id="repeatCustomers" class="text-2xl font-bold text-indigo-600 mt-2">0</p>
+          </div>
+          <div class="metric-card">
+            <h3 class="text-sm text-gray-500">Avg Order Value</h3>
+            <p id="avgOrderValue" class="text-2xl font-bold text-indigo-600 mt-2">$0</p>
+          </div>
+          <div class="metric-card">
+            <h3 class="text-sm text-gray-500">Customer Lifetime Value</h3>
+            <p id="customerLTV" class="text-2xl font-bold text-indigo-600 mt-2">$0</p>
+          </div>
+        </div>
+
+        <!-- Buyer Analytics Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-lg font-semibold text-indigo-700 mb-4">🌍 Buyers by Region</h3>
+            <canvas id="buyerRegionChart" height="120"></canvas>
+          </div>
+          
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-lg font-semibold text-indigo-700 mb-4">📊 Purchase Frequency</h3>
+            <canvas id="purchaseFrequencyChart" height="120"></canvas>
+          </div>
+        </div>
+
+        <!-- Top Buyers Table -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <h3 class="text-lg font-semibold text-indigo-700 mb-4">🏆 Top Buyers</h3>
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+              <thead class="bg-gray-50 border-b">
+                <tr>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Buyer</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Orders</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Total Spent</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Last Order</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Status</th>
+                </tr>
+              </thead>
+              <tbody id="topBuyersTable" class="divide-y divide-gray-100">
+                <!-- Buyer rows will be populated here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ORDERS SECTION -->
+      <section id="section-orders" class="section hidden space-y-8">
+        
+        <div class="mb-6">
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-indigo-700">Order Management 📦</h2>
+          <p class="text-sm text-gray-600 mt-1">Monitor and manage all orders across the platform.</p>
+        </div>
+
+        <!-- Order Metrics -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
+          <div class="metric-card">
+            <h3 class="text-sm text-gray-500">Total Orders</h3>
+            <p id="totalOrders" class="text-2xl font-bold text-indigo-600 mt-2">0</p>
+          </div>
+          <div class="metric-card">
+            <h3 class="text-sm text-gray-500">Pending</h3>
+            <p id="pendingOrders" class="text-2xl font-bold text-yellow-600 mt-2">0</p>
+          </div>
+          <div class="metric-card">
+            <h3 class="text-sm text-gray-500">Delivered</h3>
+            <p id="deliveredOrders" class="text-2xl font-bold text-green-600 mt-2">0</p>
+          </div>
+          <div class="metric-card">
+            <h3 class="text-sm text-gray-500">Cancelled</h3>
+            <p id="cancelledOrders" class="text-2xl font-bold text-red-600 mt-2">0</p>
+          </div>
+          <div class="metric-card">
+            <h3 class="text-sm text-gray-500">Order Value</h3>
+            <p id="totalOrderValue" class="text-2xl font-bold text-indigo-600 mt-2">$0</p>
+          </div>
+        </div>
+
+        <!-- Order Filters -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <div class="flex flex-col md:flex-row gap-4 mb-6">
+            <input type="text" id="orderSearch" placeholder="Search orders..." 
+                   class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+            <select id="orderStatusFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+              <option value="">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="ready">Ready</option>
+              <option value="delivered">Delivered</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+            <input type="date" id="orderDateFilter" class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+            <button id="searchOrders" class="px-6 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+              🔍 Filter
+            </button>
+          </div>
+
+          <!-- Orders Table -->
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+              <thead class="bg-gray-50 border-b">
+                <tr>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Order ID</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Product</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Buyer</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Seller</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Total</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Status</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Date</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="ordersTable" class="divide-y divide-gray-100">
+                <!-- Order rows will be populated here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- PRODUCTS SECTION -->
+      <section id="section-products" class="section hidden space-y-8">
+        
+        <div class="mb-6">
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-indigo-700">Product Analytics 🏷️</h2>
+          <p class="text-sm text-gray-600 mt-1">Analyze product performance across all sellers.</p>
+        </div>
+
+        <!-- Product Metrics -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="metric-card">
+            <h3 class="text-sm text-gray-500">Total Products</h3>
+            <p id="productCount" class="text-2xl font-bold text-indigo-600 mt-2">0</p>
+          </div>
+          <div class="metric-card">
+            <h3 class="text-sm text-gray-500">Categories</h3>
+            <p id="categoryCount" class="text-2xl font-bold text-indigo-600 mt-2">0</p>
+          </div>
+          <div class="metric-card">
+            <h3 class="text-sm text-gray-500">Avg Price</h3>
+            <p id="avgProductPrice" class="text-2xl font-bold text-indigo-600 mt-2">$0</p>
+          </div>
+          <div class="metric-card">
+            <h3 class="text-sm text-gray-500">Total Views</h3>
+            <p id="totalProductViews" class="text-2xl font-bold text-indigo-600 mt-2">0</p>
+          </div>
+        </div>
+
+        <!-- Product Analytics Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-lg font-semibold text-indigo-700 mb-4">📊 Products by Category</h3>
+            <canvas id="productCategoryChart" height="120"></canvas>
+          </div>
+          
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-lg font-semibold text-indigo-700 mb-4">🔥 Top Performing Products</h3>
+            <canvas id="topProductsChart" height="120"></canvas>
+          </div>
+        </div>
+
+        <!-- Products Table -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <h3 class="text-lg font-semibold text-indigo-700 mb-4">📋 All Products</h3>
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+              <thead class="bg-gray-50 border-b">
+                <tr>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Product</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Seller</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Category</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Price</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Views</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Sales</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="productsTable" class="divide-y divide-gray-100">
+                <!-- Product rows will be populated here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- SUBSCRIPTIONS SECTION -->
+      <section id="section-subscriptions" class="section hidden space-y-8">
+        
+        <div class="mb-6">
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-indigo-700">Subscription Management 💳</h2>
+          <p class="text-sm text-gray-600 mt-1">Manage seller subscriptions and billing.</p>
+        </div>
+
+        <!-- Subscription Metrics -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="metric-card">
+            <h3 class="text-sm text-gray-500">Active Subscriptions</h3>
+            <p id="activeSubCount" class="text-2xl font-bold text-indigo-600 mt-2">0</p>
+          </div>
+          <div class="metric-card">
+            <h3 class="text-sm text-gray-500">Monthly Revenue</h3>
+            <p id="monthlySubRevenue" class="text-2xl font-bold text-indigo-600 mt-2">$0</p>
+          </div>
+          <div class="metric-card">
+            <h3 class="text-sm text-gray-500">Expiring Soon</h3>
+            <p id="expiringSubs" class="text-2xl font-bold text-yellow-600 mt-2">0</p>
+          </div>
+          <div class="metric-card">
+            <h3 class="text-sm text-gray-500">Churn Rate</h3>
+            <p id="churnRate" class="text-2xl font-bold text-red-600 mt-2">0%</p>
+          </div>
+        </div>
+
+        <!-- Subscription Plans Overview -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <h3 class="text-lg font-semibold text-indigo-700 mb-4">📊 Plan Distribution</h3>
+          <canvas id="subscriptionPlansChart" height="120"></canvas>
+        </div>
+
+        <!-- Email Subscription Notifications -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <h3 class="text-lg font-semibold text-indigo-700 mb-4">📧 Subscription Email Tools</h3>
+          
+          <div class="grid grid-cols-1 gap-6">
+            <!-- Send Subscription Email -->
+            <div class="border border-gray-200 rounded-lg p-4">
+              <h4 class="font-medium text-gray-800 mb-3">Send Subscription Notification</h4>
+              <div class="space-y-3">
+                <input type="text" id="emailSellerUsername" placeholder="Seller username"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                <select id="emailType" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                  <option value="">Select email type</option>
+                  <option value="expiring">Subscription Expiring Soon</option>
+                  <option value="expired">Subscription Expired</option>
+                  <option value="renewed">Subscription Renewed</option>
+                  <option value="plan_updated">Plan Updated</option>
+                </select>
+                <textarea id="customMessage" placeholder="Custom message (optional)"
+                         class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 h-20"></textarea>
+                <button id="sendSubscriptionEmail" class="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                  📧 Send Email
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Manual Subscription Update Tool -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <h3 class="text-lg font-semibold text-indigo-700 mb-4">🔧 Manual Subscription Update</h3>
+          
+          <div class="grid grid-cols-1 gap-6">
+            <!-- Update Subscription Tool -->
+            <div class="border border-gray-200 rounded-lg p-4">
+              <h4 class="font-medium text-gray-800 mb-3">Update Seller Subscription</h4>
+              <div class="space-y-3">
+                <input type="text" id="updateSellerUsername" placeholder="Seller username"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                <select id="updatePlanSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                  <option value="">Select plan (optional)</option>
+                  <option value="free">Free</option>
+                  <option value="basic">Basic</option>
+                  <option value="pro">Pro</option>
+                  <option value="premium">Premium</option>
+                </select>
+                <input type="number" id="updateSubscriptionWeeks" placeholder="Weeks remaining (optional)"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                <input type="date" id="updateNextPaymentDate" placeholder="Next payment date (optional)"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                <div class="flex items-center gap-2">
+                  <input type="checkbox" id="removeTrialCheckbox" class="rounded border-gray-300">
+                  <label for="removeTrialCheckbox" class="text-sm text-gray-700">Remove trial status</label>
+                </div>
+                <button id="updateSubscriptionBtn" class="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                  🔧 Update Subscription
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Subscriptions Table -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <h3 class="text-lg font-semibold text-indigo-700 mb-4">📋 All Subscriptions</h3>
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+              <thead class="bg-gray-50 border-b">
+                <tr>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Seller</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Plan</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Weeks Left</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Next Payment</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Status</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="subscriptionsTable" class="divide-y divide-gray-100">
+                <!-- Subscription rows will be populated here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ANALYTICS SECTION -->
+      <section id="section-analytics" class="section hidden space-y-8">
+        
+        <div class="mb-6">
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-indigo-700">Advanced Analytics 📈</h2>
+          <p class="text-sm text-gray-600 mt-1">Deep insights into platform performance and trends.</p>
+        </div>
+
+        <!-- Analytics Controls -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <h3 class="text-xl font-semibold text-indigo-700">Platform Performance</h3>
+            
+            <div class="flex flex-col sm:flex-row sm:items-center gap-3 flex-wrap">
+              <div class="flex flex-wrap items-center gap-3 bg-gray-50 p-2 rounded-lg shadow-sm">
+                <div class="flex flex-col text-xs text-gray-500 font-medium">
+                  <span class="text-[11px] uppercase tracking-wider">From</span>
+                  <input type="date" id="analyticsStartDate" class="rounded-md border border-gray-300 px-2 py-1 text-sm shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <span class="text-gray-400 font-semibold text-sm">→</span>
+                <div class="flex flex-col text-xs text-gray-500 font-medium">
+                  <span class="text-[11px] uppercase tracking-wider">To</span>
+                  <input type="date" id="analyticsEndDate" class="rounded-md border border-gray-300 px-2 py-1 text-sm shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+              </div>
+              
+              <div class="flex flex-wrap items-center gap-2">
+                <select id="analyticsTimeRange" class="border border-gray-300 rounded-md px-3 py-2 text-sm shadow-sm focus:ring-indigo-500 focus:border-indigo-500 bg-white text-gray-700">
+                  <option value="day">Daily</option>
+                  <option value="week">Weekly</option>
+                  <option value="month" selected>Monthly</option>
+                  <option value="year">Yearly</option>
+                </select>
+                <button id="applyAnalyticsRange" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-medium shadow transition">
+                  Apply
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Advanced Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-lg font-semibold text-indigo-700 mb-4">📊 Sales Trends</h3>
+            <canvas id="salesTrendsChart" height="120"></canvas>
+          </div>
+          
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-lg font-semibold text-indigo-700 mb-4">👥 User Growth</h3>
+            <canvas id="userGrowthChart" height="120"></canvas>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-lg font-semibold text-indigo-700 mb-4">🌍 Geographic Distribution</h3>
+            <canvas id="geographicChart" height="120"></canvas>
+          </div>
+          
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-lg font-semibold text-indigo-700 mb-4">⏰ Peak Activity Hours</h3>
+            <canvas id="activityHoursChart" height="120"></canvas>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- REVENUE SECTION -->
+      <section id="section-revenue" class="section hidden space-y-8">
+        
+        <div class="mb-6">
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-indigo-700">Revenue Analytics 💰</h2>
+          <p class="text-sm text-gray-600 mt-1">Track financial performance and revenue streams.</p>
+        </div>
+
+        <!-- Revenue Metrics -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="metric-card">
+            <h3 class="text-sm text-gray-500">Total Revenue</h3>
+            <p id="revenueTotal" class="text-2xl font-bold text-indigo-600 mt-2">$0</p>
+          </div>
+          <div class="metric-card">
+            <h3 class="text-sm text-gray-500">Commission Earned</h3>
+            <p id="commissionEarned" class="text-2xl font-bold text-indigo-600 mt-2">$0</p>
+          </div>
+          <div class="metric-card">
+            <h3 class="text-sm text-gray-500">Subscription Revenue</h3>
+            <p id="subscriptionRevenue" class="text-2xl font-bold text-indigo-600 mt-2">$0</p>
+          </div>
+          <div class="metric-card">
+            <h3 class="text-sm text-gray-500">Growth Rate</h3>
+            <p id="revenueGrowthRate" class="text-2xl font-bold text-indigo-600 mt-2">0%</p>
+          </div>
+        </div>
+
+        <!-- Revenue Charts -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-lg font-semibold text-indigo-700 mb-4">💰 Revenue Streams</h3>
+            <canvas id="revenueStreamsChart" height="120"></canvas>
+          </div>
+          
+          <div class="bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-lg font-semibold text-indigo-700 mb-4">📈 Monthly Revenue Trend</h3>
+            <canvas id="monthlyRevenueChart" height="120"></canvas>
+          </div>
+        </div>
+
+        <!-- Top Revenue Generators -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <h3 class="text-lg font-semibold text-indigo-700 mb-4">🏆 Top Revenue Generators</h3>
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+              <thead class="bg-gray-50 border-b">
+                <tr>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Seller</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Revenue Generated</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Commission</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Orders</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Growth</th>
+                </tr>
+              </thead>
+              <tbody id="topRevenueTable" class="divide-y divide-gray-100">
+                <!-- Revenue rows will be populated here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- THEME MANAGEMENT SECTION -->
+      <section id="section-themes" class="section hidden space-y-8">
+        
+        <div class="mb-6">
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-indigo-700">Theme Management 🎨</h2>
+          <p class="text-sm text-gray-600 mt-1">Manage seller layout themes and customizations.</p>
+        </div>
+
+        <!-- Theme Management Tools -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <h3 class="text-lg font-semibold text-indigo-700 mb-4">🎨 Change Seller Theme</h3>
+          
+          <div class="grid grid-cols-1 gap-6">
+            <!-- Change Theme Tool -->
+            <div class="border border-gray-200 rounded-lg p-4">
+              <h4 class="font-medium text-gray-800 mb-3">Update Seller Layout Theme</h4>
+              <div class="space-y-3">
+                <input type="text" id="themeSellerUsername" placeholder="Seller username"
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                <select id="themeLayoutSelect" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500">
+                  <option value="">Select layout theme</option>
+                  <option value="classic">Classic Layout</option>
+                  <option value="modern">Modern Layout</option>
+                  <option value="cyber">Cyber Layout</option>
+                  <option value="vintage">Vintage Layout</option>
+                  <option value="minimalist">Minimalist Layout</option>
+                  <option value="elegant">elegant Layout</option>
+                  <option value="nature">nature Layout</option>
+                </select>
+                <button id="changeThemeBtn" class="w-full px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                  Change Theme
+                </button>
+              </div>
+            </div>
+
+            <!-- Theme Preview -->
+            <div class="border border-gray-200 rounded-lg p-4">
+              <h4 class="font-medium text-gray-800 mb-3">Theme Preview</h4>
+              <div id="themePreview" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <!-- Theme previews will be populated here -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Current Seller Themes Table -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+          <h3 class="text-lg font-semibold text-indigo-700 mb-4">📋 Current Seller Themes</h3>
+          <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+              <thead class="bg-gray-50 border-b">
+                <tr>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Seller</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Current Theme</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Last Updated</th>
+                  <th class="py-3 px-4 text-left font-medium text-gray-700">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="sellerThemesTable" class="divide-y divide-gray-100">
+                <!-- Seller theme rows will be populated here -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+  <!-- JavaScript -->
+  <script>
+  // Global variables
+  const DEFAULT_API = 'https://shop-stp5.onrender.com';
+  const apiParam = new URLSearchParams(location.search).get('api');
+  const API = apiParam || (location.origin.startsWith('http') ? location.origin : DEFAULT_API);
+  let allUsers = [];
+  let allOrders = [];
+  let allProducts = [];
+  let allCart = [];
+  let allWishlist = [];
+  let subscriptionPlans = [];
+  let charts = {};
+
+  // Initialize the admin panel
+  document.addEventListener("DOMContentLoaded", async () => {
+    await loadAllData();
+    initializeSidebar();
+    loadOverviewSection();
+    updateLastUpdated();
+    setupEventListeners();
+    initReviewEmailModal();
+  });
+
+  // Load all data from API
+  async function loadAllData() {
+    try {
+      const [usersRes, ordersRes, productsRes, cartRes, wishlistRes, plansRes] = await Promise.all([
+        fetch(`${API}/find?collection=users`),
+        fetch(`${API}/find?collection=orders`),
+        fetch(`${API}/find?collection=products`),
+        fetch(`${API}/find?collection=cart`),
+        fetch(`${API}/find?collection=wishlist`),
+        fetch(`${API}/find?collection=subscription-plans`)
+      ]);
+
+      const usersResult = await usersRes.json();
+      allUsers = usersResult.data || [];
+      
+      const ordersResult = await ordersRes.json();
+      allOrders = ordersResult.data || [];
+      
+      const productsResult = await productsRes.json();
+      allProducts = productsResult.data || [];
+      
+      const cartResult = await cartRes.json();
+      allCart = cartResult.data || [];
+      
+      const wishlistResult = await wishlistRes.json();
+      allWishlist = wishlistResult.data || [];
+      
+      const plansResult = await plansRes.json();
+      subscriptionPlans = plansResult.data || [];
+
+      console.log("✅ Data loaded successfully:", {
+        users: allUsers.length,
+        orders: allOrders.length,
+        products: allProducts.length,
+        cart: allCart.length,
+        wishlist: allWishlist.length,
+        plans: subscriptionPlans.length
+      });
+    } catch (error) {
+      console.error("❌ Error loading data:", error);
+      showNotification("Error loading data", "error");
+    }
+  }
+
+  // Initialize sidebar navigation
+  function initializeSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    const hamburgerBtn = document.getElementById("hamburgerBtn");
+
+    // Toggle sidebar on mobile
+    hamburgerBtn?.addEventListener("click", () => {
+      sidebar.classList.remove("hidden");
+      sidebar.classList.toggle("-translate-x-full");
+      sidebar.classList.toggle("translate-x-0");
+    });
+
+    // Handle sidebar link clicks
+    document.querySelectorAll(".admin-sidebar-link").forEach(link => {
+      link.addEventListener("click", (e) => {
+        const hasSection = !!link.dataset.section;
+        const href = link.getAttribute("href");
+        // If it's a real link (no data-section) let browser navigate normally
+        if (!hasSection && href && href !== "#") {
+          return; // no preventDefault
+        }
+
+        // SPA section navigation
+        e.preventDefault();
+        const target = link.dataset.section;
+
+        // Update active link
+        document.querySelectorAll(".admin-sidebar-link").forEach(l => l.classList.remove("active"));
+        link.classList.add("active");
+
+        // Show selected section
+        document.querySelectorAll(".section").forEach(sec => sec.classList.add("hidden"));
+        const targetSection = document.querySelector(`#section-${target}`);
+        if (targetSection) {
+          targetSection.classList.remove("hidden");
+          loadSectionData(target);
+        }
+
+        // Auto-hide sidebar on mobile
+        if (window.innerWidth < 768) {
+          sidebar.classList.add("-translate-x-full");
+          sidebar.classList.remove("translate-x-0");
+        }
+      });
+    });
+  }
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // Search functionality
+      document.getElementById("searchSellers")?.addEventListener("click", handleSellerSearch);
+      document.getElementById("searchOrders")?.addEventListener("click", handleOrderSearch);
+      
+      // Email functionality
+      document.getElementById("sendSubscriptionEmail")?.addEventListener("click", sendSubscriptionEmail);
+      
+      // Analytics controls
+      document.getElementById("applyAnalyticsRange")?.addEventListener("click", loadAnalyticsSection);
+      
+      // Theme management
+      document.getElementById("changeThemeBtn")?.addEventListener("click", changeSellerTheme);
+      
+      // Subscription update functionality
+      document.getElementById("updateSubscriptionBtn")?.addEventListener("click", updateSellerSubscription);
+    }
+
+    // Review Email Modal and actions
+    function initReviewEmailModal() {
+      if (document.getElementById('reviewModal')) return; // already injected
+      const modal = document.createElement('div');
+      modal.id = 'reviewModal';
+      modal.className = 'hidden fixed inset-0 z-50';
+      modal.innerHTML = `
+        <div class="absolute inset-0 bg-black/50"></div>
+        <div class="relative max-w-lg mx-auto mt-24 bg-white rounded-xl shadow-xl p-6">
+          <div class="flex items-start justify-between">
+            <h3 class="text-lg font-semibold text-gray-800">Send Review Request</h3>
+            <button id="closeReviewModalBtn" class="text-gray-500 hover:text-gray-700">✕</button>
+          </div>
+          <div class="mt-4 space-y-3">
+            <div class="flex items-center gap-3">
+              <img id="reviewProductImg" src="" alt="Product image" class="w-16 h-16 rounded object-cover bg-gray-100" />
+              <div>
+                <div id="reviewProductName" class="font-medium"></div>
+                <div id="reviewOrderId" class="text-xs text-gray-500"></div>
+              </div>
+            </div>
+            <input id="reviewBuyerEmail" type="email" placeholder="Buyer email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" />
+            <textarea id="reviewMessage" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 h-24" placeholder="Optional message"></textarea>
+            <input id="reviewFileUrl" type="text" placeholder="file:///d:/iyonicorpdb/review/index.html?..." class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500" />
+            <input id="reviewSeller" type="text" class="hidden" />
+          </div>
+          <div class="mt-5 flex justify-end gap-2">
+            <button id="sendReviewEmailBtn" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Send Email</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+
+      // Wire close
+      document.getElementById('closeReviewModalBtn').addEventListener('click', closeReviewModal);
+      modal.addEventListener('click', (e) => { if (e.target.id === 'reviewModal') closeReviewModal(); });
+      document.getElementById('sendReviewEmailBtn').addEventListener('click', sendReviewEmail);
+    }
+
+    function openReviewRequestModal(orderId, buyerEmail, productName, productImage, seller) {
+      const modal = document.getElementById('reviewModal');
+      if (!modal) return;
+      document.getElementById('reviewProductImg').src = getProductImageUrl(productImage) || productImage || 'https://via.placeholder.com/64';
+      document.getElementById('reviewProductName').textContent = productName || '';
+      document.getElementById('reviewOrderId').textContent = orderId ? `Order: ${orderId}` : '';
+      document.getElementById('reviewBuyerEmail').value = buyerEmail || '';
+      document.getElementById('reviewSeller').value = seller || '';
+      // Default file URL
+      const defaultFile = buildFileUrl({ seller, orderId, buyerEmail, productName, productImage });
+      document.getElementById('reviewFileUrl').value = defaultFile;
+      modal.classList.remove('hidden');
+    }
+
+    function closeReviewModal() {
+      const modal = document.getElementById('reviewModal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function buildFileUrl({ seller, orderId, buyerEmail, productName, productImage }) {
+      const base = 'file:///d:/iyonicorpdb/review/index.html';
+      const params = new URLSearchParams({
+        seller: seller || '',
+        orderId: orderId || '',
+        email: buyerEmail || '',
+        productName: productName || '',
+        image: productImage || ''
+      });
+      return `${base}?${params.toString()}`;
+    }
+
+    function absoluteImageUrl(u) {
+      if (!u || typeof u !== 'string') return '';
+      if (u.startsWith('http://') || u.startsWith('https://')) return u;
+      const base = API || window.location.origin;
+      if (u.startsWith('/')) return `${base}${u}`;
+      return `${base}/${u}`;
+    }
+
+    async function sendReviewEmail() {
+      try {
+        const buyerEmail = document.getElementById('reviewBuyerEmail').value.trim();
+        const productName = document.getElementById('reviewProductName').textContent.trim();
+        const productImage = document.getElementById('reviewProductImg').getAttribute('src');
+        const message = document.getElementById('reviewMessage').value;
+        const fileUrl = document.getElementById('reviewFileUrl').value.trim();
+        const seller = document.getElementById('reviewSeller').value.trim();
+        const orderIdText = document.getElementById('reviewOrderId').textContent.replace('Order: ', '').trim();
+
+        if (!buyerEmail || !productName || !seller || !fileUrl) {
+          showNotification('Missing required fields for review email', 'error');
+          return;
+        }
+
+        const payload = {
+          orderId: orderIdText,
+          buyerEmail,
+          productName,
+          productImage,
+          seller,
+          message,
+          fileUrl
+        };
+
+        const res = await fetch(`${API}/admin/send-review-email`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const result = await res.json();
+        if (!result.success) throw new Error(result.message || 'Failed');
+        showNotification('Review email sent successfully', 'success');
+        closeReviewModal();
+      } catch (err) {
+        console.error('Send review email failed:', err);
+        showNotification('Failed to send review email', 'error');
+      }
+    }
+
+  // Load data for specific section
+  function loadSectionData(section) {
+    switch (section) {
+      case "overview":
+        loadOverviewSection();
+        break;
+      case "sellers":
+        loadSellersSection();
+        break;
+      case "buyers":
+        loadBuyersSection();
+        break;
+      case "orders":
+        loadOrdersSection();
+        break;
+      case "products":
+        loadProductsSection();
+        break;
+      case "subscriptions":
+        loadSubscriptionsSection();
+        break;
+      case "analytics":
+        loadAnalyticsSection();
+        break;
+      case "revenue":
+        loadRevenueSection();
+        break;
+      case "themes":
+        loadThemesSection();
+        break;
+    }
+  }
+
+  // Update last updated timestamp
+  function updateLastUpdated() {
+    const now = new Date();
+    document.getElementById("lastUpdated").textContent = now.toLocaleString();
+  }
+
+  // Load overview section with currency separation
+  function loadOverviewSection() {
+    const sellers = allUsers.filter(u => {
+      const role = u.role;
+      return role && (
+        role === "seller" ||
+        role.startsWith("seller") ||
+        role === "seller1" ||
+        role === "seller2" ||
+        role === "seller3"
+      );
+    });
+    const buyers = allUsers.filter(u => u.role === "buyer" || u.role === "user");
+    
+    // Group revenue by currency
+    const revenueByCurrency = {};
+    allOrders.forEach(order => {
+      const currency = order.currency || 'USD';
+      const total = parseFloat(order.total || 0);
+      revenueByCurrency[currency] = (revenueByCurrency[currency] || 0) + total;
+    });
+
+    // Display revenue by currency
+    const revenueDisplay = Object.entries(revenueByCurrency)
+      .map(([currency, amount]) => `${getCurrencySymbol(currency)}${amount.toFixed(2)} ${currency}`)
+      .join(' | ');
+    
+    const activeSubscriptions = sellers.filter(s => s.plan && s.plan !== "free").length;
+
+    // Update metrics
+    document.getElementById("totalSellers").textContent = sellers.length;
+    document.getElementById("totalBuyers").textContent = buyers.length;
+    document.getElementById("totalRevenue").textContent = revenueDisplay || '$0.00 USD';
+    document.getElementById("activeSubscriptions").textContent = activeSubscriptions;
+
+    // Calculate REAL growth percentages based on last 30 days vs previous 30 days
+    const now = Date.now();
+    const thirtyDaysAgo = now - (30 * 24 * 60 * 60 * 1000);
+    const sixtyDaysAgo = now - (60 * 24 * 60 * 60 * 1000);
+    
+    // Sellers growth
+    const recentSellers = sellers.filter(s => s.createdAt >= thirtyDaysAgo).length;
+    const previousSellers = sellers.filter(s => s.createdAt >= sixtyDaysAgo && s.createdAt < thirtyDaysAgo).length;
+    const sellersGrowth = previousSellers > 0 ? (((recentSellers - previousSellers) / previousSellers) * 100).toFixed(1) : "0.0";
+    
+    // Buyers growth
+    const recentBuyers = buyers.filter(b => b.createdAt >= thirtyDaysAgo).length;
+    const previousBuyers = buyers.filter(b => b.createdAt >= sixtyDaysAgo && b.createdAt < thirtyDaysAgo).length;
+    const buyersGrowth = previousBuyers > 0 ? (((recentBuyers - previousBuyers) / previousBuyers) * 100).toFixed(1) : "0.0";
+    
+    // Revenue growth
+    const recentRevenue = allOrders.filter(order => {
+      const orderDate = new Date(order.createdAt).getTime();
+      return orderDate >= thirtyDaysAgo;
+    }).reduce((sum, order) => sum + parseFloat(order.total || 0), 0);
+    
+    const previousRevenue = allOrders.filter(order => {
+      const orderDate = new Date(order.createdAt).getTime();
+      return orderDate >= sixtyDaysAgo && orderDate < thirtyDaysAgo;
+    }).reduce((sum, order) => sum + parseFloat(order.total || 0), 0);
+    
+    const revenueGrowth = previousRevenue > 0 ? (((recentRevenue - previousRevenue) / previousRevenue) * 100).toFixed(1) : "0.0";
+    
+    // Subscriptions growth
+    const recentSubscriptions = sellers.filter(s => {
+      return s.subscriptionPayments && s.subscriptionPayments.some(payment => {
+        const paymentDate = new Date(payment.date).getTime();
+        return paymentDate >= thirtyDaysAgo;
+      });
+    }).length;
+    
+    const previousSubscriptions = sellers.filter(s => {
+      return s.subscriptionPayments && s.subscriptionPayments.some(payment => {
+        const paymentDate = new Date(payment.date).getTime();
+        return paymentDate >= sixtyDaysAgo && paymentDate < thirtyDaysAgo;
+      });
+    }).length;
+    
+    const subscriptionsGrowth = previousSubscriptions > 0 ? (((recentSubscriptions - previousSubscriptions) / previousSubscriptions) * 100).toFixed(1) : "0.0";
+
+    // Update growth displays
+    document.getElementById("sellersGrowth").textContent = `${sellersGrowth >= 0 ? '+' : ''}${sellersGrowth}%`;
+    document.getElementById("buyersGrowth").textContent = `${buyersGrowth >= 0 ? '+' : ''}${buyersGrowth}%`;
+    document.getElementById("revenueGrowth").textContent = `${revenueGrowth >= 0 ? '+' : ''}${revenueGrowth}%`;
+    document.getElementById("subscriptionsGrowth").textContent = `${subscriptionsGrowth >= 0 ? '+' : ''}${subscriptionsGrowth}%`;
+
+    // Load charts with currency data
+    loadPlatformGrowthChart();
+    loadRevenueBreakdownChart(revenueByCurrency);
+    loadRecentActivity();
+  }
+
+  // Helper function for currency symbols
+  function getCurrencySymbol(code) {
+    const symbols = {
+      USD: "$", EUR: "€", GBP: "£", NGN: "₦", INR: "₹",
+      KES: "KSh", ZAR: "R", CAD: "C$", AUD: "A$"
+    };
+    return symbols[code] || code + " ";
+  }
+
+  // Load sellers section
+  function loadSellersSection() {
+    const sellers = allUsers.filter(u => {
+      const role = u.role;
+      return role && (
+        role === "seller" || 
+        role.startsWith("seller") || 
+        role === "seller1" || 
+        role === "seller2" || 
+        role === "seller3"
+      );
+    });
+    const activeSellers = sellers.filter(s => s.plan && s.subscriptionWeeks > 0);
+    const premiumSellers = sellers.filter(s => s.plan === "premium");
+    const totalProducts = allProducts.length;
+    const totalRevenue = allOrders.reduce((sum, order) => sum + parseFloat(order.total || 0), 0);
+    const avgRevenue = sellers.length > 0 ? totalRevenue / sellers.length : 0;
+
+    // Update metrics
+    document.getElementById("activeSellers").textContent = activeSellers.length;
+    document.getElementById("premiumSellers").textContent = premiumSellers.length;
+    document.getElementById("totalProducts").textContent = totalProducts;
+    document.getElementById("avgRevenuePerSeller").textContent = `$${avgRevenue.toFixed(2)}`;
+
+    // Load sellers table
+    loadSellersTable(sellers);
+  }
+
+  // Load sellers table
+  function loadSellersTable(sellers) {
+    const tbody = document.getElementById("sellersTable");
+    tbody.innerHTML = "";
+
+    sellers.forEach(seller => {
+      // Check if user is actually a seller (handle various seller role patterns)
+      const isSeller = seller.role && (
+        seller.role === "seller" || 
+        seller.role.startsWith("seller") || 
+        seller.role === "seller1" || 
+        seller.role === "seller2" || 
+        seller.role === "seller3"
+      );
+
+      if (!isSeller) return; // Skip non-sellers
+
+      const sellerProducts = allProducts.filter(p => p.seller === seller.username);
+      const sellerOrders = allOrders.filter(o => o.seller === seller.username);
+      const sellerRevenue = sellerOrders.reduce((sum, order) => sum + parseFloat(order.total || 0), 0);
+      
+      // Check if seller is suspended
+      const isSuspended = seller.status === 'suspended';
+      const statusClass = isSuspended ? "text-red-600" : (seller.subscriptionWeeks > 0 ? "text-green-600" : "text-yellow-600");
+      const statusText = isSuspended ? "Suspended" : (seller.subscriptionWeeks > 0 ? "Active" : "Inactive");
+
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td class="py-3 px-4">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
+              <span class="text-indigo-600 font-semibold text-sm">${seller.username.charAt(0).toUpperCase()}</span>
+            </div>
+            <div>
+              <div class="font-medium text-gray-900">${seller.username}</div>
+              <div class="text-sm text-gray-500">${seller.email}</div>
+            </div>
+          </div>
+        </td>
+        <td class="py-3 px-4">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+            ${seller.plan || 'Free'}
+          </span>
+        </td>
+        <td class="py-3 px-4 text-gray-900">${sellerProducts.length}</td>
+        <td class="py-3 px-4 text-gray-900">
+          ${getSellerRevenueByCurrency(seller.username)}
+        </td>
+        <td class="py-3 px-4">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusClass === 'text-green-600' ? 'bg-green-100 text-green-800' : statusClass === 'text-red-600' ? 'bg-red-100 text-red-800' : 'bg-yellow-100 text-yellow-800'}">
+            ${statusText}
+          </span>
+        </td>
+        <td class="py-3 px-4">
+          <div class="flex items-center gap-2 flex-wrap">
+            <button onclick="viewSellerDetails('${seller.username}')" class="text-indigo-600 hover:text-indigo-900 text-sm font-medium">
+              View Details
+            </button>
+            <button onclick="emailSeller('${seller.username}')" class="text-blue-600 hover:text-blue-900 text-sm font-medium">
+              Email
+            </button>
+            <button onclick="forceLogoutSeller('${seller.username}')" class="text-purple-600 hover:text-purple-900 text-sm font-medium">
+              Force Logout
+            </button>
+            ${seller.status === 'suspended' ?
+              `<button onclick="unsuspendSeller('${seller.username}')" class="text-green-600 hover:text-green-900 text-sm font-medium">
+                Unsuspend
+              </button>` :
+              `<button onclick="suspendSeller('${seller.username}')" class="text-orange-600 hover:text-orange-900 text-sm font-medium">
+                Suspend
+              </button>`
+            }
+            <button onclick="deleteUser('${seller.username}', 'seller')" class="text-red-600 hover:text-red-900 text-sm font-medium">
+              Delete
+            </button>
+          </div>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  // Load buyers section
+  function loadBuyersSection() {
+    const buyers = allUsers.filter(u => u.role === "buyer" || u.role === "user");
+    const buyerOrders = {};
+    const buyerSpending = {};
+
+    // Calculate buyer metrics
+    allOrders.forEach(order => {
+      const buyerEmail = order.buyer?.email;
+      if (buyerEmail) {
+        buyerOrders[buyerEmail] = (buyerOrders[buyerEmail] || 0) + 1;
+        buyerSpending[buyerEmail] = (buyerSpending[buyerEmail] || 0) + parseFloat(order.total || 0);
+      }
+    });
+
+    const repeatCustomers = Object.values(buyerOrders).filter(count => count > 1).length;
+    const totalSpending = Object.values(buyerSpending).reduce((sum, amount) => sum + amount, 0);
+    const avgOrderValue = allOrders.length > 0 ? totalSpending / allOrders.length : 0;
+    const customerLTV = buyers.length > 0 ? totalSpending / buyers.length : 0;
+
+    // Update metrics
+    document.getElementById("buyerCount").textContent = buyers.length;
+    document.getElementById("repeatCustomers").textContent = repeatCustomers;
+    document.getElementById("avgOrderValue").textContent = `$${avgOrderValue.toFixed(2)}`;
+    document.getElementById("customerLTV").textContent = `$${customerLTV.toFixed(2)}`;
+
+    // Load charts and tables
+    loadBuyerRegionChart();
+    loadPurchaseFrequencyChart();
+    loadTopBuyersTable();
+  }
+
+  // Load orders section
+  function loadOrdersSection() {
+    const totalOrders = allOrders.length;
+    const pendingOrders = allOrders.filter(o => o.status?.toLowerCase() === "pending").length;
+    const deliveredOrders = allOrders.filter(o => o.status?.toLowerCase() === "delivered").length;
+    const cancelledOrders = allOrders.filter(o => o.status?.toLowerCase() === "cancelled").length;
+    const totalOrderValue = allOrders.reduce((sum, order) => sum + parseFloat(order.total || 0), 0);
+
+    // Update metrics
+    document.getElementById("totalOrders").textContent = totalOrders;
+    document.getElementById("pendingOrders").textContent = pendingOrders;
+    document.getElementById("deliveredOrders").textContent = deliveredOrders;
+    document.getElementById("cancelledOrders").textContent = cancelledOrders;
+    document.getElementById("totalOrderValue").textContent = `$${totalOrderValue.toFixed(2)}`;
+
+    // Load orders table
+    loadOrdersTable(allOrders);
+  }
+
+  // Load orders table
+  function loadOrdersTable(orders) {
+    const tbody = document.getElementById("ordersTable");
+    tbody.innerHTML = "";
+
+    orders.slice(0, 50).forEach(order => { // Limit to 50 for performance
+      const statusColors = {
+        pending: "bg-yellow-100 text-yellow-800",
+        confirmed: "bg-blue-100 text-blue-800",
+        ready: "bg-indigo-100 text-indigo-800",
+        delivered: "bg-green-100 text-green-800",
+        cancelled: "bg-red-100 text-red-800"
+      };
+      
+      const statusClass = statusColors[order.status?.toLowerCase()] || "bg-gray-100 text-gray-800";
+      const orderDate = new Date(order.createdAt).toLocaleDateString();
+
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td class="py-3 px-4 font-mono text-sm">${order.orderId || order.id}</td>
+        <td class="py-3 px-4">
+          <div class="flex items-center gap-3">
+            <img src="${getProductImageUrl(order.productImage) || 'https://via.placeholder.com/40'}" class="w-10 h-10 rounded object-cover">
+            <span class="font-medium">${order.productName}</span>
+          </div>
+        </td>
+        <td class="py-3 px-4">
+          <div>
+            <div class="font-medium">${order.buyer?.name || 'N/A'}</div>
+            <div class="text-sm text-gray-500">${order.buyer?.email || 'N/A'}</div>
+          </div>
+        </td>
+        <td class="py-3 px-4 font-medium">${order.seller}</td>
+        <td class="py-3 px-4 font-semibold">$${order.total}</td>
+        <td class="py-3 px-4">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusClass}">
+            ${order.status}
+          </span>
+        </td>
+        <td class="py-3 px-4 text-sm text-gray-500">${orderDate}</td>
+        <td class="py-3 px-4">
+          <div class="flex items-center gap-2">
+            <button onclick="openReviewRequestModal('${order.orderId || order.id}', '${order.buyer?.email}', '${order.productName}', '${order.productImage}', '${order.seller}')" class="text-blue-600 hover:text-blue-900 text-xs font-medium">
+              ⭐ Request Review
+            </button>
+            <button onclick="deleteOrder('${order.orderId || order.id}')" class="text-red-600 hover:text-red-900 text-xs font-medium">
+              Delete
+            </button>
+          </div>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  // Load products section
+  function loadProductsSection() {
+    const totalProducts = allProducts.length;
+    const categories = [...new Set(allProducts.map(p => p.category).filter(Boolean))];
+    const totalViews = allProducts.reduce((sum, p) => sum + (p.views || 0), 0);
+    const avgPrice = allProducts.length > 0 ? 
+      allProducts.reduce((sum, p) => sum + (p.price || 0), 0) / allProducts.length : 0;
+
+    // Update metrics
+    document.getElementById("productCount").textContent = totalProducts;
+    document.getElementById("categoryCount").textContent = categories.length;
+    document.getElementById("avgProductPrice").textContent = `$${avgPrice.toFixed(2)}`;
+    document.getElementById("totalProductViews").textContent = totalViews;
+
+    // Load charts and tables
+    loadProductCategoryChart();
+    loadTopProductsChart();
+    loadProductsTable();
+  }
+
+  // Load products table
+  function loadProductsTable() {
+    const tbody = document.getElementById("productsTable");
+    tbody.innerHTML = "";
+
+    allProducts.forEach(product => {
+      const productSales = allOrders.filter(o => o.productId === product.id).length;
+      
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td class="py-3 px-4">
+          <div class="flex items-center gap-3">
+            <img src="${getProductImageUrl(product.image) || 'https://via.placeholder.com/40'}" class="w-10 h-10 rounded object-cover">
+            <div>
+              <div class="font-medium">${product.name}</div>
+              <div class="text-sm text-gray-500">${product.description?.substring(0, 50)}...</div>
+            </div>
+          </div>
+        </td>
+        <td class="py-3 px-4 font-medium">${product.seller}</td>
+        <td class="py-3 px-4">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+            ${product.category || 'Uncategorized'}
+          </span>
+        </td>
+        <td class="py-3 px-4 font-semibold">$${product.price}</td>
+        <td class="py-3 px-4">${product.views || 0}</td>
+        <td class="py-3 px-4 font-medium">${productSales}</td>
+        <td class="py-3 px-4">
+          <div class="flex items-center gap-2">
+            <button onclick="pushToMarketplace('${product.id}')" class="text-green-600 hover:text-green-900 text-sm font-medium">
+              🚀 Push to Marketplace
+            </button>
+            <button onclick="deleteProduct('${product.id}')" class="text-red-600 hover:text-red-900 text-sm font-medium">
+              🗑️ Delete
+            </button>
+          </div>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  // Load subscriptions section
+  function loadSubscriptionsSection() {
+    const sellers = allUsers.filter(u => {
+      const role = u.role;
+      return role && (
+        role === "seller" ||
+        role.startsWith("seller") ||
+        role === "seller1" ||
+        role === "seller2" ||
+        role === "seller3"
+      );
+    });
+    const activeSubscriptions = sellers.filter(s => s.plan && s.plan !== "free" && s.subscriptionWeeks > 0);
+    const expiringSoon = sellers.filter(s => s.subscriptionWeeks > 0 && s.subscriptionWeeks <= 2);
+    
+    // Calculate REAL monthly revenue from subscription payments
+    const monthlyRevenue = sellers.reduce((sum, seller) => {
+      if (seller.subscriptionPayments && seller.subscriptionPayments.length > 0) {
+        // Get payments from the last 30 days
+        const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
+        const recentPayments = seller.subscriptionPayments.filter(payment => {
+          const paymentDate = new Date(payment.date).getTime();
+          return paymentDate >= thirtyDaysAgo;
+        });
+        
+        // Sum up the payments
+        const sellerMonthlyRevenue = recentPayments.reduce((total, payment) => {
+          return total + (parseFloat(payment.amount) || 0);
+        }, 0);
+        
+        return sum + sellerMonthlyRevenue;
+      }
+      return sum;
+    }, 0);
+
+    // Calculate churn rate based on expired subscriptions
+    const totalSellers = sellers.length;
+    const expiredSellers = sellers.filter(s => s.subscriptionWeeks <= 0 && s.plan !== "free").length;
+    const churnRate = totalSellers > 0 ? ((expiredSellers / totalSellers) * 100).toFixed(1) : "0.0";
+
+    // Update metrics
+    document.getElementById("activeSubCount").textContent = activeSubscriptions.length;
+    document.getElementById("monthlySubRevenue").textContent = `$${monthlyRevenue.toFixed(2)}`;
+    document.getElementById("expiringSubs").textContent = expiringSoon.length;
+    document.getElementById("churnRate").textContent = `${churnRate}%`;
+
+    // Load charts and tables
+    loadSubscriptionPlansChart();
+    loadSubscriptionsTable();
+  }
+
+  // Calculate subscription weeks from payment data if subscriptionWeeks is missing
+  function calculateSubscriptionWeeks(seller) {
+    // If subscriptionWeeks is explicitly set, use it
+    if (seller.subscriptionWeeks !== undefined && seller.subscriptionWeeks !== null) {
+      return seller.subscriptionWeeks;
+    }
+    
+    // If subscriptionWeeks is missing, calculate from payment data and next payment date
+    if (seller.nextPaymentDate) {
+      const nextPayment = new Date(seller.nextPaymentDate);
+      const now = new Date();
+      const timeDiff = nextPayment.getTime() - now.getTime();
+      
+      if (timeDiff > 0) {
+        // Calculate weeks remaining
+        const weeksRemaining = Math.ceil(timeDiff / (1000 * 60 * 60 * 24 * 7));
+        return Math.max(0, weeksRemaining);
+      }
+    }
+    
+    // Check if user is on trial
+    if (seller.trialActive && seller.trialEndsAt) {
+      const trialEnd = new Date(seller.trialEndsAt);
+      const now = new Date();
+      const timeDiff = trialEnd.getTime() - now.getTime();
+      
+      if (timeDiff > 0) {
+        const weeksRemaining = Math.ceil(timeDiff / (1000 * 60 * 60 * 24 * 7));
+        return Math.max(0, weeksRemaining);
+      }
+    }
+    
+    // If no subscription data, return 0
+    return 0;
+  }
+
+  // Load subscriptions table
+  function loadSubscriptionsTable() {
+    const tbody = document.getElementById("subscriptionsTable");
+    tbody.innerHTML = "";
+
+    const sellers = allUsers.filter(u => {
+      const role = u.role;
+      return role && (
+        role === "seller" || 
+        role.startsWith("seller") || 
+        role === "seller1" || 
+        role === "seller2" || 
+        role === "seller3"
+      );
+    });
+    
+    sellers.forEach(seller => {
+      const weeksLeft = calculateSubscriptionWeeks(seller);
+      const statusClass = weeksLeft > 0 ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800";
+      const statusText = weeksLeft > 0 ? "Active" : "Expired";
+      
+      // Calculate time until next payment
+      let nextPaymentInfo = 'N/A';
+      let timerElement = '';
+      
+      if (seller.nextPaymentDate) {
+        const nextPayment = new Date(seller.nextPaymentDate);
+        const now = new Date();
+        const timeDiff = nextPayment.getTime() - now.getTime();
+        
+        if (timeDiff > 0) {
+          const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+          
+          nextPaymentInfo = nextPayment.toLocaleDateString();
+          timerElement = `
+            <div class="text-xs text-gray-600 mt-1">
+              <span class="font-mono bg-gray-100 px-2 py-1 rounded" id="timer-${seller.username}">
+                ${days}d ${hours}h ${minutes}m
+              </span>
+            </div>
+          `;
+        } else {
+          nextPaymentInfo = `<span class="text-red-600">Overdue</span>`;
+          timerElement = `
+            <div class="text-xs text-red-600 mt-1 font-semibold">
+              Payment Overdue
+            </div>
+          `;
+        }
+      }
+      
+      // Show subscription payment history if available
+      let paymentHistory = '';
+      if (seller.subscriptionPayments && seller.subscriptionPayments.length > 0) {
+        const lastPayment = seller.subscriptionPayments[seller.subscriptionPayments.length - 1];
+        paymentHistory = `
+          <div class="text-xs text-gray-500 mt-1">
+            Last: ${lastPayment.type} - $${lastPayment.amount || 0}
+          </div>
+        `;
+      }
+      
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td class="py-3 px-4">
+          <div class="font-medium">${seller.username}</div>
+          <div class="text-sm text-gray-500">${seller.email}</div>
+          ${paymentHistory}
+        </td>
+        <td class="py-3 px-4">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+            ${seller.plan || 'Free'}
+          </span>
+          ${seller.trialActive ? '<div class="text-xs text-blue-600 mt-1">Trial Active</div>' : ''}
+          ${seller.trial === 'none' && seller.plan !== 'free' ? '<div class="text-xs text-green-600 mt-1">Paid Plan</div>' : ''}
+        </td>
+        <td class="py-3 px-4 font-medium">${weeksLeft}</td>
+        <td class="py-3 px-4">
+          <div>${nextPaymentInfo}</div>
+          ${timerElement}
+        </td>
+        <td class="py-3 px-4">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusClass}">
+            ${statusText}
+          </span>
+          ${seller.trialActive ? '<div class="text-xs text-blue-600 mt-1">Trial</div>' : ''}
+        </td>
+        <td class="py-3 px-4">
+          <div class="flex flex-col gap-1">
+            <button onclick="emailSeller('${seller.username}')" class="text-blue-600 hover:text-blue-900 text-sm font-medium">
+              Email
+            </button>
+            <button onclick="refreshSellerData('${seller.username}')" class="text-green-600 hover:text-green-900 text-xs font-medium">
+              Refresh
+            </button>
+            <button onclick="quickUpdateSubscription('${seller.username}')" class="text-purple-600 hover:text-purple-900 text-xs font-medium">
+              Quick Update
+            </button>
+          </div>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+    
+    // Start the countdown timers
+    startSubscriptionTimers();
+  }
+
+  // Function to update subscription countdown timers
+  function startSubscriptionTimers() {
+    const sellers = allUsers.filter(u => {
+      const role = u.role;
+      return role && (
+        role === "seller" || 
+        role.startsWith("seller") || 
+        role === "seller1" || 
+        role === "seller2" || 
+        role === "seller3"
+      ) && u.nextPaymentDate;
+    });
+    
+    // Clear any existing timer interval
+    if (window.subscriptionTimerInterval) {
+      clearInterval(window.subscriptionTimerInterval);
+    }
+    
+    // Update timers every minute
+    window.subscriptionTimerInterval = setInterval(() => {
+      sellers.forEach(seller => {
+        const timerElement = document.getElementById(`timer-${seller.username}`);
+        if (!timerElement) return;
+        
+        const nextPayment = new Date(seller.nextPaymentDate);
+        const now = new Date();
+        const timeDiff = nextPayment.getTime() - now.getTime();
+        
+        if (timeDiff > 0) {
+          const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+          
+          timerElement.textContent = `${days}d ${hours}h ${minutes}m`;
+          
+          // Change color based on urgency
+          if (days <= 1) {
+            timerElement.className = "font-mono bg-red-100 text-red-800 px-2 py-1 rounded";
+          } else if (days <= 3) {
+            timerElement.className = "font-mono bg-yellow-100 text-yellow-800 px-2 py-1 rounded";
+          } else {
+            timerElement.className = "font-mono bg-gray-100 px-2 py-1 rounded";
+          }
+        } else {
+          timerElement.textContent = "Overdue";
+          timerElement.className = "font-mono bg-red-100 text-red-800 px-2 py-1 rounded";
+        }
+      });
+    }, 60000); // Update every minute
+  }
+
+  // Load analytics section
+  function loadAnalyticsSection() {
+    loadSalesTrendsChart();
+    loadUserGrowthChart();
+    loadGeographicChart();
+    loadActivityHoursChart();
+  }
+
+  // Load revenue section
+  function loadRevenueSection() {
+    const totalRevenue = allOrders.reduce((sum, order) => sum + parseFloat(order.total || 0), 0);
+    const commissionRate = 0.1; // 10% commission
+    const commissionEarned = totalRevenue * commissionRate;
+    
+    const sellers = allUsers.filter(u => {
+      const role = u.role;
+      return role && (
+        role === "seller" ||
+        role.startsWith("seller") ||
+        role === "seller1" ||
+        role === "seller2" ||
+        role === "seller3"
+      );
+    });
+    
+    // Calculate REAL total subscription revenue from all payments
+    const subscriptionRevenue = sellers.reduce((sum, seller) => {
+      if (seller.subscriptionPayments && seller.subscriptionPayments.length > 0) {
+        const totalSellerPayments = seller.subscriptionPayments.reduce((total, payment) => {
+          return total + (parseFloat(payment.amount) || 0);
+        }, 0);
+        return sum + totalSellerPayments;
+      }
+      return sum;
+    }, 0);
+
+    // Calculate real growth rate based on last 30 days vs previous 30 days
+    const now = Date.now();
+    const thirtyDaysAgo = now - (30 * 24 * 60 * 60 * 1000);
+    const sixtyDaysAgo = now - (60 * 24 * 60 * 60 * 1000);
+    
+    const recentRevenue = allOrders.filter(order => {
+      const orderDate = new Date(order.createdAt).getTime();
+      return orderDate >= thirtyDaysAgo;
+    }).reduce((sum, order) => sum + parseFloat(order.total || 0), 0);
+    
+    const previousRevenue = allOrders.filter(order => {
+      const orderDate = new Date(order.createdAt).getTime();
+      return orderDate >= sixtyDaysAgo && orderDate < thirtyDaysAgo;
+    }).reduce((sum, order) => sum + parseFloat(order.total || 0), 0);
+    
+    const growthRate = previousRevenue > 0 ?
+      (((recentRevenue - previousRevenue) / previousRevenue) * 100).toFixed(1) :
+      "0.0";
+
+    // Update metrics
+    document.getElementById("revenueTotal").textContent = `$${totalRevenue.toFixed(2)}`;
+    document.getElementById("commissionEarned").textContent = `$${commissionEarned.toFixed(2)}`;
+    document.getElementById("subscriptionRevenue").textContent = `$${subscriptionRevenue.toFixed(2)}`;
+    document.getElementById("revenueGrowthRate").textContent = `${growthRate >= 0 ? '+' : ''}${growthRate}%`;
+
+    // Load charts and tables
+    loadRevenueStreamsChart();
+    loadMonthlyRevenueChart();
+    loadTopRevenueTable();
+  }
+
+  // Load themes section
+  function loadThemesSection() {
+    loadThemePreview();
+    loadSellerThemesTable();
+  }
+
+  // Load theme preview
+  function loadThemePreview() {
+    const previewContainer = document.getElementById("themePreview");
+    if (!previewContainer) return;
+
+    const themes = [
+      {
+        name: "classic",
+        title: "Classic Layout",
+        description: "Clean and professional design",
+        preview: "https://via.placeholder.com/200x150/4f46e5/ffffff?text=Classic"
+      },
+      {
+        name: "modern",
+        title: "Modern Layout",
+        description: "Sleek contemporary design",
+        preview: "https://via.placeholder.com/200x150/10b981/ffffff?text=Modern"
+      },
+      {
+        name: "cyber",
+        title: "Cyber Layout",
+        description: "Futuristic tech-inspired design",
+        preview: "https://via.placeholder.com/200x150/8b5cf6/ffffff?text=Cyber"
+      },
+      {
+        name: "vintage",
+        title: "Vintage Layout",
+        description: "Classic retro-inspired design",
+        preview: "https://via.placeholder.com/200x150/f59e0b/ffffff?text=Vintage"
+      },
+      {
+        name: "minimalist",
+        title: "Minimalist Layout",
+        description: "Simple and elegant design",
+        preview: "https://via.placeholder.com/200x150/ef4444/ffffff?text=Minimal"
+      },
+      {
+        name: "elegant",
+        title: "elegant Layout",
+        description: "Sleek theme for modern look",
+        preview: "https://via.placeholder.com/200x150/111827/ffffff?text=Dark+Mode"
+      },
+      {
+        name: "nature",
+        title: "Nature Layout",
+        description: "Earthy tones and natural elements",
+        preview: "https://via.placeholder.com/200x150/34d399/ffffff?text=Nature"
+      }
+    ];
+
+    previewContainer.innerHTML = themes.map(theme => `
+      <div class="border border-gray-200 rounded-lg p-3 hover:shadow-md transition-shadow">
+        <img src="${theme.preview}" alt="${theme.title}" class="w-full h-24 object-cover rounded mb-2">
+        <h5 class="font-medium text-gray-800">${theme.title}</h5>
+        <p class="text-xs text-gray-600">${theme.description}</p>
+      </div>
+    `).join('');
+  }
+
+  // Load seller themes table
+  function loadSellerThemesTable() {
+    const tbody = document.getElementById("sellerThemesTable");
+    if (!tbody) return;
+
+    tbody.innerHTML = "";
+
+    const sellers = allUsers.filter(u => {
+      const role = u.role;
+      return role && (
+        role === "seller" || 
+        role.startsWith("seller") || 
+        role === "seller1" || 
+        role === "seller2" || 
+        role === "seller3"
+      );
+    });
+    
+    sellers.forEach(seller => {
+      const currentTheme = seller.layoutTheme || 'classic';
+      const lastUpdated = seller.themeUpdatedAt ? new Date(seller.themeUpdatedAt).toLocaleDateString() : 'Never';
+      
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td class="py-3 px-4">
+          <div class="font-medium">${seller.username}</div>
+          <div class="text-sm text-gray-500">${seller.email}</div>
+        </td>
+        <td class="py-3 px-4">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+            ${currentTheme.charAt(0).toUpperCase() + currentTheme.slice(1)}
+          </span>
+        </td>
+        <td class="py-3 px-4 text-sm text-gray-500">${lastUpdated}</td>
+        <td class="py-3 px-4">
+          <button onclick="quickChangeTheme('${seller.username}', '${currentTheme}')" class="text-purple-600 hover:text-purple-900 text-sm font-medium">
+            Quick Change
+          </button>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  // Change seller theme
+  async function changeSellerTheme() {
+    const username = document.getElementById("themeSellerUsername").value.trim();
+    const newTheme = document.getElementById("themeLayoutSelect").value;
+    
+    if (!username || !newTheme) {
+      showNotification("Please enter username and select a theme.", "error");
+      return;
+    }
+    
+    try {
+      const response = await fetch(`${API}/admin/change-theme`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, theme: newTheme })
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        showNotification(`✅ Theme changed to ${newTheme} for ${username}.`, "success");
+        // Clear inputs
+        document.getElementById("themeSellerUsername").value = "";
+        document.getElementById("themeLayoutSelect").value = "";
+        // Reload data to update table
+        await reloadAllData();
+        loadSellerThemesTable();
+      } else {
+        showNotification(result.error || "Failed to change theme", "error");
+      }
+    } catch (error) {
+      console.error('Error changing theme:', error);
+      showNotification("Error changing theme", "error");
+    }
+  }
+
+  // Quick change theme (from table)
+  async function quickChangeTheme(username, currentTheme) {
+    const themes = ['classic', 'modern', 'cyber', 'vintage'];
+    const currentIndex = themes.indexOf(currentTheme);
+    const nextTheme = themes[(currentIndex + 1) % themes.length];
+    
+    if (!confirm(`Change ${username}'s theme from ${currentTheme} to ${nextTheme}?`)) {
+      return;
+    }
+    
+    try {
+      const response = await fetch(`${API}/admin/change-theme`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, theme: nextTheme })
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        showNotification(`✅ Theme changed to ${nextTheme} for ${username}.`, "success");
+        await reloadAllData();
+        loadSellerThemesTable();
+      } else {
+        showNotification(result.error || "Failed to change theme", "error");
+      }
+    } catch (error) {
+      console.error('Error changing theme:', error);
+      showNotification("Error changing theme", "error");
+    }
+  }
+
+  // Chart loading functions
+  function loadPlatformGrowthChart() {
+    const ctx = document.getElementById("platformGrowthChart");
+    if (!ctx) return;
+
+    if (charts.platformGrowth) charts.platformGrowth.destroy();
+
+    charts.platformGrowth = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+        datasets: [
+          {
+            label: "Sellers",
+            data: [5, 8, 12, 18, 25, 32],
+            borderColor: "#3b82f6",
+            backgroundColor: "rgba(59, 130, 246, 0.1)",
+            tension: 0.4
+          },
+          {
+            label: "Buyers",
+            data: [15, 25, 40, 60, 85, 120],
+            borderColor: "#10b981",
+            backgroundColor: "rgba(16, 185, 129, 0.1)",
+            tension: 0.4
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: "top" }
+        },
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  }
+
+  function loadRevenueBreakdownChart(revenueByCurrency = {}) {
+    const ctx = document.getElementById("revenueBreakdownChart");
+    if (!ctx) return;
+
+    if (charts.revenueBreakdown) charts.revenueBreakdown.destroy();
+
+    // Create chart data based on currencies
+    const currencies = Object.keys(revenueByCurrency);
+    const amounts = Object.values(revenueByCurrency);
+    const colors = ['#3b82f6', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#84cc16'];
+
+    charts.revenueBreakdown = new Chart(ctx, {
+      type: "doughnut",
+      data: {
+        labels: currencies.length > 0 ? currencies : ['USD'],
+        datasets: [{
+          data: amounts.length > 0 ? amounts : [0],
+          backgroundColor: colors.slice(0, Math.max(currencies.length, 1))
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: "bottom" },
+          title: {
+            display: true,
+            text: 'Revenue by Currency'
+          }
+        }
+      }
+    });
+  }
+
+
+  function loadRecentActivity() {
+    const activityDiv = document.getElementById("recentActivity");
+    const recentOrders = allOrders.slice(0, 5);
+    
+    activityDiv.innerHTML = recentOrders.map(order => `
+      <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+        <div class="flex-1">
+          <p class="text-sm font-medium">New order from ${order.buyer?.name || 'Unknown'}</p>
+          <p class="text-xs text-gray-500">${order.productName} - $${order.total}</p>
+        </div>
+        <span class="text-xs text-gray-400">${new Date(order.createdAt).toLocaleDateString()}</span>
+      </div>
+    `).join('');
+  }
+
+  // Additional chart functions
+  function loadBuyerRegionChart() {
+    const ctx = document.getElementById("buyerRegionChart");
+    if (!ctx) return;
+
+    const regionData = {};
+    allOrders.forEach(order => {
+      const country = order.delivery?.country || 'Unknown';
+      regionData[country] = (regionData[country] || 0) + 1;
+    });
+
+    if (charts.buyerRegion) charts.buyerRegion.destroy();
+
+    charts.buyerRegion = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: Object.keys(regionData),
+        datasets: [{
+          label: "Orders by Region",
+          data: Object.values(regionData),
+          backgroundColor: "#3b82f6"
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+  }
+
+  function loadPurchaseFrequencyChart() {
+    const ctx = document.getElementById("purchaseFrequencyChart");
+    if (!ctx) return;
+
+    if (charts.purchaseFreq) charts.purchaseFreq.destroy();
+
+    charts.purchaseFreq = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: ["1 Order", "2-3 Orders", "4-5 Orders", "6+ Orders"],
+        datasets: [{
+          label: "Customer Distribution",
+          data: [45, 30, 15, 10],
+          borderColor: "#10b981",
+          backgroundColor: "rgba(16, 185, 129, 0.1)",
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+  }
+
+  function loadTopBuyersTable() {
+    const tbody = document.getElementById("topBuyersTable");
+    const buyerStats = {};
+
+    allOrders.forEach(order => {
+      const email = order.buyer?.email;
+      if (email) {
+        if (!buyerStats[email]) {
+          buyerStats[email] = {
+            name: order.buyer.name,
+            email: email,
+            orders: 0,
+            totalSpent: 0,
+            lastOrder: order.createdAt
+          };
+        }
+        buyerStats[email].orders++;
+        buyerStats[email].totalSpent += parseFloat(order.total || 0);
+        if (order.createdAt > buyerStats[email].lastOrder) {
+          buyerStats[email].lastOrder = order.createdAt;
+        }
+      }
+    });
+
+    const topBuyers = Object.values(buyerStats)
+      .sort((a, b) => b.totalSpent - a.totalSpent)
+      .slice(0, 10);
+
+    tbody.innerHTML = topBuyers.map(buyer => `
+      <tr>
+        <td class="py-3 px-4">
+          <div class="font-medium">${buyer.name}</div>
+          <div class="text-sm text-gray-500">${buyer.email}</div>
+        </td>
+        <td class="py-3 px-4 font-medium">${buyer.orders}</td>
+        <td class="py-3 px-4 font-semibold">$${buyer.totalSpent.toFixed(2)}</td>
+        <td class="py-3 px-4 text-sm">${new Date(buyer.lastOrder).toLocaleDateString()}</td>
+        <td class="py-3 px-4">
+          <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+            Active
+          </span>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function loadProductCategoryChart() {
+    const ctx = document.getElementById("productCategoryChart");
+    if (!ctx) return;
+
+    const categoryData = {};
+    allProducts.forEach(product => {
+      const category = product.category || 'Uncategorized';
+      categoryData[category] = (categoryData[category] || 0) + 1;
+    });
+
+    if (charts.productCategory) charts.productCategory.destroy();
+
+    charts.productCategory = new Chart(ctx, {
+      type: "doughnut",
+      data: {
+        labels: Object.keys(categoryData),
+        datasets: [{
+          data: Object.values(categoryData),
+          backgroundColor: ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"]
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: "bottom" } }
+      }
+    });
+  }
+
+  function loadTopProductsChart() {
+    const ctx = document.getElementById("topProductsChart");
+    if (!ctx) return;
+
+    const productSales = {};
+    allOrders.forEach(order => {
+      const productName = order.productName;
+      productSales[productName] = (productSales[productName] || 0) + 1;
+    });
+
+    const topProducts = Object.entries(productSales)
+      .sort(([,a], [,b]) => b - a)
+      .slice(0, 5);
+
+    if (charts.topProducts) charts.topProducts.destroy();
+
+    charts.topProducts = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: topProducts.map(([name]) => name),
+        datasets: [{
+          label: "Sales",
+          data: topProducts.map(([,sales]) => sales),
+          backgroundColor: "#3b82f6"
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+  }
+
+  function loadSubscriptionPlansChart() {
+    const ctx = document.getElementById("subscriptionPlansChart");
+    if (!ctx) return;
+
+    const planData = {};
+    allUsers.filter(u => {
+      const role = u.role;
+      return role && (
+        role === "seller" || 
+        role.startsWith("seller") || 
+        role === "seller1" || 
+        role === "seller2" || 
+        role === "seller3"
+      );
+    }).forEach(seller => {
+      const plan = seller.plan || 'free';
+      planData[plan] = (planData[plan] || 0) + 1;
+    });
+
+    if (charts.subscriptionPlans) charts.subscriptionPlans.destroy();
+
+    charts.subscriptionPlans = new Chart(ctx, {
+      type: "doughnut",
+      data: {
+        labels: Object.keys(planData),
+        datasets: [{
+          data: Object.values(planData),
+          backgroundColor: ["#6b7280", "#3b82f6", "#10b981", "#f59e0b"]
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: "bottom" } }
+      }
+    });
+  }
+
+  function loadSalesTrendsChart() {
+    const ctx = document.getElementById("salesTrendsChart");
+    if (!ctx) return;
+
+    if (charts.salesTrends) charts.salesTrends.destroy();
+
+    charts.salesTrends = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+        datasets: [{
+          label: "Sales ($)",
+          data: [1200, 1900, 3000, 5000, 4200, 6800],
+          borderColor: "#3b82f6",
+          backgroundColor: "rgba(59, 130, 246, 0.1)",
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+  }
+
+  function loadUserGrowthChart() {
+    const ctx = document.getElementById("userGrowthChart");
+    if (!ctx) return;
+
+    if (charts.userGrowth) charts.userGrowth.destroy();
+
+    charts.userGrowth = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+        datasets: [{
+          label: "New Users",
+          data: [12, 19, 25, 32, 28, 45],
+          backgroundColor: "#10b981"
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+  }
+
+  function loadGeographicChart() {
+    const ctx = document.getElementById("geographicChart");
+    if (!ctx) return;
+
+    const countryData = {};
+    allOrders.forEach(order => {
+      const country = order.delivery?.country || 'Unknown';
+      countryData[country] = (countryData[country] || 0) + parseFloat(order.total || 0);
+    });
+
+    if (charts.geographic) charts.geographic.destroy();
+
+    charts.geographic = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: Object.keys(countryData),
+        datasets: [{
+          label: "Revenue by Country ($)",
+          data: Object.values(countryData),
+          backgroundColor: "#8b5cf6"
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+  }
+
+  function loadActivityHoursChart() {
+    const ctx = document.getElementById("activityHoursChart");
+    if (!ctx) return;
+
+    if (charts.activityHours) charts.activityHours.destroy();
+
+    // Calculate actual activity by hour from order data
+    const hourlyActivity = Array(24).fill(0);
+    
+    allOrders.forEach(order => {
+      const orderDate = new Date(order.createdAt);
+      const hour = orderDate.getHours();
+      const revenue = parseFloat(order.total || 0);
+      hourlyActivity[hour] += revenue;
+    });
+
+    // Create labels for every 4 hours
+    const labels = [];
+    const data = [];
+    for (let i = 0; i < 24; i += 4) {
+      labels.push(`${String(i).padStart(2, '0')}:00`);
+      // Average the 4-hour blocks
+      const blockTotal = hourlyActivity.slice(i, i + 4).reduce((sum, val) => sum + val, 0);
+      data.push(blockTotal / 4);
+    }
+
+    charts.activityHours = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: labels,
+        datasets: [{
+          label: "Activity Level ($)",
+          data: data,
+          borderColor: "#f59e0b",
+          backgroundColor: "rgba(245, 158, 11, 0.1)",
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+  }
+
+  function loadRevenueStreamsChart() {
+    const ctx = document.getElementById("revenueStreamsChart");
+    if (!ctx) return;
+
+    const totalRevenue = allOrders.reduce((sum, order) => sum + parseFloat(order.total || 0), 0);
+    const commission = totalRevenue * 0.1;
+    
+    // Calculate REAL subscription revenue from all seller payments
+    const sellers = allUsers.filter(u => {
+      const role = u.role;
+      return role && (role === "seller" || role.startsWith("seller"));
+    });
+    
+    const subscriptions = sellers.reduce((sum, seller) => {
+      if (seller.subscriptionPayments && seller.subscriptionPayments.length > 0) {
+        const totalSellerPayments = seller.subscriptionPayments.reduce((total, payment) => {
+          return total + (parseFloat(payment.amount) || 0);
+        }, 0);
+        return sum + totalSellerPayments;
+      }
+      return sum;
+    }, 0);
+
+    // Calculate other revenue (could be from fees, etc.)
+    const otherRevenue = Math.max(0, (totalRevenue * 0.05)); // 5% for other fees
+
+    if (charts.revenueStreams) charts.revenueStreams.destroy();
+
+    charts.revenueStreams = new Chart(ctx, {
+      type: "doughnut",
+      data: {
+        labels: ["Sales Commission", "Subscriptions", "Other"],
+        datasets: [{
+          data: [commission, subscriptions, otherRevenue],
+          backgroundColor: ["#3b82f6", "#10b981", "#f59e0b"]
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { position: "bottom" } }
+      }
+    });
+  }
+
+  function loadMonthlyRevenueChart() {
+    const ctx = document.getElementById("monthlyRevenueChart");
+    if (!ctx) return;
+
+    if (charts.monthlyRevenue) charts.monthlyRevenue.destroy();
+
+    // Calculate actual monthly revenue from orders
+    const monthlyData = {};
+    const now = new Date();
+    
+    // Initialize last 6 months
+    for (let i = 5; i >= 0; i--) {
+      const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const monthKey = date.toLocaleDateString('en-US', { month: 'short' });
+      monthlyData[monthKey] = 0;
+    }
+    
+    // Calculate revenue by month from actual orders
+    allOrders.forEach(order => {
+      const orderDate = new Date(order.createdAt);
+      const monthKey = orderDate.toLocaleDateString('en-US', { month: 'short' });
+      const revenue = parseFloat(order.total || 0);
+      
+      if (monthlyData.hasOwnProperty(monthKey)) {
+        monthlyData[monthKey] += revenue;
+      }
+    });
+
+    const labels = Object.keys(monthlyData);
+    const data = Object.values(monthlyData);
+
+    charts.monthlyRevenue = new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: labels,
+        datasets: [{
+          label: "Monthly Revenue ($)",
+          data: data,
+          borderColor: "#10b981",
+          backgroundColor: "rgba(16, 185, 129, 0.1)",
+          tension: 0.4,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: { y: { beginAtZero: true } }
+      }
+    });
+  }
+
+  function loadTopRevenueTable() {
+    const tbody = document.getElementById("topRevenueTable");
+    const sellerRevenue = {};
+
+    allOrders.forEach(order => {
+      const seller = order.seller;
+      if (!sellerRevenue[seller]) {
+        sellerRevenue[seller] = {
+          revenue: 0,
+          orders: 0,
+          commission: 0
+        };
+      }
+      const orderTotal = parseFloat(order.total || 0);
+      sellerRevenue[seller].revenue += orderTotal;
+      sellerRevenue[seller].orders++;
+      sellerRevenue[seller].commission += orderTotal * 0.1;
+    });
+
+    const topSellers = Object.entries(sellerRevenue)
+      .sort(([,a], [,b]) => b.revenue - a.revenue)
+      .slice(0, 10);
+
+    tbody.innerHTML = topSellers.map(([seller, data]) => `
+      <tr>
+        <td class="py-3 px-4 font-medium">${seller}</td>
+        <td class="py-3 px-4 font-semibold">$${data.revenue.toFixed(2)}</td>
+        <td class="py-3 px-4 text-green-600">$${data.commission.toFixed(2)}</td>
+        <td class="py-3 px-4">${data.orders}</td>
+        <td class="py-3 px-4 text-green-600">+${Math.floor(Math.random() * 20)}%</td>
+      </tr>
+    `).join('');
+  }
+
+  // Event handlers
+  function handleSellerSearch() {
+    const searchTerm = document.getElementById("sellerSearch").value.toLowerCase();
+    const planFilter = document.getElementById("sellerPlanFilter").value;
+    
+    let sellers = allUsers.filter(u => {
+      const role = u.role;
+      return role && (
+        role === "seller" || 
+        role.startsWith("seller") || 
+        role === "seller1" || 
+        role === "seller2" || 
+        role === "seller3"
+      );
+    });
+    
+    if (searchTerm) {
+      sellers = sellers.filter(s => 
+        s.username?.toLowerCase().includes(searchTerm) ||
+        s.email?.toLowerCase().includes(searchTerm)
+      );
+    }
+    
+    if (planFilter) {
+      sellers = sellers.filter(s => s.plan === planFilter);
+    }
+    
+    loadSellersTable(sellers);
+  }
+
+  function handleOrderSearch() {
+    const searchTerm = document.getElementById("orderSearch").value.toLowerCase();
+    const statusFilter = document.getElementById("orderStatusFilter").value;
+    const dateFilter = document.getElementById("orderDateFilter").value;
+    
+    let orders = [...allOrders];
+    
+    if (searchTerm) {
+      orders = orders.filter(o => 
+        o.orderId?.toLowerCase().includes(searchTerm) ||
+        o.productName?.toLowerCase().includes(searchTerm) ||
+        o.buyer?.name?.toLowerCase().includes(searchTerm)
+      );
+    }
+    
+    if (statusFilter) {
+      orders = orders.filter(o => o.status?.toLowerCase() === statusFilter);
+    }
+    
+    if (dateFilter) {
+      const filterDate = new Date(dateFilter);
+      orders = orders.filter(o => {
+        const orderDate = new Date(o.createdAt);
+        return orderDate.toDateString() === filterDate.toDateString();
+      });
+    }
+    
+    loadOrdersTable(orders);
+  }
+
+  // Get seller revenue by currency
+  function getSellerRevenueByCurrency(sellerUsername) {
+    const sellerOrders = allOrders.filter(o => o.seller === sellerUsername);
+    const revenueByCurrency = {};
+    
+    sellerOrders.forEach(order => {
+      const currency = order.currency || 'USD';
+      const total = parseFloat(order.total || 0);
+      revenueByCurrency[currency] = (revenueByCurrency[currency] || 0) + total;
+    });
+
+    return Object.entries(revenueByCurrency)
+      .map(([currency, amount]) => `${getCurrencySymbol(currency)}${amount.toFixed(2)} ${currency}`)
+      .join('<br>') || '$0.00 USD';
+  }
+
+  // Send subscription email
+  async function sendSubscriptionEmail() {
+    const username = document.getElementById("emailSellerUsername").value.trim();
+    const emailType = document.getElementById("emailType").value;
+    const customMessage = document.getElementById("customMessage").value.trim();
+    
+    if (!username || !emailType) {
+      showNotification("Please enter username and select email type.", "error");
+      return;
+    }
+    
+    try {
+      const response = await fetch(`${API}/admin/send-subscription-email`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, emailType, customMessage })
+      });
+      const result = await response.json();
+      if (result.success) {
+        showNotification(`📧 ${emailType} email sent to ${username}.`, 'success');
+      } else {
+        showNotification(result.message || 'Failed to send email', 'error');
+      }
+      // Clear form
+      document.getElementById("emailSellerUsername").value = "";
+      document.getElementById("emailType").value = "";
+      document.getElementById("customMessage").value = "";
+      return;
+    } catch (error) {
+      console.error('Error in email function:', error);
+      showNotification("Error in email notification", "error");
+    }
+  }
+  // Add updateOrderStatus function
+  async function updateOrderStatus(orderId, newStatus) {
+    try {
+      const response = await fetch(`${API}/update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          collection: 'orders',
+          query: { $or: [{ orderId: orderId }, { _id: orderId }] },
+          updates: { status: newStatus }
+        })
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        showNotification(`✅ Order "${orderId}" status updated to ${newStatus}.`, "success");
+        await reloadAllData();
+      } else {
+        showNotification(result.message || "Failed to update order status", "error");
+      }
+    } catch (error) {
+      console.error('Error updating order status:', error);
+      showNotification("Error updating order status", "error");
+    }
+  }
+
+  // Add refresh button to admin panel
+  function addRefreshButton() {
+    const refreshButton = document.createElement('button');
+    refreshButton.innerHTML = '🔄 Refresh Data';
+    refreshButton.className = 'fixed bottom-4 right-4 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg shadow-lg transition-colors z-40';
+    refreshButton.onclick = reloadAllData;
+    document.body.appendChild(refreshButton);
+  }
+
+  // Initialize refresh button when DOM loads
+  document.addEventListener("DOMContentLoaded", () => {
+    addRefreshButton();
+  });
+
+  // Push product to marketplace
+  async function pushToMarketplace(productId) {
+    if (!confirm("Are you sure you want to push this product to the marketplace?")) {
+      return;
+    }
+    
+    try {
+      const response = await fetch(`${API}/admin/push-to-marketplace`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productId })
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        showNotification(`✅ Product pushed to marketplace successfully.`, "success");
+      } else {
+        showNotification(result.message || "Failed to push product", "error");
+      }
+    } catch (error) {
+      console.error('Error pushing product:', error);
+      showNotification("Error pushing product", "error");
+    }
+  }
+
+  // Delete product
+  async function deleteProduct(productId) {
+    if (!confirm("Are you sure you want to delete this product? This action cannot be undone.")) {
+      return;
+    }
+    
+    try {
+      const response = await fetch(`${API}/admin/delete-product`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ productId })
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        showNotification(`✅ Product deleted successfully.`, "success");
+        await reloadAllData();
+      } else {
+        showNotification(result.message || "Failed to delete product", "error");
+      }
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      showNotification("Error deleting product", "error");
+    }
+  }
+
+  // Email seller function
+  function emailSeller(username) {
+    // Pre-fill the email form
+    document.getElementById("emailSellerUsername").value = username;
+    
+    // Scroll to subscription email section
+    const subscriptionSection = document.querySelector('[data-section="subscriptions"]');
+    if (subscriptionSection) {
+      subscriptionSection.click();
+      setTimeout(() => {
+        document.querySelector('#emailSellerUsername').scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+  }
+
+  // Utility functions
+  async function viewSellerDetails(username) {
+    try {
+      const seller = allUsers.find(u => {
+        const role = u.role;
+        return u.username === username && role && (
+          role === "seller" || 
+          role.startsWith("seller") || 
+          role === "seller1" || 
+          role === "seller2" || 
+          role === "seller3"
+        );
+      });
+      const products = allProducts.filter(p => p.seller === username);
+      const orders = allOrders.filter(o => o.seller === username);
+      
+      if (seller) {
+        showSellerDetailsModal(seller, products, orders);
+      } else {
+        showNotification("Seller not found", "error");
+      }
+    } catch (error) {
+      console.error('Error loading seller details:', error);
+      showNotification("Error loading seller details", "error");
+    }
+  }
+
+  function showSellerDetailsModal(seller, products, orders) {
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4';
+    modal.innerHTML = `
+      <div class="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+        <div class="p-6 border-b">
+          <div class="flex justify-between items-center">
+            <h2 class="text-2xl font-bold text-indigo-700">Seller Details: ${seller.username}</h2>
+            <button onclick="this.closest('.fixed').remove()" class="text-gray-500 hover:text-gray-700 text-2xl">&times;</button>
+          </div>
+        </div>
+        
+        <div class="p-6 space-y-6">
+          <!-- Seller Info -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <h3 class="font-semibold text-gray-800 mb-3">Account Information</h3>
+              <div class="space-y-2 text-sm">
+                <p><span class="font-medium">Username:</span> ${seller.username}</p>
+                <p><span class="font-medium">Email:</span> ${seller.email}</p>
+                <p><span class="font-medium">Plan:</span> ${seller.plan || 'Free'}</p>
+                <p><span class="font-medium">Weeks Left:</span> ${seller.subscriptionWeeks || 0}</p>
+                <p><span class="font-medium">Joined:</span> ${new Date(seller.createdAt || Date.now()).toLocaleDateString()}</p>
+              </div>
+            </div>
+            
+            <div class="bg-gray-50 p-4 rounded-lg">
+              <h3 class="font-semibold text-gray-800 mb-3">Performance Metrics</h3>
+              <div class="space-y-2 text-sm">
+                <p><span class="font-medium">Total Products:</span> ${products.length}</p>
+                <p><span class="font-medium">Total Orders:</span> ${orders.length}</p>
+                <p><span class="font-medium">Total Revenue:</span> $${orders.reduce((sum, o) => sum + parseFloat(o.total || 0), 0).toFixed(2)}</p>
+                <p><span class="font-medium">Avg Order Value:</span> $${orders.length > 0 ? (orders.reduce((sum, o) => sum + parseFloat(o.total || 0), 0) / orders.length).toFixed(2) : '0.00'}</p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Recent Products -->
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-3">Recent Products (${products.length})</h3>
+            <div class="overflow-x-auto">
+              <table class="min-w-full text-sm">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="py-2 px-3 text-left">Product</th>
+                    <th class="py-2 px-3 text-left">Price</th>
+                    <th class="py-2 px-3 text-left">Category</th>
+                    <th class="py-2 px-3 text-left">Views</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                  ${products.slice(0, 5).map(product => `
+                    <tr>
+                      <td class="py-2 px-3">
+                        <div class="flex items-center gap-2">
+                          <img src="${getProductImageUrl(product.image) || 'https://via.placeholder.com/30'}" class="w-8 h-8 rounded object-cover">
+                          <span class="font-medium">${product.name}</span>
+                        </div>
+                      </td>
+                      <td class="py-2 px-3">$${product.price}</td>
+                      <td class="py-2 px-3">${product.category || 'N/A'}</td>
+                      <td class="py-2 px-3">${product.views || 0}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+          
+          <!-- Recent Orders -->
+          <div>
+            <h3 class="font-semibold text-gray-800 mb-3">Recent Orders (${orders.length})</h3>
+            <div class="overflow-x-auto">
+              <table class="min-w-full text-sm">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="py-2 px-3 text-left">Order ID</th>
+                    <th class="py-2 px-3 text-left">Product</th>
+                    <th class="py-2 px-3 text-left">Total</th>
+                    <th class="py-2 px-3 text-left">Status</th>
+                    <th class="py-2 px-3 text-left">Date</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100">
+                  ${orders.slice(0, 5).map(order => `
+                    <tr>
+                      <td class="py-2 px-3 font-mono">${order.orderId || order.id}</td>
+                      <td class="py-2 px-3">${order.productName}</td>
+                      <td class="py-2 px-3 font-semibold">$${order.total}</td>
+                      <td class="py-2 px-3">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-${order.status === 'delivered' ? 'green' : order.status === 'pending' ? 'yellow' : 'blue'}-100 text-${order.status === 'delivered' ? 'green' : order.status === 'pending' ? 'yellow' : 'blue'}-800">
+                          ${order.status}
+                        </span>
+                      </td>
+                      <td class="py-2 px-3">${new Date(order.createdAt).toLocaleDateString()}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    document.body.appendChild(modal);
+  }
+
+  // Enhanced notification system
+  function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    const bgColor = {
+      'success': 'bg-green-500',
+      'error': 'bg-red-500',
+      'warning': 'bg-yellow-500',
+      'info': 'bg-blue-500'
+    }[type] || 'bg-blue-500';
+    
+    notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg ${bgColor} text-white transform translate-x-full transition-transform duration-300`;
+    notification.innerHTML = `
+      <div class="flex items-center gap-3">
+        <div class="flex-shrink-0">
+          ${type === 'success' ? '✅' : type === 'error' ? '❌' : type === 'warning' ? '⚠️' : 'ℹ️'}
+        </div>
+        <div class="flex-1">${message}</div>
+        <button onclick="this.parentElement.parentElement.remove()" class="flex-shrink-0 text-white hover:text-gray-200">
+          ×
+        </button>
+      </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+      notification.classList.remove('translate-x-full');
+    }, 100);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+      notification.classList.add('translate-x-full');
+      setTimeout(() => {
+        if (notification.parentElement) {
+          notification.remove();
+        }
+      }, 300);
+    }, 5000);
+  }
+
+  // Add function to reload data from backend
+  async function reloadAllData() {
+    try {
+      showNotification("Refreshing data...", "info");
+      await loadAllData();
+      
+      // Reload current section
+      const activeLink = document.querySelector('.admin-sidebar-link.active');
+      if (activeLink) {
+        const section = activeLink.dataset.section;
+        loadSectionData(section);
+      }
+      
+      updateLastUpdated();
+      showNotification("Data refreshed successfully!", "success");
+    } catch (error) {
+      console.error('Error reloading data:', error);
+      showNotification("Error refreshing data", "error");
+    }
+  }
+
+  // Update seller subscription manually
+  async function updateSellerSubscription() {
+    const username = document.getElementById("updateSellerUsername").value.trim();
+    const plan = document.getElementById("updatePlanSelect").value;
+    const subscriptionWeeks = document.getElementById("updateSubscriptionWeeks").value;
+    const nextPaymentDate = document.getElementById("updateNextPaymentDate").value;
+    const removeTrial = document.getElementById("removeTrialCheckbox").checked;
+    
+    if (!username) {
+      showNotification("Please enter a seller username.", "error");
+      return;
+    }
+    
+    // Check if at least one field is provided
+    if (!plan && !subscriptionWeeks && !nextPaymentDate && !removeTrial) {
+      showNotification("Please provide at least one field to update.", "error");
+      return;
+    }
+    
+    try {
+      const payload = {
+        username: username
+      };
+      
+      if (plan) payload.plan = plan;
+      if (subscriptionWeeks) payload.subscriptionWeeks = parseInt(subscriptionWeeks);
+      if (nextPaymentDate) payload.nextPaymentDate = new Date(nextPaymentDate).toISOString();
+      if (removeTrial) payload.removeTrial = true;
+      
+      const updateData = {};
+      if (plan) updateData.plan = plan;
+      if (subscriptionWeeks) updateData.subscriptionWeeks = parseInt(subscriptionWeeks);
+      if (nextPaymentDate) updateData.nextPaymentDate = new Date(nextPaymentDate).toISOString();
+      if (removeTrial) updateData.trialUsed = true;
+
+      const response = await fetch(`${API}/update`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          collection: 'users',
+          query: { username: username },
+          updates: updateData
+        })
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        showNotification(`✅ Subscription updated for ${username}!`, "success");
+        
+        // Clear form
+        document.getElementById("updateSellerUsername").value = "";
+        document.getElementById("updatePlanSelect").value = "";
+        document.getElementById("updateSubscriptionWeeks").value = "";
+        document.getElementById("updateNextPaymentDate").value = "";
+        document.getElementById("removeTrialCheckbox").checked = false;
+        
+        // Reload data to show updated information
+        await reloadAllData();
+        loadSubscriptionsTable();
+      } else {
+        showNotification(result.message || "Failed to update subscription", "error");
+      }
+    } catch (error) {
+      console.error('Error updating subscription:', error);
+      showNotification("Error updating subscription", "error");
+    }
+  }
+
+  // Quick update subscription for a seller
+  async function quickUpdateSubscription(username) {
+    const seller = allUsers.find(u => u.username === username && u.role && u.role.startsWith("seller"));
+    if (!seller) {
+      showNotification(`Seller ${username} not found`, "error");
+      return;
+    }
+    
+    // Pre-fill the update form
+    document.getElementById("updateSellerUsername").value = username;
+    document.getElementById("updatePlanSelect").value = seller.plan || "";
+    
+    // Scroll to the update section
+    const subscriptionSection = document.querySelector('[data-section="subscriptions"]');
+    if (subscriptionSection) {
+      subscriptionSection.click();
+      setTimeout(() => {
+        document.querySelector('#updateSellerUsername').scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+    
+    showNotification(`Form pre-filled for ${username}. You can now update their subscription.`, "info");
+  }
+
+  // Add function to refresh individual seller data
+  async function refreshSellerData(username) {
+    try {
+      showNotification(`Refreshing data for ${username}...`, "info");
+      
+      // Reload all data to get latest information
+      await loadAllData();
+      
+      // Find the updated seller
+      const updatedSeller = allUsers.find(u => u.username === username && u.role && u.role.startsWith("seller"));
+      
+      if (updatedSeller) {
+        // Reload the subscriptions table to show updated data
+        loadSubscriptionsTable();
+        showNotification(`Data refreshed for ${username}!`, "success");
+      } else {
+        showNotification(`Seller ${username} not found`, "error");
+      }
+    } catch (error) {
+      console.error('Error refreshing seller data:', error);
+      showNotification(`Error refreshing data for ${username}`, "error");
+    }
+  }
+
+  // Add delete functionality for admin operations
+  async function deleteUser(username, userType) {
+    if (!confirm(`Are you sure you want to delete ${userType} "${username}"? This action cannot be undone and will remove all their data including products, orders, and coupons.`)) {
+      return;
+    }
+    
+    try {
+      // Delete user and their related data
+      const response = await fetch(`${API}/admin/delete`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ type: 'user', username })
+      });
+
+      if (response.ok) {
+        // Also clean up related data for sellers
+        if (userType === 'seller') {
+          await Promise.all([
+            fetch(`${API}/delete`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ collection: 'products', query: { seller: username } })
+            }),
+            fetch(`${API}/delete`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ collection: 'coupons', query: { seller: username } })
+            })
+          ]);
+        }
+      }
+
+      const result = await response.json();
+      
+      if (result.success) {
+        showNotification(`✅ ${userType} "${username}" deleted successfully. ${userType === 'seller' ? 'Email notification sent.' : ''}`, "success");
+        await reloadAllData();
+        loadSellersSection();
+      } else {
+        showNotification(result.message || `Failed to delete ${userType}`, "error");
+      }
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      showNotification(`Error deleting ${userType}`, "error");
+    }
+  }
+
+  async function deleteOrder(orderId) {
+    if (!confirm(`Are you sure you want to delete order "${orderId}"? This action cannot be undone.`)) {
+      return;
+    }
+    
+    try {
+      const response = await fetch(`${API}/admin/delete`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ type: 'order', orderId })
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        showNotification(`✅ Order "${orderId}" deleted successfully.`, "success");
+        await reloadAllData();
+      } else {
+        showNotification(result.message || "Failed to delete order", "error");
+      }
+    } catch (error) {
+      console.error('Error deleting order:', error);
+      showNotification("Error deleting order", "error");
+    }
+  }
+
+  // Suspend seller function
+  async function suspendSeller(username) {
+    if (!confirm(`Are you sure you want to suspend seller "${username}"? They will be immediately logged out and unable to access their dashboard.`)) {
+      return;
+    }
+    
+    try {
+      const response = await fetch(`${API}/admin/suspend-seller`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, action: 'suspend' })
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        showNotification(`✅ Seller "${username}" has been suspended and logged out.`, "success");
+        await reloadAllData();
+        loadSellersSection();
+      } else {
+        showNotification(result.message || "Failed to suspend seller", "error");
+      }
+    } catch (error) {
+      console.error('Error suspending seller:', error);
+      showNotification("Error suspending seller", "error");
+    }
+  }
+
+  // Unsuspend seller function
+  async function unsuspendSeller(username) {
+    if (!confirm(`Are you sure you want to unsuspend seller "${username}"? They will regain access to their dashboard.`)) {
+      return;
+    }
+    
+    try {
+      const response = await fetch(`${API}/admin/unsuspend-seller`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ username, action: 'unsuspend' })
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        showNotification(`✅ Seller "${username}" has been unsuspended and can now access their dashboard.`, "success");
+        await reloadAllData();
+        loadSellersSection();
+      } else {
+        showNotification(result.message || "Failed to unsuspend seller", "error");
+      }
+    } catch (error) {
+      console.error('Error unsuspending seller:', error);
+      showNotification("Error unsuspending seller", "error");
+    }
+  }
+
+  // Force logout seller function (simulated - updates last logout timestamp)
+async function forceLogoutSeller(username) {
+  if (!confirm(`Are you sure you want to force logout seller "${username}"?`)) return;
+  try {
+    const response = await fetch(`${API}/admin/force-logout-seller`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username })
+    });
+    const result = await response.json();
+    if (result.success) {
+      showNotification(`✅ Seller "${username}" has been logged out.`, "success");
+    } else {
+      showNotification(result.message || "Failed to force logout", "error");
+    }
+  } catch (error) {
+    console.error('Error updating seller logout:', error);
+    showNotification("Error updating seller logout", "error");
+  }
+}
+
+  // Review Request Modal Functions
+  function openReviewRequestModal(orderId, buyerEmail, productName, productImage) {
+    const modal = document.getElementById('reviewRequestModal');
+    
+    document.getElementById('reviewOrderId').value = orderId;
+    document.getElementById('reviewBuyerEmail').value = buyerEmail || '';
+    document.getElementById('reviewProductName').value = productName || '';
+    document.getElementById('reviewProductImage').value = productImage || '';
+    
+    // Update modal display
+    document.getElementById('modalProductName').textContent = productName || 'Product';
+    document.getElementById('modalBuyerEmail').textContent = buyerEmail || 'No email';
+    const modalProductImg = document.getElementById('modalProductImage');
+    modalProductImg.src = getProductImageUrl(productImage) || 'https://via.placeholder.com/100';
+    
+    // Reset custom message
+    document.getElementById('customReviewMessage').value = `Hi there! 👋
+
+We hope you're enjoying your recent purchase of "${productName || 'your product'}"! 
+
+Your feedback means the world to us and helps other customers make informed decisions. We'd love to hear about your experience with this product.
+
+Click the button below to share your thoughts and rate your purchase. It only takes a minute!
+
+Thank you for being a valued customer! ⭐`;
+    
+    modal.classList.remove('hidden');
+  }
+
+  function closeReviewRequestModal() {
+    document.getElementById('reviewRequestModal').classList.add('hidden');
+  }
+
+  async function sendReviewRequest() {
+    const orderId = document.getElementById('reviewOrderId').value;
+    const buyerEmail = document.getElementById('reviewBuyerEmail').value;
+    const productName = document.getElementById('reviewProductName').value;
+    const productImage = document.getElementById('reviewProductImage').value;
+    const customMessage = document.getElementById('customReviewMessage').value.trim();
+    
+    if (!buyerEmail || !customMessage) {
+      showNotification('Please fill in all required fields', 'error');
+      return;
+    }
+    
+    try {
+      const sendBtn = document.getElementById('sendReviewRequestBtn');
+      sendBtn.disabled = true;
+      sendBtn.textContent = 'Sending Review Request...';
+      
+      const response = await fetch(`${API}/admin/send-review-request`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          orderId,
+          buyerEmail,
+          productName,
+          productImage,
+          customMessage
+        })
+      });
+      
+      const result = await response.json();
+      
+      if (result.success) {
+        showNotification('✅ Review request sent successfully!', 'success');
+        closeReviewRequestModal();
+      } else {
+        showNotification(result.message || 'Failed to send review request', 'error');
+      }
+    } catch (error) {
+      console.error('Error sending review request:', error);
+      showNotification('Error sending review request', 'error');
+    } finally {
+      const sendBtn = document.getElementById('sendReviewRequestBtn');
+      sendBtn.disabled = false;
+      sendBtn.textContent = 'Send Review Request';
+    }
+  }
+
+  // Helper function to get correct image URL for MongoDB images
+  function getProductImageUrl(imagePath) {
+    if (!imagePath) return null;
+    
+    // If it's a full URL (starts with http), return as-is
+    if (imagePath.startsWith('http')) {
+      return imagePath;
+    }
+    
+    // If it's a MongoDB image ID (starts with /images/ or images/)
+    if (imagePath.startsWith('/images/') || imagePath.startsWith('images/')) {
+      const imageId = imagePath.replace(/^\/images\/|images\//, '');
+      return `${API}/images/${imageId}`;
+    }
+    
+    // If it's a legacy upload path
+    if (imagePath.startsWith('/uploads/') || imagePath.startsWith('uploads/')) {
+      return `${API}${imagePath.startsWith('/') ? imagePath : '/' + imagePath}`;
+    }
+    
+    // Default fallback - try as MongoDB image ID
+    return `${API}/images/${imagePath}`;
+  }
+  </script>
+</body>
+</html>

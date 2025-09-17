@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Storefront</title>
+  <title>ShopRight Seller Storefront</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
@@ -224,7 +224,7 @@
   <div id="layoutContainer" class="min-h-screen"></div>
 
   <script>
-    const API = "https://shop-stp5.onrender.com";
+    const API = "http://localhost:3000";
     const sellerParam = new URLSearchParams(location.search).get("seller");
     const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
     const isOwner = currentUser?.role && currentUser.role.startsWith("seller") && currentUser.username === sellerParam;
@@ -766,6 +766,320 @@
     }
 
     window.addEventListener("DOMContentLoaded", loadLayoutAndTheme);
+  </script>
+
+  <script>
+    // Auto-load deployed chatbot if enabled for this seller
+    (async function(){
+      try {
+        const seller = new URLSearchParams(location.search).get('seller');
+        if (!seller) return;
+        const r = await fetch(`${API}/chatbots/${encodeURIComponent(seller)}`);
+        if (!r.ok) return;
+        const j = await r.json();
+        const cfg = j && j.data;
+        if (!cfg || cfg.enabled !== true) return;
+
+        // Helpers
+        const accent = (cfg.widget && cfg.widget.accentColor) || '#4f46e5';
+        function normalizeImage(img){
+          if (!img || typeof img !== 'string') return '';
+          let val = img.trim().replace(/\\\\/g,'/').replace(/\\/g,'/');
+          if (/^https?:\/\//i.test(val) || val.startsWith('data:')) return val;
+          if (/^\/?images\//i.test(val)) return `${API}${val.startsWith('/')?val:'/'.concat(val)}`;
+          if (/^[a-f0-9]{24}$/i.test(val)) return `${API}/images/${val}`;
+          if (/^\/?uploads\//i.test(val)) return `${API}/uploads/${val.replace(/^\/?uploads\//i,'')}`;
+          if (val.startsWith('/')) return `${API}${val}`;
+          return `${API}/uploads/${val}`;
+        }
+        async function tryFetchJson(url, opts){ try{ const rr = await fetch(url, opts); if (!rr.ok) return null; return await rr.json(); }catch{ return null; } }
+
+        // Currency
+        let CURRENCY = '$';
+        try {
+          const u = await tryFetchJson(`${API}/find?collection=users&username=${encodeURIComponent(seller)}`);
+          const doc = Array.isArray(u?.data) ? u.data[0] : Array.isArray(u) ? u[0] : u?.data;
+          const ss = doc?.shopSettings || {};
+          const code = (ss.storeCurrency || ss.currency || ss.currencyCode || '').toString().toUpperCase();
+          const symFromSettings = (ss.currencySymbol || '').toString();
+          const SYMBOLS = { USD:'$', NGN:'₦', GHS:'₵', EUR:'€', GBP:'£', INR:'₹', KES:'KSh', ZAR:'R', CAD:'C$', AUD:'A$', JPY:'¥' };
+          CURRENCY = symFromSettings || SYMBOLS[code] || '$';
+        } catch {}
+
+        // Root container
+        const root = document.createElement('div');
+        root.id = 'shopright-bot-root';
+        root.style.position = 'fixed';
+        root.style.zIndex = '99999';
+        root.style[cfg.widget?.position === 'left' ? 'left' : 'right'] = '16px';
+        root.style.bottom = '16px';
+
+        // Bubble (launcher)
+        const bubble = document.createElement('button');
+        bubble.type = 'button';
+        bubble.className = 'widget-bubble';
+        const btnCfg = cfg.widget?.button || {};
+        const btnSizePx = btnCfg.size==='lg'?72:btnCfg.size==='sm'?48:56;
+        bubble.style.width = btnSizePx+'px';
+        bubble.style.height = btnSizePx+'px';
+        bubble.style.borderRadius = (btnCfg.radius!=null?btnCfg.radius:999)+'px';
+        if (btnCfg.shadow!==false) bubble.style.boxShadow = '0 8px 16px rgba(0,0,0,0.2)';
+        if (btnCfg.type==='image' && btnCfg.imageUrl){
+          bubble.style.background='transparent';
+          const src = /^data:image\//i.test(btnCfg.imageUrl) ? btnCfg.imageUrl : normalizeImage(btnCfg.imageUrl);
+          bubble.innerHTML = `<img src="${src}" alt="chat" style="width:100%;height:100%;object-fit:cover;border-radius:${btnCfg.radius||999}px;" />`;
+          bubble.title = btnCfg.text || 'Chat with us';
+        } else {
+          bubble.style.backgroundColor = btnCfg.bgColor || accent;
+          bubble.style.color = btnCfg.textColor || '#fff';
+          bubble.textContent = (btnCfg.emoji || '💬');
+        }
+
+        // Panel
+        const panel = document.createElement('div');
+        panel.style.width = '360px';
+        panel.style.height = '520px';
+        panel.style.border = '1px solid #e5e7eb';
+        panel.style.borderRadius = '16px';
+        panel.style.overflow = 'hidden';
+        panel.style.background = '#fff';
+        panel.style.boxShadow = '0 12px 30px rgba(0,0,0,0.2)';
+        panel.style.display = (cfg.widget?.initialState==='open') ? 'flex' : 'none';
+        panel.style.flexDirection = 'column';
+        panel.style.marginBottom = '10px';
+
+        const header = document.createElement('div');
+        header.style.display='flex';
+        header.style.alignItems='center';
+        header.style.justifyContent='space-between';
+        header.style.padding='10px 12px';
+        const headerStyle = (cfg.widget?.headerStyle||'solid').toLowerCase();
+        if (headerStyle==='gradient') header.style.background = `linear-gradient(135deg, ${accent}, #111827)`;
+        else if (headerStyle==='glass'){ header.style.background='rgba(255,255,255,0.2)'; header.style.backdropFilter='blur(8px)'; header.style.color='#111827'; }
+        else header.style.background = accent;
+        if (headerStyle!=='glass') header.style.color='#fff';
+        header.innerHTML = `<div style="display:flex;align-items:center;gap:8px"><span>🤖</span><span>${cfg.botName||'Assistant'}</span></div>`;
+        const closeBtn = document.createElement('button');
+        closeBtn.textContent='✕';
+        closeBtn.style.background='transparent'; closeBtn.style.border='0';
+        closeBtn.style.color= headerStyle==='glass' ? '#111827' : '#fff';
+        closeBtn.style.cursor='pointer';
+        header.appendChild(closeBtn);
+
+        const chatWindow = document.createElement('div');
+        chatWindow.style.flex='1';
+        chatWindow.style.padding='10px';
+        chatWindow.style.overflow='auto';
+        chatWindow.style.background='#f8fafc';
+
+        const inputWrap = document.createElement('div');
+        inputWrap.style.display='flex'; inputWrap.style.gap='8px';
+        inputWrap.style.padding='8px'; inputWrap.style.borderTop='1px solid #e5e7eb';
+        const chatInput = document.createElement('input');
+        chatInput.placeholder='Type a product name or message...';
+        chatInput.style.flex='1'; chatInput.style.border='1px solid #e5e7eb'; chatInput.style.borderRadius='10px'; chatInput.style.padding='10px';
+        const sendBtn = document.createElement('button');
+        sendBtn.type='button'; sendBtn.textContent='Send';
+        // Theme-aware send button styling
+        const btnRadiusStyle = (cfg.widget?.bubbleStyle==='pill')? '999px' : (cfg.widget?.bubbleStyle==='square' ? '8px' : '12px');
+        sendBtn.style.border='0'; sendBtn.style.borderRadius=btnRadiusStyle; sendBtn.style.fontWeight='700'; sendBtn.style.cursor='pointer'; sendBtn.style.padding='10px 12px';
+        if (headerStyle==='glass'){ sendBtn.style.background='rgba(255,255,255,0.85)'; sendBtn.style.color='#111827'; sendBtn.style.border='1px solid rgba(17,24,39,0.1)'; }
+        else if (headerStyle==='gradient'){ sendBtn.style.background=`linear-gradient(135deg, ${accent}, #111827)`; sendBtn.style.color='#fff'; }
+        else { sendBtn.style.background=accent; sendBtn.style.color='#fff'; }
+        sendBtn.addEventListener('mouseenter', ()=>{ sendBtn.style.transform='translateY(-1px)'; sendBtn.style.boxShadow='0 10px 16px rgba(0,0,0,0.2)'; });
+        sendBtn.addEventListener('mouseleave', ()=>{ sendBtn.style.transform='translateY(0)'; sendBtn.style.boxShadow=''; });
+        inputWrap.appendChild(chatInput); inputWrap.appendChild(sendBtn);
+
+        panel.appendChild(header); panel.appendChild(chatWindow); panel.appendChild(inputWrap);
+
+        // Toggle
+        bubble.addEventListener('click', ()=> panel.style.display='flex');
+        closeBtn.addEventListener('click', ()=> panel.style.display='none');
+
+        // Message helpers
+        function addMsg(author, text){
+          const wrap = document.createElement('div');
+          wrap.style.display='flex'; wrap.style.gap='8px';
+          if (author!=='bot') wrap.style.justifyContent='flex-end';
+          const b = document.createElement('div');
+          const userCfg = cfg.widget?.userBubble || {}; const botCfg = cfg.widget?.botBubble || {};
+          const isBot = (author==='bot');
+          const bg = isBot ? (botCfg.bg||'#ffffff') : (userCfg.bg||accent);
+          const fg = isBot ? (botCfg.fg||'#111827') : (userCfg.fg||'#ffffff');
+          const shape = cfg.widget?.bubbleStyle==='pill' ? '999px' : (cfg.widget?.bubbleStyle==='square' ? '8px' : '12px');
+          b.style.maxWidth='80%'; b.style.padding='8px 10px'; b.style.borderRadius=shape; b.style.fontSize='14px'; b.style.background=bg; b.style.color=fg;
+          if (isBot && botCfg.border) b.style.border='1px solid #e5e7eb';
+          b.textContent = text;
+          wrap.appendChild(b); chatWindow.appendChild(wrap); chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+        function addRichBot(html){
+          const wrap = document.createElement('div');
+          wrap.style.display='flex'; wrap.style.gap='8px';
+          const b = document.createElement('div');
+          const botCfg = cfg.widget?.botBubble || {};
+          const shape = cfg.widget?.bubbleStyle==='pill' ? '999px' : (cfg.widget?.bubbleStyle==='square' ? '8px' : '12px');
+          b.style.maxWidth='80%'; b.style.padding='8px 10px'; b.style.borderRadius=shape; b.style.fontSize='14px';
+          b.style.background = botCfg.bg || '#ffffff'; b.style.color = botCfg.fg || '#111827';
+          if (botCfg.border) b.style.border='1px solid #e5e7eb';
+          b.innerHTML = html; wrap.appendChild(b); chatWindow.appendChild(wrap); chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        // Product helpers
+        function getPrice(p){ const v = (p && (p.price!=null ? p.price : (p.pricing?.price))); const n = typeof v === 'string' ? parseFloat(v) : v; return Number.isFinite(n) ? n : null; }
+        function productCard(p){
+          const title = p.title || p.name || 'Product';
+          const id = (p._id || p.id || '').toString();
+          const img = normalizeImage(p.image || (Array.isArray(p.gallery) ? p.gallery[0] : ''));
+          return `<a href="../detail/?id=${encodeURIComponent(id)}" style="display:block;border:1px solid #e5e7eb;border-radius:12px;padding:8px;background:#fff;text-decoration:none">
+            ${img?`<img src="${img}" alt="${title}" style="width:100%;height:112px;object-fit:cover;border-radius:10px;margin-bottom:6px;background:#f1f5f9"/>`:''}
+            <div style="font-weight:600;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${title}</div>
+          </a>`;
+        }
+
+        // Cache seller products
+        let _sellerProducts = null;
+        async function fetchSellerProducts(force=false){
+          if (!force && Array.isArray(_sellerProducts)) return _sellerProducts;
+          const j = await tryFetchJson(`${API}/find?collection=products&seller=${encodeURIComponent(seller)}`);
+          _sellerProducts = (Array.isArray(j) ? j : (Array.isArray(j?.data) ? j.data : [])) || [];
+          return _sellerProducts;
+        }
+
+        // Live search helpers (mirror dashboard)
+        function tokensOf(s){ return (s||'').toLowerCase().replace(/[^a-z0-9\s\.\-']/g,' ').replace(/\s+/g,' ').trim().split(' ').filter(Boolean); }
+        function tagsFromProduct(p){
+          const arr = [];
+          if (Array.isArray(p?.tags)) arr.push(...p.tags.map(t=>String(t).toLowerCase()));
+          if (p?.category) arr.push(String(p.category).toLowerCase());
+          const name = (p?.title || p?.name || '').toString().toLowerCase();
+          name.split(/[^a-z0-9]+/i).forEach(w=>{ if (w && w.length>2) arr.push(w); });
+          const desc = (p?.description || p?.details || p?.summary || '').toString().toLowerCase();
+          desc.split(/[^a-z0-9]+/i).forEach(w=>{ if (w && w.length>2) arr.push(w); });
+          ['cheapest','premium','luxury','budget','new','latest','popular','trending','discount','sale'].forEach(t=>arr.push(t));
+          return Array.from(new Set(arr.filter(Boolean)));
+        }
+        function applyTagPrefs(products){
+          const allow = Array.isArray(cfg?.training?.allowedTags) ? cfg.training.allowedTags.map(t=>t.toLowerCase()) : [];
+          const block = Array.isArray(cfg?.training?.blockedTags) ? cfg.training.blockedTags.map(t=>t.toLowerCase()) : [];
+          let out = Array.isArray(products) ? [...products] : [];
+          if (block.length){ out = out.filter(p=>{ const toks = tagsFromProduct(p); return !block.some(b=> toks.includes(b)); }); }
+          if (allow.length){ out = out.filter(p=>{ const toks = tagsFromProduct(p); return allow.some(a=> toks.includes(a)); }); }
+          return out;
+        }
+
+        // Basic intent/rules
+        function firstMatching(pattern, match, input){
+          const text = (input||'').trim();
+          const tokens = (pattern||'').toLowerCase().split(',').map(s=>s.trim()).filter(Boolean);
+          try {
+            if (match === 'contains') return tokens.some(t => text.toLowerCase().includes(t));
+            if (match === 'exact') return tokens.some(t => text.toLowerCase() === t);
+            if (match === 'regex') return tokens.some(t => new RegExp(t, 'i').test(text));
+          } catch{}
+          return false;
+        }
+
+        async function botReply(userText){
+          const text = (userText||'').trim();
+          const caps = cfg.training?.capabilities || {};
+
+          // 1) Keyword rules
+          for (const r of (cfg.training?.rules||[])){
+            if (firstMatching(r.pattern, r.match, text)) return r.response || 'Okay.';
+          }
+
+          // 2) Shop Q&A
+          if (caps.shipping || caps.delivery || caps.payments){
+            const low = text.toLowerCase();
+            const u = await tryFetchJson(`${API}/find?collection=users&username=${encodeURIComponent(seller)}`);
+            const sellerDoc = Array.isArray(u?.data) ? u.data[0] : Array.isArray(u) ? u[0] : u?.data;
+            const shop = sellerDoc || {}; const ss = shop.shopSettings || {};
+            if (caps.shipping && /(shipping|delivery fee|ship(ping)? cost|how much.*ship)/i.test(low)){
+              const fees = (ss.deliveryRegions||[]).map(r=> `${r.country}${r.state?`, ${r.state}`:''}: ${CURRENCY}${r.fee||0}`);
+              if (fees.length) return `Shipping fees: ${fees.join(' | ')}`;
+            }
+            if (caps.delivery && /(deliver(y)?|ship) to|available in|locations?|service areas|coverage/i.test(low)){
+              const locs = (ss.deliveryRegions||[]).map(r=> `${r.country}${r.state?` (${r.state})`:''}`);
+              if (locs.length) return `We deliver to: ${locs.join(', ')}`;
+            }
+            if (caps.payments && /(payment|pay|checkout|gateway|methods|cards?|mobile money|bank transfer|cash on delivery|cod)/i.test(low)){
+              const list = (ss.paymentSystems||[]).map(x=> String(x)).join(', ');
+              if (list) return `Accepted payment methods: ${list}`;
+            }
+          }
+
+          // 3) Product queries
+          if (caps.products){
+            const low = text.toLowerCase();
+            const products = await fetchSellerProducts();
+            const wantCheapest = /(cheapest|lowest price|min(imum)? price|budget)/i.test(low);
+            const wantPremium = /(expensive|premium|luxury|costliest|most expensive)/i.test(low);
+            const wantTrending = /(popular|trending|best\s*sellers?|bestselling|top\s*sellers?)/i.test(low);
+            const wantNew = /(latest|new( products?)?|new arrivals?)/i.test(low);
+            let matches = products;
+            if (!wantCheapest && !wantPremium && !wantTrending && !wantNew){
+              const toks = tokensOf(text); matches = products.filter(p=>{
+                const hay = [ (p.title||p.name||'').toString().toLowerCase(), (p.description||p.details||p.summary||'').toString().toLowerCase(), ...(Array.isArray(p.tags)? p.tags.map(t=>String(t).toLowerCase()):[]) ].join(' ');
+                return toks.every(t=> hay.includes(t));
+              });
+            }
+            if (wantCheapest){
+              const cheap = [...products].filter(p=> (p?.price!=null || p?.pricing?.price!=null)).sort((a,b)=> (getPrice(a)??1e9) - (getPrice(b)??1e9))[0];
+              if (cheap){ addMsg('bot', `Cheapest option: ${cheap.title||cheap.name}`); addRichBot(productCard(cheap)); return ''; }
+            }
+            if (wantPremium){
+              const prem = [...products].filter(p=> (p?.price!=null || p?.pricing?.price!=null)).sort((a,b)=> (getPrice(b)??0) - (getPrice(a)??0)).slice(0,3);
+              if (prem.length){ addMsg('bot','Premium picks:'); addRichBot(`<div>${prem.map(productCard).join('')}</div>`); return ''; }
+            }
+            if (wantTrending){
+              const tr = [...products].sort((a,b)=> (b.sales||b.orderCount||b.views||0)-(a.sales||a.orderCount||a.views||0)).slice(0,3);
+              if (tr.length){ addMsg('bot','Trending now:'); addRichBot(`<div>${tr.map(productCard).join('')}</div>`); return ''; }
+            }
+            if (wantNew){
+              const nw = [...products].sort((a,b)=> new Date(b.createdAt||0) - new Date(a.createdAt||0)).slice(0,3);
+              if (nw.length){ addMsg('bot','Latest arrivals:'); addRichBot(`<div>${nw.map(productCard).join('')}</div>`); return ''; }
+            }
+            if (matches.length){ addMsg('bot', `Here are some options:`); addRichBot(`<div>${matches.slice(0,3).map(productCard).join('')}</div>`); return ''; }
+          }
+          return "I'm here to help with products, shipping, delivery, and payments. Try asking for cheapest phones under a price, popular items, or delivery regions.";
+        }
+
+        // Welcome + interactions
+        chatWindow.innerHTML='';
+        addMsg('bot', cfg.welcomeMessage || 'Hi!');
+        // Live suggestions (like dashboard)
+        const liveWrap = document.createElement('div');
+        liveWrap.style.position='absolute'; liveWrap.style.left='8px'; liveWrap.style.right='8px'; liveWrap.style.bottom='60px'; liveWrap.style.zIndex='10';
+        liveWrap.innerHTML = `<div id="liveLoader" style="display:none;font-size:12px;color:#6b7280">Searching...</div><div id="liveResults" style="margin-top:6px;display:grid;grid-template-columns:1fr;gap:8px"></div>`;
+        const liveLoader = liveWrap.querySelector('#liveLoader');
+        const liveResults = liveWrap.querySelector('#liveResults');
+        panel.appendChild(liveWrap);
+        let liveT;
+        async function renderLive(q){
+          const v = (q||'').trim(); if (!v || v.length<2){ liveResults.innerHTML=''; liveLoader.style.display='none'; return; }
+          liveLoader.style.display='block';
+          const items = await fetchSellerProducts();
+          const ql = v.toLowerCase();
+          const hayMatch = (p)=>{
+            const hay = [ (p.title||p.name||'').toString().toLowerCase(), (p.description||p.details||p.summary||'').toString().toLowerCase(), ...(Array.isArray(p.tags)? p.tags.map(t=>String(t).toLowerCase()):[]) ].join(' ');
+            return hay.includes(ql);
+          };
+          const matches = applyTagPrefs(items.filter(hayMatch)).slice(0,5);
+          liveResults.innerHTML = matches.length ? matches.map(productCard).join('') : '';
+          liveLoader.style.display='none';
+        }
+        chatInput.addEventListener('input', ()=>{ clearTimeout(liveT); liveT = setTimeout(()=>renderLive(chatInput.value), 250); });
+        sendBtn.onclick = async ()=>{
+          const v = (chatInput.value||'').trim(); if (!v) return;
+          addMsg('user', v); chatInput.value='';
+          const rText = await botReply(v); if (rText) addMsg('bot', rText);
+        };
+        chatInput.onkeydown = (e)=>{ if (e.key==='Enter') sendBtn.click(); };
+
+        // Attach
+        root.appendChild(panel); root.appendChild(bubble); document.body.appendChild(root);
+      } catch (_) {}
+    })();
   </script>
 
 </body>

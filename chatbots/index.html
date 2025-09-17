@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Chatbots – Iyonicorp</title>
+  <title>Chatbots – ShopRight</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style type="text/tailwindcss">
     .section-card { @apply bg-white rounded-2xl shadow-lg p-6 border border-gray-100; }
@@ -96,11 +96,12 @@
               </div>
 
               <!-- Bot Capabilities -->
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 mb-6">
                 <label class="flex items-center gap-2"><input id="permProducts" type="checkbox" class="h-4 w-4" /><span class="text-sm text-gray-700">Allow bot to read store products</span></label>
                 <label class="flex items-center gap-2"><input id="permShipping" type="checkbox" class="h-4 w-4" /><span class="text-sm text-gray-700">Shipping fees</span></label>
                 <label class="flex items-center gap-2"><input id="permDelivery" type="checkbox" class="h-4 w-4" /><span class="text-sm text-gray-700">Delivery locations</span></label>
                 <label class="flex items-center gap-2"><input id="permPayments" type="checkbox" class="h-4 w-4" /><span class="text-sm text-gray-700">Payment gateways</span></label>
+                <!-- Voice responses removed -->
               </div>
 
               <!-- Two Columns: Keyword rules and Product rules -->
@@ -111,7 +112,7 @@
                     <h3 class="text-lg font-semibold text-gray-800">Keyword Rules</h3>
                     <button id="addKeywordRuleBtn" class="btn btn-outline">+ Add Keyword Rule</button>
                   </div>
-                  <p class="text-sm text-gray-500">Match keywords or regex and set quick replies.</p>
+                  <p class="text-sm text-gray-500">Match keywords or regex and set quick replies. Tip: Use @tag to reference product tags in triggers (e.g., "@shoes, discount").</p>
                   <div id="keywordRules" class="space-y-3"></div>
                 </div>
 
@@ -138,28 +139,14 @@
         <section id="panelConfig" class="space-y-6 hidden">
           <div class="section-card">
             <h2 class="text-xl font-bold text-indigo-700 mb-3">Widget Configuration</h2>
-            <p class="text-sm text-gray-600 mb-4">Choose a widget style, colors, and placement.</p>
+            <p class="text-sm text-gray-600 mb-4">Pick a look. You're done.</p>
 
-            <!-- Presets -->
-            <div>
-              <label class="label">Widget Preset</label>
-              <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3" id="presetGrid"></div>
-            </div>
+            <!-- Super Minimal: Style Packs -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3" id="stylePacks"></div>
+            <div class="mt-2 text-xs text-gray-500">Click a style to apply instantly. Preview updates live.</div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-              <div>
-                <label class="label">Theme</label>
-                <select id="widgetTheme" class="input">
-                  <option value="indigo">Indigo</option>
-                  <option value="emerald">Emerald</option>
-                  <option value="rose">Rose</option>
-                  <option value="slate">Slate</option>
-                </select>
-              </div>
-              <div>
-                <label class="label">Accent Color</label>
-                <input id="accentColor" class="input" type="color" value="#4f46e5" />
-              </div>
+            <!-- Tiny toggles -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
               <div>
                 <label class="label">Position</label>
                 <select id="position" class="input">
@@ -174,11 +161,130 @@
                   <option value="open">Open</option>
                 </select>
               </div>
+              <div>
+                <label class="label">Accent</label>
+                <input id="accentColor" class="input" type="color" value="#4f46e5" />
+              </div>
             </div>
 
-            <div class="flex gap-3 mt-4">
-              <button id="saveWidget" class="btn btn-primary">Save Configuration</button>
+            <!-- Samples (Templates) -->
+            <h3 class="text-lg font-semibold text-gray-800 mt-8">Samples</h3>
+            <div id="templatesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-2"></div>
+
+            <!-- Widget Controls -->
+            <h3 class="text-lg font-semibold text-gray-800 mt-8">Widget Details</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+              <div>
+                <label class="label">Theme</label>
+                <select id="widgetTheme" class="input">
+                  <option value="indigo">Indigo</option>
+                  <option value="glass">Glass</option>
+                  <option value="neon">Neon</option>
+                  <option value="emerald">Emerald</option>
+                  <option value="slate">Slate</option>
+                  <option value="rose">Rose</option>
+                </select>
+              </div>
+              <div>
+                <label class="label">Header Style</label>
+                <select id="headerStyle" class="input">
+                  <option value="solid">Solid</option>
+                  <option value="gradient">Gradient</option>
+                  <option value="glass">Glass</option>
+                </select>
+              </div>
+              <div>
+                <label class="label">Bubble Shape</label>
+                <select id="bubbleStyle" class="input">
+                  <option value="rounded">Rounded</option>
+                  <option value="pill">Pill</option>
+                  <option value="square">Square</option>
+                </select>
+              </div>
+              <div>
+                <label class="label">User Bubble BG</label>
+                <input id="userBg" class="input" type="color" value="#4f46e5" />
+              </div>
+              <div>
+                <label class="label">User Bubble FG</label>
+                <input id="userFg" class="input" type="color" value="#ffffff" />
+              </div>
+              <div>
+                <label class="label">Bot Bubble BG</label>
+                <input id="botBg" class="input" type="color" value="#ffffff" />
+              </div>
+              <div>
+                <label class="label">Bot Bubble FG</label>
+                <input id="botFg" class="input" type="color" value="#111827" />
+              </div>
+              <div class="flex items-center gap-2">
+                <input id="botBorder" type="checkbox" />
+                <label class="label !mb-0">Bot Bubble Border</label>
+              </div>
+            </div>
+
+            <!-- Launcher Button -->
+            <h3 class="text-lg font-semibold text-gray-800 mt-8">Launcher Button</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
+              <div>
+                <label class="label">Type</label>
+                <select id="btnType" class="input">
+                  <option value="text">Icon/Text</option>
+                  <option value="image">Image</option>
+                </select>
+              </div>
+              <div>
+                <label class="label">Label Text</label>
+                <input id="btnText" class="input" placeholder="e.g. Chat with us" />
+              </div>
+              <div>
+                <label class="label">Emoji</label>
+                <input id="btnEmoji" class="input" placeholder="💬" />
+              </div>
+              <div>
+                <label class="label">Text Color</label>
+                <input id="btnTextColor" class="input" type="color" value="#ffffff" />
+              </div>
+              <div>
+                <label class="label">Background</label>
+                <input id="btnBgColor" class="input" type="color" value="#4f46e5" />
+              </div>
+              <div>
+                <label class="label">Image URL</label>
+                <input id="btnImageUrl" class="input" type="url" placeholder="https://... or data:image/..." />
+                <p class="text-xs text-gray-500 mt-1">Paste a URL or upload below. Preview updates live.</p>
+              </div>
+              <div>
+                <label class="label">Upload Image</label>
+                <input id="btnUploadFile" class="input" type="file" accept="image/*" />
+                <p class="text-xs text-gray-500 mt-1">We’ll store as a data URL for quick preview.</p>
+              </div>
+              <div>
+                <label class="label">Preview</label>
+                <img id="btnImagePreview" alt="Button image preview" class="w-full h-28 object-cover rounded-lg border hidden" />
+              </div>
+              <div>
+                <label class="label">Radius</label>
+                <input id="btnRadius" class="input" type="range" min="0" max="999" value="999" />
+              </div>
+              <div>
+                <label class="label">Size</label>
+                <select id="btnSize" class="input">
+                  <option value="sm">Small</option>
+                  <option value="md" selected>Medium</option>
+                  <option value="lg">Large</option>
+                </select>
+              </div>
+              <div class="flex items-center gap-2">
+                <input id="btnShadow" type="checkbox" />
+                <label class="label !mb-0">Drop Shadow</label>
+              </div>
+            </div>
+
+            <div class="flex gap-3 mt-6">
+              <button id="saveWidget" class="btn btn-primary">Save</button>
               <span id="configMsg" class="text-sm text-gray-500"></span>
+              <span class="text-xs text-gray-400">Changes appear live above.</span>
             </div>
           </div>
         </section>
@@ -190,7 +296,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label class="label">Bot Name</label>
-                <input id="botName" class="input" placeholder="e.g. Iyonicorp Helper" />
+                <input id="botName" class="input" placeholder="e.g. ShopRight Helper" />
               </div>
               <div>
                 <label class="label">Primary Tone</label>
@@ -220,7 +326,7 @@
   </div>
 
   <script type="module">
-    const API = "http://localhost:3000";
+    const API = "https://shop-stp5.onrender.com";
     const params = new URLSearchParams(window.location.search);
     const seller = params.get('seller') || (JSON.parse(localStorage.getItem('user')||"{}").username || '');
 
@@ -268,12 +374,34 @@
         botTone: 'friendly',
         welcomeMessage: 'Hi! How can I help you today?',
         training: {
-          capabilities: { products: true, shipping: false, delivery: false, payments: false },
+          capabilities: { products: true, shipping: false, delivery: false, payments: false, voice: false },
           rules: [
             { id: crypto.randomUUID(), pattern: 'refund, return', match: 'contains', response: 'You can view our return policy here: /policies/returns' }
           ]
         },
-        widget: { preset: 'classic', theme: 'indigo', accentColor: '#4f46e5', position: 'right', initialState: 'closed' },
+        widget: {
+          preset: 'classic',
+          theme: 'indigo',
+          accentColor: '#4f46e5',
+          position: 'right',
+          initialState: 'closed',
+          headerStyle: 'solid',          // solid | gradient | glass
+          bubbleStyle: 'rounded',        // rounded | square | pill
+          bubbleColor: '#4f46e5',
+          userBubble: { bg: '#4f46e5', fg: '#ffffff' },
+          botBubble: { bg: '#ffffff', fg: '#111827', border: true },
+          button: {
+            type: 'text',         // 'text' | 'image'
+            text: 'Chat with us',
+            emoji: '💬',
+            textColor: '#ffffff',
+            bgColor: '#4f46e5',
+            radius: 999,          // px
+            size: 'md',           // 'sm' | 'md' | 'lg'
+            shadow: true,
+            imageUrl: ''
+          }
+        },
         deployed: false
       };
     }
@@ -290,6 +418,9 @@
         widget: { ...base.widget, ...(cfg?.widget||{}) }
       };
       merged.training.rules = merged.training.rules.map(r => ({ id: r.id || crypto.randomUUID(), pattern: r.pattern||'', match: r.match||'contains', response: r.response||'' }));
+      // ensure widget sub-keys
+      merged.widget.userBubble = { ...base.widget.userBubble, ...(cfg?.widget?.userBubble||{}) };
+      merged.widget.botBubble = { ...base.widget.botBubble, ...(cfg?.widget?.botBubble||{}) };
       return merged;
     }
 
@@ -349,8 +480,29 @@
 
     const widgetTheme = document.getElementById('widgetTheme');
     const accentColor = document.getElementById('accentColor');
+    const headerStyleSel = document.getElementById('headerStyle');
+    const bubbleStyleSel = document.getElementById('bubbleStyle');
+    const userBg = document.getElementById('userBg');
+    const userFg = document.getElementById('userFg');
+    const botBg = document.getElementById('botBg');
+    const botFg = document.getElementById('botFg');
+    const botBorder = document.getElementById('botBorder');
+    // Voice features removed
     const position = document.getElementById('position');
     const initialState = document.getElementById('initialState');
+
+    // Button designer controls
+    const btnType = document.getElementById('btnType');
+    const btnText = document.getElementById('btnText');
+    const btnEmoji = document.getElementById('btnEmoji');
+    const btnTextColor = document.getElementById('btnTextColor');
+    const btnBgColor = document.getElementById('btnBgColor');
+    const btnRadius = document.getElementById('btnRadius');
+    const btnSize = document.getElementById('btnSize');
+    const btnShadow = document.getElementById('btnShadow');
+    const btnImageUrl = document.getElementById('btnImageUrl');
+    const btnUploadFile = document.getElementById('btnUploadFile');
+    const btnImagePreview = document.getElementById('btnImagePreview');
 
     const keywordRulesEl = document.getElementById('keywordRules');
 
@@ -362,15 +514,57 @@
     const widgetSim = document.getElementById('widgetSim');
     let chatWindowEl; let chatInputEl; let sendBtnEl; let panelEl; let bubbleEl;
 
-    const presetGrid = document.getElementById('presetGrid');
+    // Super minimal style packs
+    const stylePacks = document.getElementById('stylePacks');
+    const templatesGrid = document.getElementById('templatesGrid');
+
+    // Restore sample controls (soft) if missing in DOM
+    function ensureSampleControls(){
+      // Training Keyword Rules container exists
+      if (!document.getElementById('keywordRules')){
+        const container = document.createElement('div');
+        container.id = 'keywordRules';
+        const target = document.getElementById('panelTraining');
+        if (target) target.appendChild(container);
+      }
+    }
+    ensureSampleControls();
 
     // Load config
     let config = await loadConfig();
 
-    // Populate fields
-    botName.value = config.botName;
-    botTone.value = config.botTone;
-    welcomeMessage.value = config.welcomeMessage;
+    // Ensure saveConfig exists; if not, polyfill minimal backend persistence
+    if (typeof saveConfig !== 'function') {
+      async function saveConfig(cfg){
+        try {
+          if (!seller) return; // anonymous preview only
+          const payload = normalizeConfig(cfg);
+          await fetch(`${API}/chatbots/${encodeURIComponent(seller)}`, {
+            method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload)
+          });
+        } catch(_){ /* ignore */ }
+      }
+    }
+
+    // Hook live preview modal controls
+    const previewModal = document.getElementById('previewModal');
+    const previewFrame = document.getElementById('previewFrame');
+    const previewBackdrop = document.getElementById('previewBackdrop');
+    const previewClose = document.getElementById('previewClose');
+    const previewRebuild = document.getElementById('previewRebuild');
+    const openPreviewBtn = document.getElementById('openPreview');
+
+    function openPreview(){ previewModal.classList.remove('hidden'); buildWidgetPreview(true); }
+    function closePreview(){ previewModal.classList.add('hidden'); }
+    if (openPreviewBtn) openPreviewBtn.addEventListener('click', openPreview);
+    if (previewClose) previewClose.addEventListener('click', closePreview);
+    if (previewBackdrop) previewBackdrop.addEventListener('click', closePreview);
+    if (previewRebuild) previewRebuild.addEventListener('click', ()=> buildWidgetPreview(true));
+
+    // Populate fields (guard against missing controls)
+    if (botName) botName.value = config.botName;
+    if (botTone) botTone.value = config.botTone;
+    if (welcomeMessage) welcomeMessage.value = config.welcomeMessage;
 
     // Capability toggles (persisted under training.capabilities)
     config.training.capabilities = config.training.capabilities || { products: true, shipping: false, delivery: false, payments: false };
@@ -378,41 +572,160 @@
     document.getElementById('permShipping').checked = !!config.training.capabilities.shipping;
     document.getElementById('permDelivery').checked = !!config.training.capabilities.delivery;
     document.getElementById('permPayments').checked = !!config.training.capabilities.payments;
+    const permVoiceEl = document.getElementById('permVoice'); if (permVoiceEl) permVoiceEl.checked = !!config.training.capabilities.voice;
 
-    widgetTheme.value = config.widget.theme;
-    accentColor.value = config.widget.accentColor;
-    position.value = config.widget.position;
-    initialState.value = config.widget.initialState;
+    if (widgetTheme) widgetTheme.value = config.widget.theme;
+    if (accentColor) accentColor.value = config.widget.accentColor;
+    if (headerStyleSel) headerStyleSel.value = config.widget.headerStyle || 'solid';
+    if (bubbleStyleSel) bubbleStyleSel.value = config.widget.bubbleStyle || 'rounded';
+    if (userBg) userBg.value = config.widget.userBubble?.bg || '#4f46e5';
+    if (userFg) userFg.value = config.widget.userBubble?.fg || '#ffffff';
+    if (botBg) botBg.value = config.widget.botBubble?.bg || '#ffffff';
+    if (botFg) botFg.value = config.widget.botBubble?.fg || '#111827';
+    if (botBorder) botBorder.checked = !!config.widget.botBubble?.border;
+    if (position) position.value = config.widget.position;
+    if (initialState) initialState.value = config.widget.initialState;
+    // Button: hydrate from config for convenience
+    const bc = config.widget.button || {};
+    if (btnType) btnType.value = bc.type || 'text';
+    if (btnText) btnText.value = bc.text || '';
+    if (btnEmoji) btnEmoji.value = bc.emoji || '💬';
+    if (btnTextColor) btnTextColor.value = bc.textColor || '#ffffff';
+    if (btnBgColor) btnBgColor.value = bc.bgColor || (config.widget.accentColor||'#4f46e5');
+    if (btnRadius) btnRadius.value = bc.radius != null ? bc.radius : 999;
+    if (btnSize) btnSize.value = bc.size || 'md';
+    if (btnShadow) btnShadow.checked = !!bc.shadow;
+    if (btnImageUrl) btnImageUrl.value = bc.imageUrl || '';
+    if (btnImagePreview) { btnImagePreview.src = bc.imageUrl || ''; btnImagePreview.classList.toggle('hidden', !bc.imageUrl); }
 
     statusDeployment.textContent = config.deployed ? 'Deployed' : 'Not Deployed';
     statusDeployment.className = `pill ${config.deployed ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`;
 
-    // Presets
+    // Presets (removed in super minimal)
     const PRESETS = [
-      { id: 'classic', name: 'Classic', desc: 'Bubble + panel, rounded', preview: '💬' },
-      { id: 'compact', name: 'Compact', desc: 'Minimal compact widget', preview: '🗨️' },
-      { id: 'modern', name: 'Modern', desc: 'Glassmorphism card style', preview: '✨' },
+      { id: 'classic', name: 'Classic', preview: '💬', apply: cfg => Object.assign(cfg.widget, { theme:'indigo', accentColor:'#4f46e5', headerStyle:'solid', bubbleStyle:'rounded', userBubble:{bg:'#4f46e5',fg:'#fff'}, botBubble:{bg:'#fff',fg:'#111827',border:true}, button:{...cfg.widget.button, bgColor:'#4f46e5', textColor:'#fff', emoji:'💬'} }) },
+      { id: 'compact', name: 'Compact', preview: '🗨️', apply: cfg => Object.assign(cfg.widget, { theme:'slate', accentColor:'#334155', headerStyle:'solid', bubbleStyle:'square', userBubble:{bg:'#334155',fg:'#fff'}, botBubble:{bg:'#fff',fg:'#111827',border:false}, button:{...cfg.widget.button, bgColor:'#334155', textColor:'#fff', emoji:'🗨️'} }) },
+      { id: 'modern', name: 'Modern', preview: '✨', apply: cfg => Object.assign(cfg.widget, { theme:'glass', accentColor:'#22d3ee', headerStyle:'glass', bubbleStyle:'rounded', userBubble:{bg:'#22d3ee',fg:'#00131a'}, botBubble:{bg:'rgba(255,255,255,0.9)',fg:'#111827',border:false}, button:{...cfg.widget.button, bgColor:'#22d3ee', textColor:'#00131a', emoji:'✨'} }) },
+      { id: 'neon', name: 'Neon', preview: '⚡', apply: cfg => Object.assign(cfg.widget, { theme:'neon', accentColor:'#f43f5e', headerStyle:'gradient', bubbleStyle:'pill', userBubble:{bg:'#f43f5e',fg:'#fff'}, botBubble:{bg:'#0f172a',fg:'#f8fafc',border:false}, button:{...cfg.widget.button, bgColor:'#f43f5e', textColor:'#fff', emoji:'⚡'} }) },
+      { id: 'glass', name: 'Glass Morph', preview: '🧊', apply: cfg => Object.assign(cfg.widget, { theme:'glass', accentColor:'#60a5fa', headerStyle:'glass', bubbleStyle:'rounded', userBubble:{bg:'#60a5fa',fg:'#00131a'}, botBubble:{bg:'rgba(255,255,255,0.65)',fg:'#111827',border:true}, button:{...cfg.widget.button, bgColor:'#60a5fa', textColor:'#00131a', emoji:'🧊'} }) },
+      { id: 'sunset', name: 'Sunset', preview: '🌆', apply: cfg => Object.assign(cfg.widget, { theme:'rose', accentColor:'#fb7185', headerStyle:'gradient', bubbleStyle:'rounded', userBubble:{bg:'#fb7185',fg:'#fff'}, botBubble:{bg:'#fff',fg:'#111827',border:false}, button:{...cfg.widget.button, bgColor:'#fb7185', textColor:'#fff', emoji:'🌆'} }) },
+      { id: 'forest', name: 'Forest', preview: '🌲', apply: cfg => Object.assign(cfg.widget, { theme:'emerald', accentColor:'#10b981', headerStyle:'solid', bubbleStyle:'rounded', userBubble:{bg:'#10b981',fg:'#00131a'}, botBubble:{bg:'#fff',fg:'#111827',border:false}, button:{...cfg.widget.button, bgColor:'#10b981', textColor:'#00131a', emoji:'🌲'} }) },
+      { id: 'mono', name: 'Monochrome', preview: '⚫', apply: cfg => Object.assign(cfg.widget, { theme:'slate', accentColor:'#111827', headerStyle:'solid', bubbleStyle:'square', userBubble:{bg:'#111827',fg:'#fff'}, botBubble:{bg:'#fff',fg:'#111827',border:true}, button:{...cfg.widget.button, bgColor:'#111827', textColor:'#fff', emoji:'⚫'} }) },
     ];
 
-    function renderPresets(){
-      presetGrid.innerHTML = '';
-      PRESETS.forEach(p => {
+    // Super minimal replaces presets rendering
+    function renderStylePacks(){
+      if (!stylePacks) return;
+      stylePacks.innerHTML = '';
+      STYLE_PACKS.forEach(p => {
         const card = document.createElement('button');
         card.type = 'button';
-        card.className = `text-left p-4 rounded-xl border transition ${config.widget.preset===p.id ? 'border-indigo-500 ring-2 ring-indigo-200 bg-indigo-50' : 'border-gray-200 bg-white hover:bg-gray-50'}`;
+        card.className = 'text-left p-4 rounded-xl border bg-white hover:bg-gray-50 hover:shadow transition';
         card.innerHTML = `
           <div class="flex items-center gap-3">
-            <div class="text-2xl">${p.preview}</div>
+            <div class="text-2xl">${p.emoji}</div>
             <div>
               <div class="font-semibold text-gray-800">${p.name}</div>
-              <div class="text-xs text-gray-500">${p.desc}</div>
+              <div class="text-xs text-gray-500">One-click apply</div>
             </div>
           </div>`;
-        card.addEventListener('click', ()=>{ config.widget.preset = p.id; renderPresets(); buildWidgetPreview(); });
-        presetGrid.appendChild(card);
+        card.addEventListener('click', ()=>{
+          config.widget.preset = p.id;
+          p.apply(config);
+          if (accentColor) accentColor.value = config.widget.accentColor;
+          buildWidgetPreview(true);
+          renderStylePacks();
+        });
+        stylePacks.appendChild(card);
       });
     }
-    renderPresets();
+
+    // Super Minimal: Style Packs data and renderer
+    const STYLE_PACKS = [
+      { id:'clean-indigo', name:'Clean Indigo', emoji:'💬', apply: cfg => Object.assign(cfg.widget, { theme:'indigo', accentColor:'#4f46e5', headerStyle:'solid', bubbleStyle:'rounded', userBubble:{bg:'#4f46e5',fg:'#ffffff'}, botBubble:{bg:'#ffffff',fg:'#111827',border:true}, button:{...cfg.widget.button, type:'text', bgColor:'#4f46e5', textColor:'#ffffff', emoji:'💬', text:''} }) },
+      { id:'glass-sky', name:'Glass Sky', emoji:'🧊', apply: cfg => Object.assign(cfg.widget, { theme:'glass', accentColor:'#60a5fa', headerStyle:'glass', bubbleStyle:'rounded', userBubble:{bg:'#60a5fa',fg:'#00131a'}, botBubble:{bg:'rgba(255,255,255,0.75)',fg:'#111827',border:true}, button:{...cfg.widget.button, type:'text', bgColor:'#60a5fa', textColor:'#00131a', emoji:'🧊', text:''} }) },
+      { id:'neon-rose', name:'Neon Rose', emoji:'⚡', apply: cfg => Object.assign(cfg.widget, { theme:'neon', accentColor:'#f43f5e', headerStyle:'gradient', bubbleStyle:'pill', userBubble:{bg:'#f43f5e',fg:'#ffffff'}, botBubble:{bg:'#0f172a',fg:'#f8fafc',border:false}, button:{...cfg.widget.button, type:'text', bgColor:'#f43f5e', textColor:'#ffffff', emoji:'⚡', text:''} }) },
+      { id:'emerald-fresh', name:'Emerald Fresh', emoji:'🌲', apply: cfg => Object.assign(cfg.widget, { theme:'emerald', accentColor:'#10b981', headerStyle:'solid', bubbleStyle:'rounded', userBubble:{bg:'#10b981',fg:'#00131a'}, botBubble:{bg:'#ffffff',fg:'#111827',border:false}, button:{...cfg.widget.button, type:'text', bgColor:'#10b981', textColor:'#00131a', emoji:'🌲', text:''} }) },
+      { id:'slate-pro', name:'Slate Pro', emoji:'🗨️', apply: cfg => Object.assign(cfg.widget, { theme:'slate', accentColor:'#334155', headerStyle:'solid', bubbleStyle:'square', userBubble:{bg:'#334155',fg:'#ffffff'}, botBubble:{bg:'#ffffff',fg:'#111827',border:true}, button:{...cfg.widget.button, type:'text', bgColor:'#334155', textColor:'#ffffff', emoji:'🗨️', text:''} }) },
+      { id:'retro-sunset', name:'Retro Sunset', emoji:'🌆', apply: cfg => Object.assign(cfg.widget, { theme:'rose', accentColor:'#fb7185', headerStyle:'gradient', bubbleStyle:'rounded', userBubble:{bg:'#fb7185',fg:'#ffffff'}, botBubble:{bg:'#ffffff',fg:'#111827',border:false}, button:{...cfg.widget.button, type:'text', bgColor:'#fb7185', textColor:'#ffffff', emoji:'🌆', text:''} }) },
+    ];
+
+    // Templates (Samples) — richer than style packs; also set bot meta and starter rules
+    const TEMPLATES = [
+      {
+        id: 'concise-helpdesk', name: 'Concise Helpdesk', desc: 'Quick, to-the-point support replies.', emoji: '🧭',
+        apply: cfg => {
+          cfg.botName = 'Helpdesk Bot'; cfg.botTone = 'concise'; cfg.welcomeMessage = 'Hi! I can quickly answer product, shipping, and payment questions.';
+          cfg.training.rules = [
+            { id: crypto.randomUUID(), pattern: 'return, refund', match: 'contains', response: 'You can return items within 30 days if unused. Need a label?' },
+            { id: crypto.randomUUID(), pattern: 'shipping, delivery', match: 'contains', response: 'We ship worldwide. Standard 5–7 days, express 2–3 days.' }
+          ];
+          Object.assign(cfg.widget, { theme:'slate', accentColor:'#334155', headerStyle:'solid', bubbleStyle:'square', userBubble:{bg:'#334155',fg:'#ffffff'}, botBubble:{bg:'#ffffff',fg:'#111827',border:true}, button:{...cfg.widget.button, type:'text', bgColor:'#334155', textColor:'#ffffff', emoji:'🧭', text:''} });
+        }
+      },
+      {
+        id: 'friendly-shopper', name: 'Friendly Shopper', desc: 'Warm tone and product-focused suggestions.', emoji: '🛍️',
+        apply: cfg => {
+          cfg.botName = 'Shopping Buddy'; cfg.botTone = 'friendly'; cfg.welcomeMessage = 'Hello! I can help you find great products and deals.';
+          cfg.training.rules = [
+            { id: crypto.randomUUID(), pattern: '@sale, discount, deals', match: 'contains', response: 'Here are some products on sale: @sale' },
+            { id: crypto.randomUUID(), pattern: 'gift, present', match: 'contains', response: 'Looking for a gift? Tell me a budget or category and I’ll help.' }
+          ];
+          Object.assign(cfg.widget, { theme:'rose', accentColor:'#fb7185', headerStyle:'gradient', bubbleStyle:'rounded', userBubble:{bg:'#fb7185',fg:'#ffffff'}, botBubble:{bg:'#ffffff',fg:'#111827',border:false}, button:{...cfg.widget.button, type:'text', bgColor:'#fb7185', textColor:'#ffffff', emoji:'🛍️', text:''} });
+        }
+      },
+      {
+        id: 'modern-glass', name: 'Modern Glass', desc: 'Sleek glass effect, playful tone.', emoji: '✨',
+        apply: cfg => {
+          cfg.botName = 'Modern Assistant'; cfg.botTone = 'playful'; cfg.welcomeMessage = 'Hey! Ask me about products, shipping, or promos ✨';
+          cfg.training.rules = [
+            { id: crypto.randomUUID(), pattern: 'track, order status', match: 'contains', response: 'Use your order ID to check status on the Orders page.' },
+            { id: crypto.randomUUID(), pattern: '@trending, popular', match: 'contains', response: 'Trending now: @trending' }
+          ];
+          Object.assign(cfg.widget, { theme:'glass', accentColor:'#60a5fa', headerStyle:'glass', bubbleStyle:'rounded', userBubble:{bg:'#60a5fa',fg:'#00131a'}, botBubble:{bg:'rgba(255,255,255,0.75)',fg:'#111827',border:true}, button:{...cfg.widget.button, type:'text', bgColor:'#60a5fa', textColor:'#00131a', emoji:'✨', text:''} });
+        }
+      },
+    ];
+
+    function renderTemplates(){
+      if (!templatesGrid) return;
+      templatesGrid.innerHTML = '';
+      TEMPLATES.forEach(t => {
+        const card = document.createElement('button');
+        card.type = 'button';
+        card.className = 'text-left p-4 rounded-xl border bg-white hover:shadow transition';
+        card.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="text-2xl">${t.emoji}</div>
+            <div>
+              <div class="font-semibold text-gray-800">${t.name}</div>
+              <div class="text-xs text-gray-500">${t.desc}</div>
+            </div>
+          </div>`;
+        card.addEventListener('click', ()=>{
+          t.apply(config);
+          // Sync visible controls if present
+          if (widgetTheme) widgetTheme.value = config.widget.theme;
+          if (accentColor) accentColor.value = config.widget.accentColor;
+          if (headerStyleSel) headerStyleSel.value = config.widget.headerStyle || 'solid';
+          if (bubbleStyleSel) bubbleStyleSel.value = config.widget.bubbleStyle || 'rounded';
+          if (userBg) userBg.value = config.widget.userBubble?.bg || '#4f46e5';
+          if (userFg) userFg.value = config.widget.userBubble?.fg || '#ffffff';
+          if (botBg) botBg.value = config.widget.botBubble?.bg || '#ffffff';
+          if (botFg) botFg.value = config.widget.botBubble?.fg || '#111827';
+          if (botBorder) botBorder.checked = !!config.widget.botBubble?.border;
+          if (botName) botName.value = config.botName;
+          if (botTone) botTone.value = config.botTone;
+          if (welcomeMessage) welcomeMessage.value = config.welcomeMessage;
+          buildWidgetPreview(true);
+        });
+        templatesGrid.appendChild(card);
+      });
+    }
+
+    // Initial renders
+    renderStylePacks();
+    renderTemplates();
 
     // Utility: action bar
     function actionBar(removeCb){
@@ -501,10 +814,16 @@
     // Cache seller products to avoid multiple calls
     let _sellerProducts = null;
     async function getSellerProducts(force=false){
-      if (!seller) return [];
       if (!force && Array.isArray(_sellerProducts)) return _sellerProducts;
-      const j = await tryFetchJson(`${API}/find?collection=products&seller=${encodeURIComponent(seller)}`);
-      const items = j && (Array.isArray(j) ? j : j.data);
+      let items = [];
+      if (seller) {
+        const j = await tryFetchJson(`${API}/find?collection=products&seller=${encodeURIComponent(seller)}`);
+        items = j && (Array.isArray(j) ? j : j.data);
+      } else {
+        // Preview fallback: load all products when seller is not set
+        const j = await tryFetchJson(`${API}/find?collection=products`);
+        items = j && (Array.isArray(j) ? j : j.data);
+      }
       _sellerProducts = Array.isArray(items) ? items : [];
       return _sellerProducts;
     }
@@ -519,22 +838,72 @@
       if (p?.category) arr.push(String(p.category).toLowerCase());
       const name = (p?.title || p?.name || '').toString().toLowerCase();
       name.split(/[^a-z0-9]+/i).forEach(w=>{ if (w && w.length>2) arr.push(w); });
+      const desc = (p?.description || p?.details || p?.summary || '').toString().toLowerCase();
+      desc.split(/[^a-z0-9]+/i).forEach(w=>{ if (w && w.length>2) arr.push(w); });
+      // common e-commerce aspects
+      ['cheapest','premium','luxury','budget','new','latest','popular','trending','discount','sale'].forEach(t=>arr.push(t));
       return Array.from(new Set(arr.filter(Boolean)));
     }
-    function findCheapestProduct(list){
-      return (list||[]).reduce((min,p)=> (min==null || (p?.price ?? Infinity) < (min?.price ?? Infinity)) ? p : min, null);
+    function getPrice(p){
+      const v = (p && (p.price!=null ? p.price : (p.pricing?.price)));
+      const n = typeof v === 'string' ? parseFloat(v) : v;
+      return Number.isFinite(n) ? n : null;
     }
+    function findCheapestProduct(list){
+      return (list||[]).reduce((min,p)=>{
+        const pv = getPrice(p); const mv = getPrice(min);
+        if (pv==null) return min;
+        if (mv==null) return p;
+        return pv < mv ? p : min;
+      }, null);
+    }
+
+    function applyTagPrefs(products){
+      const allow = Array.isArray(config?.training?.allowedTags) ? config.training.allowedTags.map(t=>t.toLowerCase()) : [];
+      const block = Array.isArray(config?.training?.blockedTags) ? config.training.blockedTags.map(t=>t.toLowerCase()) : [];
+      let out = Array.isArray(products) ? [...products] : [];
+      // Blocked tags first
+      if (block.length){
+        out = out.filter(p=>{
+          const toks = tagsFromProduct(p);
+          return !block.some(b=> toks.includes(b));
+        });
+      }
+      // Allowed tags narrow down if provided
+      if (allow.length){
+        out = out.filter(p=>{
+          const toks = tagsFromProduct(p);
+          return allow.some(a=> toks.includes(a));
+        });
+      }
+      return out;
+    }
+    let CURRENCY = '$';
+    async function resolveCurrency(){
+      try{
+        if (!seller) return;
+        const u = await tryFetchJson(`${API}/find?collection=users&username=${encodeURIComponent(seller)}`);
+        const doc = Array.isArray(u?.data) ? u.data[0] : Array.isArray(u) ? u[0] : u?.data;
+        const ss = doc?.shopSettings || {};
+        const code = (ss.storeCurrency || ss.currency || ss.currencyCode || '').toString().toUpperCase();
+        const symFromSettings = (ss.currencySymbol || '').toString();
+        const SYMBOLS = { USD:'$', NGN:'₦', GHS:'₵', EUR:'€', GBP:'£', INR:'₹', KES:'KSh', ZAR:'R', CAD:'C$', AUD:'A$', JPY:'¥' };
+        CURRENCY = symFromSettings || SYMBOLS[code] || '$';
+        // Rebuild preview to reflect currency
+        try{ buildWidgetPreview(true); }catch(_){}
+      }catch(_){ CURRENCY = '$'; }
+    }
+
     function productCard(p){
       const title = p.title || p.name || 'Product';
-      const price = (p.price!=null) ? p.price : (p.pricing?.price);
+      const id = (p._id || p.id || '').toString();
       let img = p.image || (Array.isArray(p.gallery) ? p.gallery[0] : '');
-      img = normalizeUploadUrl(img);
+      img = normalizeImage(img);
       return `
-        <div class="p-3 rounded-xl border bg-white">
+        <a href="../detail/?id=${encodeURIComponent(id)}" class="block p-3 rounded-xl border bg-white hover:shadow transition">
           ${img?`<img src="${img}" class="w-full h-28 object-cover rounded-lg mb-2" />`:''}
           <div class="font-medium text-gray-800 truncate">${title}</div>
-          ${price!=null?`<div class="text-xs text-gray-500">$${price}</div>`:''}
-        </div>`;
+        </a>`;
     }
 
     async function catalogSearchProducts(query){
@@ -894,6 +1263,19 @@
       renderCuratedRules();
     });
 
+    // Persist training toggles immediately on change to avoid losing state on refresh
+    ['permProducts','permShipping','permDelivery','permPayments'].forEach(id=>{
+      const el = document.getElementById(id);
+      if (el) el.addEventListener('change', async ()=>{
+        config.training.capabilities = config.training.capabilities || {};
+        config.training.capabilities.products = document.getElementById('permProducts')?.checked || false;
+        config.training.capabilities.shipping = document.getElementById('permShipping')?.checked || false;
+        config.training.capabilities.delivery = document.getElementById('permDelivery')?.checked || false;
+        config.training.capabilities.payments = document.getElementById('permPayments')?.checked || false;
+        try { await saveConfig(config); } catch(_){ }
+      });
+    });
+
     // Save Training (send to backend)
     document.getElementById('saveTraining').addEventListener('click', async ()=>{
       // persist keyword rules and capability toggles
@@ -904,12 +1286,19 @@
         payments: document.getElementById('permPayments').checked,
       };
 
+      // persist tag preferences (from settings panel inputs if present)
+      const allowEl = document.getElementById('allowedTags');
+      const blockEl = document.getElementById('blockedTags');
+      config.training.allowedTags = allowEl ? allowEl.value.split(',').map(s=>s.trim().toLowerCase()).filter(Boolean) : (config.training.allowedTags||[]);
+      config.training.blockedTags = blockEl ? blockEl.value.split(',').map(s=>s.trim().toLowerCase()).filter(Boolean) : (config.training.blockedTags||[]);
+
       await saveConfig(config);
       try {
         const payload = {
           meta: { name: config.botName, tone: config.botTone },
           capabilities: config.training.capabilities,
-          rules: config.training.rules || []
+          rules: config.training.rules || [],
+          tagPrefs: { allow: config.training.allowedTags||[], block: config.training.blockedTags||[] }
         };
         if (seller) {
           await fetch(`${API}/chatbots/${encodeURIComponent(seller)}/train`, {
@@ -923,16 +1312,59 @@
       setTimeout(()=>trainingMsg.textContent='',1500);
     });
 
+    // Load available voices for selection
+    async function populateVoices(){
+      try{
+        const voices = window.speechSynthesis.getVoices();
+        voiceSelect.innerHTML = '';
+        voices.forEach(v=>{
+          const opt = document.createElement('option');
+          opt.value = v.name;
+          opt.textContent = `${v.name} (${v.lang})${v.default?' — default':''}`;
+          voiceSelect.appendChild(opt);
+        });
+        const saved = config.training.voice || {};
+        if (saved.name) voiceSelect.value = saved.name;
+        voiceEnabled.checked = !!saved.enabled;
+        // Persist checkbox state immediately to avoid losing on refresh
+        config.training.voice = { ...(config.training.voice||{}), name: voiceSelect.value, enabled: voiceEnabled.checked };
+        try { await saveConfig(config); } catch(_){}
+      }catch(_){/* ignore */}
+    }
+    // Voice features removed
+
     // Save widget config
     document.getElementById('saveWidget').addEventListener('click', async ()=>{
-      config.widget.theme = widgetTheme.value;
-      config.widget.accentColor = accentColor.value;
-      config.widget.position = position.value;
-      config.widget.initialState = initialState.value;
+      // Safely read optional controls with fallbacks
+      const v = (el, d='') => (el && 'value' in el) ? el.value : d;
+      const cb = (el) => !!(el && 'checked' in el && el.checked);
+
+      config.widget.theme = v(widgetTheme, config.widget.theme || 'indigo');
+      config.widget.accentColor = v(accentColor, config.widget.accentColor || '#4f46e5');
+      config.widget.headerStyle = v(headerStyleSel, config.widget.headerStyle || 'solid');
+      config.widget.bubbleStyle = v(bubbleStyleSel, config.widget.bubbleStyle || 'rounded');
+      config.widget.userBubble = { bg: v(userBg, config.widget.userBubble?.bg || '#4f46e5'), fg: v(userFg, config.widget.userBubble?.fg || '#ffffff') };
+      config.widget.botBubble = { bg: v(botBg, config.widget.botBubble?.bg || '#ffffff'), fg: v(botFg, config.widget.botBubble?.fg || '#111827'), border: cb(botBorder) };
+      config.widget.position = v(position, config.widget.position || 'right');
+      config.widget.initialState = v(initialState, config.widget.initialState || 'closed');
+      // Button designer
+      const radiusParsed = parseInt(v(btnRadius, String(config.widget.button?.radius ?? '999')), 10);
+      config.widget.button = {
+        ...config.widget.button,
+        type: v(btnType, config.widget.button?.type || 'text'),
+        text: v(btnText, config.widget.button?.text || 'Chat with us'),
+        emoji: v(btnEmoji, config.widget.button?.emoji || '💬'),
+        textColor: v(btnTextColor, config.widget.button?.textColor || '#ffffff'),
+        bgColor: v(btnBgColor, config.widget.button?.bgColor || config.widget.accentColor),
+        radius: Math.max(0, Math.min(999, Number.isFinite(radiusParsed) ? radiusParsed : 999)),
+        size: v(btnSize, config.widget.button?.size || 'md'),
+        shadow: cb(btnShadow),
+        imageUrl: v(btnImageUrl, config.widget.button?.imageUrl || '')
+      };
+
       await saveConfig(config);
-      configMsg.textContent = 'Widget configuration saved';
-      setTimeout(()=>configMsg.textContent='',1200);
-      buildWidgetPreview();
+      if (configMsg) { configMsg.textContent = 'Widget configuration saved'; setTimeout(()=>{ if(configMsg) configMsg.textContent=''; },1200); }
+      buildWidgetPreview(true);
     });
 
     // Save settings
@@ -940,6 +1372,7 @@
       config.botName = botName.value.trim() || 'Shop Assistant';
       config.botTone = botTone.value;
       config.welcomeMessage = welcomeMessage.value.trim() || 'Hi! How can I help you today?';
+      // Voice features removed
       await saveConfig(config);
       settingsMsg.textContent = 'Settings saved';
       setTimeout(()=>settingsMsg.textContent='',1200);
@@ -1000,14 +1433,29 @@
       return false;
     }
 
+    // Short-term memory of last shown products (for follow-ups)
+    let Memory = {
+      lastProducts: [],      // last displayed list
+      lastPicked: null,      // last single product emphasized
+    };
+
 
 
     function normalizeImage(img){
       if (!img || typeof img !== 'string') return '';
       let val = img.trim().replace(/\\\\/g,'/').replace(/\\/g,'/');
       if (/^https?:\/\//i.test(val) || val.startsWith('data:')) return val;
-      const up = val.replace(/^\/?uploads\//i,'');
-      return `${API}/uploads/${up}`;
+      // Support MongoDB-backed images and legacy uploads
+      if (/^\/?images\//i.test(val)) {
+        const clean = val.replace(/^\/?/,'/');
+        return `${API}${clean}`; // e.g., /images/<id>
+      }
+      if (/^\/?uploads\//i.test(val)) {
+        const up = val.replace(/^\/?uploads\//i,'');
+        return `${API}/uploads/${up}`;
+      }
+      if (val.startsWith('/')) return `${API}${val}`; // absolute path
+      return `${API}/uploads/${val}`; // fallback
     }
 
  
@@ -1021,24 +1469,83 @@
       if (template){
         return template.replace(/\{\{\s*(title|price|description)\s*\}\}/g, (_,k)=> String(map[k] ?? '')) || `Here are details for ${map.title}.`;
       }
-      return `Here are details for ${map.title}${map.price?` priced at $${map.price}`:''}. ${map.description?map.description:''}`;
+      return `Here are details for ${map.title}${map.price?` priced at ${CURRENCY}${map.price}`:''}. ${map.description?map.description:''}`;
     }
 
     // Widget preview UI
     function buildWidgetPreview(reset=false){
+      // If preview modal iframe is open, render inside it as well for full-screen demo
+      try {
+        const frame = document.getElementById('previewFrame');
+        if (frame && frame.contentWindow){
+          const doc = frame.contentDocument || frame.contentWindow.document;
+          doc.open();
+          doc.write(`<!DOCTYPE html><html><head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+          <script src="https://cdn.tailwindcss.com"><\/script>
+          <style>
+            body{margin:0;}
+            .widget-sim { position: relative; height: 100vh; }
+            .widget-bubble { position: fixed; }
+            .widget-panel { position: fixed; }
+          </style>
+          </head><body><div id="frameWidgetSim" class="widget-sim"></div></body></html>`);
+          doc.close();
+          // Build a temporary container and mount within iframe using same logic
+          const target = doc.getElementById('frameWidgetSim');
+          if (target){
+            // Mirror of core logic to render bubble/panel quickly inside iframe
+            const tmp = document.createElement('div');
+            tmp.id = 'tmpMount';
+            // reuse a simplified renderer by cloning node from main preview
+            // We rebuild by calling an inner function that expects a container
+          }
+        }
+      } catch(_){/* ignore iframe errors */}
       widgetSim.innerHTML = '';
       const theme = config.widget.theme;
       const accent = config.widget.accentColor || '#4f46e5';
       const posRight = config.widget.position !== 'left';
 
-      // Bubble
+      // Bubble (launcher button) - text or image
       bubbleEl = document.createElement('button');
       bubbleEl.type = 'button';
       bubbleEl.className = 'widget-bubble';
-      bubbleEl.style.backgroundColor = accent;
       bubbleEl.style.bottom = '16px';
       bubbleEl.style[posRight ? 'right':'left'] = '16px';
-      bubbleEl.textContent = '💬';
+
+      const btnCfg = config.widget.button || {};
+      const btnSizePx = btnCfg.size==='lg' ? 72 : btnCfg.size==='sm' ? 48 : 56;
+      bubbleEl.style.width = btnSizePx+'px';
+      bubbleEl.style.height = btnSizePx+'px';
+      bubbleEl.style.borderRadius = (btnCfg.radius!=null? btnCfg.radius : 999) + 'px';
+      if (btnCfg.shadow) bubbleEl.style.boxShadow = '0 8px 16px rgba(0,0,0,0.2)';
+
+      if (btnCfg.type === 'image' && btnCfg.imageUrl){
+        bubbleEl.style.background = 'transparent';
+        // If data URL, use directly; else normalize to server path
+        const src = /^data:image\//i.test(btnCfg.imageUrl) ? btnCfg.imageUrl : normalizeImage(btnCfg.imageUrl);
+        bubbleEl.innerHTML = `<img src="${src}" alt="chat" style="width:100%;height:100%;object-fit:cover;border-radius:${btnCfg.radius||999}px;" />`;
+        bubbleEl.title = btnCfg.text || 'Chat with us';
+      } else {
+        bubbleEl.style.backgroundColor = btnCfg.bgColor || accent;
+        bubbleEl.style.color = btnCfg.textColor || '#fff';
+        bubbleEl.textContent = (btnCfg.emoji || '💬');
+        if ((btnCfg.text||'').trim()) {
+          // Create a small label next to icon if text provided
+          const label = document.createElement('span');
+          label.textContent = ' ' + btnCfg.text;
+          label.style.fontSize = '12px';
+          label.style.position = 'absolute';
+          label.style.bottom = '4px';
+          label.style[ posRight ? 'right' : 'left' ] = (btnSizePx+8)+'px';
+          label.style.background = btnCfg.bgColor || accent;
+          label.style.color = btnCfg.textColor || '#fff';
+          label.style.padding = '6px 10px';
+          label.style.borderRadius = '999px';
+          label.style.boxShadow = btnCfg.shadow ? '0 6px 12px rgba(0,0,0,0.2)' : '';
+          widgetSim.appendChild(label);
+        }
+      }
 
       // Panel
       panelEl = document.createElement('div');
@@ -1049,8 +1556,17 @@
 
       const header = document.createElement('div');
       header.className = 'widget-header';
-      header.style.backgroundColor = accent;
-      header.innerHTML = `<div class="flex items-center gap-2"><span>🤖</span><span>${config.botName}</span></div><button id="closeWidget" class="text-white/90 hover:text-white">✕</button>`;
+      // Header styles by widget.headerStyle
+      if (config.widget.headerStyle === 'gradient') {
+        header.style.background = `linear-gradient(135deg, ${accent}, #111827)`;
+      } else if (config.widget.headerStyle === 'glass') {
+        header.style.background = 'rgba(255,255,255,0.2)';
+        header.style.backdropFilter = 'blur(8px)';
+        header.style.color = '#111827';
+      } else {
+        header.style.backgroundColor = accent;
+      }
+      header.innerHTML = `<div class="flex items-center gap-2"><span>🤖</span><span>${config.botName}</span></div><div class="flex items-center gap-2"><!-- Voice toggle removed --><button id="closeWidget" class="text-white/90 hover:text-white">✕</button></div>`;
 
       chatWindowEl = document.createElement('div');
       chatWindowEl.className = 'widget-body';
@@ -1059,19 +1575,141 @@
       inputWrap.className = 'widget-input';
       chatInputEl = document.createElement('input');
       chatInputEl.className = 'input flex-1';
-      chatInputEl.placeholder = 'Type a message...';
+      chatInputEl.placeholder = 'Type a product name or message...';
+      // Live search preloader and results inside panel
+      const liveWrap = document.createElement('div');
+      liveWrap.className = 'absolute left-3 right-3 bottom-[60px] z-10';
+      liveWrap.innerHTML = `<div id="liveLoader" class="hidden text-xs text-gray-500">Searching...</div><div id="liveResults" class="mt-2 grid grid-cols-1 gap-2"></div>`;
+      const liveLoader = liveWrap.querySelector('#liveLoader');
+      const liveResults = liveWrap.querySelector('#liveResults');
+
       sendBtnEl = document.createElement('button');
-      sendBtnEl.className = 'btn btn-primary';
+      sendBtnEl.type = 'button';
       sendBtnEl.textContent = 'Send';
+      sendBtnEl.className = 'widget-send';
+      // Base styles
+      sendBtnEl.style.padding = '10px 14px';
+      const btnRadiusStyle = config.widget.bubbleStyle==='pill' ? '999px' : (config.widget.bubbleStyle==='square' ? '8px' : '12px');
+      sendBtnEl.style.borderRadius = btnRadiusStyle;
+      sendBtnEl.style.fontWeight = '600';
+      sendBtnEl.style.border = 'none';
+      sendBtnEl.style.cursor = 'pointer';
+      sendBtnEl.style.boxShadow = '0 6px 12px rgba(0,0,0,0.15)';
+      // Theme-aware styling
+      const headerStyleBtn = (config.widget.headerStyle || 'solid').toLowerCase();
+      if (headerStyleBtn === 'glass') {
+        sendBtnEl.style.background = 'rgba(255,255,255,0.85)';
+        sendBtnEl.style.color = '#111827';
+        sendBtnEl.style.border = '1px solid rgba(17,24,39,0.1)';
+      } else if (headerStyleBtn === 'gradient') {
+        sendBtnEl.style.background = `linear-gradient(135deg, ${accent}, #111827)`;
+        sendBtnEl.style.color = '#ffffff';
+      } else {
+        sendBtnEl.style.backgroundColor = accent;
+        sendBtnEl.style.color = '#ffffff';
+      }
+      // Hover micro-interactions
+      sendBtnEl.addEventListener('mouseenter', ()=>{ sendBtnEl.style.transform = 'translateY(-1px)'; sendBtnEl.style.boxShadow = '0 10px 16px rgba(0,0,0,0.2)'; });
+      sendBtnEl.addEventListener('mouseleave', ()=>{ sendBtnEl.style.transform = 'translateY(0)'; sendBtnEl.style.boxShadow = '0 6px 12px rgba(0,0,0,0.15)'; });
       inputWrap.appendChild(chatInputEl);
       inputWrap.appendChild(sendBtnEl);
 
       panelEl.appendChild(header);
       panelEl.appendChild(chatWindowEl);
       panelEl.appendChild(inputWrap);
+      panelEl.appendChild(liveWrap);
+
+      // Debounced live search by name, tags, description
+      let liveT;
+
+      // Auto live rebuild of preview when editing button designer or widget controls
+      const liveInputs = [widgetTheme, accentColor, headerStyleSel, bubbleStyleSel, userBg, userFg, botBg, botFg, botBorder, position, initialState, btnType, btnText, btnEmoji, btnTextColor, btnBgColor, btnRadius, btnSize, btnShadow, btnImageUrl];
+      liveInputs.forEach(el=>{ if(!el) return; const evt = (el.tagName==='SELECT' || el.type==='checkbox')? 'change':'input'; el.addEventListener(evt, ()=> buildWidgetPreview(true)); });
+      // Upload to data URL for instant preview
+      if (btnUploadFile) {
+        btnUploadFile.addEventListener('change', async ()=>{
+          const f = btnUploadFile.files && btnUploadFile.files[0]; if (!f) return;
+          try {
+            // Upload to backend to store in MongoDB, get /images/:id URL back
+            const fd = new FormData();
+            fd.append('file', f);
+            const r = await fetch(`${API}/images`, { method: 'POST', body: fd });
+            if (!r.ok) throw new Error('upload failed');
+            const js = await r.json();
+            const url = js?.url || (js?.id ? `${API}/images/${js.id}` : '');
+            if (btnImageUrl) btnImageUrl.value = url;
+            config.widget.button = { ...(config.widget.button||{}), type: 'image', imageUrl: url };
+            if (btnType) btnType.value = 'image';
+            if (btnImagePreview) { btnImagePreview.src = url; btnImagePreview.classList.remove('hidden'); }
+            await saveConfig(config);
+            buildWidgetPreview(true);
+          } catch (e) {
+            // Fallback to local preview via data URL if server upload fails
+            const reader = new FileReader();
+            reader.onload = ()=>{
+              const dataUrl = reader.result;
+              if (btnImageUrl) btnImageUrl.value = dataUrl;
+              config.widget.button = { ...(config.widget.button||{}), type: 'image', imageUrl: dataUrl };
+              if (btnType) btnType.value = 'image';
+              if (btnImagePreview) { btnImagePreview.src = dataUrl; btnImagePreview.classList.remove('hidden'); }
+              buildWidgetPreview(true);
+            };
+            reader.readAsDataURL(f);
+          }
+        });
+      }
+      if (btnImageUrl) {
+        const reflect = ()=>{
+          const val = btnImageUrl.value.trim();
+          if (btnImagePreview) { btnImagePreview.src = val || ''; btnImagePreview.classList.toggle('hidden', !val); }
+          config.widget.button = { ...(config.widget.button||{}), imageUrl: val };
+          buildWidgetPreview(true);
+        };
+        btnImageUrl.addEventListener('change', reflect);
+        btnImageUrl.addEventListener('input', ()=>{ /* live preview without saving */ if (btnImagePreview){ const val = btnImageUrl.value.trim(); btnImagePreview.src = val || ''; btnImagePreview.classList.toggle('hidden', !val); } });
+      }
+
+      async function renderLive(q){
+        if (!q || q.trim().length < 2){ liveResults.innerHTML=''; liveLoader.classList.add('hidden'); return; }
+        liveLoader.classList.remove('hidden');
+        const items = await fetchSellerProducts();
+        const ql = q.toLowerCase();
+        const hayMatch = (p)=>{
+          const hay = [
+            (p.title||p.name||'').toString().toLowerCase(),
+            (p.description||p.details||p.summary||'').toString().toLowerCase(),
+            ...(Array.isArray(p.tags)? p.tags.map(t=>String(t).toLowerCase()):[])
+          ].join(' ');
+          return hay.includes(ql);
+        };
+        const matches = applyTagPrefs(items.filter(hayMatch)).slice(0,5);
+        if (matches.length){ Memory.lastProducts = matches; Memory.lastPicked = null; }
+        liveResults.innerHTML = matches.length ? matches.map(productCard).join('') : '';
+        liveLoader.classList.add('hidden');
+      }
+      chatInputEl.addEventListener('input', ()=>{ clearTimeout(liveT); liveT = setTimeout(()=>renderLive(chatInputEl.value), 250); });
 
       widgetSim.appendChild(bubbleEl);
       widgetSim.appendChild(panelEl);
+
+      // Also mount into preview iframe if open
+      try {
+        const frame = document.getElementById('previewFrame');
+        if (frame && frame.contentWindow){
+          const doc = frame.contentDocument || frame.contentWindow.document;
+          const container = doc.getElementById('frameWidgetSim');
+          if (container){
+            container.innerHTML = '';
+            const iframeBubble = bubbleEl.cloneNode(true);
+            const iframePanel = panelEl.cloneNode(true);
+            container.appendChild(iframeBubble);
+            container.appendChild(iframePanel);
+            const headerClose = iframePanel.querySelector('#closeWidget');
+            iframeBubble.addEventListener('click', ()=> iframePanel.style.display = 'flex');
+            headerClose && headerClose.addEventListener('click', ()=> iframePanel.style.display = 'none');
+          }
+        }
+      }catch(_){/* ignore */}
 
       const closeBtn = header.querySelector('#closeWidget');
       bubbleEl.addEventListener('click', ()=> panelEl.style.display = 'flex');
@@ -1091,13 +1729,29 @@
         if (r) addMsg('bot', r);
       };
       chatInputEl.onkeydown = (e)=>{ if (e.key==='Enter') sendBtnEl.click(); };
+
+      // Gate voice toggle by training capability
+      const voiceToggle = document.getElementById('voiceToggle');
+      if (voiceToggle) {
+        const trainingVoiceOn = !!config.training?.capabilities?.voice;
+        voiceToggle.disabled = !trainingVoiceOn;
+        // If training voice is off, force toggle off for safety
+        if (!trainingVoiceOn) voiceToggle.checked = false;
+      }
     }
 
     function addMsg(author, text) {
       const wrap = document.createElement('div');
       wrap.className = author === 'bot' ? 'flex items-start gap-2' : 'flex items-start gap-2 justify-end';
       const bubble = document.createElement('div');
-      bubble.className = `max-w-[80%] px-3 py-2 rounded-xl text-sm ${author==='bot' ? 'bg-white border' : 'bg-indigo-600 text-white'}`;
+      const userCfg = config.widget.userBubble || {}; const botCfg = config.widget.botBubble || {};
+      const isBot = author==='bot';
+      const bg = isBot ? (botCfg.bg||'#ffffff') : (userCfg.bg||'#4f46e5');
+      const fg = isBot ? (botCfg.fg||'#111827') : (userCfg.fg||'#ffffff');
+      const border = isBot && botCfg.border ? ' border' : '';
+      const shape = config.widget.bubbleStyle==='pill' ? 'rounded-full' : (config.widget.bubbleStyle==='square' ? 'rounded-md' : 'rounded-xl');
+      bubble.className = `max-w-[80%] px-3 py-2 ${shape} text-sm${border}`;
+      bubble.style.background = bg; bubble.style.color = fg;
       bubble.textContent = text;
       wrap.appendChild(bubble);
       chatWindowEl.appendChild(wrap);
@@ -1108,21 +1762,64 @@
       const wrap = document.createElement('div');
       wrap.className = 'flex items-start gap-2';
       const bubble = document.createElement('div');
-      bubble.className = 'max-w-[80%] px-3 py-2 rounded-xl text-sm bg-white border';
+      const botCfg = config.widget.botBubble || {};
+      const shape = config.widget.bubbleStyle==='pill' ? 'rounded-full' : (config.widget.bubbleStyle==='square' ? 'rounded-md' : 'rounded-xl');
+      bubble.className = `max-w-[80%] px-3 py-2 ${shape} text-sm`;
+      bubble.style.background = botCfg.bg || '#ffffff';
+      bubble.style.color = botCfg.fg || '#111827';
+      if (botCfg.border) bubble.classList.add('border');
       bubble.innerHTML = html;
       wrap.appendChild(bubble);
       chatWindowEl.appendChild(wrap);
       chatWindowEl.scrollTop = chatWindowEl.scrollHeight;
     }
 
+    // Helpers for smarter intent understanding
+    const STOPWORDS = new Set(['the','a','an','to','of','for','and','or','in','on','at','with','show','me','please','some','any','do','you','have','i','need','looking','search','find','want','give','tell']);
+    const INTENT_WORDS = new Set(['cheapest','lowest','price','low','cost','budget','expensive','premium','luxury','costliest','trending','popular','bestselling','best','sellers','seller','new','latest','just','arrivals','arrival','sale','discount','deal','offer','promo','promotion','coupon','clearance','featured','recommended','hand','picked','editors','editor','pick','top','rated','rating','reviews','review','in','stock','available','ready','ship']);
+    function normalizeText(s){ return (s||'').toString().toLowerCase().replace(/[^a-z0-9\s\.\-']/g,' ').replace(/\s+/g,' ').trim(); }
+    function tokensOf(s){ return normalizeText(s).split(' ').filter(w=> w && !STOPWORDS.has(w)); }
+    function tokensWithoutIntents(s){ return tokensOf(s).filter(w=> !INTENT_WORDS.has(w)); }
+    function extractCount(s){ const m = s.match(/\b(\d{1,2})\b/); return m? Math.min(10, Math.max(1, parseInt(m[1],10))) : 3; }
+    function extractPriceRange(s){
+      const m1 = s.match(/under\s*([$₦₵€£]?)(\d+(?:\.\d+)?)/i); if (m1) return {min:null, max: parseFloat(m1[2])};
+      const m2 = s.match(/between\s*([$₦₵€£]?)(\d+(?:\.\d+)?)\s*(and|to|-)\s*([$₦₵€£]?)(\d+(?:\.\d+)?)/i); if (m2) return {min:parseFloat(m2[2]), max:parseFloat(m2[5])};
+      const m3 = s.match(/(above|over|greater than)\s*([$₦₵€£]?)(\d+(?:\.\d+)?)/i); if (m3) return {min:parseFloat(m3[3]), max:null};
+      return null;
+    }
+    function productMatchesTokens(p, toks){
+      const hay = [
+        (p.title||p.name||'').toString().toLowerCase(),
+        (p.description||p.details||p.summary||'').toString().toLowerCase(),
+        ...(Array.isArray(p.tags)? p.tags.map(t=>String(t).toLowerCase()):[])
+      ].join(' ');
+      return toks.every(t=> hay.includes(t));
+    }
+    function resolvePronounQuery(s){ return /(it|that one|that|this|them|those)\b/i.test(s); }
+
     // Bot logic for preview (capabilities + keyword rules)
     async function botReply(userText){
       const text = (userText||'').trim();
       const caps = config.training.capabilities || {};
 
-      // 1) Keyword rules
+      // 1) Keyword rules (support @tag tokens)
       for (const r of (config.training.rules||[])){
         if (firstMatching(r.pattern, r.match, text)){
+          // If response contains @tag(s), enrich with product cards
+          const tags = (r.pattern||'').split(',').map(s=>s.trim()).filter(t=>t.startsWith('@')).map(t=>t.slice(1).toLowerCase());
+          if (caps.products && tags.length){
+            const products = await fetchSellerProducts();
+            const picks = products.filter(p=>{
+              const toks = tagsFromProduct(p);
+              return tags.some(t=> toks.includes(t));
+            }).slice(0,3);
+            if (picks.length){
+              Memory.lastProducts = picks; Memory.lastPicked = null;
+              addMsg('bot', r.response || 'Here are some options:');
+              addRichBotBlock(`<div class="space-y-2">${picks.map(productCard).join('')}</div>`);
+              return '';
+            }
+          }
           return r.response || 'Okay.';
         }
       }
@@ -1135,49 +1832,190 @@
         const shop = sellerDoc || {};
         const ss = shop.shopSettings || {};
 
+        // Common ecommerce intents
         // Shipping fees
-        if (caps.shipping && /shipping|delivery fee|ship(ping)? cost/i.test(low)){
-          const fees = (ss.deliveryRegions||[]).map(r=> `${r.country}${r.state?`, ${r.state}`:''}: $${r.fee||0}`);
+        if (caps.shipping && /(shipping|delivery fee|ship(ping)? cost|how much.*ship|shipping charges)/i.test(low)){
+          const fees = (ss.deliveryRegions||[]).map(r=> `${r.country}${r.state?`, ${r.state}`:''}: ${CURRENCY}${r.fee||0}`);
           if (fees.length){ return `Shipping fees: ${fees.join(' | ')}`; }
         }
-        // Delivery locations
-        if (caps.delivery && /(deliver(y)?|ship) to|available in|locations?|where.*deliver/i.test(low)){
+        // Delivery locations / service areas
+        if (caps.delivery && /(deliver(y)?|ship) to|available in|locations?|where.*deliver|service areas|coverage/i.test(low)){
           const locs = (ss.deliveryRegions||[]).map(r=> `${r.country}${r.state?` (${r.state})`:''}`);
           if (locs.length){ return `We deliver to: ${locs.join(', ')}`; }
         }
-        // Payment gateways
-        if (caps.payments && /(payment|pay|checkout|gateway|methods)/i.test(low)){
+        // Payment gateways / methods
+        if (caps.payments && /(payment|pay|checkout|gateway|methods|cards?|mobile money|bank transfer|cash on delivery|cod)/i.test(low)){
           const list = (ss.paymentSystems||[]).map(x=> String(x)).join(', ');
           if (list){ return `Accepted payment methods: ${list}`; }
+        }
+        // Store hours
+        if (/(opening|business|store) hours|when.*open|hours of operation/i.test(low)){
+          const hours = shop.businessHours || ss.businessHours || '';
+          if (hours) return `Opening hours: ${hours}`;
+        }
+        // Address / pickup
+        if (/(address|location|where.*located|pickup|pick up)/i.test(low)){
+          const addr = shop.address || ss.address || '';
+          if (addr) return `Address: ${addr}`;
+          const pickup = ss.pickupLocation || '';
+          if (pickup) return `Pickup location: ${pickup}`;
+        }
+        // Contact
+        if (/(contact|phone|email|reach you)/i.test(low)){
+          const phone = shop.phone || ss.phone || '';
+          const email = shop.email || ss.email || '';
+          if (phone || email) return `Contact: ${[phone,email].filter(Boolean).join(' | ')}`;
+        }
+        // Returns / refunds / warranty
+        if (/(return|refund|exchange|warranty|guarantee|replacement)/i.test(low)){
+          const policy = shop.returnPolicy || ss.returnPolicy || shop.policy || ss.policy || '';
+          if (policy) return `Policy: ${policy}`;
         }
       }
 
       // 3) Product queries if enabled
       if (caps.products){
         const low = text.toLowerCase();
-        const products = await fetchSellerProducts();
-        if (/cheapest|lowest price|min(imum)? price|lowest-cost|low cost/i.test(low)){
-          const cheap = findCheapestProduct(products);
+        const tokens = tokensOf(text);
+        const products = await fetchSellerProducts(true); // ensure fresh data in preview
+
+        // Follow-ups using memory (referencing last results with pronouns)
+        if (resolvePronounQuery(text) && (Memory.lastPicked || (Memory.lastProducts && Memory.lastProducts.length))){
+          const target = Memory.lastPicked || Memory.lastProducts?.[0];
+          if (target){
+            if (/price|cost|how much/i.test(low)){
+              const price = (target.price!=null)? target.price : (target.pricing?.price);
+              return price!=null ? `The price for "${target.title||target.name}" is ${CURRENCY}${price}.` : `I don't have a price listed for "${target.title||target.name}".`;
+            }
+            if (/categor(y|ies)/i.test(low)) return target.category ? `Category: ${target.category}` : 'No category info.';
+            if (/tags?/i.test(low)) return Array.isArray(target.tags) && target.tags.length ? `Tags: ${target.tags.join(', ')}` : 'No tags available.';
+            if (/details?|description|about/i.test(low)){
+              const d = (target.description || target.details || target.summary || '').toString();
+              return d ? d : 'No details available.';
+            }
+          }
+        }
+
+        // Extract explicit intents
+        const count = extractCount(text);
+        const priceRange = extractPriceRange(text);
+        const wantCheapest = /(cheapest|lowest price|min(imum)? price|lowest\-cost|low cost|budget)\b/i.test(low);
+        const wantPremium = /(expensive|premium|luxury|high(ly)? priced|costliest|most expensive)\b/i.test(low);
+        const wantTrending = /(best\s*sell(ers|ing)|top\s*sellers?|popular|trending|best\s*sellers?|bestselling)\b/i.test(low);
+        const wantNew = /(new( products?)?|latest|just in|new arrivals?)\b/i.test(low);
+        const wantSale = /(on sale|discount(ed)?|deal|offer|promo|promotion|coupon|clearance)\b/i.test(low);
+        const wantFeatured = /(featured|recommended|hand\s*picked|editor'?s\s*pick)/i.test(low);
+        const wantTopRated = /(top\s*rated|best\s*rated|highest\s*rated|rating|reviews?)\b/i.test(low);
+        const wantInStock = /(in\s*stock|available\s*(now|today)|ready\s*stock|ready\s*to\s*ship|in\-stock)/i.test(low);
+
+        // Name-quoted price question
+        {
+          const mQuoted = userText.match(/price\s*(for|of)?\s*\"([^\"]+)\"/i) || userText.match(/\"([^\"]+)\".*price/i);
+          const mPlain  = userText.match(/price\s*(for|of)?\s*([\w'\-\s]{3,})/i);
+          let name = null; if (mQuoted && mQuoted[2]) name = mQuoted[2].trim(); else if (mPlain && mPlain[2]) name = mPlain[2].trim();
+          if (name){
+            const target = products.find(p => ((p.title||p.name||'').toString().toLowerCase() === name.toLowerCase()));
+            if (target){
+              const price = (target.price!=null)? target.price : (target.pricing?.price);
+              const displayName = target.title||target.name||name;
+              return price!=null ? `The price for "${displayName}" is ${CURRENCY}${price}.` : `I don't have a price listed for "${displayName}".`;
+            }
+          }
+        }
+
+        // Filter by tokens (semantic-ish AND match across fields)
+        // Ignore intent words for semantic filtering to focus on nouns/brands/categories
+        const baseTokens = tokensWithoutIntents(text);
+        let matches = baseTokens.length ? products.filter(p => productMatchesTokens(p, baseTokens)) : products;
+        // If semantic match yields nothing but we have price intent, fallback to all
+        if ((!matches || matches.length===0) && (wantCheapest || wantPremium || wantTrending || wantNew || wantSale || wantFeatured || wantTopRated || wantInStock)){
+          matches = products;
+        }
+        if (priceRange){
+          matches = matches.filter(p=>{
+            const price = (p.price!=null)? p.price : (p.pricing?.price);
+            if (price==null) return false;
+            if (priceRange.min!=null && price < priceRange.min) return false;
+            if (priceRange.max!=null && price > priceRange.max) return false;
+            return true;
+          });
+        }
+
+        if (wantCheapest){
+          const cheap = findCheapestProduct(matches.filter(p=> p?.price!=null || p?.pricing?.price!=null));
           if (cheap){
-            addMsg('bot', 'Here is the cheapest product:');
+            Memory.lastPicked = cheap; Memory.lastProducts = [cheap];
+            const price = getPrice(cheap);
+            const title = cheap.title || cheap.name || 'product';
+            addMsg('bot', `The cheapest option is "${title}" at ${CURRENCY}${price}.`);
             addRichBotBlock(productCard(cheap));
             return '';
           }
         }
-        // Tag-based suggestion: "have any [tag]?" or mentions of known tags
-        const allTags = new Set(products.flatMap(tagsFromProduct));
-        const hit = Array.from(allTags).find(t=> low.includes(t));
-        if (hit){
-          const picks = products.filter(p=> tagsFromProduct(p).includes(hit)).slice(0,3);
-          if (picks.length){
-            addMsg('bot', `Products tagged "${hit}":`);
-            addRichBotBlock(`<div class=\"space-y-2\">${picks.map(productCard).join('')}</div>`);
+        if (wantPremium){
+          const sorted = [...matches].filter(p=> (p?.price!=null || p?.pricing?.price!=null)).sort((a,b)=> ((b.price??b.pricing?.price??0)-(a.price??a.pricing?.price??0))).slice(0,Math.max(1,count));
+          if (sorted.length){
+            Memory.lastProducts = sorted; Memory.lastPicked = null;
+            addMsg('bot', 'Here are premium picks:');
+            addRichBotBlock(`<div class=\"space-y-2\">${sorted.map(productCard).join('')}</div>`);
             return '';
           }
+        }
+        if (wantTrending){
+          const bySales = [...matches].sort((a,b)=> (b.sales||b.orderCount||b.views||0) - (a.sales||a.orderCount||a.views||0)).slice(0,Math.max(1,count));
+          if (bySales.length){
+            Memory.lastProducts = bySales; Memory.lastPicked = null;
+            addMsg('bot', 'Trending now:');
+            addRichBotBlock(`<div class=\"space-y-2\">${bySales.map(productCard).join('')}</div>`);
+            return '';
+          }
+        }
+        if (wantNew){
+          const byNew = [...matches].sort((a,b)=> new Date(b.createdAt||0) - new Date(a.createdAt||0)).slice(0,Math.max(1,count));
+          if (byNew.length){
+            Memory.lastProducts = byNew; Memory.lastPicked = null;
+            addMsg('bot', 'Latest arrivals:');
+            addRichBotBlock(`<div class=\"space-y-2\">${byNew.map(productCard).join('')}</div>`);
+            return '';
+          }
+        }
+
+        // If we still have matches, return top N
+        // Feature-specific slices: sale/featured/top rated/in-stock
+        let working = matches;
+        if (wantSale){ working = working.filter(p=> (p.strikeThroughPrice!=null && p.price!=null && p.price < p.strikeThroughPrice)); }
+        if (wantFeatured){ working = working.filter(p=> !!p.featured); }
+        if (wantTopRated){ working = working.sort((a,b)=> (b.rating||b.reviews||b.views||0) - (a.rating||a.reviews||a.views||0)); }
+        if (wantInStock){ working = working.filter(p=> (p.inventory==null ? true : p.inventory > 0)); }
+
+        if (working.length){
+          const list = applyTagPrefs(working).slice(0, Math.max(1, count));
+          Memory.lastProducts = list; Memory.lastPicked = null;
+          const label = wantSale? 'On sale' : wantFeatured? 'Featured' : wantTopRated? 'Top rated' : wantInStock? 'In stock' : 'Here is what I found';
+          if (list.length === 1){
+            addMsg('bot', `${label}:`);
+            addRichBotBlock(productCard(list[0]));
+          } else {
+            addMsg('bot', `${label}: showing top ${list.length}${matches?.length?` of ${matches.length}`:''}`);
+            addRichBotBlock(`<div class=\"space-y-2\">${list.map(productCard).join('')}</div>`);
+          }
+          return '';
         }
       }
 
       // 4) Fallback
+      // Try a smarter fallback using tokens to suggest a search
+      const toks = tokensOf(text);
+      if ((config.training.capabilities||{}).products && toks.length){
+        const products = await fetchSellerProducts();
+        const matches = products.filter(p => productMatchesTokens(p, toks)).slice(0,3);
+        if (matches.length){
+          addMsg('bot', 'I think you might be looking for these:');
+          addRichBotBlock(`<div class="space-y-2">${matches.map(productCard).join('')}</div>`);
+          Memory.lastProducts = matches; Memory.lastPicked = null;
+          return '';
+        }
+      }
       const base = {
         friendly: "Got it! I'll help you with that.",
         professional: "Understood. I will assist with your request.",
@@ -1188,6 +2026,7 @@
     }
 
     // Initial renders
+    await resolveCurrency();
     renderKeywordRules();
     buildWidgetPreview();
 

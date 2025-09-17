@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ShopRight – Production Estimate and Pricing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --indigo: #4f46e5;
+      --slate-900: #0f172a;
+      --slate-700: #334155;
+      --slate-600: #475569;
+      --slate-500: #64748b;
+      --slate-200: #e2e8f0;
+      --slate-100: #f1f5f9;
+      --green: #16a34a;
+      --amber: #d97706;
+      --rose: #e11d48;
+    }
+    * { box-sizing: border-box; }
+    body { font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 0; color: var(--slate-900); background: #fff; }
+    .container { max-width: 1080px; margin: 0 auto; padding: 24px; }
+    .header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 20px 0; border-bottom: 1px solid var(--slate-200); }
+    .title { font-size: 20px; font-weight: 800; color: var(--indigo); letter-spacing: -0.01em; }
+    .pill { font-size: 12px; padding: 6px 10px; border-radius: 999px; background: var(--slate-100); color: var(--slate-700); font-weight: 600; }
+    .grid { display: grid; gap: 16px; }
+    .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    @media (max-width: 900px) { .grid-3 { grid-template-columns: 1fr; } .grid-2 { grid-template-columns: 1fr; } }
+    .card { border: 1px solid var(--slate-200); border-radius: 12px; padding: 18px; background: #fff; }
+    h2 { font-size: 16px; margin: 0 0 10px; color: var(--slate-900); }
+    h3 { font-size: 14px; margin: 10px 0; color: var(--slate-700); }
+    p, li { font-size: 13px; line-height: 1.55; color: var(--slate-700); }
+    .muted { color: var(--slate-500); }
+    .metric { display: flex; flex-direction: column; gap: 4px; border: 1px dashed var(--slate-200); border-radius: 10px; padding: 12px; background: #fafafa; }
+    .metric .label { font-size: 12px; color: var(--slate-600); }
+    .metric .value { font-weight: 800; font-size: 20px; color: var(--slate-900); }
+    .value.good { color: var(--green); }
+    .value.warn { color: var(--amber); }
+    .value.bad { color: var(--rose); }
+    ul { margin: 8px 0 0 18px; padding: 0; }
+    .tag { display: inline-block; font-size: 11px; padding: 4px 8px; background: var(--slate-100); color: var(--slate-700); border-radius: 999px; margin: 2px 6px 2px 0; }
+    .price { font-size: 24px; font-weight: 800; color: var(--slate-900); }
+    .hr { height: 1px; background: var(--slate-200); margin: 18px 0; }
+    .strong { font-weight: 700; color: var(--slate-900); }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+    .footer { margin-top: 20px; font-size: 12px; color: var(--slate-500); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="title">ShopRight – Production Estimate & Owner Pricing</div>
+      <div class="pill">Prepared from current codebase structure</div>
+    </div>
+
+    <div class="grid grid-3" style="margin-top:16px;">
+      <div class="metric">
+        <div class="label">Estimated professional effort</div>
+        <div class="value warn">~ 80–95 person‑days</div>
+        <div class="muted">Averaging normal mid‑level engineers and support roles</div>
+      </div>
+      <div class="metric">
+        <div class="label">Calendar timeline (parallel work)</div>
+        <div class="value">~ 6–8 weeks</div>
+        <div class="muted">Two engineers + shared Designer/QA/PM</div>
+      </div>
+      <div class="metric">
+        <div class="label">Total production cost (USD)</div>
+        <div class="value good">~ $45,000 – $55,000</div>
+        <div class="muted">Includes 10–15% contingency</div>
+      </div>
+    </div>
+
+    <div class="hr"></div>
+
+    <div class="grid grid-2">
+      <div class="card">
+        <h2>Scope summary (derived from repository)</h2>
+        <p class="muted">Server: Node.js + Express + Mongoose (MongoDB). Frontend: static HTML/JS (Tailwind) for Seller Dashboard and Shop views.</p>
+        <ul>
+          <li>User accounts: buyer/seller roles, signup/login, bcrypt password hashing, OTP and password reset via email.</li>
+          <li>Subscriptions and trials: plan gating (Free/Basic/Pro/Premium), trial flags, upgrade endpoints.</li>
+          <li>Products: CRUD, variants, color variants, specifications, categories/tags, featured, marketplace flags.</li>
+          <li>Assets: uploads via Multer; image persistence in Mongo (Image model) with /images/:id serving.</li>
+          <li>Orders: order creation, inventory checks per plan limits, buyer/seller HTML email notifications.</li>
+          <li>Cart and Wishlist: add/list endpoints; buyer summaries.</li>
+          <li>Coupons: create/list/update with plan restrictions; usage counters and savings.</li>
+          <li>Promotions: campaigns/ads with basic performance fields.</li>
+          <li>Payments: Paystack-oriented records (reference/status), list/update; currency helpers.</li>
+          <li>Analytics: seller endpoints for KPIs, sales over time, best hour, regional breakdown.</li>
+          <li>Dashboard UI: Tailwind-based seller portal for analytics, products, inventory, coupons, settings.</li>
+          <li>Shop/theming: static routes for shop, themes, layouts loader with allowlist.</li>
+          <li>Chatbot config: per-seller bot settings, training log, enable/disable.</li>
+          <li>Email service: SMTP transporter with environment-based configuration and templated messages.</li>
+        </ul>
+        <p class="muted">Directories observed: models/, dashboard/, shop/, customer/, buyer/, seller/, review/, promotion/, public/, uploads/, themes/, layouts/, plus backend app.js and helpers.</p>
+      </div>
+
+      <div class="card">
+        <h2>Assumptions for estimates</h2>
+        <ul>
+          <li>Mid-level professionals with standard market rates; no extreme outsourcing discounts.</li>
+          <li>1 Backend + 1 Frontend/Full‑stack in parallel; shared Designer, QA, DevOps, PM part‑time.</li>
+          <li>Existing code quality comparable to a typical MVP; production hardening and tests required.</li>
+          <li>Third‑party accounts (SMTP, MongoDB, Paystack) available; sandbox keys provided.</li>
+        </ul>
+        <h3>Reference day rates (USD)</h3>
+        <ul>
+          <li>Backend/Full‑stack Engineer: $450/day</li>
+          <li>Frontend Engineer: $400/day</li>
+          <li>UI/UX Designer: $350/day</li>
+          <li>QA Engineer: $250/day</li>
+          <li>DevOps/Infra: $450/day</li>
+          <li>Project Manager: $500/day</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <h2>Effort breakdown by area</h2>
+      <div class="grid grid-3">
+        <div>
+          <h3>Backend/API</h3>
+          <ul>
+            <li>Core models and CRUD (users, products, orders, cart, wishlist): ~15 days</li>
+            <li>Auth, hashing, OTP, password reset emails: ~4 days</li>
+            <li>Uploads + Mongo image store + serving: ~3 days</li>
+            <li>Orders + email notifications: ~4 days</li>
+            <li>Payments records + verification pathways: ~3 days</li>
+            <li>Coupons + plan restrictions: ~4 days</li>
+            <li>Promotions: ~3 days</li>
+            <li>Analytics endpoints (grouping, KPIs): ~5 days</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Frontend/UI</h3>
+          <ul>
+            <li>Seller Dashboard (analytics, inventory, coupons, settings): ~15 days</li>
+            <li>Shop/Storefront pages + themes: ~8 days</li>
+            <li>Theming, uploads, image handling on UI: ~4 days</li>
+            <li>Subscription UI + plan gates: ~4 days</li>
+            <li>Reviews and chatbot config screens: ~3 days</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Quality & Delivery</h3>
+          <ul>
+            <li>QA test passes, bug-fix cycle, edge cases: ~10 days</li>
+            <li>DevOps (environments, build, deploy, SSL, backups): ~5 days</li>
+            <li>Docs, handover, runbooks: ~3 days</li>
+          </ul>
+          <p class="strong" style="margin-top:8px;">Subtotal effort ≈ 89 person‑days</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-2" style="margin-top:16px;">
+      <div class="card">
+        <h2>Cost calculation (approx.)</h2>
+        <ul>
+          <li>Backend Engineer: 20 days × $450 = $9,000</li>
+          <li>Frontend Engineer: 25 days × $400 = $10,000</li>
+          <li>Full‑stack Engineer (shared): 20 days × $450 = $9,000</li>
+          <li>UI/UX Designer: 8 days × $350 = $2,800</li>
+          <li>QA Engineer: 10 days × $250 = $2,500</li>
+          <li>DevOps: 5 days × $450 = $2,250</li>
+          <li>Project Manager: 10 days × $500 = $5,000</li>
+        </ul>
+        <p class="strong">Core build total ≈ $40,750</p>
+        <p>Add 10–15% contingency (unknowns, iteration, buffer)</p>
+        <p class="price">Estimated total ≈ $45,000 – $55,000</p>
+        <p class="muted">Excludes ongoing hosting/SaaS fees.</p>
+      </div>
+      <div class="card">
+        <h2>Timeline and delivery plan</h2>
+        <ul>
+          <li>Week 1–2: Core models/APIs, auth, email, dashboard skeleton, shop base.</li>
+          <li>Week 3–4: Orders, coupons, promotions, analytics, imagery storage, theming.</li>
+          <li>Week 5: QA rounds, bug-fixes, subscription gates, polish.</li>
+          <li>Week 6: Staging UAT, production deploy, documentation, handover.</li>
+        </ul>
+        <p class="muted">Parallel work assumed for backend/frontend. Buffer weeks extend to 7–8 weeks for polish.</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <h2>Operating costs (typical monthly, post‑launch)</h2>
+      <ul>
+        <li>MongoDB Atlas (M10–M20 tier for images + data): $50–$150</li>
+        <li>SMTP/Email (e.g., Postmark/SendGrid or custom SMTP): $15–$50</li>
+        <li>Object storage/CDN (if moved off DB for media): $10–$40</li>
+        <li>Host (VPS or PaaS): $20–$80</li>
+        <li>Monitoring, error tracking: $0–$30</li>
+      </ul>
+      <p class="muted">Total monthly OPEX often in the $100–$300 range for an MVP scale.</p>
+    </div>
+
+    <div class="grid grid-2" style="margin-top:16px;">
+      <div class="card">
+        <h2>Owner pricing strategy (recommended)</h2>
+        <h3>Option A – SaaS</h3>
+        <ul>
+          <li>Free: limited products, no coupons/analytics.</li>
+          <li>Basic: $9–$15/mo – inventory tracking, basic analytics.</li>
+          <li>Pro: $29–$49/mo – coupons, advanced analytics, premium gateways.</li>
+          <li>Premium: $79–$149/mo – priority support, custom domains, higher limits.</li>
+        </ul>
+        <p>Add optional 0.5–2.0% transaction fee on gateway‑processed sales to subsidize costs.</p>
+        <h3>Option B – One‑time License</h3>
+        <ul>
+          <li>Source code license: $60,000 – $90,000 (commercial use, limited support).</li>
+          <li>White‑label deployment: $3,000 – $8,000 per tenant setup + support retainer.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h2>What I would sell it for (owner view)</h2>
+        <p>As a finished MVP with the features present in this repository, a practical price point to sell the codebase/license outright sits around:</p>
+        <p class="price">$65,000 — $75,000</p>
+        <p class="muted">This reflects build cost + IP value + time‑to‑market savings for a buyer.</p>
+        <p>As a SaaS, I would launch with the tiering above and target first 100 paying tenants at ~$29/mo (Pro), yielding ~$2,900 MRR,
+        scaling ARPU upward with premium features and managed onboarding.</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <h2>Risks and notes</h2>
+      <ul>
+        <li>Storing images directly in MongoDB increases cluster cost; prefer object storage (S3/Cloud Storage) for scale.</li>
+        <li>Harden auth flows: rate‑limits, session handling, CSRF/CORS review, production‑grade logging.</li>
+        <li>Add automated tests (unit/integration) to reduce QA cycles and regressions.</li>
+        <li>Payment verification webhooks for gateways should be fully implemented and tested.</li>
+        <li>Security review for file uploads and layout allowlists should continue before GA.</li>
+      </ul>
+    </div>
+
+    <p class="footer">This document is an estimate based on the current code and common delivery patterns. Actuals may vary with scope changes or non‑functional requirements (SLA, security reviews, compliance).</p>
+  </div>
+</body>
+</html>
