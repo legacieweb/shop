@@ -177,6 +177,46 @@ db.once('open', () => {
 // ✅ API ROUTES (Must come BEFORE static catch-all)
 // -------------------------------
 
+// Generic read-only finder for collections used by admin/shop pages
+app.get('/find', async (req, res) => {
+  try {
+    const { collection, ...filters } = req.query || {};
+    if (!collection) return res.status(400).json({ success: false, message: 'Missing collection parameter' });
+
+    const map = {
+      users: User,
+      products: Product,
+      orders: Order,
+      cart: Cart,
+      wishlist: Wishlist,
+      'subscription-plans': SubscriptionPlan,
+      reviews: Review,
+    };
+
+    const key = String(collection).toLowerCase();
+    const Model = map[key];
+    if (!Model) return res.status(404).json({ success: false, message: `Unknown collection: ${collection}` });
+
+    // Normalize some obvious types
+    Object.keys(filters).forEach(k => {
+      const v = filters[k];
+      if (v === 'true') filters[k] = true;
+      else if (v === 'false') filters[k] = false;
+      else if (!isNaN(v) && v !== '' && ['price','inventory','views','amount','budget','reach','days'].includes(k)) {
+        filters[k] = Number(v);
+      }
+    });
+    // Remove empty-string filters
+    Object.keys(filters).forEach(k => { if (filters[k] === '') delete filters[k]; });
+
+    const items = await Model.find(filters).sort({ createdAt: -1 });
+    return res.json({ success: true, data: items });
+  } catch (e) {
+    console.error('Generic find error:', e);
+    return res.status(500).json({ success: false, message: 'Server error in /find' });
+  }
+});
+
 // Promotions API
 // Create promotion (campaign or ad)
 app.post('/promotions', async (req, res) => {

@@ -750,7 +750,8 @@
   // Global variables
   const DEFAULT_API = 'https://shop-stp5.onrender.com';
   const apiParam = new URLSearchParams(location.search).get('api');
-  const API = apiParam || (location.origin.startsWith('http') ? location.origin : DEFAULT_API);
+  const storedApi = localStorage.getItem('API_BASE');
+  const API = (apiParam || storedApi || DEFAULT_API).replace(/\/+$/,'');
   let allUsers = [];
   let allOrders = [];
   let allProducts = [];

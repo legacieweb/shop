@@ -224,7 +224,10 @@
   <div id="layoutContainer" class="min-h-screen"></div>
 
   <script>
-    const API = "http://localhost:3000";
+    const DEFAULT_API = 'https://shop-stp5.onrender.com';
+    const apiParam = new URLSearchParams(location.search).get('api');
+    const storedApi = localStorage.getItem('API_BASE');
+    const API = (apiParam || storedApi || DEFAULT_API).replace(/\/+$/,'');
     const sellerParam = new URLSearchParams(location.search).get("seller");
     const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
     const isOwner = currentUser?.role && currentUser.role.startsWith("seller") && currentUser.username === sellerParam;
@@ -926,11 +929,25 @@
 
         // Product helpers
         function getPrice(p){ const v = (p && (p.price!=null ? p.price : (p.pricing?.price))); const n = typeof v === 'string' ? parseFloat(v) : v; return Number.isFinite(n) ? n : null; }
+        function productIdOf(p){
+          if (!p) return '';
+          const direct = (p.id!=null) ? String(p.id) : (typeof p._id === 'string' ? p._id : null);
+          if (direct) return direct;
+          if (p._id && typeof p._id === 'object'){
+            if (typeof p._id.$oid === 'string') return p._id.$oid;
+            // Some drivers embed under _id._id
+            if (typeof p._id._id === 'string') return p._id._id;
+            const s = String(p._id);
+            if (/^[a-f0-9]{24}$/i.test(s)) return s;
+          }
+          return '';
+        }
         function productCard(p){
           const title = p.title || p.name || 'Product';
-          const id = (p._id || p.id || '').toString();
+          const id = productIdOf(p);
+          const href = id ? `/detail/index.html?id=${encodeURIComponent(id)}` : 'javascript:void(0)';
           const img = normalizeImage(p.image || (Array.isArray(p.gallery) ? p.gallery[0] : ''));
-          return `<a href="../detail/?id=${encodeURIComponent(id)}" style="display:block;border:1px solid #e5e7eb;border-radius:12px;padding:8px;background:#fff;text-decoration:none">
+          return `<a href="${href}" style="display:block;border:1px solid #e5e7eb;border-radius:12px;padding:8px;background:#fff;text-decoration:none">
             ${img?`<img src="${img}" alt="${title}" style="width:100%;height:112px;object-fit:cover;border-radius:10px;margin-bottom:6px;background:#f1f5f9"/>`:''}
             <div style="font-weight:600;color:#0f172a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${title}</div>
           </a>`;

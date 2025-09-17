@@ -9,7 +9,8 @@
   <script>
     const DEFAULT_API = 'https://shop-stp5.onrender.com';
     const apiParam = new URLSearchParams(location.search).get('api');
-    const API = apiParam || (location.origin.startsWith('http') ? location.origin : DEFAULT_API);
+    const storedApi = localStorage.getItem('API_BASE');
+    const API = (apiParam || storedApi || DEFAULT_API).replace(/\/+$/,'');
   </script>
   <style>
     .glass { backdrop-filter: blur(10px); background: linear-gradient(135deg, rgba(99,102,241,0.06), rgba(255,255,255,0.75)); }
@@ -30,11 +31,11 @@
         <p class="text-sm text-gray-500 mt-1">Grow your store</p>
       </div>
       <nav class="mt-6 space-y-1">
-        <a href="#" data-section="campaigns" class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50">Campaigns</a>
-        <a href="#" data-section="promotions" class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50">Promotions</a>
-        <a href="#" data-section="performance" class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50">Performance</a>
-        <a href="#" data-section="billing" class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50">Billing</a>
-        <a href="../dashboard" class="block px-6 py-3 text-indigo-600 hover:bg-indigo-50 font-semibold">← Back to Dashboard</a>
+        <a href="#" data-section="campaigns" class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50">📢 Campaigns</a>
+        <a href="#" data-section="promotions" class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50">🎯 Promotions</a>
+        <a href="#" data-section="performance" class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50">📈 Performance</a>
+        <a href="#" data-section="billing" class="sidebar-link block px-6 py-3 text-gray-700 hover:bg-indigo-50">💳 Billing</a>
+    <a id="backDashboard" href="../dashboard" class="block px-6 py-3 text-indigo-600 hover:bg-indigo-50 font-semibold">← Back to Dashboard</a>
       </nav>
     </aside>
 
@@ -231,7 +232,7 @@
   <!-- Paystack Inline -->
   <script src="https://js.paystack.co/v1/inline.js"></script>
   <script>
-    (function(){
+  (function(){
     // Auth context / seller
     const user = JSON.parse(localStorage.getItem('user') || '{}');
     const seller = user?.username || '';
@@ -242,90 +243,90 @@
     const backDashboard = document.getElementById('backDashboard');
     if (backDashboard) {
       backDashboard.href = seller 
-        ? `../dashboard?seller=${encodeURIComponent(seller)}`
-        : `../dashboard`;
+        ? `dashboard/index.html?seller=${encodeURIComponent(seller)}`
+        : `dashboard/index.html`;
     }
-      // Seller shop currency (fallback to USD)
-      let shopCurrency = 'USD';
-      let currencySymbol = '$';
-      const symbolMap = { USD:'$', NGN:'₦', EUR:'€', GBP:'£', GHS:'₵', KES:'KSh', ZAR:'R', INR:'₹' };
-      async function loadSellerCurrency(){
-        if (!seller) return;
-        try {
-          const { success, data } = await jsonGet(`${API}/find?collection=users&username=${encodeURIComponent(seller)}`);
-          if (success && Array.isArray(data) && data[0]){
-            const u = data[0];
-            const c = (u.shopSettings && (u.shopSettings.currency || u.shopSettings.shopCurrency)) || u.currency || 'USD';
-            shopCurrency = String(c || 'USD').toUpperCase();
-            currencySymbol = symbolMap[shopCurrency] || '$';
-          }
-        } catch {}
-      }
+    // Seller shop currency (fallback to USD)
+    let shopCurrency = 'USD';
+    let currencySymbol = '$';
+    const symbolMap = { USD:'$', NGN:'₦', EUR:'€', GBP:'£', GHS:'₵', KES:'KSh', ZAR:'R', INR:'₹' };
+    async function loadSellerCurrency(){
+      if (!seller) return;
+      try {
+        const { success, data } = await jsonGet(`${API}/find?collection=users&username=${encodeURIComponent(seller)}`);
+        if (success && Array.isArray(data) && data[0]){
+          const u = data[0];
+          const c = (u.shopSettings && (u.shopSettings.currency || u.shopSettings.shopCurrency)) || u.currency || 'USD';
+          shopCurrency = String(c || 'USD').toUpperCase();
+          currencySymbol = symbolMap[shopCurrency] || '$';
+        }
+      } catch {}
+    }
 
-      // Sidebar toggle (mobile)
-      const hamburgerBtn = document.getElementById('hamburgerBtn');
-      const sidebar = document.getElementById('sidebar');
-      if (hamburgerBtn) {
-        hamburgerBtn.addEventListener('click', () => {
-          if (sidebar.classList.contains('-translate-x-full')) {
-            sidebar.classList.remove('-translate-x-full');
-            sidebar.classList.add('translate-x-0');
-          } else {
-            sidebar.classList.add('-translate-x-full');
-            sidebar.classList.remove('translate-x-0');
-          }
-        });
-      }
-
-      // Section switching
-      document.querySelectorAll('a.sidebar-link').forEach(link => {
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          const section = link.getAttribute('data-section');
-          if (!section) return;
-          document.querySelectorAll('.section').forEach(sec => sec.classList.add('hidden'));
-          document.getElementById('section-' + section).classList.remove('hidden');
-          if (window.innerWidth < 768) {
-            sidebar.classList.add('-translate-x-full');
-            sidebar.classList.remove('translate-x-0');
-          }
-        });
+    // Sidebar toggle (mobile)
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const sidebar = document.getElementById('sidebar');
+    if (hamburgerBtn) {
+      hamburgerBtn.addEventListener('click', () => {
+        if (sidebar.classList.contains('-translate-x-full')) {
+          sidebar.classList.remove('-translate-x-full');
+          sidebar.classList.add('translate-x-0');
+        } else {
+          sidebar.classList.add('-translate-x-full');
+          sidebar.classList.remove('translate-x-0');
+        }
       });
+    }
 
-      // Helpers
-      async function jsonGet(url){ const r = await fetch(url); return r.json(); }
-      async function jsonPost(url, body){ const r = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)}); return r.json(); }
-      async function jsonPatch(url, body){ const r = await fetch(url, { method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)}); return r.json(); }
+    // Section switching
+    document.querySelectorAll('a.sidebar-link').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const section = link.getAttribute('data-section');
+        if (!section) return;
+        document.querySelectorAll('.section').forEach(sec => sec.classList.add('hidden'));
+        document.getElementById('section-' + section).classList.remove('hidden');
+        if (window.innerWidth < 768) {
+          sidebar.classList.add('-translate-x-full');
+          sidebar.classList.remove('translate-x-0');
+        }
+      });
+    });
 
-      // Reach calculators
-      function calcReach(budget, days){ return Math.round(Math.max(0, Number(budget)) * Math.max(1, Number(days)) * 120); }
-      function updateCampaignReach(){
-        const b = document.getElementById('campaignBudget').value;
-        const d = document.getElementById('campaignDays').value;
-        document.getElementById('campaignReach').textContent = calcReach(b, d).toLocaleString();
-      }
-      function formatMoney(n){ return `${currencySymbol}${Number(n||0).toLocaleString()}`; }
-      ['campaignBudget','campaignDays'].forEach(id => document.getElementById(id).addEventListener('input', updateCampaignReach));
-      updateCampaignReach();
+    // Helpers
+    async function jsonGet(url){ const r = await fetch(url); return r.json(); }
+    async function jsonPost(url, body){ const r = await fetch(url, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)}); return r.json(); }
+    async function jsonPatch(url, body){ const r = await fetch(url, { method:'PATCH', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)}); return r.json(); }
 
-      // Product image helper (supports MongoDB images via /images/:id)
-      function productImageUrl(p){
-        const pick = () => {
-          if (typeof p.image === 'string' && p.image) return p.image;
-          if (Array.isArray(p.gallery)) {
-            const firstStr = p.gallery.find(x => typeof x === 'string' && x);
-            if (firstStr) return firstStr;
-          }
-          return '';
-        };
-        let u = pick();
-        if (!u) return 'https://via.placeholder.com/600x400?text=Product';
-        if (u.startsWith('http')) return u;
-        if (/^[a-f0-9]{24}$/i.test(u)) return `/images/${u}`;
-        if (u.startsWith('/images/') || u.startsWith('images/')) return u.startsWith('/') ? u : '/' + u;
-        if (u.startsWith('/uploads/') || u.startsWith('uploads/')) return u.startsWith('/') ? u : '/' + u;
-        return u; // fallback
-      }
+    // Reach calculators
+    function calcReach(budget, days){ return Math.round(Math.max(0, Number(budget)) * Math.max(1, Number(days)) * 120); }
+    function updateCampaignReach(){
+      const b = document.getElementById('campaignBudget').value;
+      const d = document.getElementById('campaignDays').value;
+      document.getElementById('campaignReach').textContent = calcReach(b, d).toLocaleString();
+    }
+    function formatMoney(n){ return `${currencySymbol}${Number(n||0).toLocaleString()}`; }
+    ['campaignBudget','campaignDays'].forEach(id => document.getElementById(id).addEventListener('input', updateCampaignReach));
+    updateCampaignReach();
+
+    // Product image helper (supports MongoDB images via /images/:id)
+    function productImageUrl(p){
+      const pick = () => {
+        if (typeof p.image === 'string' && p.image) return p.image;
+        if (Array.isArray(p.gallery)) {
+          const firstStr = p.gallery.find(x => typeof x === 'string' && x);
+          if (firstStr) return firstStr;
+        }
+        return '';
+      };
+      let u = pick();
+      if (!u) return 'https://via.placeholder.com/600x400?text=Product';
+      if (/^https?:\/\//i.test(u) || u.startsWith('data:')) return u;
+      if (/^[a-f0-9]{24}$/i.test(u)) return `${API}/images/${u}`;
+      if (u.startsWith('/images/') || u.startsWith('images/')) return `${API}/${u.replace(/^\/?/,'')}`;
+      if (u.startsWith('/uploads/') || u.startsWith('uploads/')) return `${API}/${u.replace(/^\/?/,'')}`;
+      return `${API}/uploads/${u.replace(/^\/+/, '')}`; // fallback to uploads
+    }
 
       // Load products for seller
       async function loadProducts(){
@@ -552,7 +553,7 @@
         const email = (user && user.email) || `${seller}@example.com`;
         const reference = `promo_${Date.now()}_${Math.random().toString(36).slice(2,8)}`;
         const handler = PaystackPop.setup({
-          key: 'pk_live_7ab8e015626516d7d00210b2e7fe169805c226b8', // test key (replace)
+          key: 'pk_test_232531a5c927ef2cc67ed1b85af3f26e3b8ed2f2', // test key (replace)
           email: String(email),
           amount: Math.round(Number(amount || 0) * 100), // minor units
           currency: shopCurrency,

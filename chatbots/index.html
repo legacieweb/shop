@@ -332,7 +332,7 @@
 
     // Back link
     const back = document.getElementById('backToDashboard');
-    if (seller) back.href = `./dashboard?seller=${encodeURIComponent(seller)}`; else back.href = './dashboard';
+    if (seller) back.href = `../dashboard?seller=${encodeURIComponent(seller)}`; else back.href = '../dashboard';
 
     // Drawer logic
     const hamburgerBtn = document.getElementById('hamburgerBtn');
@@ -894,13 +894,26 @@
       }catch(_){ CURRENCY = '$'; }
     }
 
+    function productIdOf(p){
+      if (!p) return '';
+      const direct = (p.id!=null) ? String(p.id) : (typeof p._id === 'string' ? p._id : null);
+      if (direct) return direct;
+      if (p._id && typeof p._id === 'object'){
+        if (typeof p._id.$oid === 'string') return p._id.$oid;
+        if (typeof p._id._id === 'string') return p._id._id;
+        const s = String(p._id);
+        if (/^[a-f0-9]{24}$/i.test(s)) return s;
+      }
+      return '';
+    }
     function productCard(p){
       const title = p.title || p.name || 'Product';
-      const id = (p._id || p.id || '').toString();
+      const id = productIdOf(p);
       let img = p.image || (Array.isArray(p.gallery) ? p.gallery[0] : '');
       img = normalizeImage(img);
+      const href = id ? `../detail/?id=${encodeURIComponent(id)}` : 'javascript:void(0)';
       return `
-        <a href="../detail/?id=${encodeURIComponent(id)}" class="block p-3 rounded-xl border bg-white hover:shadow transition">
+        <a href="${href}" class="block p-3 rounded-xl border bg-white hover:shadow transition">
           ${img?`<img src="${img}" class="w-full h-28 object-cover rounded-lg mb-2" />`:''}
           <div class="font-medium text-gray-800 truncate">${title}</div>
         </a>`;
