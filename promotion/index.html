@@ -61,7 +61,7 @@
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
               <div>
-                <label class="block text-sm text-gray-600 mb-1">Budget (${shopCurrency})</label>
+                <label class="block text-sm text-gray-600 mb-1">Budget (<span class="currency-code">USD</span>)</label>
                 <input type="number" id="campaignBudget" class="w-full border rounded px-3 py-2" placeholder="100" min="1" value="100" />
               </div>
               <div>
@@ -98,6 +98,12 @@
             <button id="reloadProducts" class="px-3 py-1.5 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700">Reload</button>
           </div>
           <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+
+          <!-- Floating selection bar -->
+          <div id="selectionBar" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 bg-white/80 glass border border-indigo-100 shadow-xl rounded-full px-4 py-2 flex items-center gap-3">
+            <span id="selectedCount" class="text-sm text-gray-700">0 selected</span>
+            <button id="submitSelected" class="px-3 py-1.5 text-sm bg-indigo-600 text-white rounded-full disabled:opacity-50" disabled>Confirm & Promote</button>
+          </div>
 
           <div>
             <h4 class="text-md font-semibold text-gray-700">Your Ads</h4>
@@ -208,7 +214,7 @@
         <input id="adHeadline" class="border rounded-lg px-3 py-2 w-full text-sm" placeholder="Headline" />
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
           <div>
-            <label class="block text-xs text-gray-600 mb-1">Budget (${shopCurrency})</label>
+            <label class="block text-xs text-gray-600 mb-1">Budget (<span class="currency-code">USD</span>)</label>
             <input id="adBudget" type="number" class="border rounded-lg px-3 py-2 w-full text-sm" placeholder="Budget" value="50" min="1" />
           </div>
           <div>
@@ -235,7 +241,8 @@
   (function(){
     // Auth context / seller
     const user = JSON.parse(localStorage.getItem('user') || '{}');
-    const seller = user?.username || '';
+    const sellerParam = new URLSearchParams(location.search).get('seller');
+    const seller = user?.username || sellerParam || '';
     const sellerBadge = document.getElementById('sellerBadge');
     sellerBadge.textContent = seller ? `Signed in as: ${seller}` : 'Please sign in to manage promotions.';
 
@@ -243,22 +250,44 @@
     const backDashboard = document.getElementById('backDashboard');
     if (backDashboard) {
       backDashboard.href = seller 
-        ? `dashboard/index.html?seller=${encodeURIComponent(seller)}`
-        : `dashboard/index.html`;
+        ? `../dashboard?seller=${encodeURIComponent(seller)}`
+        : `../dashboard`;
     }
+    // Also ensure the sidebar links preserve ?seller= when applicable
+    document.querySelectorAll('a.sidebar-link').forEach(a => {
+      a.addEventListener('click', (e)=>{ e.preventDefault(); });
+    });
     // Seller shop currency (fallback to USD)
     let shopCurrency = 'USD';
     let currencySymbol = '$';
-    const symbolMap = { USD:'$', NGN:'₦', EUR:'€', GBP:'£', GHS:'₵', KES:'KSh', ZAR:'R', INR:'₹' };
+    const symbolMap = { USD:'$', NGN:'₦', EUR:'€', GBP:'£', GHS:'₵', GHC:'₵', KES:'KSh', KSH:'KSh', ZAR:'R', INR:'₹' };
     async function loadSellerCurrency(){
-      if (!seller) return;
+      if (!seller) {
+        // fallback from localStorage if available
+        const ls = JSON.parse(localStorage.getItem('user') || '{}');
+        const c0 = (ls.shopSettings && (ls.shopSettings.currency || ls.shopSettings.shopCurrency)) || ls.currency;
+        if (c0){
+          shopCurrency = String(c0).trim().toUpperCase();
+          if (shopCurrency === 'KSHS') shopCurrency = 'KSH';
+          if (shopCurrency === 'KSHILLINGS') shopCurrency = 'KSH';
+          if (shopCurrency === 'GH₵' || shopCurrency === 'GHC') shopCurrency = 'GHS';
+          currencySymbol = symbolMap[shopCurrency] || '$';
+        }
+        return;
+      }
       try {
         const { success, data } = await jsonGet(`${API}/find?collection=users&username=${encodeURIComponent(seller)}`);
         if (success && Array.isArray(data) && data[0]){
           const u = data[0];
           const c = (u.shopSettings && (u.shopSettings.currency || u.shopSettings.shopCurrency)) || u.currency || 'USD';
-          shopCurrency = String(c || 'USD').toUpperCase();
+          shopCurrency = String(c || 'USD').trim().toUpperCase();
+          if (shopCurrency === 'KSHS') shopCurrency = 'KSH';
+          if (shopCurrency === 'KSHILLINGS') shopCurrency = 'KSH';
+          if (shopCurrency === 'GH₵' || shopCurrency === 'GHC') shopCurrency = 'GHS';
           currencySymbol = symbolMap[shopCurrency] || '$';
+          // Update any currency labels/symbols in the UI
+          document.querySelectorAll('.currency-code').forEach(el => el.textContent = shopCurrency);
+          document.querySelectorAll('[data-currency-symbol]').forEach(el => el.textContent = currencySymbol);
         }
       } catch {}
     }
@@ -306,6 +335,11 @@
       document.getElementById('campaignReach').textContent = calcReach(b, d).toLocaleString();
     }
     function formatMoney(n){ return `${currencySymbol}${Number(n||0).toLocaleString()}`; }
+    // Update currency UI immediately on load (will be corrected after fetch)
+    document.addEventListener('DOMContentLoaded', ()=>{
+      document.querySelectorAll('.currency-code').forEach(el => el.textContent = shopCurrency);
+      document.querySelectorAll('[data-currency-symbol]').forEach(el => el.textContent = currencySymbol);
+    });
     ['campaignBudget','campaignDays'].forEach(id => document.getElementById(id).addEventListener('input', updateCampaignReach));
     updateCampaignReach();
 
@@ -333,52 +367,122 @@
         const grid = document.getElementById('productGrid');
         if (!grid) return;
         grid.innerHTML = '<div class="text-sm text-gray-500">Loading...</div>';
+        // Ensure currency is loaded before rendering tiles
+        if (typeof ensureCurrencyLoaded === 'function') {
+          try { await ensureCurrencyLoaded(); } catch (e) {}
+        }
         const qs = seller ? `&seller=${encodeURIComponent(seller)}` : '';
         const { success, data } = await jsonGet(`${API}/find?collection=products${qs}`);
         if (!success){ grid.innerHTML = '<p class="text-sm text-red-600">Failed to load products.</p>'; return; }
         const items = data || [];
+        const sym = currencySymbol || '$';
         grid.innerHTML = items.map(p => `
-          <div class="border rounded-xl overflow-hidden bg-white shadow-sm hover:shadow transition">
+          <div class="group border rounded-xl overflow-hidden bg-white shadow-sm hover:shadow-md transition relative" data-id="${p.id}">
             <div class="relative">
               <img src="${productImageUrl(p)}" alt="${p.name||''}" class="w-full h-40 object-cover"/>
-              <span class="absolute top-2 left-2 bg-white/90 text-gray-700 text-xs px-2 py-0.5 rounded shadow">${currencySymbol}${Number(p.price||0).toLocaleString()}</span>
+              <button data-select="${p.id}" class="absolute top-2 right-2 bg-white/90 text-indigo-700 border border-indigo-200 px-2 py-1 text-xs rounded-full shadow hover:bg-indigo-50 transition">Select</button>
             </div>
             <div class="p-4 space-y-2">
               <p class="font-semibold">${p.name||'Product'}</p>
               <p class="text-xs text-gray-500 truncate">${p.description||''}</p>
-                <div class="flex gap-2 pt-2">
-                <button data-promote='${JSON.stringify({productId:p.id})}' class="px-3 py-1.5 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700">Promote</button>
-              </div>
             </div>
           </div>
         `).join('') || '<p class="text-sm text-gray-500">No products found.</p>';
-        grid.querySelectorAll('button[data-promote]')?.forEach(btn=> btn.addEventListener('click', openAdModal));
+
+        // selection logic
+        const selected = window.__selectedProducts || (window.__selectedProducts = new Set());
+        function updateSelectionUI(){
+          const countEl = document.getElementById('selectedCount');
+          const bar = document.getElementById('selectionBar');
+          const btn = document.getElementById('submitSelected');
+          const n = selected.size;
+          if (countEl) countEl.textContent = `${n} selected`;
+          if (btn) btn.disabled = n===0;
+          if (bar) bar.classList.toggle('hidden', n===0);
+          grid.querySelectorAll('[data-id]')?.forEach(card=>{
+            const id = card.getAttribute('data-id');
+            const on = selected.has(id);
+            card.classList.toggle('ring-2', on);
+            card.classList.toggle('ring-indigo-400', on);
+            card.classList.toggle('shadow-lg', on);
+            const selBtn = card.querySelector(`[data-select="${id}"]`);
+            if (selBtn) selBtn.textContent = on ? 'Selected' : 'Select';
+          });
+        }
+        grid.querySelectorAll('[data-select]')?.forEach(btn=>{
+          btn.addEventListener('click', (e)=>{
+            e.preventDefault(); e.stopPropagation();
+            const id = btn.getAttribute('data-select');
+            if (selected.has(id)) selected.delete(id); else selected.add(id);
+            updateSelectionUI();
+          });
+        });
+        updateSelectionUI();
       }
       document.getElementById('reloadProducts')?.addEventListener('click', loadProducts);
 
-      // Ad modal
+      // Selection confirmation → open promote modal for selected
+      async function confirmSelectedOpenModal(){
+        const selected = window.__selectedProducts || new Set();
+        if (!selected.size) return;
+        await ensureCurrencyLoaded();
+        // Save selected list for modal usage
+        window.__selectedForAd = Array.from(selected);
+        // Prefill modal fields
+        document.getElementById('adHeadline').value = `Promotion for ${window.__selectedForAd.length} product(s)`;
+        document.getElementById('adBudget').value = 50;
+        document.getElementById('adDays').value = 7;
+        document.getElementById('adReach').value = 0;
+        calcAdReach();
+        // Show a quick list of selected ids under headline
+        let list = document.getElementById('adSelectedList');
+        if (!list){
+          const container = document.querySelector('#adModal .space-y-3');
+          list = document.createElement('div');
+          list.id = 'adSelectedList';
+          list.className = 'text-xs text-gray-600 bg-indigo-50/40 border border-indigo-100 rounded p-2';
+          container.prepend(list);
+        }
+        list.textContent = `Selected products: ${window.__selectedForAd.join(', ')}`;
+        document.getElementById('adModal').classList.remove('hidden');
+      }
+      document.getElementById('submitSelected')?.addEventListener('click', confirmSelectedOpenModal);
+
+      // Ad modal (supports multi-select via window.__selectedForAd; falls back to single product)
       let modalProduct = null;
       function openAdModal(e){
         const payload = JSON.parse(e.currentTarget.getAttribute('data-promote'));
         modalProduct = payload;
+        window.__selectedForAd = [payload.productId];
         document.getElementById('adHeadline').value = `Ad for ${payload.productId}`;
         document.getElementById('adBudget').value = 50;
-        document.getElementById('adReach').value = 1000;
+        document.getElementById('adDays').value = 7;
+        document.getElementById('adReach').value = 0;
+        calcAdReach();
+        let list = document.getElementById('adSelectedList');
+        if (!list){
+          const container = document.querySelector('#adModal .space-y-3');
+          list = document.createElement('div');
+          list.id = 'adSelectedList';
+          list.className = 'text-xs text-gray-600 bg-indigo-50/40 border border-indigo-100 rounded p-2';
+          container.prepend(list);
+        }
+        list.textContent = `Selected products: ${window.__selectedForAd.join(', ')}`;
         document.getElementById('adModal').classList.remove('hidden');
       }
       function closeAdModal(){ document.getElementById('adModal').classList.add('hidden'); modalProduct = null; }
-      document.getElementById('cancelAdBtn').addEventListener('click', closeAdModal);
-      document.getElementById('saveAdBtn').addEventListener('click', saveAd);
+      document.getElementById('cancelAdBtn')?.addEventListener('click', closeAdModal);
+      document.getElementById('saveAdBtn')?.addEventListener('click', saveAd);
 
       function calcAdReach(){
-        const b = Number(document.getElementById('adBudget').value||0);
-        const d = Number(document.getElementById('adDays').value||0);
+        const b = Number(document.getElementById('adBudget')?.value||0);
+        const d = Number(document.getElementById('adDays')?.value||0);
         const r = Math.round(Math.max(0,b) * Math.max(1,d) * 120);
-        document.getElementById('adReachView').textContent = r.toLocaleString();
-        document.getElementById('adReach').value = r;
+        const rv = document.getElementById('adReachView'); if (rv) rv.textContent = r.toLocaleString();
+        const rh = document.getElementById('adReach'); if (rh) rh.value = r;
       }
-      document.getElementById('adBudget').addEventListener('input', calcAdReach);
-      document.getElementById('adDays').addEventListener('input', calcAdReach);
+      document.getElementById('adBudget')?.addEventListener('input', calcAdReach);
+      document.getElementById('adDays')?.addEventListener('input', calcAdReach);
       calcAdReach();
 
       async function ensureCurrencyLoaded(){ await loadSellerCurrency(); }
@@ -409,8 +513,9 @@
       }
 
       async function saveAd(){
-        if (!modalProduct) return;
         await ensureCurrencyLoaded();
+        const sel = (window.__selectedForAd && window.__selectedForAd.length) ? window.__selectedForAd : (modalProduct ? [modalProduct.productId] : []);
+        if (!sel.length) return;
         const headline = document.getElementById('adHeadline').value.trim();
         const budget = Number(document.getElementById('adBudget').value || 0);
         const days = Number(document.getElementById('adDays').value || 0);
@@ -418,11 +523,16 @@
         const bal = await getBalance();
         if (totalCost > bal){ showInsufficientFunds(totalCost, bal); return; }
         const reach = Number(document.getElementById('adReach').value || 0);
-        const body = { type:'ad', headline, budget, days, reach, productId: modalProduct.productId, seller, status:'Pending', currency: shopCurrency };
-        const res = await jsonPost(`${API}/promotions`, body);
-        if (!res.success){ alert('Failed to create ad'); return; }
+        const payloads = sel.map(id => ({ type:'ad', headline, budget, days, reach, productId: id, seller, status:'Pending', currency: shopCurrency }));
+        const results = await Promise.all(payloads.map(body => jsonPost(`${API}/promotions`, body)));
+        const ok = results.every(r => r && r.success);
+        if (!ok){ alert('Some items failed to create.'); }
+        // clear selection and close
+        const selected = window.__selectedProducts || new Set(); selected.clear();
+        window.__selectedForAd = [];
+        document.getElementById('selectionBar')?.classList.add('hidden');
         closeAdModal();
-        await Promise.all([loadPromotions(), loadAnalytics(), renderBalance()]);
+        await Promise.all([loadPromotions(), loadAnalytics(), renderBalance(), loadProducts()]);
       }
 
       // Campaigns
@@ -451,7 +561,7 @@
         return `<div class=\"p-3 border rounded flex items-center justify-between\">
           <div class=\"text-sm\">
             <p class=\"font-semibold\">${it.name || it.headline || '—'} <span class=\"text-xs text-gray-500\">${it.type}</span></p>
-            <p class=\"text-xs text-gray-500\">Budget: $${it.budget||0} • Reach: ${it.reach||0} • Status: <span class=\"font-medium ${it.status==='Approved'?'text-green-600': it.status==='Rejected'?'text-red-600':'text-yellow-600'}\">${it.status||'Pending'}</span></p>
+            <p class=\"text-xs text-gray-500\">Budget: ${(symbolMap[(it.currency||shopCurrency)||'USD'] || currencySymbol)}${it.budget||0} • Reach: ${it.reach||0} • Status: <span class=\"font-medium ${it.status==='Approved'?'text-green-600': it.status==='Rejected'?'text-red-600':'text-yellow-600'}\">${it.status||'Pending'}</span></p>
           </div>
           <div class=\"text-xs text-gray-400\">${when}</div>
         </div>`;
@@ -508,7 +618,7 @@
           spend += p.spend||0; conv += p.conversions||0; tImps += p.impressions||0; tClks += p.clicks||0;
         });
         renderCharts(labels, imps, clks);
-        setMetric('metricSpend', `$${(spend).toFixed(2)}`);
+        setMetric('metricSpend', `${currencySymbol}${(spend).toFixed(2)}`);
         setMetric('metricConversions', `${conv}`);
         setMetric('metricCTR', ctr(tClks, tImps));
       }
@@ -531,14 +641,17 @@
       }
       async function renderBalance(){
         const bal = await getBalance();
-        document.getElementById('currentBalance').textContent = `$${Number(bal).toFixed(2)}`;
+        document.getElementById('currentBalance').textContent = `${currencySymbol}${Number(bal).toFixed(2)}`;
       }
       async function fetchTransactions(){
         const paymentsRes = await jsonGet(`${API}/payments?seller=${encodeURIComponent(seller)}`);
         const list = document.getElementById('transactionsList');
         if (!paymentsRes.success){ list.innerHTML = '<p class="text-sm text-red-600">Failed to load transactions.</p>'; return; }
         const items = paymentsRes.data || [];
-        list.innerHTML = items.map(p => `<div class="flex justify-between bg-gray-50 p-2 rounded"><span>${new Date(p.createdAt||Date.now()).toLocaleString()} – ${p.gateway||'paystack'} (${p.status})</span><span class="font-semibold">$${Number(p.amount||0).toFixed(2)}</span></div>`).join('') || '<p class="text-sm text-gray-500">No transactions yet.</p>';
+        list.innerHTML = items.map(p => {
+          const sym = symbolMap[(p.currency||shopCurrency)||'USD'] || currencySymbol;
+          return `<div class="flex justify-between bg-gray-50 p-2 rounded"><span>${new Date(p.createdAt||Date.now()).toLocaleString()} – ${p.gateway||'paystack'} (${p.status})</span><span class="font-semibold">${sym}${Number(p.amount||0).toFixed(2)}</span></div>`;
+        }).join('') || '<p class="text-sm text-gray-500">No transactions yet.</p>';
       }
 
       async function savePaymentToDB({ reference, amount, currency='NGN', meta={} }){
@@ -580,13 +693,18 @@
         document.getElementById('addFundsAmount').value='';
       });
 
-      // Initial loads
-      renderBalance();
-      fetchTransactions();
-      loadProducts();
-      loadCampaigns();
-      loadPromotions();
-      loadAnalytics();
+      // Initial loads (ensure currency first so symbols render correctly)
+      (async ()=>{
+        await loadSellerCurrency();
+        await Promise.all([
+          renderBalance(),
+          fetchTransactions(),
+          loadProducts(),
+          loadCampaigns(),
+          loadPromotions(),
+          loadAnalytics()
+        ]);
+      })();
     })();
   </script>
 </body>
