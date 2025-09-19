@@ -847,7 +847,8 @@
         panel.style.overflow = 'hidden';
         panel.style.background = '#fff';
         panel.style.boxShadow = '0 12px 30px rgba(0,0,0,0.2)';
-        panel.style.display = (cfg.widget?.initialState==='open') ? 'flex' : 'none';
+        // Force closed by default; opens only via launcher button click
+        panel.style.display = 'none';
         panel.style.flexDirection = 'column';
         panel.style.marginBottom = '10px';
 
@@ -1058,7 +1059,8 @@
             }
             if (matches.length){ addMsg('bot', `Here are some options:`); addRichBot(`<div>${matches.slice(0,3).map(productCard).join('')}</div>`); return ''; }
           }
-          return "I'm here to help with products, shipping, delivery, and payments. Try asking for cheapest phones under a price, popular items, or delivery regions.";
+          // Use seller-defined fallback if available
+          return (cfg && cfg.fallbackMessage) ? String(cfg.fallbackMessage) : "I'm here to help with products, shipping, delivery, and payments. Try asking for cheapest phones under a price, popular items, or delivery regions.";
         }
 
         // Welcome + interactions
